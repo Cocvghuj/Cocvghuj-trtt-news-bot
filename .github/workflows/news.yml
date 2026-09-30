@@ -1,120 +1,44 @@
-import os
-import json
-import feedparser
-import requests
-from google import genai
 
-print("TRTT Bot Started...")
+name: .github/workflows/news.yml
 
-# 1. API Key
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-if not GEMINI_API_KEY:
-    print("GEMINI_API_KEY নাই!")
-    exit()
+on:
+  schedule:
+    - cron: '0 3,7,11,15,19 * * *'
+  workflow_dispatch:
 
-client = genai.Client(api_key=GEMINI_API_KEY)
-
-# 2. Duplicate Check
-POSTED_LOG_FILE = "posted.json"
-if os.path.exists(POSTED_LOG_FILE):
-    try:
-        with open(POSTED_LOG_FILE, "r", encoding="utf-8") as f:
-            posted_urls = json.load(f)
-    except:
-        posted_urls = []
-else:
-    posted_urls = []
-
-# 3. RSS - 100% সত্যি খবর
-RSS_URLS = [
-    "https://www.prothomalo.com/feed/bangladesh",
-    "https://www.bd-pratidin.com/rss.xml",
-    "https://www.kalbela.com/rss.xml",
-    "https://www.jugantor.com/feed/rss.xml",
-    "https://www.dhakapost.com/rss.xml",
-    "https://www.jagonews24.com/rss/rss.xml",
-    "https://www.banglanews24.com/rss/rss.xml",
-]
-
-all_entries = []
-for url in RSS_URLS:
-    try:
-        feed = feedparser.parse(url)
-        if feed.entries:
-            all_entries.extend(feed.entries)
-    except Exception as e:
-        print(f"Skip {url}")
-
-if not all_entries:
-    print("কোনো নতুন খবর নাই")
-    exit()
-
-target_news = None
-for entry in all_entries:
-    if entry.link not in posted_urls:
-        target_news = entry
-        break
-
-if not target_news:
-    print("সব খবর আগেই পোস্ট হয়েছে")
-    exit()
-
-original_title = target_news.title
-original_summary = target_news.get('summary', original_title)
-news_link = target_news.link
-print(f"Found: {original_title}")
-
-# 4. Gemini দিয়ে 100% সঠিক ভাবে সাজানো
-prompt = f"""
-তুমি TRTT NEWS 24 BD এর নিউজ এডিটর।
-নিচের খবরটাকে 100% সত্য রেখে সুন্দর করে সাজাও, কোনো ভুল তথ্য যোগ করবে না।
-শিরোনাম বোল্ড করবে, 3 প্যারাগ্রাফে লিখবে, শেষে সোর্স লিংক দিবে না।
-
-Title: {original_title}
-Summary: {original_summary}
-Link: {news_link}
-
-ফরম্যাট:
-📰 শিরোনাম
-
-বিস্তারিত...
-
-#TRTT #Bangladesh #News
-"""
-
-response = client.models.generate_content(
-    model="gemini-1.5-flash",
-    contents=prompt
-)
-final_text = response.text.strip()
-print("Gemini Done")
-
-# 5. Post - Facebook, Telegram etc (আপনার আগের কোড একই থাকবে)
-# --- Facebook ---
-FB_PAGE_ID = os.environ.get("FB_PAGE_ID")
-FB_ACCESS_TOKEN = os.environ.get("FB_ACCESS_TOKEN")
-if FB_PAGE_ID and FB_ACCESS_TOKEN:
-    try:
-        fb_url = f"https://graph.facebook.com/{FB_PAGE_ID}/feed"
-        r = requests.post(fb_url, data={"message": final_text, "link": news_link, "access_token": FB_ACCESS_TOKEN}, timeout=20)
-        print(f"FB: {r.status_code}")
-    except Exception as e:
-        print(f"FB Error: {e}")
-
-# --- Telegram ---
-TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN")
-TG_CHAT_ID = os.environ.get("TG_CHAT_ID")
-if TG_BOT_TOKEN and TG_CHAT_ID:
-    try:
-        tg_url = f"https://api.telegram.org/bot{TG_BOT_TOKEN}/sendMessage"
-        r = requests.post(tg_url, json={"chat_id": TG_CHAT_ID, "text": final_text + f"\n\n{news_link}"}, timeout=20)
-        print(f"TG: {r.status_code}")
-    except Exception as e:
-        print(f"TG Error: {e}")
-
-# Save posted
-posted_urls.append(news_link)
-with open(POSTED_LOG_FILE, "w", encoding="utf-8") as f:
-    json.dump(posted_urls[-100:], f, ensure_ascii=False, indent=2)
-
-print("Done - 100% সঠিক খবর পোস্ট হলো!")
+jobs:
+  post-news:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          pip install feedparser google-genai requests
+          
+      - name: Run Bot
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_ACCESS_TOKEN: ${{ secrets.FB_ACCESS_TOKEN }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
+          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
+          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
+        run: |
+          python main.py
+          
+      - name: Save posted log
+        run: |
+          git config --global user.name "TRTT Bot"
+          git config --global user.email "bot@trtt.com"
+          git add posted.json || true
+          git commit -m "Update posted log" || true
+          git push || true
