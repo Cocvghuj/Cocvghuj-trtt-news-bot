@@ -6,31 +6,23 @@ import feedparser
 import google.generativeai as genai
 import requests
 
-# ==========================================
-# ০. গুগলের প্যাটার্ন এড়াতে র‍্যান্ডম ডিলে (০ থেকে ৩০ মিনিট)
-# ==========================================
+# ০. Google Safe Random Delay
 delay_seconds = random.randint(0, 1800)
-print(f"গুগল স্প্যাম এড়াতে {delay_seconds // 60} মিনিট অপেক্ষা করা হচ্ছে...")
+print(f"Google Spam এড়াতে {delay_seconds // 60} মিনিট অপেক্ষা...")
 time.sleep(delay_seconds)
 
-# ==========================================
-# ১. GEMINI AI সেটআপ
-# ==========================================
+# ১. GEMINI AI
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
     print("GEMINI_API_KEY পাওয়া যায়নি!")
     exit()
-
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-flash')
 
-# ==========================================
-# ২. ডুপ্লিকেট চেক ফাইল লোড করা
-# ==========================================
+# ২. Duplicate Check
 POSTED_LOG_FILE = "posted.json"
-
 if os.path.exists(POSTED_LOG_FILE):
-    with open(POSTED_LOG_FILE, "r") as f:
+    with open(POSTED_LOG_FILE, "r", encoding="utf-8") as f:
         try:
             posted_urls = json.load(f)
         except:
@@ -38,9 +30,7 @@ if os.path.exists(POSTED_LOG_FILE):
 else:
     posted_urls = []
 
-# ==========================================
-# ৩. ১০টি RSS ফিড থেকে খবর সংগ্রহ ও ফিল্টার
-# ==========================================
+# ৩. 10 RSS
 RSS_URLS = [
     "https://rss.app/feeds/_W6uNGIAKwKPBn602.xml",
     "https://www.prothomalo.com/feed/bangladesh",
@@ -53,7 +43,6 @@ RSS_URLS = [
     "https://www.banglanews24.com/rss/rss.xml",
     "https://www.ittefaq.com.bd/rss.xml"
 ]
-
 all_entries = []
 for url in RSS_URLS:
     try:
@@ -61,13 +50,12 @@ for url in RSS_URLS:
         if feed.entries:
             all_entries.extend(feed.entries)
     except Exception as e:
-        print(f"ফিড লোড করতে সমস্যা: {url} -> {e}")
+        print(f"ফিড সমস্যা: {url} -> {e}")
 
 if not all_entries:
-    print("কোনো নতুন খবর পাওয়া যায়নি।")
+    print("কোনো নতুন খবর নাই।")
     exit()
 
-# ডুপ্লিকেট বাদ দিয়ে প্রথম ইউনিক খবরটি বেছে নেওয়া
 target_news = None
 for entry in all_entries:
     if entry.link not in posted_urls:
@@ -75,126 +63,81 @@ for entry in all_entries:
         break
 
 if not target_news:
-    print("সবগুলো খবর আগেই প্রকাশিত হয়েছে। নতুন কোনো খবর নেই।")
+    print("সব খবর আগেই পোস্ট হয়েছে।")
     exit()
 
 original_title = target_news.title
 original_summary = target_news.get('summary', original_title)
 news_link = target_news.link
 
-# ==========================================
-# ৪. স্পেশাল ক্যাটাগরি ফিল্টার
-# ==========================================
+# ৪. Special Filter
 special_instruction = ""
 full_text = f"{original_title} {original_summary}".lower()
-
 if any(k in full_text for k in ["বঙ্গবন্ধু", "শেখ মুজিব", "জাতির পিতা", "১৫ আগস্ট"]):
-    special_instruction = "ধরণ: 'বঙ্গবন্ধু বা ইতিহাস ভিত্তিক'। সর্বোচ্চ শ্রদ্ধা, নিরপেক্ষতা ও ঐতিহাসিক সঠিকতা বজায় রেখে রিপোর্ট তৈরি করো।"
+    special_instruction = "ধরণ: 'বঙ্গবন্ধু বা ইতিহাস ভিত্তিক'। সর্বোচ্চ শ্রদ্ধা ও নিরপেক্ষতা বজায় রেখে লিখো।"
 elif any(k in full_text for k in ["ইসলাম", "রমজান", "হজ", "কোরআন", "হাদিস", "মসজিদ"]):
-    special_instruction = "ধরণ: 'ইসলামিক সংবাদ'। সঠিক ও শালীন ইসলামিক পরিভাষা ব্যবহার করো এবং যেকোনো বিতর্কিত বক্তব্য এড়িয়ে চলো।"
-elif any(k in full_text for k in ["তদন্ত", "অনুসন্ধান", "দুর্নীতি", "রিপোর্ট", "ইনভেস্টিগেশন"]):
-    special_instruction = "ধরণ: 'ইনভেস্টিগেটিভ / অনুসন্ধানী সংবাদ'। ডিপ ইনভেস্টিগেটিভ স্টাইলে লিখবে এবং খবরের প্রেক্ষাপটসহ গত ৫ দিনের ঘটনার সংক্ষিপ্ত সারসংক্ষেপ বিশ্লেষণ করবে।"
+    special_instruction = "ধরণ: 'ইসলামিক সংবাদ'। সঠিক ও শালীন ইসলামিক পরিভাষা ব্যবহার করো।"
+elif any(k in full_text for k in ["তদন্ত", "অনুসন্ধান", "দুর্নীতি", "রিপোর্ট"]):
+    special_instruction = "ধরণ: 'ইনভেস্টিগেটিভ'। ডিপ ইনভেস্টিগেটিভ স্টাইলে ৫ দিনের প্রেক্ষাপট সহ লিখো।"
 else:
-    special_instruction = "ধরণ: 'সাধারণ আন্তর্জাতিক/জাতীয় সংবাদ'। আধুনিক ও বস্তুনিষ্ঠ সংবাদের ভাষায় রিপোর্ট তৈরি করো।"
+    special_instruction = "ধরণ: 'সাধারণ সংবাদ'। আধুনিক ও বস্তুনিষ্ঠ ভাষায় লিখো।"
 
-# ==========================================
-# ৫. মাস্টার প্রম্পট
-# ==========================================
+# ৫. Master Prompt
 prompt = f"""
-তুমি TRTT NEWS 24 BD-এর প্রধান আন্তর্জাতিক বার্তা সম্পাদক।
-নিচের সংবাদের তথ্য বিশ্লেষণ করে সম্পূর্ণ নিজস্ব ভাষায় একটি প্রফেশনাল ও আকর্ষণীয় বাংলা নিউজ রিপোর্ট তৈরি করো।
-
-[বিশেষ নির্দেশনা]:
-১. {special_instruction}
-২. মূল লেখার কোনো বাক্য হুবহু কপি করবে না, সম্পূর্ণ ইউনিক বাংলা ভাষায় রূপান্তর করবে।
-
-[আউটপুট ফরম্যাট]:
-- একটি আকর্ষনীয় হেডলাইন (শিরোনাম)
-- মূল খবর নিয়ে ৩ থেকে ৪টি স্পষ্ট প্যারাগ্রাফ
-- ইনভেস্টিগেশনের ক্ষেত্রে ৫ দিনের পেছনের ঘটনাবলীর সংক্ষিপ্ত রূপরেখা
-- ৪-৫টি অত্যন্ত ট্রেন্ডিং হ্যাশট্যাগ
-
-সংবাদের তথ্য:
-শিরোনাম: {original_title}
-বিস্তারিত: {original_summary}
+তুমি TRTT NEWS 24 BD-এর প্রধান বার্তা সম্পাদক। নিচের তথ্য থেকে সম্পূর্ণ নিজস্ব ভাষায় প্রফেশনাল বাংলা নিউজ বানাও।
+[বিশেষ নির্দেশনা]: {special_instruction}
+[ফরম্যাট]: একটি আকর্ষণীয় হেডলাইন + ৩-৪টি প্যারাগ্রাফ + ৪-৫টি ট্রেন্ডিং হ্যাশট্যাগ
+সংবাদ: শিরোনাম: {original_title} বিস্তারিত: {original_summary}
 """
 
 try:
-    print(f"AI প্রসেস করছে: {original_title}")
+    print(f"AI প্রসেস: {original_title}")
     response = model.generate_content(prompt)
     rewritten_content = response.text
-    post_message = f"{rewritten_content}\n\n📌 বিস্তারিত ও মূল খবর পড়তে ক্লিক করুন: {news_link}"
+    post_message = f"{rewritten_content}\n\n📌 বিস্তারিত: {news_link}"
 
-    # ==========================================
-    # ৬. ফেসবুক পেজে পোস্ট
-    # ==========================================
+    # ৬. Facebook
     fb_page_id = os.environ.get("FB_PAGE_ID")
     fb_token = os.environ.get("FB_ACCESS_TOKEN")
-
     if fb_page_id and fb_token:
-        post_url = f"https://graph.facebook.com/v19.0/{fb_page_id}/feed"
-        payload = {'message': post_message, 'access_token': fb_token}
-        requests.post(post_url, data=payload)
-        print("ফেসবুকে পোস্ট সফল হয়েছে!")
+        r = requests.post(f"https://graph.facebook.com/v19.0/{fb_page_id}/feed", data={'message': post_message, 'access_token': fb_token})
+        print("Facebook Done!", r.json())
 
-    # ==========================================
-    # ৭. টেলিগ্রাম চ্যানেলে পোস্ট
-    # ==========================================
-    tg_bot_token = os.environ.get("TG_BOT_TOKEN")
+    # ৭. Telegram
+    tg_token = os.environ.get("TG_BOT_TOKEN")
     tg_chat_id = os.environ.get("TG_CHAT_ID")
+    if tg_token and tg_chat_id:
+        r = requests.post(f"https://api.telegram.org/bot{tg_token}/sendMessage", data={'chat_id': tg_chat_id, 'text': post_message})
+        print("Telegram Done!", r.json())
 
-    if tg_bot_token and tg_chat_id:
-        tg_url = f"https://api.telegram.org/bot{tg_bot_token}/sendMessage"
-        payload = {'chat_id': tg_chat_id, 'text': post_message}
-        requests.post(tg_url, data=payload)
-        print("টেলিগ্রাম চ্যানেলে পোস্ট সফল হয়েছে!")
-
-    # ==========================================
-    # ৮. হোয়াটসঅ্যাপে পোস্ট
-    # ==========================================
+    # ৮. WhatsApp (UltraMsg)
     wa_instance_id = os.environ.get("WA_INSTANCE_ID")
     wa_token = os.environ.get("WA_TOKEN")
     wa_to = os.environ.get("WA_TO")
-
     if wa_instance_id and wa_token and wa_to:
         wa_url = f"https://api.ultramsg.com/{wa_instance_id}/messages/chat"
         payload = {'token': wa_token, 'to': wa_to, 'body': post_message}
-        requests.post(wa_url, data=payload)
-        print("হোয়াটসঅ্যাপে পোস্ট সফল হয়েছে!")
+        r = requests.post(wa_url, data=payload)
+        print("WhatsApp Done!", r.json())
 
-    # ==========================================
-    # ৮.৫. BLOGSPOT এ DRAFT হিসেবে পোস্ট (Google Safe)
-    # ==========================================
-    blogger_blog_id = os.environ.get("BLOGGER_BLOG_ID")
+    # ৯. Blogger Draft
+    blogger_id = os.environ.get("BLOGGER_BLOG_ID")
     blogger_token = os.environ.get("BLOGGER_TOKEN")
-
-    if blogger_blog_id and blogger_token:
-        blog_url = f"https://www.googleapis.com/blogger/v3/blogs/{blogger_blog_id}/posts/"
-        headers = {
-            "Authorization": f"Bearer {blogger_token}",
-            "Content-Type": "application/json"
-        }
-        blog_payload = {
-            "kind": "blogger#post",
+    if blogger_id and blogger_token:
+        headers = {"Authorization": f"Bearer {blogger_token}", "Content-Type": "application/json"}
+        payload = {
             "title": original_title,
-            "content": f"{rewritten_content}<br><br><a href='{news_link}' target='_blank'>মূল খবর পড়ুন</a>",
+            "content": f"<p>{rewritten_content}</p><p>সোর্স লিংক: <a href='{news_link}'>original source</a></p>",
             "isDraft": True
         }
-        try:
-            res = requests.post(blog_url, headers=headers, json=blog_payload)
-            if res.status_code == 200:
-                print("Blogspot এ Draft হিসেবে সেভ হয়েছে!")
-            else:
-                print(f"Blogger Error: {res.text}")
-        except Exception as e:
-            print(f"Blogger Error: {e}")
+        r = requests.post(f"https://www.googleapis.com/blogger/v3/blogs/{blogger_id}/posts/", headers=headers, json=payload)
+        print("Blogger Done!", r.json())
 
-    # ==========================================
-    # ৯. ইতিহাস সেভ করা (যেন ২ বার না যায়)
-    # ==========================================
+    # ১০. History / Duplicate Save (try এর ভেতরে)
     posted_urls.append(news_link)
-    with open(POSTED_LOG_FILE, "w") as f:
-        json.dump(posted_urls, f)
+    with open(POSTED_LOG_FILE, "w", encoding="utf-8") as f:
+        json.dump(posted_urls[-100:], f, ensure_ascii=False, indent=4)
+    print("বট সফলভাবে কাজ সম্পন্ন করেছে!")
 
 except Exception as e:
     print(f"এরর: {e}")
