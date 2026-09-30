@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install feedparser google-genai requests
+          pip install feedparser google-generativeai requests
 
       - name: Run bot
         env:
@@ -32,7 +32,8 @@ jobs:
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
           BLOGGER_ID: ${{ secrets.BLOGGER_ID }}
-        run: python main.py
+        run: |
+          python main.py
 
       - name: Save posted log
         run: |
