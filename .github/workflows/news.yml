@@ -1,43 +1,43 @@
-name: .github/workflows/news.yml
+name: TRTT News Bot
 
 on:
   schedule:
-    - cron: '0 3,7,11,15,19 * * *'
+    - cron: '0 */3 * * *'
   workflow_dispatch:
 
 jobs:
   post-news:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
-      
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-          
+
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install feedparser google-genai requests
-          
-      - name: Run Bot
+
+      - name: Run bot
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_ACCESS_TOKEN: ${{ secrets.FB_ACCESS_TOKEN }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
-          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
-          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
-          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
-          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
-        run: |
-          python main.py
-          
+          BLOGGER_ID: ${{ secrets.BLOGGER_ID }}
+        run: python main.py
+
       - name: Save posted log
         run: |
-          git config --global user.name "TRTT Bot"
-          git config --global user.email "bot@trtt.com"
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
           git add posted.json || true
           git commit -m "Update posted log" || true
           git push || true
