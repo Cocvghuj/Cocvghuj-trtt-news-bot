@@ -1,24 +1,29 @@
 name: TRTT Auto News
 
 on:
-  schedule:
-    - cron: '0 2,6,10,14,18 * * *'
   workflow_dispatch:
+  schedule:
+    - cron: '0 3,7,11,15,19 * * *'
 
 jobs:
   post-news:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v3
-      
-      - uses: actions/setup-python@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-          
-      - run: pip install feedparser google-generativeai requests
-      
+
+      - name: Install dependencies
+        run: |
+          pip install feedparser google-generativeai requests
+
       - name: Run Bot
-        run: python main.py
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
@@ -30,11 +35,13 @@ jobs:
           WA_TO: ${{ secrets.WA_TO }}
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
           BLOGGER_TOKEN: ${{ secrets.BLOGGER_TOKEN }}
+        run: |
+          python main.py
 
       - name: Save History
         run: |
           git config --global user.name "TRTT Bot"
-          git config --global user.email "bot@trtt.com"
-          git add posted.json
-          git commit -m "Update posted history" || exit 0
-          git push
+          git config --global user.email "bot@trttnews.com"
+          git add posted.json || echo "no file yet"
+          git commit -m "Update posted history [skip ci]" || echo "no changes"
+          git push || echo "push skipped"
