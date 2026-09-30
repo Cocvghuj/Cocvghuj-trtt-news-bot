@@ -1,143 +1,187 @@
 import os
 import json
-import random
-import time
 import feedparser
-import google.generativeai as genai
 import requests
+import datetime
+import google.generativeai as genai
 
-# ০. Google Safe Random Delay
-delay_seconds = random.randint(0, 1800)
-print(f"Google Spam এড়াতে {delay_seconds // 60} মিনিট অপেক্ষা...")
-time.sleep(delay_seconds)
+print("TRTT Bot Started with Complete Features...")
 
-# ১. GEMINI AI
+# 1. API Key
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
-    print("GEMINI_API_KEY পাওয়া যায়নি!")
+    print("GEMINI_API_KEY নাই!")
     exit()
-genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
 
-# ২. Duplicate Check
+genai.configure(api_key=GEMINI_API_KEY)
+model = genai.GenerativeModel("gemini-1.5-flash")
+
+# 2. History / Duplicate Check (৫০০ খবরের মেমোরি)
 POSTED_LOG_FILE = "posted.json"
 if os.path.exists(POSTED_LOG_FILE):
-    with open(POSTED_LOG_FILE, "r", encoding="utf-8") as f:
-        try:
-            posted_urls = json.load(f)
-        except:
-            posted_urls = []
-else:
-    posted_urls = []
-
-# ৩. 10 RSS
-RSS_URLS = [
-    "https://rss.app/feeds/_W6uNGIAKwKPBn602.xml",
-    "https://www.prothomalo.com/feed/bangladesh",
-    "https://www.bd-pratidin.com/rss.xml",
-    "https://www.kalbela.com/rss.xml",
-    "https://www.jugantor.com/feed/rss.xml",
-    "https://bangla.bdnews24.com/rss.xml",
-    "https://www.dhakapost.com/rss.xml",
-    "https://www.jagonews24.com/rss/rss.xml",
-    "https://www.banglanews24.com/rss/rss.xml",
-    "https://www.ittefaq.com.bd/rss.xml"
-]
-all_entries = []
-for url in RSS_URLS:
     try:
-        feed = feedparser.parse(url)
-        if feed.entries:
-            all_entries.extend(feed.entries)
-    except Exception as e:
-        print(f"ফিড সমস্যা: {url} -> {e}")
-
-if not all_entries:
-    print("কোনো নতুন খবর নাই।")
-    exit()
-
-target_news = None
-for entry in all_entries:
-    if entry.link not in posted_urls:
-        target_news = entry
-        break
-
-if not target_news:
-    print("সব খবর আগেই পোস্ট হয়েছে।")
-    exit()
-
-original_title = target_news.title
-original_summary = target_news.get('summary', original_title)
-news_link = target_news.link
-
-# ৪. Special Filter
-special_instruction = ""
-full_text = f"{original_title} {original_summary}".lower()
-if any(k in full_text for k in ["বঙ্গবন্ধু", "শেখ মুজিব", "জাতির পিতা", "১৫ আগস্ট"]):
-    special_instruction = "ধরণ: 'বঙ্গবন্ধু বা ইতিহাস ভিত্তিক'। সর্বোচ্চ শ্রদ্ধা ও নিরপেক্ষতা বজায় রেখে লিখো।"
-elif any(k in full_text for k in ["ইসলাম", "রমজান", "হজ", "কোরআন", "হাদিস", "মসজিদ"]):
-    special_instruction = "ধরণ: 'ইসলামিক সংবাদ'। সঠিক ও শালীন ইসলামিক পরিভাষা ব্যবহার করো।"
-elif any(k in full_text for k in ["তদন্ত", "অনুসন্ধান", "দুর্নীতি", "রিপোর্ট"]):
-    special_instruction = "ধরণ: 'ইনভেস্টিগেটিভ'। ডিপ ইনভেস্টিগেটিভ স্টাইলে ৫ দিনের প্রেক্ষাপট সহ লিখো।"
+        with open(POSTED_LOG_FILE, "r", encoding="utf-8") as f:
+            posted_items = json.load(f)
+    except:
+        posted_items = []
 else:
-    special_instruction = "ধরণ: 'সাধারণ সংবাদ'। আধুনিক ও বস্তুনিষ্ঠ ভাষায় লিখো।"
+    posted_items = []
 
-# ৫. Master Prompt
-prompt = f"""
-তুমি TRTT NEWS 24 BD-এর প্রধান বার্তা সম্পাদক। নিচের তথ্য থেকে সম্পূর্ণ নিজস্ব ভাষায় প্রফেশনাল বাংলা নিউজ বানাও।
-[বিশেষ নির্দেশনা]: {special_instruction}
-[ফরম্যাট]: একটি আকর্ষণীয় হেডলাইন + ৩-৪টি প্যারাগ্রাফ + ৪-৫টি ট্রেন্ডিং হ্যাশট্যাগ
-সংবাদ: শিরোনাম: {original_title} বিস্তারিত: {original_summary}
-"""
+# 3. RSS URLs (আপনার কাস্টম ফিড, দৈনিক পূর্বকোণ, রয়টার্স, বিবিসি, আল জাজিরা এবং জাতীয় মিডিয়া)
+RSS_URLS = [
+    "https://rss.app/feeds/_W6uNGIAKwKPBn602.xml", # আপনার মূল কাস্টম ফিড (যেখানে পূর্বকোণ ও অন্যান্য ফিড আছে)
+    "http://feeds.bbci.co.uk/bengali/rss.xml",      # BBC Bangla
+    "https://www.aljazeera.com/xml/rss/all.xml",    # Al Jazeera
+    "https://www.reutersagency.com/feed/?best-regions=middle-east&post_type=best", # Reuters
+    "https://www.prothomalo.com/feed/bangladesh",   # Prothom Alo
+    "https://www.bd-pratidin.com/rss.xml",          # BD Pratidin
+    "https://www.kalbela.com/rss.xml",              # Kalbela
+    "https://www.jugantor.com/feed/rss.xml",        # Jugantor
+    "https://www.dhakapost.com/rss.xml",            # Dhaka Post
+    "https://www.jagonews24.com/rss/rss.xml",        # Jago News 24
+    "https://www.banglanews24.com/rss/rss.xml",      # Bangla News 24
+    "https://www.prothomalo.com/collection/crime",  # Crime News
+]
 
-try:
-    print(f"AI প্রসেস: {original_title}")
-    response = model.generate_content(prompt)
-    rewritten_content = response.text
-    post_message = f"{rewritten_content}\n\n📌 বিস্তারিত: {news_link}"
+# --- বিশেষ ফিচার ও ইতিহাস সংক্রান্ত লজিক (ইসলামের ইতিহাস, বঙ্গবন্ধু ও সাপ্তাহিক প্রচ্ছদ) ---
+today_str = datetime.datetime.now().strftime("%Y-%m-%d")
+day_of_week = datetime.datetime.now().weekday() # ০ = সোমবার, ৪ = শুক্রবার ইত্যাদি
 
-    # ৬. Facebook
-    fb_page_id = os.environ.get("FB_PAGE_ID")
-    fb_token = os.environ.get("FB_ACCESS_TOKEN")
-    if fb_page_id and fb_token:
-        r = requests.post(f"https://graph.facebook.com/v19.0/{fb_page_id}/feed", data={'message': post_message, 'access_token': fb_token})
-        print("Facebook Done!", r.json())
+special_content_text = None
+special_title = ""
 
-    # ৭. Telegram
-    tg_token = os.environ.get("TG_BOT_TOKEN")
-    tg_chat_id = os.environ.get("TG_CHAT_ID")
-    if tg_token and tg_chat_id:
-        r = requests.post(f"https://api.telegram.org/bot{tg_token}/sendMessage", data={'chat_id': tg_chat_id, 'text': post_message})
-        print("Telegram Done!", r.json())
+# যদি আজকের ডেটে এই স্পেশাল কন্টেন্ট পোস্ট না হয়ে থাকে
+if today_str + "-special" not in posted_items:
+    if day_of_week == 4: # শুক্রবার হলে ইসলামের ইতিহাস
+        prompt_special = """
+        তুমি TRTT NEWS 24 BD এর ইসলামি সেকশনের এডিটর।
+        ইসলামের ইতিহাসের একটি গুরুত্বপূর্ণ ও শিক্ষণীয় ঘটনা বা সোনালী যুগের কোনো সত্য ঘটনা নিয়ে সুন্দর একটি আর্টিকেল লেখো।
+        তথ্য ১০০% নির্ভুল রাখবে। শিরোনাম বোল্ড করবে, ৩ প্যারাগ্রাফে লিখবে, শেষে সোর্স লিংক দিবে না।
+        
+        ফরম্যাট:
+        🌙 ইসলামের ইতিহাস: [এখানে শিরোনাম দিন]
 
-    # ৮. WhatsApp (UltraMsg)
-    wa_instance_id = os.environ.get("WA_INSTANCE_ID")
-    wa_token = os.environ.get("WA_TOKEN")
-    wa_to = os.environ.get("WA_TO")
-    if wa_instance_id and wa_token and wa_to:
-        wa_url = f"https://api.ultramsg.com/{wa_instance_id}/messages/chat"
-        payload = {'token': wa_token, 'to': wa_to, 'body': post_message}
-        r = requests.post(wa_url, data=payload)
-        print("WhatsApp Done!", r.json())
+        বিস্তারিত বিবরণ...
 
-    # ৯. Blogger Draft
-    blogger_id = os.environ.get("BLOGGER_BLOG_ID")
-    blogger_token = os.environ.get("BLOGGER_TOKEN")
-    if blogger_id and blogger_token:
-        headers = {"Authorization": f"Bearer {blogger_token}", "Content-Type": "application/json"}
-        payload = {
-            "title": original_title,
-            "content": f"<p>{rewritten_content}</p><p>সোর্স লিংক: <a href='{news_link}'>original source</a></p>",
-            "isDraft": True
-        }
-        r = requests.post(f"https://www.googleapis.com/blogger/v3/blogs/{blogger_id}/posts/", headers=headers, json=payload)
-        print("Blogger Done!", r.json())
+        #TRTT #IslamicHistory #Bangladesh #News
+        """
+        special_title = "ইসলামের ইতিহাস"
+        
+    elif day_of_week == 1: # মঙ্গলবার হলে বঙ্গবন্ধুর জীবনী ও ইতিহাস
+        prompt_special = """
+        তুমি TRTT NEWS 24 BD এর ফিচার এডিটর।
+        জাতির পিতা বঙ্গবন্ধু শেখ মুজিবুর রহমানের বর্ণাঢ্য রাজনৈতিক জীবন, সংগ্রাম বা ঐতিহাসিক ভাষণের তাৎপর্য নিয়ে একটি চমৎকার ফিচার লেখো।
+        তথ্য ১০০% সত্য ও প্রামাণিক হতে হবে। শিরোনাম বোল্ড করবে, ৩ প্যারাগ্রাফে লিখবে।
+        
+        ফরম্যাট:
+        🇧🇩 ঐতিহাসিক কথা: [এখানে শিরোনাম দিন]
 
-    # ১০. History / Duplicate Save (try এর ভেতরে)
-    posted_urls.append(news_link)
-    with open(POSTED_LOG_FILE, "w", encoding="utf-8") as f:
-        json.dump(posted_urls[-100:], f, ensure_ascii=False, indent=4)
-    print("বট সফলভাবে কাজ সম্পন্ন করেছে!")
+        বিস্তারিত বিবরণ...
 
-except Exception as e:
-    print(f"এরর: {e}")
+        #TRTT #Bangabandhu #History #Bangladesh
+        """
+        special_title = "বঙ্গবন্ধুর জীবনী"
+        
+    else: # অন্য দিনগুলোতে সাপ্তাহিক প্রচ্ছদ বা বিশেষ ফিচার
+        prompt_special = """
+        তুমি TRTT NEWS 24 BD এর সিনিয়র এডিটর।
+        সমাজ, সংস্কৃতি বা বর্তমান সময়ের একটি গুরুত্বপূর্ণ জীবনমুখী বিষয় নিয়ে একটি আকর্ষণীয় সাপ্তাহিক প্রচ্ছদ বা ফিচার আর্টিকেল লেখো। শিরোনাম বোল্ড করবে, ৩ প্যারাগ্রাফে লিখবে।
+        
+        ফরম্যাট:
+        ✨ সাপ্তাহিক প্রচ্ছদ: [এখানে শিরোনাম দিন]
+
+        বিস্তারিত বিবরণ...
+
+        #TRTT #Feature #Bangladesh #News
+        """
+        special_title = "সাপ্তাহিক প্রচ্ছদ"
+
+    try:
+        res_spec = model.generate_content(prompt_special)
+        special_content_text = res_spec.text.strip()
+    except Exception as e:
+        print(f"Special Content Gen Error: {e}")
+
+# যদি স্পেশাল কন্টেন্ট জেনারেট হয়, তবে সেটি পোস্ট হবে; না হলে RSS থেকে সাধারণ বা ক্রাইম/আন্তর্জাতিক খবর পোস্ট হবে
+if special_content_text:
+    final_text = special_content_text
+    news_link = "https://trttnews24.blogspot.com"
+    print(f"Generated Special Content: {special_title}")
+    posted_items.append(today_str + "-special")
+else:
+    # RSS থেকে সাধারণ খবর ফেচ করা
+    all_entries = []
+    for url in RSS_URLS:
+        try:
+            feed = feedparser.parse(url)
+            if feed.entries:
+                all_entries.extend(feed.entries)
+        except Exception as e:
+            print(f"Skip {url}")
+
+    target_news = None
+    if all_entries:
+        for entry in all_entries:
+            if entry.link not in posted_items:
+                target_news = entry
+                break
+
+    if target_news:
+        original_title = target_news.title
+        original_summary = target_news.get('summary', original_title)
+        news_link = target_news.link
+        print(f"Found RSS News: {original_title}")
+
+        prompt_news = f"""
+        তুমি TRTT NEWS 24 BD এর চিফ নিউজ এডিটর।
+        নিচের খবরটাকে (তা সে আন্তর্জাতিক, ক্রাইম বা জাতীয় যা-ই হোক) ১০০% সত্য ও বস্তুনিষ্ঠ রেখে সুন্দর করে সাজাও। কোনো অতিরিক্ত তথ্য যোগ করবে না।
+        শিরোনাম বোল্ড করবে, ৩ প্যারাগ্রাফে লিখবে, শেষে সোর্স লিংক দিবে না।
+
+        Title: {original_title}
+        Summary: {original_summary}
+        Link: {news_link}
+
+        ফরম্যাট:
+        📰 শিরোনাম
+
+        বিস্তারিত...
+
+        #TRTT #International #Crime #Bangladesh #News
+        """
+        try:
+            response = model.generate_content(prompt_news)
+            final_text = response.text.strip()
+            posted_items.append(news_link)
+        except Exception as e:
+            print(f"Gemini Error: {e}")
+            exit()
+    else:
+        print("কোনো নতুন খবর বা কন্টেন্ট নাই")
+        exit()
+
+# 4. Post to Facebook & Telegram
+FB_PAGE_ID = os.environ.get("FB_PAGE_ID")
+FB_ACCESS_TOKEN = os.environ.get("FB_ACCESS_TOKEN")
+if FB_PAGE_ID and FB_ACCESS_TOKEN:
+    try:
+        fb_url = f"https://graph.facebook.com/{FB_PAGE_ID}/feed"
+        r = requests.post(fb_url, data={"message": final_text, "link": news_link, "access_token": FB_ACCESS_TOKEN}, timeout=20)
+        print(f"FB: {r.status_code}")
+    except Exception as e:
+        print(f"FB Error: {e}")
+
+TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN")
+TG_CHAT_ID = os.environ.get("TG_CHAT_ID")
+if TG_BOT_TOKEN and TG_CHAT_ID:
+    try:
+        tg_url = f"https://api.telegram.org/bot{TG_BOT_TOKEN}/sendMessage"
+        r = requests.post(tg_url, json={"chat_id": TG_CHAT_ID, "text": final_text + f"\n\n{news_link}"}, timeout=20)
+        print(f"TG: {r.status_code}")
+    except Exception as e:
+        print(f"TG Error: {e}")
+
+# Save posted log (৫০০ মেমোরি পর্যন্ত সেভ থাকবে)
+with open(POSTED_LOG_FILE, "w", encoding="utf-8") as f:
+    json.dump(posted_items[-500:], f, ensure_ascii=False, indent=2)
+
+print("Done - সফলভাবে পোস্ট সম্পন্ন হলো!")
