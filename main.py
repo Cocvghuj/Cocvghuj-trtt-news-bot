@@ -78,7 +78,6 @@ if all_entries:
             break
 
 if not target_news:
-currently_posted = True
     print("কোনো নতুন খবর পাওয়া যায়নি!")
     exit()
 
@@ -124,12 +123,7 @@ for line in lines:
         post_title = line.replace("📰", "").strip()
         break
 
-# --- 1. Post to Blogger (Draft/Publish) ---
-# Note: Blogger posting requires OAuth tokens, but if you are using simple feed/automation, 
-# let's ensure social media & logs are properly pushed.
-print("Publishing content...")
-
-# --- 2. Post to Facebook Page ---
+# --- Post to Facebook Page ---
 if FB_PAGE_ID and FB_ACCESS_TOKEN:
     try:
         fb_url = f"https://graph.facebook.com/{FB_PAGE_ID}/feed"
@@ -145,7 +139,7 @@ if FB_PAGE_ID and FB_ACCESS_TOKEN:
 else:
     print("Facebook Secrets missing!")
 
-# --- 3. Post to Telegram Channel ---
+# --- Post to Telegram Channel ---
 if TG_BOT_TOKEN and TG_CHAT_ID:
     try:
         tg_url = f"https://api.telegram.org/bot{TG_BOT_TOKEN}/sendMessage"
@@ -166,3 +160,4 @@ with open(POSTED_LOG_FILE, "w", encoding="utf-8") as f:
     json.dump(posted_items[-500:], f, ensure_ascii=False, indent=2)
 
 print("All processes completed successfully!")
+ 
