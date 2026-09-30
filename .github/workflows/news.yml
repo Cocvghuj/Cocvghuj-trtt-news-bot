@@ -1,0 +1,40 @@
+name: TRTT Auto News
+
+on:
+  schedule:
+    - cron: '0 2,6,10,14,18 * * *'
+  workflow_dispatch:
+
+jobs:
+  post-news:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - run: pip install feedparser google-generativeai requests
+      
+      - name: Run Bot
+        run: python main.py
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_ACCESS_TOKEN: ${{ secrets.FB_ACCESS_TOKEN }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          WA_INSTANCE_ID: ${{ secrets.WA_INSTANCE_ID }}
+          WA_TOKEN: ${{ secrets.WA_TOKEN }}
+          WA_TO: ${{ secrets.WA_TO }}
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          BLOGGER_TOKEN: ${{ secrets.BLOGGER_TOKEN }}
+
+      - name: Save History
+        run: |
+          git config --global user.name "TRTT Bot"
+          git config --global user.email "bot@trtt.com"
+          git add posted.json
+          git commit -m "Update posted history" || exit 0
+          git push
