@@ -12,7 +12,6 @@ FB_PAGE_ID = os.environ.get("FB_PAGE_ID")
 FB_ACCESS_TOKEN = os.environ.get("FB_ACCESS_TOKEN")
 TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN")
 TG_CHAT_ID = os.environ.get("TG_CHAT_ID")
-BLOGGER_ID = os.environ.get("BLOGGER_ID")
 
 if not GEMINI_API_KEY:
     print("Error: GEMINI_API_KEY পাওয়া যায়নি!")
@@ -55,9 +54,14 @@ def generate_with_gemini(prompt_text):
     try:
         response = requests.post(url, headers=headers, json=payload, timeout=30)
         res_json = response.json()
-        return res_json["candidates"][0]["content"]["parts"][0]["text"].strip()
+        # নিরাপদ উপায়ে জেমিনি রেসপন্স চেক করা
+        if "candidates" in res_json and len(res_json["candidates"]) > 0:
+            return res_json["candidates"][0]["content"]["parts"][0]["text"].strip()
+        else:
+            print(f"Gemini API Full Response: {res_json}")
+            return None
     except Exception as e:
-        print(f"Gemini API Error: {e}")
+        print(f"Gemini API Error Exception: {e}")
         return None
 
 # Fetch RSS News
@@ -110,30 +114,20 @@ Link: {news_link}
 
 ai_output = generate_with_gemini(prompt_news)
 if not ai_output:
-    print("Gemini Generation Failed!")
-    exit()
-
-# Split AI Output into Title and Body
-lines = ai_output.split('\n')
-post_title = original_title
-post_body = ai_output
-
-for line in lines:
-    if "📰" in line or len(line.strip()) > 5:
-        post_title = line.replace("📰", "").strip()
-        break
+    print("Gemini Generation Failed! Fallback to original text.")
+    ai_output = f"📰 {original_title}\n\n{original_summary}"
 
 # --- Post to Facebook Page ---
 if FB_PAGE_ID and FB_ACCESS_TOKEN:
     try:
         fb_url = f"https://graph.facebook.com/{FB_PAGE_ID}/feed"
         payload_fb = {
-            "message": ai_output,
-            "link": news_link,
+            "message": ai_output + f"\n\n🔗 বিস্তারিত: {news_link}",
             "access_token": FB_ACCESS_TOKEN
         }
         r_fb = requests.post(fb_url, data=payload_fb, timeout=20)
-        print(f"Facebook Response: {r_fb.status_code}")
+        print(f"Facebook Response Status: {r_fb.status_code}")
+        print(f"Facebook Response Text: {r_fb.text}")
     except Exception as e:
         print(f"FB Error: {e}")
 else:
@@ -148,7 +142,8 @@ if TG_BOT_TOKEN and TG_CHAT_ID:
             "text": ai_output + f"\n\n🔗 বিস্তারিত পড়তে ভিজিট করুন: {news_link}"
         }
         r_tg = requests.post(tg_url, json=payload_tg, timeout=20)
-        print(f"Telegram Response: {r_tg.status_code}")
+        print(f"Telegram Response Status: {r_tg.status_code}")
+        print(f"Telegram Response Text: {r_tg.text}")
     except Exception as e:
         print(f"TG Error: {e}")
 else:
@@ -160,4 +155,3 @@ with open(POSTED_LOG_FILE, "w", encoding="utf-8") as f:
     json.dump(posted_items[-500:], f, ensure_ascii=False, indent=2)
 
 print("All processes completed successfully!")
- 
