@@ -1,11 +1,12 @@
-name: TRTT News Bot
+name: TRTT News 24 BD Auto Bot
+
 on:
   schedule:
-    - cron: '0 */3 * * *'
+    - cron: '0 */2 * * *'
   workflow_dispatch:
 
 jobs:
-  post-news:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -18,26 +19,24 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install feedparser requests pytz
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Run bot
+      - name: Run news bot
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
-          BLOGGER_ACCESS_TOKEN: ${{ secrets.BLOGGER_ACCESS_TOKEN }}
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
           BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          WHATSAPP_PHONE: ${{ secrets.WHATSAPP_PHONE }}
-          WA_API_KEY: ${{ secrets.WA_API_KEY }}
         run: python main.py
 
-      - name: Save posted log
+      - name: Save posted history
         run: |
-          git config --global user.name "bot"
-          git config --global user.email "bot@example.com"
-          git add posted.json
-          git commit -m "update log" || true
-          git push
+          git config --global user.name 'TRTT Bot'
+          git config --global user.email 'bot@trttnews24bd.com'
+          git add posted.json whatsapp_latest.txt || true
+          git commit -m "Update posted history" || echo "No changes"
+          git push || echo "No push needed"
