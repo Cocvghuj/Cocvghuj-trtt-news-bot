@@ -46,7 +46,6 @@ def is_high_demand_news(title, desc):
 
 
 def get_pages_auto():
-    # ফেসবুক পেজ এক্সেস টোকেন বা ইউজার টোকেন দিয়ে পেজ বের করবে
     token = os.getenv("FB_USER_ACCESS_TOKEN") or os.getenv(
         "FB_PAGE_ACCESS_TOKEN"
     )
@@ -222,7 +221,7 @@ def main():
         whatsapp = "https://whatsapp.com/channel/0029Vb8co9VDeONEz0B5e51M"
 
         msg_fb = f"🔥 এই মুহূর্তের আলোচিত খবর:\n🇧🇩 {n['title']}\n\n{n['desc']}...\n\n🔗 বিস্তারিতঃ {n['link']}\n\n👉 পেজ লাইক দিয়ে সাথেই থাকুন\n📲 WhatsApp: {whatsapp}\n✈️ Telegram: https://t.me/trttnews24bd\n\n#TRTTNEWS #BanglaNews"
-        msg_tg = f"🔥 <b>{n['title']}</b>\n\n{n['desc']}...\n\n🔗 <b>বিস্তারিতঃ</b> {n['link']}\n\n📲 WhatsApp: {whatsapp}\n✈️️ Telegram: https://t.me/trttnews24bd"
+        msg_tg = f"🔥 <b>{n['title']}</b>\n\n{n['desc']}...\n\n🔗 <b>বিস্তারিতঃ</b> {n['link']}\n\n📲 WhatsApp: {whatsapp}\n✈️ Telegram: https://t.me/trttnews24bd"
 
         post_to_telegram(msg_tg, n["image"])
         post_all(msg_fb, n["image"])
