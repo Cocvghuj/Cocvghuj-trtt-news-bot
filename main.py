@@ -1,199 +1,234 @@
-import os
-import json
-import feedparser
-import requests
 from datetime import datetime
-import pytz
+import json
+import logging
+import os
+import re
+import time
+import xml.etree.ElementTree as ET
+import requests
 
-print("TRTT News Blogger & Social Bot Starting...")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
-# --- Configuration & Secrets ---
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
-TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
-WHATSAPP_PHONE = os.environ.get("WHATSAPP_PHONE")
-WA_API_KEY = os.environ.get("WA_API_KEY")
+RSS_URL = "https://trttnews24bd.blogspot.com/feeds/posts/default?alt=rss"
+POSTED_FILE = "posted.json"
+MAX_POST_PER_DAY = 8
 
-BLOGGER_BLOG_ID = os.environ.get("BLOGGER_BLOG_ID")
-BLOGGER_CLIENT_ID = os.environ.get("BLOGGER_CLIENT_ID")
-BLOGGER_CLIENT_SECRET = os.environ.get("BLOGGER_CLIENT_SECRET")
-BLOGGER_REFRESH_TOKEN = os.environ.get("BLOGGER_REFRESH_TOKEN")
-BLOGGER_ACCESS_TOKEN_OLD = os.environ.get("BLOGGER_ACCESS_TOKEN")
-
-if not GEMINI_API_KEY:
-    print("Error: GEMINI_API_KEY পাওয়া যায়নি!")
-    exit()
-
-# --- Blogger Fresh Token Function (NEW FIX) ---
-def get_fresh_blogger_token():
-    print("Blogger Token Refresh করছি...")
-    if not BLOGGER_CLIENT_ID or not BLOGGER_CLIENT_SECRET or not BLOGGER_REFRESH_TOKEN:
-        print("Warning: CLIENT_ID/SECRET/REFRESH_TOKEN পাওয়া যায়নি, পুরানো টোকেন ব্যবহার করছি")
-        return BLOGGER_ACCESS_TOKEN_OLD
-    try:
-        url = "https://oauth2.googleapis.com/token"
-        data = {
-            "client_id": BLOGGER_CLIENT_ID,
-            "client_secret": BLOGGER_CLIENT_SECRET,
-            "refresh_token": BLOGGER_REFRESH_TOKEN,
-            "grant_type": "refresh_token"
-        }
-        res = requests.post(url, data=data, timeout=20)
-        if res.status_code == 200:
-            new_token = res.json().get("access_token")
-            print("Blogger Token Refresh Successful!")
-            return new_token
-        else:
-            print(f"Token Refresh Fail: {res.text}")
-    except Exception as e:
-        print(f"Token Error: {e}")
-    return BLOGGER_ACCESS_TOKEN_OLD
-
-BLOGGER_ACCESS_TOKEN = get_fresh_blogger_token()
-
-# --- Night Time Check ---
-def is_night_time():
-    bd_tz = pytz.timezone('Asia/Dhaka')
-    current_hour = datetime.now(bd_tz).hour
-    if 0 <= current_hour < 6:
-        return True
-    return False
-
-# --- Posted Log Setup ---
-POSTED_LOG_FILE = "posted.json"
-if os.path.exists(POSTED_LOG_FILE):
-    try:
-        with open(POSTED_LOG_FILE, "r", encoding="utf-8") as f:
-            posted_items = json.load(f)
-    except:
-        posted_items = []
-else:
-    posted_items = []
-
-# --- RSS Feed Sources ---
-RSS_URLS = [
-    "https://rss.app/feeds/_W6uNGIAKwKPBn602.xml",
-    "https://www.prothomalo.com/feed/bangladesh",
-    "https://www.jugantor.com/feed/rss.xml",
-    "https://www.dhakapost.com/rss.xml",
-    "https://www.jagonews24.com/rss/technology.xml"
+# জনগণের চাহিদাপূর্ণ জনপ্রিয় ক্যাটাগরি বা কিউয়ার্ডসমূহের তালিকা
+POPULAR_KEYWORDS = [
+    "ব্রেকিং",
+    "জরুরি",
+    "চাকরি",
+    "নিয়োগ",
+    "বোর্ড",
+    "ফলাফল",
+    "টেক",
+    "প্রযুক্তি",
+    "স্মার্টফোন",
+    "এআই",
+    "বিজ্ঞপ্তি",
+    "শিক্ষার্থী",
+    "আবহাওয়া",
+    "বাজারদর",
+    "জাতীয়",
+    "আন্তর্জাতিক",
 ]
 
-# --- Category Detection ---
-def detect_category(text):
-    text_lower = text.lower()
-    if any(k in text_lower for k in ["খেলা", "ক্রিকেট", "football", "cricket", "sports"]):
-        return "Sports"
-    elif any(k in text_lower for k in ["টেক", "প্রযুক্তি", "ai", "technology", "mobile"]):
-        return "Technology"
-    elif any(k in text_lower for k in ["বিনোদেন", "সিনেমা", "actor", "movie", "entertainment"]):
-        return "Entertainment"
-    else:
-        return "Bangladesh"
 
-# --- Gemini AI Rewriting Function ---
-def generate_with_gemini(prompt):
-    try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
-        headers = {"Content-Type": "application/json"}
-        data = {
-            "contents": [{ "parts": [{"text": prompt}] }]
-        }
-        response = requests.post(url, headers=headers, json=data, timeout=30)
-        if response.status_code == 200:
-            res_json = response.json()
-            return res_json['candidates'][0]['content']['parts'][0]['text']
-    except Exception as e:
-        print(f"Gemini API Error: {e}")
-    return None
-
-# --- Blogger Posting Function ---
-def post_to_blogger(title, content, category, original_link):
-    if not BLOGGER_BLOG_ID or not BLOGGER_ACCESS_TOKEN:
-        print("Blogger credentials missing!")
-        return False
-    url = f"https://www.googleapis.com/blogger/v3/blogs/{BLOGGER_BLOG_ID}/posts/"
-    headers = {
-        "Authorization": f"Bearer {BLOGGER_ACCESS_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    html_content = f"""
-    <p>{content}</p>
-    <br>
-    <p><em>মূল সংবাদ: <a href="{original_link}" target="_blank" rel="nofollow">এখানে পড়ুন</a></em></p>
-    """
-    payload = {
-        "title": title,
-        "content": html_content,
-        "labels": [category, "TRTT NEWS 24 BD"]
-    }
-    try:
-        res = requests.post(url, headers=headers, json=payload, timeout=20)
-        if res.status_code == 200:
-            print("Blogger Post Successful!")
+def is_high_demand_news(title, desc):
+    """খবরের শিরোনাম বা বিবরণে মানুষের চাহিদাপূর্ণ শব্দ আছে কি না চেক করবে"""
+    text = (title + " " + desc).lower()
+    for keyword in POPULAR_KEYWORDS:
+        if keyword.lower() in text:
             return True
-        else:
-            print(f"Blogger Post Failed: {res.text}")
-    except Exception as e:
-        print(f"Blogger Error: {e}")
     return False
 
-# --- Telegram Notification ---
-def send_telegram_update(title, link):
-    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
-        return
-    msg = f"🚨 *TRTT NEWS 24 BD Update*\n\n*{title}*\n\n🔗 {link}"
-    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-    try:
-        requests.post(url, json={"chat_id": TELEGRAM_CHAT_ID, "text": msg, "parse_mode": "Markdown"}, timeout=15)
-    except Exception as e:
-        print(f"Telegram error: {e}")
 
-# --- WhatsApp Notification ---
-def send_whatsapp_update(title, link):
-    if not WHATSAPP_PHONE or not WA_API_KEY:
-        return
-    msg = f"🚨 *TRTT NEWS 24 BD Update*\n\n*{title}*\n\n🔗 {link}"
-    wa_url = f"https://api.callmebot.com/whatsapp.php?phone={WHATSAPP_PHONE}&text={requests.utils.quote(msg)}&apikey={WA_API_KEY}"
+def get_pages_auto():
+    # ফেসবুক পেজ এক্সেস টোকেন বা ইউজার টোকেন দিয়ে পেজ বের করবে
+    token = os.getenv("FB_USER_ACCESS_TOKEN") or os.getenv(
+        "FB_PAGE_ACCESS_TOKEN"
+    )
+    if not token:
+        return []
     try:
-        requests.get(wa_url, timeout=15)
+        url = f"https://graph.facebook.com/v21.0/me/accounts?access_token={token}"
+        data = requests.get(url, timeout=20).json()
+        pages = []
+        for p in data.get("data", []):
+            pages.append(
+                {"id": p["id"], "token": p["access_token"], "name": p["name"]}
+            )
+        if not pages:
+            pages.append(
+                {
+                    "id": os.getenv("FB_PAGE_ID"),
+                    "token": os.getenv("FB_PAGE_ACCESS_TOKEN"),
+                    "name": "TRTT Page",
+                }
+            )
+        return pages
     except Exception as e:
-        print(f"WhatsApp error: {e}")
+        logging.error(f"FB Pages Error: {e}")
+        return [
+            {
+                "id": os.getenv("FB_PAGE_ID"),
+                "token": os.getenv("FB_PAGE_ACCESS_TOKEN"),
+                "name": "TRTT Page",
+            }
+        ]
 
-# --- Main Logic ---
-target_news = None
-for rss_url in RSS_URLS:
+
+def load_posted():
+    if not os.path.exists(POSTED_FILE):
+        return []
     try:
-        feed = feedparser.parse(rss_url)
-        if feed.entries:
-            for entry in feed.entries:
-                if entry.link not in posted_items:
-                    target_news = entry
+        with open(POSTED_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        return []
+
+
+def save_posted(link):
+    posted = load_posted()
+    links = [p["link"] if isinstance(p, dict) else p for p in posted]
+    if link not in links:
+        posted.append({"link": link, "time": datetime.now().isoformat()})
+        with open(POSTED_FILE, "w", encoding="utf-8") as f:
+            json.dump(posted[-200:], f, ensure_ascii=False, indent=2)
+
+
+def get_today_count():
+    posted = load_posted()
+    today = datetime.now().date().isoformat()
+    return sum(
+        1
+        for p in posted
+        if isinstance(p, dict) and today in p.get("time", "")
+    )
+
+
+def get_news():
+    try:
+        r = requests.get(
+            RSS_URL, timeout=20, headers={"User-Agent": "Mozilla/5.0"}
+        )
+        root = ET.fromstring(r.content)
+        ns = {
+            "atom": "http://www.w3.org/2005/Atom",
+            "media": "http://search.yahoo.com/mrss/",
+        }
+        news_list = []
+        for entry in root.findall("atom:entry", ns)[:15]:
+            title = entry.findtext("atom:title", "", ns).strip()
+            link = ""
+            for l in entry.findall("atom:link", ns):
+                if l.get("rel") == "alternate":
+                    link = l.get("href")
                     break
-            if target_news:
-                break
+            content = entry.findtext("atom:content", "", ns) or ""
+            img = None
+            thumb = entry.find("media:thumbnail", ns)
+            if thumb is not None:
+                img = thumb.get("url")
+            if not img:
+                m = re.search(r'<img[^>]+src="([^"]+)"', content)
+                if m:
+                    img = m.group(1)
+            if img:
+                img = img.replace("/s72-c/", "/s1600/").replace(
+                    "/s72/", "/s1600/"
+                )
+            desc = re.sub("<[^<]+?>", "", content).strip()[:350]
+            if title and link:
+                news_list.append(
+                    {"title": title, "link": link, "desc": desc, "image": img}
+                )
+        return news_list
     except Exception as e:
-        print(f"Skip RSS {rss_url}: {e}")
+        logging.error(f"RSS Error: {e}")
+        return []
 
-if not target_news:
-    print("কোনো নতুন খবর পাওয়া যায়নি!")
-    exit()
 
-detected_tag = detect_category(target_news.title)
-print(f"Found News: {target_news.title} [Tag: {detected_tag}]")
+def post_to_telegram(message, image_url):
+    token = os.getenv("TELEGRAM_BOT_TOKEN")
+    chat_id = (
+        os.getenv("TELEGRAM_CHANNEL_ID")
+        or os.getenv("TELEGRAM_CHAT_ID")
+        or "@trttnews24bd"
+    )
+    if not token:
+        return
+    try:
+        if image_url:
+            url = f"https://api.telegram.org/bot{token}/sendPhoto"
+            data = {
+                "chat_id": chat_id,
+                "photo": image_url,
+                "caption": message,
+                "parse_mode": "HTML",
+            }
+        else:
+            url = f"https://api.telegram.org/bot{token}/sendMessage"
+            data = {
+                "chat_id": chat_id,
+                "text": message,
+                "parse_mode": "HTML",
+            }
+        requests.post(url, data=data, timeout=20)
+        logging.info("Telegram Posted")
+    except Exception as e:
+        logging.error(f"Telegram Error: {e}")
 
-prompt_news = f"তুমি TRTT NEWS 24 BD এর চিফ নিউজ এডিটর। নিচের খবরটি সুন্দর ও আকর্ষণীয়ভাবে বাংলায় রিরাইট করো, SEO ফ্রেন্ডলি করো:\nTitle: {target_news.title}\nSummary: {target_news.get('summary', target_news.title)}"
 
-ai_output = generate_with_gemini(prompt_news) or f"<p>{target_news.get('summary', target_news.title)}</p>"
+def post_all(message, image_url):
+    pages = get_pages_auto()
+    for page in pages:
+        try:
+            if image_url:
+                url = f"https://graph.facebook.com/{page['id']}/photos"
+                data = {
+                    "url": image_url,
+                    "caption": message,
+                    "access_token": page["token"],
+                }
+            else:
+                url = f"https://graph.facebook.com/{page['id']}/feed"
+                data = {"message": message, "access_token": page["token"]}
+            res = requests.post(url, data=data, timeout=30)
+            logging.info(f"FB {page['name']}: {res.status_code}")
+            time.sleep(10)
+        except Exception as e:
+            logging.error(f"FB Error: {e}")
 
-# লগ সেভ করা
-posted_items.append(target_news.link)
-with open(POSTED_LOG_FILE, "w", encoding="utf-8") as f:
-    json.dump(posted_items[-500:], f, ensure_ascii=False, indent=2)
 
-# ব্লগে এবং সোশ্যাল মিডিয়ায় আপডেট পাঠানো
-post_to_blogger(target_news.title, ai_output, detected_tag, target_news.link)
-send_telegram_update(target_news.title, target_news.link)
-send_whatsapp_update(target_news.title, target_news.link)
+def main():
+    if get_today_count() >= MAX_POST_PER_DAY:
+        logging.info("Today limit reached")
+        return
+    posted_links = [
+        p["link"] if isinstance(p, dict) else p for p in load_posted()
+    ]
+    for n in get_news():
+        if n["link"] in posted_links:
+            continue
 
-print("Process Completed Successfully!")
+        # জনগণের চাহিদার সাথে মিলে কি না চেক করা (না মিললে স্কিপ করবে)
+        if not is_high_demand_news(n["title"], n["desc"]):
+            logging.info(f"Skipped (Not in high demand): {n['title'][:30]}")
+            continue
+
+        whatsapp = "https://whatsapp.com/channel/0029Vb8co9VDeONEz0B5e51M"
+
+        msg_fb = f"🔥 এই মুহূর্তের আলোচিত খবর:\n🇧🇩 {n['title']}\n\n{n['desc']}...\n\n🔗 বিস্তারিতঃ {n['link']}\n\n👉 পেজ লাইক দিয়ে সাথেই থাকুন\n📲 WhatsApp: {whatsapp}\n✈️ Telegram: https://t.me/trttnews24bd\n\n#TRTTNEWS #BanglaNews"
+        msg_tg = f"🔥 <b>{n['title']}</b>\n\n{n['desc']}...\n\n🔗 <b>বিস্তারিতঃ</b> {n['link']}\n\n📲 WhatsApp: {whatsapp}\n✈️️ Telegram: https://t.me/trttnews24bd"
+
+        post_to_telegram(msg_tg, n["image"])
+        post_all(msg_fb, n["image"])
+        save_posted(n["link"])
+        break
+
+
+if __name__ == "__main__":
+    main()
