@@ -195,8 +195,28 @@ def post_all(message, image_url):
             else:
                 url = f"https://graph.facebook.com/{page['id']}/feed"
                 data = {"message": message, "access_token": page["token"]}
+
             res = requests.post(url, data=data, timeout=30)
+            res_json = res.json()
             logging.info(f"FB {page['name']}: {res.status_code}")
+
+            # ফেসবুক পোস্টে সফলভাবে পোস্ট হওয়ার পর অটো কমেন্ট যুক্ত করার অংশ
+            post_id = res_json.get("id") or res_json.get("post_id")
+            if post_id:
+                time.sleep(5)
+                comment_url = f"https://graph.facebook.com/{post_id}/comments"
+                comment_data = {
+                    "message": (
+                        "👉 নিয়মিত সব আপডেট ও নিউজ সবার আগে পেতে আমাদের ওয়েবসাইট"
+                        " ভিজিট করুন: https://trttnews24bd.blogspot.com"
+                    ),
+                    "access_token": page["token"],
+                }
+                comm_res = requests.post(
+                    comment_url, data=comment_data, timeout=20
+                )
+                logging.info(f"Auto Comment Status: {comm_res.status_code}")
+
             time.sleep(10)
         except Exception as e:
             logging.error(f"FB Error: {e}")
@@ -220,8 +240,20 @@ def main():
 
         whatsapp = "https://whatsapp.com/channel/0029Vb8co9VDeONEz0B5e51M"
 
-        msg_fb = f"🔥 এই মুহূর্তের আলোচিত খবর:\n🇧🇩 {n['title']}\n\n{n['desc']}...\n\n🔗 বিস্তারিতঃ {n['link']}\n\n👉 পেজ লাইক দিয়ে সাথেই থাকুন\n📲 WhatsApp: {whatsapp}\n✈️ Telegram: https://t.me/trttnews24bd\n\n#TRTTNEWS #BanglaNews"
-        msg_tg = f"🔥 <b>{n['title']}</b>\n\n{n['desc']}...\n\n🔗 <b>বিস্তারিতঃ</b> {n['link']}\n\n📲 WhatsApp: {whatsapp}\n✈️ Telegram: https://t.me/trttnews24bd"
+        msg_fb = (
+            f"🔥 এই মুহূর্তের আলোচিত খবর:\n🇧🇩 {n['title']}\n\n"
+            f"{n['desc']}...\n\n🔗 বিস্তারিতঃ {n['link']}\n\n"
+            "👉 পেজ লাইক দিয়ে সাথেই থাকুন\n"
+            f"📲 WhatsApp: {whatsapp}\n"
+            "✈️ Telegram: https://t.me/trttnews24bd\n\n"
+            "#TRTTNEWS #BanglaNews"
+        )
+        msg_tg = (
+            f"🔥 <b>{n['title']}</b>\n\n{n['desc']}...\n\n"
+            f"🔗 <b>বিস্তারিতঃ</b> {n['link']}\n\n"
+            f"📲 WhatsApp: {whatsapp}\n"
+            "✈️ Telegram: https://t.me/trttnews24bd"
+        )
 
         post_to_telegram(msg_tg, n["image"])
         post_all(msg_fb, n["image"])
