@@ -1,0 +1,37 @@
+name: Auto Post Daily
+
+on:
+  schedule:
+    # এটি প্রতিদিন আন্তর্জাতিক সময় (UTC) রাত ২:০০ টায় (বাংলাদেশ সময় সকাল ৮:০০ টায়) অটো রান হবে
+    - cron: '0 2 * * *'
+  workflow_dispatch: # এর ফলে আপনি যেকোনো সময় ম্যানুয়ালি 'Run workflow' বাটনে ক্লিক করেও চালাতে পারবেন
+
+jobs:
+  auto:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Python setup
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install
+        run: pip install -r requirements.txt
+        
+      - name: Run Automation
+        run: python automation.py
+        env:
+          # টেলিগ্রাম ও এআই কি সমূহ
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DEEP_SEEK_API_KEY: ${{ secrets.DEEP_SEEK_API_KEY }}
+          COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+          
+          # ব্লগারের সব সিক্রেট (যা আপনার স্ক্রিনশটে ছিল)
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
+          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
+          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
