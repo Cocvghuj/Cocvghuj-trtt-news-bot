@@ -1,43 +1,37 @@
 name: TRTT All In One
-
 on:
   schedule:
     - cron: '0 2,8,11,14,16,20 * * *'
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      actions: write
-
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install Dependencies
-        run: pip install requests feedparser beautifulsoup4 google-api-python-client google-auth-httplib2 google-auth-oauthlib pyTelegramBotAPI facebook-sdk Pillow
+        run: pip install -r requirements.txt
 
       - name: Run Bot
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           BLOGGER_ID: ${{ secrets.BLOGGER_ID }}
-          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
-          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+          BLOGGER_ACCESS_TOKEN: ${{ secrets.BLOGGER_ACCESS_TOKEN }}
+          GOOGLE_SHEET_WEBHOOK_URL: ${{ secrets.GOOGLE_SHEET_WEBHOOK_URL }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python automation.py
 
       - name: Save
         run: |
           git config --global user.name 'TRTT Bot'
           git config --global user.email 'bot@trtt.com'
-          git pull origin main --rebase || true
-          git add posted.json posted.txt final_post.jpg tips_evergreen.json history.txt || true
-          git commit -m "auto" || true
-          git push origin main || true
+          git add -A || true
+          git commit -m "auto save [skip ci]" || true
+          git push || true
