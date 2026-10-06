@@ -13,8 +13,6 @@ from googleapiclient.discovery import build
 # ===== SECRETS =====
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 ADMIN_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
-FB_PAGE_ACCESS_TOKEN = os.getenv("FB_PAGE_ACCESS_TOKEN")
-FB_PAGE_ID = os.getenv("FB_PAGE_ID")
 BLOGGER_ID = os.getenv("BLOGGER_ID")
 
 BLOGGER_CLIENT_ID = os.getenv("BLOGGER_CLIENT_ID")
@@ -23,15 +21,15 @@ BLOGGER_REFRESH_TOKEN = os.getenv("BLOGGER_REFRESH_TOKEN")
 
 bot = telebot.TeleBot(TOKEN) if TOKEN else None
 
-# আপনার রিকোয়েস্ট অনুযায়ী শুধুমাত্র এই কিওয়ার্ডগুলো শিরোনামে থাকলে পোস্ট হবে
-JOB_KEYWORDS = ["চাকরি", "নিয়োগ", "বিজ্ঞপ্তি", "পদ", "কর্মসংস্থান", "পরীক্ষা"]
+# আপনার রিকোয়েস্ট অনুযায়ী শুধুমাত্র এইキーワードগুলো শিরোনামে থাকলে পোস্ট হবে
+JOB_KEYWORDS = ["চাকরি", "নিয়োগ", "বিজ্ঞপ্তি", "পদ", "कर्मসংস্থান", "পরীক্ষা"]
 BLOCKED_KEYWORDS = ["অভিযান ছাড়া", "নিরাপত্তা"]
 
-# স্ক্রিনশটের সবগুলো প্রধান পত্রিকা ও বিডিজবস হাবের সম্পূর্ণ আরএসএস ফিড তালিকা
+# সবগুলো প্রধান পত্রিকা ও বিডিজবস হাবের সম্পূর্ণ আরএসএস ফিড তালিকা
 RSS_FEEDS = [
-    "https://www.prothomalo.com/feed",
+    "https://prothomalo.com",
     "https://jugantor.com",
-    "https://www.kalerkantho.com/rss.xml",
+    "https://kalerkantho.com",
     "https://ittefaq.com.bd",
     "https://samakal.com",
     "https://dailyjanakantha.com",
@@ -88,20 +86,6 @@ def make_image(title, category):
         return "final_post.jpg"
     except:
         return None
-
-def post_to_facebook(text, image_path=None):
-    if not FB_PAGE_ACCESS_TOKEN or not FB_PAGE_ID: 
-        return
-    url = f"https://facebook.com{FB_PAGE_ID}/feed" if not image_path else f"https://facebook.com{FB_PAGE_ID}/photos"
-    payload = {'message': text, 'access_token': FB_PAGE_ACCESS_TOKEN}
-    try:
-        if image_path:
-            with open(image_path, 'rb') as img:
-                requests.post(url, data=payload, files={'source': img})
-        else:
-            requests.post(url, data=payload)
-    except:
-        pass
 
 def send_telegram_msg(text, image_path=None):
     if not bot or not ADMIN_CHAT_ID: 
@@ -187,9 +171,10 @@ if __name__ == '__main__':
                 post_text = f"{valid_item['title']}\n\nবিস্তারিত পড়ুন: {valid_item['link']}"
                 img_path = make_image(valid_item['title'], slot)
                 
-                post_to_facebook(post_text, img_path)
+                # ফেসবুক সম্পূর্ণ বাদ, শুধু টেলিগ্রামে নিউজ পাঠানো হচ্ছে
                 send_telegram_msg(post_text, img_path)
                 
+                # ব্লগারে অটোমেটিক নিউজ পাঠানো হচ্ছে
                 html_content = f"<p>{valid_item['title']}</p><br><a href='{valid_item['link']}'>এখানে ক্লিক করে বিস্তারিত পড়ুন</a>"
                 post_to_blogger(valid_item['title'], html_content)
                 
