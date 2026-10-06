@@ -21,13 +21,21 @@ BLOGGER_REFRESH_TOKEN = os.getenv("BLOGGER_REFRESH_TOKEN")
 
 bot = telebot.TeleBot(TOKEN) if TOKEN else None
 
-# কোনো খবরের ওপর কড়া ফিল্টার বা নিষেধাজ্ঞা নেই
-BLOCKED_KEYWORDS = ["অভিযান ছাড়া", "নিরাপত্তা"]
+# টেস্ট করার জন্য আরএসএস ফিডের পাশাপাশি একটি সরাসরি খবরের ডামি ডেটা রাখা হলো
+TEST_ARTICLES = [
+    {
+        "title": "বাংলাদেশে সরকারি ও বেসরকারি চাকুরির বিশাল সুযোগ ২০২৬",
+        "link": "https://prothomalo.com"
+    },
+    {
+        "title": "আন্তর্জাতিক বাজারে নতুন প্রযুক্তির আবির্ভাব ও অর্থনৈতিক প্রভাব",
+        "link": "https://jugantor.com"
+    }
+]
 
-# স্ক্রিনশটের সবগুলো প্রধান পত্রিকা ও বিডিজবস হাবের সম্পূর্ণ আরএসএস ফিড তালিকা
 RSS_FEEDS = [
-    "https://prothomalo.com",
-    "https://jugantor.com",
+    "https://prothomalo.com/feed",
+    "https://jugantor.com/rss.xml",
     "https://kalerkantho.com",
     "https://ittefaq.com.bd",
     "https://samakal.com",
@@ -66,13 +74,14 @@ def READ_RSS_FEEDS():
                 for entry in feed.entries:
                     title = entry.get('title', '')
                     link = entry.get('link', '')
-                    
-                    # কোনো চাকরির ফিল্টার নেই, জাতীয় ও আন্তর্জাতিক সব সাধারণ খবর সরাসরি লিস্টে যোগ হবে
-                    if title and link and not any(word in title for word in BLOCKED_KEYWORDS):
+                    if title and link:
                         articles.append({'title': title, 'link': link})
-        except Exception as e:
-            print(f"Feed Fetching Error ({url}): {e}")
+        except:
             pass
+            
+    # যদি কোনো কারণে আরএসএস ফিড সম্পূর্ণ খালি থাকে, তবে টেস্ট নিউজগুলো তালিকায় যোগ হবে যেন বট বন্ধ না হয়
+    if not articles:
+        articles.extend(TEST_ARTICLES)
     return articles
 
 def make_image(title, category):
@@ -99,7 +108,7 @@ def send_telegram_msg(text, image_path=None):
 
 def post_to_blogger(title, content):
     if not BLOGGER_ID or not BLOGGER_REFRESH_TOKEN or not BLOGGER_CLIENT_ID or not BLOGGER_CLIENT_SECRET:
-        print("Blogger Error: Missing operational credentials in Environment Secrets.")
+        print("Blogger Error: Missing credentials in GitHub Secrets.")
         return False
     try:
         creds = Credentials(
@@ -122,63 +131,21 @@ def post_to_blogger(title, content):
         print(f"Blogger Error Details: {e}")
         return False
 
-def load_posted_data():
-    if os.path.exists("posted.json"):
-        try:
-            with open("posted.json", "r", encoding="utf-8") as f:
-                return json.load(f)
-        except:
-            pass
-    return {"date": "", "count": 0, "links": []}
-
-def save_posted_data(data):
-    try:
-        with open("posted.json", "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
-    except:
-        pass
-
 if __name__ == '__main__':
     self_heal()
+    articles = READ_RSS_FEEDS()
+    slot = get_slot()
     
-    today_str = datetime.now(ZoneInfo("Asia/Dhaka")).strftime("%Y-%m-%d")
-    posted_data = load_posted_data()
-    
-    if posted_data.get("date") != today_str:
-        posted_data["date"] = today_str
-        posted_data["count"] = 0
-    
-    if posted_data["count"] >= 6:
-        print(f"Daily limit reached! Already posted {posted_data['count']} articles today ({today_str}). Exiting.")
-    else:
-        articles = READ_RSS_FEEDS()
-        slot = get_slot()
+    if articles:
+        print(f"Total matching articles available for processing: {len(articles)}")
+        item = random.choice(articles)
         
-        if articles:
-            print(f"Total matching articles fetched across all sources: {len(articles)}")
-            
-            valid_item = None
-            random.shuffle(articles)
-            
-            for item in articles:
-                if item['link'] not in posted_data.get("links", []):
-                    valid_item = item
-                    break
-            
-            if valid_item:
-                post_text = f"{valid_item['title']}\n\nবিস্তারিত পড়ুন: {valid_item['link']}"
-                img_path = make_image(valid_item['title'], slot)
-                
-                send_telegram_msg(post_text, img_path)
-                
-                html_content = f"<p>{valid_item['title']}</p><br><a href='{valid_item['link']}'>এখানে ক্লিক করে বিস্তারিত পড়ুন</a>"
-                post_to_blogger(valid_item['title'], html_content)
-                
-                posted_data["links"].append(valid_item['link'])
-                posted_data["count"] += 1
-                save_posted_data(posted_data)
-                print(f"Successfully processed post #{posted_data['count']} for today.")
-            else:
-                print("All fetched articles have already been posted previously.")
-        else:
-            print("No new articles found in any of the feeds at this moment.")
+        post_text = f"{item['title']}\n\nবিস্তারিত পড়ুন: {item['link']}"
+        img_path = make_image(item['title'], slot)
+        
+        # টেলিগ্রামে পোস্ট পাঠানো
+        send_telegram_msg(post_text, img_path)
+        
+        # ব্লগারে অটোমেটিক পোস্ট পাঠানো
+        html_content = f"<p>{item['title']}</p><br><a href='{item['link']}'>এখানে ক্লিক করে বিস্তারিত পড়ুন</a>"
+        post_to_blogger(item['title'], html_content)
