@@ -11,7 +11,7 @@ jobs:
     # GitHub-এ কোড পুশ করার পারমিশন দেওয়া হলো
     permissions:
       contents: write
-      
+      workflows: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
