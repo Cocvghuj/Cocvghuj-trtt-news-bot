@@ -95,6 +95,7 @@ def send_telegram_msg(text, image_path=None):
 
 def post_to_blogger(title, content):
     if not BLOGGER_ID or not BLOGGER_REFRESH_TOKEN or not BLOGGER_CLIENT_ID or not BLOGGER_CLIENT_SECRET:
+        print("Blogger Error: Missing operational credentials in Environment Secrets.")
         return False
     try:
         creds = Credentials(
@@ -111,26 +112,11 @@ def post_to_blogger(title, content):
             'content': content
         }
         service.posts().insert(blogId=BLOGGER_ID, body=body).execute()
+        print("Successfully posted to Blogger site.")
         return True
     except Exception as e:
-        print(f"Blogger Error: {e}")
+        print(f"Blogger Error Details: {e}")
         return False
-
-def check_history(url):
-    try:
-        if not os.path.exists('history.txt'): 
-            return False
-        with open('history.txt', 'r', encoding='utf-8') as f:
-            return url in f.read()
-    except:
-        return False
-
-def save_history(url):
-    try:
-        with open('history.txt', 'a', encoding='utf-8') as f:
-            f.write(url + '\n')
-    except:
-        pass
 
 if __name__ == '__main__':
     self_heal()
@@ -138,15 +124,18 @@ if __name__ == '__main__':
     slot = get_slot()
     
     if articles:
-        item = random.choice(articles)
-        if not check_history(item['link']):
-            post_text = f"{item['title']}\n\nবিস্তারিত পড়ুন: {item['link']}"
-            img_path = make_image(item['title'], slot)
-            
-            post_to_facebook(post_text, img_path)
-            send_telegram_msg(post_text, img_path)
-            
-            html_content = f"<p>{item['title']}</p><br><a href='{item['link']}'>এখানে ক্লিক করে বিস্তারিত পড়ুন</a>"
-            post_to_blogger(item['title'], html_content)
-            
-            save_history(item['link'])
+        # ইতিহাস ফাইল চেক না করে সরাসরি প্রথম খবরটি পোস্ট করার কমান্ড
+        item = articles[0]
+        
+        post_text = f"{item['title']}\n\nবিস্তারিত পড়ুন: {item['link']}"
+        img_path = make_image(item['title'], slot)
+        
+        # ফেসবুক ও টেলিগ্রামে নিউজ পাঠানো
+        post_to_facebook(post_text, img_path)
+        send_telegram_msg(post_text, img_path)
+        
+        # ব্লগারে অটোমেটিক নিউজ পাঠানো
+        html_content = f"<p>{item['title']}</p><br><a href='{item['link']}'>এখানে ক্লিক করে বিস্তারিত পড়ুন</a>"
+        post_to_blogger(item['title'], html_content)
+    else:
+        print("No articles fetched from RSS feeds.")
