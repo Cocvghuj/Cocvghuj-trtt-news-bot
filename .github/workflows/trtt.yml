@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      workflows: write
+      actions: write
 
     steps:
       - uses: actions/checkout@v4
@@ -19,7 +19,6 @@ jobs:
         with:
           python-version: '3.11'
 
-      # এখানে সরাসরি পাইপলাইনের মাধ্যমে কনফ্লিক্ট ছাড়া সব প্যাকেজ ইনস্টল করা হচ্ছে
       - name: Install Dependencies
         run: pip install requests feedparser beautifulsoup4 google-api-python-client google-auth-httplib2 google-auth-oauthlib pyTelegramBotAPI facebook-sdk Pillow
 
@@ -39,6 +38,6 @@ jobs:
           git config --global user.name 'TRTT Bot'
           git config --global user.email 'bot@trtt.com'
           git pull origin main --rebase || true
-          git add posted.json posted.txt final_post.jpg tips_evergreen.json history.txt requirements.txt || true
+          git add posted.json posted.txt final_post.jpg tips_evergreen.json history.txt || true
           git commit -m "auto" || true
           git push origin main || true
