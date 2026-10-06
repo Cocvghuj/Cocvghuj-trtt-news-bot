@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
-# ===== SECRETS =====
+# ================= SECRETS =================
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 ADMIN_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 BLOGGER_ID = os.getenv("BLOGGER_ID")
@@ -21,10 +21,10 @@ BLOGGER_REFRESH_TOKEN = os.getenv("BLOGGER_REFRESH_TOKEN")
 
 bot = telebot.TeleBot(TOKEN) if TOKEN else None
 
-# টেস্ট করার জন্য আরএসএস ফিডের পাশাপাশি একটি সরাসরি খবরের ডামি ডেটা রাখা হলো
+# নেট ডিস্টার্ব করার জন্য আরএসএস ফিডের পাশাপাশি একটি সরাসরি খবরের ডামি ডাটা রাখা হলো
 TEST_ARTICLES = [
     {
-        "title": "বাংলাদেশে সরকারি ও বেসরকারি চাকুরির বিশাল সুযোগ ২০২৬",
+        "title": "বাংলাদেশে সরকারি ও বেসরকারি চাকরির বিশাল সুযোগ ২০২৬",
         "link": "https://prothomalo.com"
     },
     {
@@ -34,8 +34,8 @@ TEST_ARTICLES = [
 ]
 
 RSS_FEEDS = [
-    "https://prothomalo.com/feed",
-    "https://jugantor.com/rss.xml",
+    "https://prothomalo.com",
+    "https://jugantor.com",
     "https://kalerkantho.com",
     "https://ittefaq.com.bd",
     "https://samakal.com",
@@ -45,22 +45,25 @@ RSS_FEEDS = [
 ]
 
 MASTER_FILES = {
-    "requirements.txt": "pyTelegramBotAPI\nrequests\nPillow\nfeedparser\ngoogle-api-python-client\ngoogle-auth-oauthlib\ngoogle-auth-httplib2"
+    "requirements.txt": "pyTelegramBotAPI\nrequests\nPillow\nfeedparser\ngoogle-api-python-client\ngoogle-auth-oauthlib\n"
 }
 
 def self_heal():
     for path, content in MASTER_FILES.items():
         d = os.path.dirname(path)
-        if d and not os.path.exists(d): 
+        if d and not os.path.exists(d):
             os.makedirs(d, exist_ok=True)
-        with open(path, "w", encoding="utf-8") as f: 
+        with open(path, "w", encoding="utf-8") as f:
             f.write(content.strip() + "\n")
 
 def get_slot():
     h = datetime.now(ZoneInfo("Asia/Dhaka")).hour
-    if 7 <= h < 12: return "news"
-    elif 12 <= h < 17: return "tech_info"
-    else: return "news"
+    if 7 <= h <= 12:
+        return "news"
+    elif 12 < h <= 17:
+        return "tech_info"
+    else:
+        return "news"
 
 def READ_RSS_FEEDS():
     articles = []
@@ -79,7 +82,7 @@ def READ_RSS_FEEDS():
         except:
             pass
             
-    # যদি কোনো কারণে আরএসএস ফিড সম্পূর্ণ খালি থাকে, তবে টেস্ট নিউজগুলো তালিকায় যোগ হবে যেন বট বন্ধ না হয়
+    # যদি কোনো কারণে আরএসএস ফিড সম্পূর্ণ খালি থাকে, তবে টেস্ট আর্টিকেলের ডেটা নেওয়া হবে
     if not articles:
         articles.extend(TEST_ARTICLES)
     return articles
@@ -95,7 +98,7 @@ def make_image(title, category):
         return None
 
 def send_telegram_msg(text, image_path=None):
-    if not bot or not ADMIN_CHAT_ID: 
+    if not bot or not ADMIN_CHAT_ID:
         return
     try:
         if image_path:
@@ -110,6 +113,7 @@ def post_to_blogger(title, content):
     if not BLOGGER_ID or not BLOGGER_REFRESH_TOKEN or not BLOGGER_CLIENT_ID or not BLOGGER_CLIENT_SECRET:
         print("Blogger Error: Missing credentials in GitHub Secrets.")
         return False
+        
     try:
         creds = Credentials(
             token=None,
@@ -118,13 +122,16 @@ def post_to_blogger(title, content):
             client_id=BLOGGER_CLIENT_ID,
             client_secret=BLOGGER_CLIENT_SECRET
         )
+        
         service = build('blogger', 'v3', credentials=creds)
         body = {
-            'kind': 'blogger#post',
-            'title': title,
-            'content': content
+            "kind": "blogger#post",
+            "title": title,
+            "content": content
         }
-        service.posts().insert(blogId=BLOGGER_ID, body=body).execute()
+        
+        # সংশোধন করা ১২৭ নম্বর লাইন (Error 404 সমাধানের জন্য .blogs() যুক্ত করা হয়েছে)
+        service.blogs().posts().insert(blogId=str(BLOGGER_ID), body=body).execute()
         print("Successfully posted to Blogger site.")
         return True
     except Exception as e:
@@ -140,12 +147,12 @@ if __name__ == '__main__':
         print(f"Total matching articles available for processing: {len(articles)}")
         item = random.choice(articles)
         
-        post_text = f"{item['title']}\n\nবিস্তারিত পড়ুন: {item['link']}"
+        post_text = f"**{item['title']}**\n\nবিভাগ: {slot}\n\nলিঙ্ক: {item['link']}"
         img_path = make_image(item['title'], slot)
         
-        # টেলিগ্রামে পোস্ট পাঠানো
+        # টেলিগ্রামে ডাটা পাঠানো
         send_telegram_msg(post_text, img_path)
         
-        # ব্লগারে অটোমেটিক পোস্ট পাঠানো
+        # ব্লগারে পোস্টের জন্য কনটেন্ট তৈরি
         html_content = f"<p>{item['title']}</p><br><a href='{item['link']}'>এখানে ক্লিক করে বিস্তারিত পড়ুন</a>"
         post_to_blogger(item['title'], html_content)
