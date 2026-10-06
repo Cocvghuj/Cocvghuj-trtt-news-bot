@@ -18,7 +18,8 @@ jobs:
         with:
           python-version: '3.11'
           
-      - run: pip install requests feedparser beautifulsoup4 google-api-python-client google-auth-httplib2 google-auth-oauthlib pyTelegramBotAPI facebook-sdk
+      - run: pip install requests feedparser beautifulsoup4 google-api-python-client google-auth-httplib2 google-auth-oauthlib pyTelegramBotAPI facebook-sdk Pillow
+
 
       
       - name: Run Bot
