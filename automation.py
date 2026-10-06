@@ -21,11 +21,10 @@ BLOGGER_REFRESH_TOKEN = os.getenv("BLOGGER_REFRESH_TOKEN")
 
 bot = telebot.TeleBot(TOKEN) if TOKEN else None
 
-# আপনার রিকোয়েস্ট অনুযায়ী শুধুমাত্র এইキーワードগুলো শিরোনামে থাকলে পোস্ট হবে
-JOB_KEYWORDS = ["চাকরি", "নিয়োগ", "বিজ্ঞপ্তি", "পদ", "कर्मসংস্থান", "পরীক্ষা"]
+# কোনো খবরের ওপর কড়া ফিল্টার বা নিষেধাজ্ঞা নেই
 BLOCKED_KEYWORDS = ["অভিযান ছাড়া", "নিরাপত্তা"]
 
-# সবগুলো প্রধান পত্রিকা ও বিডিজবস হাবের সম্পূর্ণ আরএসএস ফিড তালিকা
+# স্ক্রিনশটের সবগুলো প্রধান পত্রিকা ও বিডিজবস হাবের সম্পূর্ণ আরএসএস ফিড তালিকা
 RSS_FEEDS = [
     "https://prothomalo.com",
     "https://jugantor.com",
@@ -68,10 +67,9 @@ def READ_RSS_FEEDS():
                     title = entry.get('title', '')
                     link = entry.get('link', '')
                     
+                    # কোনো চাকরির ফিল্টার নেই, জাতীয় ও আন্তর্জাতিক সব সাধারণ খবর সরাসরি লিস্টে যোগ হবে
                     if title and link and not any(word in title for word in BLOCKED_KEYWORDS):
-                        # সবগুলো পত্রিকার খবরের মধ্যে শুধুমাত্র চাকরির খবর ফিল্টার করা হচ্ছে
-                        if any(job_word in title.lower() for job_word in JOB_KEYWORDS):
-                            articles.append({'title': title, 'link': link})
+                        articles.append({'title': title, 'link': link})
         except Exception as e:
             print(f"Feed Fetching Error ({url}): {e}")
             pass
@@ -151,13 +149,13 @@ if __name__ == '__main__':
         posted_data["count"] = 0
     
     if posted_data["count"] >= 6:
-        print(f"Daily limit reached! Already posted {posted_data['count']} job articles today ({today_str}). Exiting.")
+        print(f"Daily limit reached! Already posted {posted_data['count']} articles today ({today_str}). Exiting.")
     else:
         articles = READ_RSS_FEEDS()
         slot = get_slot()
         
         if articles:
-            print(f"Total matching job articles fetched across all sources: {len(articles)}")
+            print(f"Total matching articles fetched across all sources: {len(articles)}")
             
             valid_item = None
             random.shuffle(articles)
@@ -171,18 +169,16 @@ if __name__ == '__main__':
                 post_text = f"{valid_item['title']}\n\nবিস্তারিত পড়ুন: {valid_item['link']}"
                 img_path = make_image(valid_item['title'], slot)
                 
-                # ফেসবুক সম্পূর্ণ বাদ, শুধু টেলিগ্রামে নিউজ পাঠানো হচ্ছে
                 send_telegram_msg(post_text, img_path)
                 
-                # ব্লগারে অটোমেটিক নিউজ পাঠানো হচ্ছে
                 html_content = f"<p>{valid_item['title']}</p><br><a href='{valid_item['link']}'>এখানে ক্লিক করে বিস্তারিত পড়ুন</a>"
                 post_to_blogger(valid_item['title'], html_content)
                 
                 posted_data["links"].append(valid_item['link'])
                 posted_data["count"] += 1
                 save_posted_data(posted_data)
-                print(f"Successfully processed job post #{posted_data['count']} for today.")
+                print(f"Successfully processed post #{posted_data['count']} for today.")
             else:
-                print("All fetched job articles have already been posted previously.")
+                print("All fetched articles have already been posted previously.")
         else:
-            print("No new job/recruitment articles found in any of the feeds at this moment.")
+            print("No new articles found in any of the feeds at this moment.")
