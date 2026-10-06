@@ -68,3 +68,4 @@ TRTT NEWS 24 BD প্রজেক্টটি শুধু কিছু কো�
   <b>Made with ❤ in Milan, Italy for Bangladesh | TRTT NEWS 24 BD</b><br>
   <sub>#TRTTNEWS #BanglaNews #BreakingNews #Automation #PythonCoding #AI #FutureTech</sub>
 </p>
+<img width="1920" height="1280" alt="Messenger_creation_1589846209212627" src="https://github.com/user-attachments/assets/7017df3c-82f0-4891-b839-1ea81816acf8" />
