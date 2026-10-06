@@ -82,31 +82,23 @@ def get_slot():
     else: return "fun_fact"
 
 def READ_RSS_FEEDS():
-    # Read feedparser portal
-    # return matching items List
     pass
 
 def make_image(title, category):
-    # draw image logic
     pass
 
 def post_to_facebook(text, image_path=None):
-    # FB code
     pass
 
 def send_telegram(text, image_path=None):
-    # Telegram code
     pass
 
 def check_history(url):
-    # check history code
     pass
 
 def save_history(url):
-    # save history code
     pass
 
 if __name__ == "__main__":
     self_heal()
     slot = get_slot()
-    # বটের বাকি এক্সিকিউশন কোড এখানে আসবে...
