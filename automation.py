@@ -20,48 +20,52 @@ EVERGREEN_NEWS = ["মোবাইলের ব্যাটারি দীর�
 RSS_FEEDS = ["https://www.prothomalo.com/feed","https://www.jugantor.com/feed","https://www.kalerkantho.com/rss","https://feeds.bbci.co.uk/bengali/rss.xml"]
 
 MASTER_FILES = {
-"requirements.txt": "pyTelegramBotAPI\nrequests\nPillow\nfeedparser",
-".github/workflows/trtt.yml": """name: TRTT All In One
+    "requirements.txt": "pyTelegramBotAPI\nrequests\nPillow\nfeedparser\nbeautifulsoup4\ngoogle-api-python-client\ngoogle-auth-httplib2\ngoogle-auth-oauthlib\nfacebook-sdk",
+    ".github/workflows/trtt.yml": """name: TRTT All In One
+
 on:
   schedule:
-    - cron: '0 2 * * *'
-    - cron: '0 5 * * *'
-    - cron: '0 7 * * *'
-    - cron: '0 10 * * *'
-    - cron: '0 13 * * *'
-    - cron: '0 16 * * *'
+    - cron: '0 2,8,11,14,16,20 * * *'
   workflow_dispatch:
+
 jobs:
-  run-bot:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      workflows: write
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install -r requirements.txt
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
       - name: Run Bot
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
-          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
-          BLOGGER_ACCESS_TOKEN: ${{ secrets.BLOGGER_ACCESS_TOKEN }}
-          GOOGLE_SHEET_WEBHOOK_URL: ${{ secrets.GOOGLE_SHEET_WEBHOOK_URL }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          BLOGGER_ID: ${{ secrets.BLOGGER_ID }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
         run: python automation.py
-      - name: Smart Backup
+
+      - name: Save
         run: |
-          git config user.name "TRTT Bot"
-          git config user.email "bot@trtt.com"
-          echo "$(date) - Posted" >> logs.txt
-          git add posted.json logs.txt || trueগ
-          git commit -m "Backup [skip ci]" || true
-          git push || true
-"""
+          git config --global user.name 'TRTT Bot'
+          git config --global user.email 'bot@trtt.com'
+          git pull origin main --rebase || true
+          git add posted.json posted.txt final_post.jpg tips_evergreen.json history.txt requirements.txt || true
+          git commit -m "auto" || true
+          git push origin main || true"""
+}
+
 }
 
 def self_heal():
