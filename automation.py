@@ -7,67 +7,21 @@ from PIL import Image, ImageDraw
 # ===== SECRETS =====
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 ADMIN_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
-FB_PAGE_ACCESS_TOKEN = os.getenv("FB_PAGE_TOKEN") # গিটহাব সিক্রেটের সাথে মেলানো হলো
+FB_PAGE_ACCESS_TOKEN = os.getenv("FB_PAGE_ACCESS_TOKEN")# গিটহাব সিক্রেটের সাথে মেলানো হলো
 FB_PAGE_ID = os.getenv("FB_PAGE_ID")
 BLOGGER_ID = os.getenv("BLOGGER_ID")
 bot = telebot.TeleBot(TOKEN) if TOKEN else None
 
 BLOCKED_KEYWORDS = ["সরকারি চাকরি", "নিয়োগ", "NID", "পাসপোর্ট", "অভিজ্ঞতা ছাড়া", "নিয়োগ বিজ্ঞপ্তি সরকারি", "অনলাইন", "police", "সরাসরি"]
 RSS_FEEDS = ["https://prothomalo.com", "https://jugantor.com", "https://kalerkantho.com"]
-
 MASTER_FILES = {
-    "requirements.txt": "pyTelegramBotAPI\nrequests\nPillow\nfeedparser\nbeautifulsoup4\ngoogle-api-python-client\ngoogle-auth-httplib2\ngoogle-auth-oauthlib\nfacebook-sdk",
-    ".github/workflows/trtt.yml": """name: TRTT All In One
-
-on:
-  schedule:
-    - cron: '0 2,8,11,14,16,20 * * *'
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      actions: write
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run Bot
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
-          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
-          BLOGGER_ID: ${{ secrets.BLOGGER_ID }}
-          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
-          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
-        run: python automation.py
-
-      - name: Save
-        run: |
-          git config --global user.name 'TRTT Bot'
-          git config --global user.email 'bot@trtt.com'
-          git pull origin main --rebase || true
-          git add posted.json posted.txt final_post.jpg tips_evergreen.json history.txt requirements.txt || true
-          git commit -m "auto" || true
-          git push origin main || true"""
+    "requirements.txt": "pyTelegramBotAPI\nrequests\nPillow\nfeedparser\nbeautifulsoup4\ngoogle-api-python-client\ngoogle-auth-httplib2\ngoogle-auth-oauthlib\nlxml\n"
 }
-
 def self_heal():
     for path, content in MASTER_FILES.items():
         d = os.path.dirname(path)
         if d and not os.path.exists(d): os.makedirs(d, exist_ok=True)
         with open(path, "w", encoding="utf-8") as f: f.write(content.strip()+"\n")
-
 def get_slot():
     h = datetime.now(ZoneInfo("Asia/Dhaka")).hour
     if 7 <= h < 12: return "news"
