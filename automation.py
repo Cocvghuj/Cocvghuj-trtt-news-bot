@@ -7,9 +7,10 @@ from PIL import Image, ImageDraw
 # ===== SECRETS =====
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 ADMIN_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
-FB_PAGE_ACCESS_TOKEN = os.getenv("FB_PAGE_TOKEN") # গিটহাব সিক্রেট অনুযায়ী FB_PAGE_TOKEN করা হলো
+FB_PAGE_ACCESS_TOKEN = os.getenv("FB_PAGE_TOKEN") # গিটহাব সিক্রেটের সাথে মেলানো হলো
 FB_PAGE_ID = os.getenv("FB_PAGE_ID")
-bot = telebot.TeleBot(TOKEN)
+BLOGGER_ID = os.getenv("BLOGGER_ID")
+bot = telebot.TeleBot(TOKEN) if TOKEN else None
 
 BLOCKED_KEYWORDS = ["সরকারি চাকরি", "নিয়োগ", "NID", "পাসপোর্ট", "অভিজ্ঞতা ছাড়া", "নিয়োগ বিজ্ঞপ্তি সরকারি", "অনলাইন", "police", "সরাসরি"]
 RSS_FEEDS = ["https://prothomalo.com", "https://jugantor.com", "https://kalerkantho.com"]
@@ -81,8 +82,7 @@ def READ_RSS_FEEDS():
             for entry in feed.entries:
                 title = entry.get('title', '')
                 link = entry.get('link', '')
-                # ব্লকড কিউয়ার্ড ফিল্টার
-                if not any(word in title for word in BLOCKED_KEYWORDS):
+                if title and link and not any(word in title for word in BLOCKED_KEYWORDS):
                     articles.append({'title': title, 'link': link})
         except:
             pass
@@ -92,7 +92,6 @@ def make_image(title, category):
     try:
         img = Image.new('RGB', (800, 450), color=(28, 28, 30))
         d = ImageDraw.Draw(img)
-        # ফন্ট ডিফাইন না থাকলে ডিফল্ট টেক্সট ড্র করবে
         d.text((50, 200), title[:50], fill=(255, 255, 255))
         img.save("final_post.jpg")
         return "final_post.jpg"
@@ -113,13 +112,28 @@ def post_to_facebook(text, image_path=None):
         pass
 
 def send_telegram(text, image_path=None):
-    if not TOKEN or not ADMIN_CHAT_ID: return
+    if not bot or not ADMIN_CHAT_ID: return
     try:
         if image_path and os.path.exists(image_path):
             with open(image_path, 'rb') as f:
                 bot.send_photo(ADMIN_CHAT_ID, f, caption=text)
         else:
             bot.send_message(ADMIN_CHAT_ID, text)
+    except:
+        pass
+
+def post_to_blogger(title, content):
+    if not BLOGGER_ID or not FB_PAGE_ACCESS_TOKEN: return
+    # ব্লগারের জন্য পেজ টোকেন বা গুগল ক্লাউড টোকেন ব্যবহার করা হয়
+    url = f"https://googleapis.com{BLOGGER_ID}/posts/"
+    headers = {"Authorization": f"Bearer {FB_PAGE_ACCESS_TOKEN}"}
+    payload = {
+        "kind": "blogger#post",
+        "title": title,
+        "content": content
+    }
+    try:
+        requests.post(url, json=payload, headers=headers)
     except:
         pass
 
@@ -145,5 +159,9 @@ if __name__ == "__main__":
                 
                 send_telegram(post_text, image_path)
                 post_to_facebook(post_text, image_path)
+                
+                blogger_content = f"<p>{item['title']}</p><br><a href='{item['link']}'>মূল নিউজ লিংক এখানে</a>"
+                post_to_blogger(item['title'], blogger_content)
+                
                 save_history(item['link'])
                 break
