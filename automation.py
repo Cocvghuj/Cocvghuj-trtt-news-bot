@@ -17,7 +17,6 @@ FB_PAGE_ACCESS_TOKEN = os.getenv("FB_PAGE_ACCESS_TOKEN")
 FB_PAGE_ID = os.getenv("FB_PAGE_ID")
 BLOGGER_ID = os.getenv("BLOGGER_ID")
 
-# ব্লগার অটোমেটিক টোকেন রিনিউ করার জন্য নতুন ৩টি সিক্রেট
 BLOGGER_CLIENT_ID = os.getenv("BLOGGER_CLIENT_ID")
 BLOGGER_CLIENT_SECRET = os.getenv("BLOGGER_CLIENT_SECRET")
 BLOGGER_REFRESH_TOKEN = os.getenv("BLOGGER_REFRESH_TOKEN")
@@ -94,7 +93,6 @@ def send_telegram_msg(text, image_path=None):
     except:
         pass
 
-# রিফ্রেশ টোকেন দিয়ে ব্লগারে পোস্ট করার নতুন ফাংশন
 def post_to_blogger(title, content):
     if not BLOGGER_ID or not BLOGGER_REFRESH_TOKEN or not BLOGGER_CLIENT_ID or not BLOGGER_CLIENT_SECRET:
         return False
@@ -120,7 +118,7 @@ def post_to_blogger(title, content):
 
 def check_history(url):
     try:
-        if path.exists('history.txt'): 
+        if not os.path.exists('history.txt'): 
             return False
         with open('history.txt', 'r', encoding='utf-8') as f:
             return url in f.read()
@@ -145,11 +143,9 @@ if __name__ == '__main__':
             post_text = f"{item['title']}\n\nবিস্তারিত পড়ুন: {item['link']}"
             img_path = make_image(item['title'], slot)
             
-            # ফেসবুক ও টেলিগ্রামে পোস্ট
             post_to_facebook(post_text, img_path)
             send_telegram_msg(post_text, img_path)
             
-            # আপনার ব্লগারে অটোমেটিক পোস্ট করার লজিক
             html_content = f"<p>{item['title']}</p><br><a href='{item['link']}'>এখানে ক্লিক করে বিস্তারিত পড়ুন</a>"
             post_to_blogger(item['title'], html_content)
             
