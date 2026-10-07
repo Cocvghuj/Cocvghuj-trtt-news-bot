@@ -1,94 +1,53 @@
 import os
-import random
-import json
 import sqlite3
-import requests
-import feedparser
 import textwrap
+import feedparser
+import requests
 from datetime import datetime
 from zoneinfo import ZoneInfo
-import telebot
 from PIL import Image, ImageDraw, ImageFont
+import telebot
 from google import genai
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 
-# ================= SECRETS & CONFIG =================
+# --- CONFIG ---
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-ADMIN_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
-BLOGGER_ID = os.getenv("BLOGGER_ID")
-
-BLOGGER_CLIENT_ID = os.getenv("BLOGGER_CLIENT_ID")
-BLOGGER_CLIENT_SECRET = os.getenv("BLOGGER_CLIENT_SECRET")
-BLOGGER_REFRESH_TOKEN = os.getenv("BLOGGER_REFRESH_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+BLOGGER_ID = os.getenv("BLOGGER_ID")
 
 bot = telebot.TeleBot(TOKEN) if TOKEN else None
 client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
 
-# ================= DATABASE SETUP (ডুপ্লিকেট রোধ করতে) =================
+RSS_FEEDS = [
+    "http://feeds.bbci.co.uk/news/world/rss.xml",
+    "https://www.aljazeera.com/xml/rss/all.xml"
+]
+
+# --- DATABASE SETUP ---
 def init_db():
     conn = sqlite3.connect("posts_history.db")
     cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS posted_articles (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT UNIQUE,
-            link TEXT,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
+    cursor.execute('''CREATE TABLE IF NOT EXISTS posted (link TEXT PRIMARY KEY)''')
     conn.commit()
     conn.close()
 
-def is_already_posted(title):
+def is_posted(link):
     conn = sqlite3.connect("posts_history.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT id FROM posted_articles WHERE title = ?", (title,))
-    row = cursor.fetchone()
+    cursor.execute("SELECT 1 FROM posted WHERE link = ?", (link,))
+    result = cursor.fetchone()
     conn.close()
-    return row is not None
+    return result is not None
 
-def mark_as_posted(title, link):
-    try:
-        conn = sqlite3.connect("posts_history.db")
-        cursor = conn.cursor()
-        cursor.execute("INSERT OR IGNORE INTO posted_articles (title, link) VALUES (?, ?)", (title, link))
-        conn.commit()
-        conn.close()
-    except Exception as e:
-        print(f"DB Error: {e}")
-
-# ব্যাকআপ ডামি ডাটা
-TEST_ARTICLES = [
-    {
-        "title": "Schengen Work Visa & Tech Career Opportunities in Europe 2026",
-        "link": "https://www.euronews.com",
-        "summary": "Essential updates regarding European Union work permits, tech careers, and high-demand job sectors for international aspirants."
-    }
-]
-
-# সব ক্যাটাগরির আরএসএস ফিড
-RSS_FEEDS = [
-    "https://www.euronews.com/rss",
-    "https://feeds.bbci.co.uk/news/world/europe/rss.xml",
-    "https://www.coindesk.com/arc/outboundfeeds/rss/",
-    "https://feeds.bbci.co.uk/news/technology/rss.xml",
-    "https://www.euronews.com/travel/rss",
-    "https://www.euronews.com/green/rss",
-    "https://www.skysports.com/rss/12118"
-]
-
-MASTER_FILES = {
-    "requirements.txt": "pyTelegramBotAPI\nrequests\nPillow\nfeedparser\ngoogle-genai\n"
-}
-
-def self_heal():
-    for path, content in MASTER_FILES.items():
-        d = os.path.dirname(path)
-        if d and not os.path.exists(d):
-            os.makedirs(d, exist_ok=True)
-        if not os.path.exists(path):
-            with open(path, "w", encoding="utf-8") as f:
-                f.write(content.strip() + "\n")
+def mark_as_posted(link):
+    conn = sqlite3.connect("posts_history.db")
+    cursor = conn.cursor()
+    cursor.execute("INSERT OR IGNORE INTO posted (link) VALUES (?)", (link,))
+    conn.commit()
+    conn.close()
 
 def get_slot():
     h = datetime.now(ZoneInfo("Europe/Berlin")).hour
@@ -118,33 +77,21 @@ def READ_RSS_FEEDS():
                 for entry in feed.entries:
                     title = entry.get('title', '')
                     link = entry.get('link', '')
-                    summary = entry.get('summary', '') or entry.get('description', '') or title
-                    if title and link and not is_already_posted(title):
+                    summary = entry.get('summary', '') or title
+                    if title and link:
                         articles.append({'title': title, 'link': link, 'summary': summary})
         except Exception as e:
-            print(f"RSS Fetch Error for {url}: {e}")
-            
-    if not articles:
-        articles.extend(TEST_ARTICLES)
+            print(f"Feed Read Error ({url}): {e}")
     return articles
 
 def enhance_with_gemini(title, original_summary, category):
     if not client:
-        return {
-            "content": original_summary[:220],
-            "focus_keywords": f"{category.lower()}, europe updates, international trends",
-            "meta_desc": original_summary[:150]
-        }
+        return original_summary[:300]
     try:
         prompt = f"""
-        Act as an expert international journalist and career/lifestyle editor focusing on Europe, Schengen aspirants, and global expats.
+        Act as an expert international news editor.
         Category: {category}
-        Task:
-        1. Rewrite and expand the following topic into an engaging, professional blog post (180-250 words) in English, tailored for youth, job seekers, expats, and global readers.
-        2. Generate 3-4 high-value SEO Focus Keywords.
-        3. Write a compelling SEO Meta Description (under 150 characters).
-        
-        Output format strictly as JSON with keys: "content", "focus_keywords", "meta_desc".
+        Task: Rewrite and expand the following news into an engaging, professional article (150-250 words) in English.
         
         Title: {title}
         Original Content: {original_summary}
@@ -154,166 +101,112 @@ def enhance_with_gemini(title, original_summary, category):
             contents=prompt,
         )
         if response and response.text:
-            text = response.text.strip().replace("```json", "").replace("```", "")
-            return json.loads(text)
+            return response.text.strip()
     except Exception as e:
         print(f"Gemini AI Error: {e}")
-        
-    return {
-        "content": original_summary[:220],
-        "focus_keywords": "europe updates, global trends, live news",
-        "meta_desc": original_summary[:150]
-    }
+    return original_summary[:300]
 
 def make_image(title, category):
     try:
-        width, height = 1200, 630
-        img = Image.new('RGB', (width, height), color=(15, 23, 42))
-        d = ImageDraw.Draw(img)
+        W, H = 1200, 630
+        clean = title.encode('ascii', 'ignore').decode('ascii').strip()
+        if len(clean) < 5: clean = "Breaking News Update From Europe"
+        clean = clean[:90]
 
-        # Load English Font - Fix for GitHub Actions
-        try:
-            title_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 42)
-            cat_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 22)
-            brand_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 18)
-        except:
+        img = Image.new('RGB', (W, H), color=(15, 23, 42))
+
+        if os.path.exists("logo.jpeg"):
             try:
-                title_font = ImageFont.truetype("DejaVuSans-Bold.ttf", 42)
-                cat_font = ImageFont.truetype("DejaVuSans-Bold.ttf", 22)
-                brand_font = ImageFont.truetype("DejaVuSans.ttf", 18)
-            except:
-                title_font = ImageFont.load_default()
-                cat_font = ImageFont.load_default()
-                brand_font = ImageFont.load_default()
+                logo = Image.open("logo.jpeg").convert("RGBA")
+                logo = logo.resize((140, 140))
+                bg = Image.new("RGBA", (W, H), (15, 23, 42, 255))
+                bg.paste(logo, (55, 45), logo)
+                img = bg.convert("RGB")
+            except: pass
 
-        # Premium Design & Border - 100% English Version
-        d.rectangle([(15, 15), (width-15, height-15)], outline=(14, 165, 233), width=6)
-        d.rectangle([(50, 50), (480, 105)], fill=(14, 165, 233))
-        
-        # Category in English
-        d.text((70, 68), f"Category: {category.upper()}", fill=(255, 255, 255), font=cat_font)
+        d = ImageDraw.Draw(img)
+        def load_font(sz):
+            for p in ["/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"]:
+                if os.path.exists(p):
+                    try: return ImageFont.truetype(p, sz)
+                    except: pass
+            return ImageFont.load_default()
 
-        # Title in English with wrapping
-        display_title = title[:80] + "..." if len(title) > 80 else title
-        wrapped_title = textwrap.fill(display_title, width=35)
-        d.text((60, 180), wrapped_title, fill=(255, 255, 255), font=title_font, spacing=12)
+        title_font = load_font(42)
+        cat_font = load_font(20)
+        brand_font = load_font(18)
 
-        # Branding in English
-        d.text((60, 540), "EUROPE EXPATS & GLOBAL INSIDER | Verified Live Updates", fill=(148, 163, 184), font=brand_font)
+        d.rectangle([(215, 60), (550, 105)], fill=(14, 165, 233))
+        d.text((230, 70), f"CATEGORY: {category}", fill=(255,255,255), font=cat_font)
+        wrapped = textwrap.fill(clean, width=32)
+        d.text((60, 220), wrapped, fill=(255,255,255), font=title_font, spacing=12)
+        d.text((60, 550), "THIS MOMENT | Verified Live Updates", fill=(148, 163, 184), font=brand_font)
+        d.rectangle([(15, 15), (W-15, H-15)], outline=(14, 165, 233), width=5)
 
-        img.save("final_post.jpg")
+        if os.path.exists("final_post.jpg"):
+            os.remove("final_post.jpg")
+
+        img.save("final_post.jpg", quality=95)
         return "final_post.jpg"
-        
     except Exception as e:
-        print(f"Image Creation Error: {e}")
+        print(f"Image Error: {e}")
         return None
 
-def post_to_blogger(title, content, labels, meta_desc):
-    if not BLOGGER_ID or not BLOGGER_REFRESH_TOKEN or not BLOGGER_CLIENT_ID or not BLOGGER_CLIENT_SECRET:
-        print("Blogger Error: Missing credentials.")
-        return False
-        
+def post_to_blogger(title, content, link):
     try:
-        token_url = "https://oauth2.googleapis.com/token"
-        token_data = {
-            "client_id": BLOGGER_CLIENT_ID,
-            "client_secret": BLOGGER_CLIENT_SECRET,
-            "refresh_token": BLOGGER_REFRESH_TOKEN,
-            "grant_type": "refresh_token"
-        }
-        token_res = requests.post(token_url, data=token_data, timeout=10)
-        access_token = token_res.json().get("access_token")
+        creds = None
+        token_json = os.getenv("BLOGGER_TOKEN_JSON")
+        if token_json:
+            creds_data = json.loads(token_json)
+            creds = Credentials.from_authorized_user_info(creds_data)
         
-        if not access_token:
-            print("Blogger Error: Access token failed.")
-            return False
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
 
-        api_url = f"https://www.googleapis.com/blogger/v3/blogs/{BLOGGER_ID}/posts"
-        headers = {
-            "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/json"
-        }
-        
-        payload = {
-            "kind": "blogger#post",
-            "title": title,
-            "content": content,
-            "labels": labels,
-            "searchDescription": meta_desc
-        }
-        
-        post_res = requests.post(api_url, headers=headers, json=payload, timeout=10)
-        
-        if post_res.status_code in [200, 201]:
-            print("Successfully posted update to Blogger.")
-            return True
-        else:
-            print(f"Blogger API Error: {post_res.text}")
-            return False
-            
+        if creds and BLOGGER_ID:
+            service = build('blogger', 'v3', credentials=creds)
+            body = {
+                "title": title,
+                "content": f"<p>{content}</p><p><a href='{link}'>Read original source</a></p>"
+            }
+            service.posts().insert(blogId=BLOGGER_ID, body=body).execute()
+            print("Blogger Post OK")
     except Exception as e:
-        print(f"Blogger Error Details: {e}")
-        return False
+        print(f"Blogger Error: {e}")
 
-if __name__ == '__main__':
-    self_heal()
+def main():
     init_db()
+    category = get_slot()
+    print(f"Running for category slot: {category}")
     
     articles = READ_RSS_FEEDS()
-    slot = get_slot()
-    
-    if articles:
-        item = random.choice(articles)
+    for article in articles:
+        link = article['link']
+        if is_posted(link):
+            continue
         
-        if not is_already_posted(item['title']):
-            ai_data = enhance_with_gemini(item['title'], item.get('summary', ''), slot)
-            
-            clean_desc = ai_data.get("content")
-            seo_meta = ai_data.get("meta_desc")
-            focus_keys = ai_data.get("focus_keywords")
-                
-            post_text = f"**{item['title']}**\n\nCategory: {slot}\n\nLink: {item['link']}"
-            img_path = make_image(item['title'], slot)
-            
-            if bot and ADMIN_CHAT_ID:
-                try:
-                    if img_path and os.path.exists(img_path):
-                        with open(img_path, 'rb') as img:
-                            bot.send_photo(ADMIN_CHAT_ID, img, caption=post_text, parse_mode="Markdown")
-                    else:
-                        bot.send_message(ADMIN_CHAT_ID, post_text, parse_mode="Markdown")
-                except Exception as e:
-                    print(f"Telegram Send Error: {e}")
-            
-            seo_title = item['title']
-            seo_labels = [slot, "Schengen Jobs", "Europe Expats", "Crypto", "Tech", "Travel", "Weather", "Football Scores"] + [k.strip() for k in focus_keys.split(',')]
-            
-            html_content = f"""
-            <div style="font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.8; color: #1e293b; max-width: 800px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px; background-color: #ffffff;">
-                <h1 style="color: #0f172a; font-size: 28px; font-weight: 700; margin-bottom: 15px; line-height: 1.3;">{seo_title}</h1>
-                
-                <p style="font-size: 14px; margin-bottom: 25px; color: #64748b; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-                    <em>Category: <b>{slot}</b> | Published: {datetime.now(ZoneInfo("UTC")).strftime('%d %B, %Y, %H:%M UTC')} | Live Editorial Desk</em>
-                </p>
-                
-                <p style="font-size: 16px; margin-bottom: 25px; text-align: justify; color: #334155; background-color: #f8fafc; padding: 20px; border-left: 5px solid #0284c7; border-radius: 0 6px 6px 0;">
-                    <strong>Insights & Live Update:</strong> {clean_desc}
-                </p>
-                
-                <div style="margin: 40px 0; text-align: center;">
-                    <p style="font-size: 15px; color: #475569; margin-bottom: 15px;">Access complete official data, scores, and verified guidelines via the source link below:</p>
-                    <a href="{item['link']}" rel="noopener noreferrer" target="_blank" style="background-color: #0284c7; color: #ffffff; padding: 15px 40px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 17px; display: inline-block; box-shadow: 0 4px 12px rgba(2,132,199,0.25);">
-                        Read Full Story on Official Portal ➜
-                    </a>
-                </div>
-                
-                <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0;">
-                <p style="font-size: 12px; color: #94a3b8; text-align: center;">
-                    Notice: Curated for European residents, expats, and global trending searches. Tags: {', '.join(seo_labels)}
-                </p>
-            </div>
-            """
-            
-            success = post_to_blogger(seo_title, html_content, seo_labels, seo_meta)
-            if success:
-                mark_as_posted(item['title'], item['link'])
+        title = article['title']
+        summary = article['summary']
+        
+        # Gemini দিয়ে সংবাদ রিরাইট করা
+        rewritten_content = enhance_with_gemini(title, summary, category)
+        print(f"Rewritten news: {title}")
+
+        # থাম্বনেইল ইমেজ তৈরি
+        img_path = make_image(title, category)
+
+        # টেলিগ্রামে পাঠানো
+        if bot and CHAT_ID and img_path:
+            with open(img_path, 'rb') as photo:
+                caption = f"*{category}*\n\n*{title}*\n\n{rewritten_content[:300]}...\n\nSource: {link}\n\n#ThisMoment #Europe"
+                bot.send_photo(CHAT_ID, photo, caption=caption, parse_mode="Markdown")
+            print("Telegram Sent OK")
+
+        # ব্লগার এআই পোস্ট
+        post_to_blogger(title, rewritten_content, link)
+
+        mark_as_posted(link)
+        break # প্রতি রান্নায় একটি নতুন আর্টিকেল প্রসেস করবে
+
+if __name__ == "__main__":
+    main()
