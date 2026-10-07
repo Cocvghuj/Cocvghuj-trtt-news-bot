@@ -2,5 +2,4 @@ pyTelegramBotAPI
 requests
 Pillow
 feedparser
-google-api-python-client
-google-auth-oauthlib
+google-genai
