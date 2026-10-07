@@ -19,7 +19,8 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          pip install pyTelegramBotAPI feedparser requests Pillow google-genai google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
       - name: Run Bot
         env:
