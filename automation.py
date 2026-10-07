@@ -4,6 +4,7 @@ import json
 import sqlite3
 import requests
 import feedparser
+import textwrap
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import telebot
@@ -118,7 +119,6 @@ def READ_RSS_FEEDS():
                     title = entry.get('title', '')
                     link = entry.get('link', '')
                     summary = entry.get('summary', '') or entry.get('description', '') or title
-                    # ডাটাবেজ চেক করে ডুপ্লিকেট বাদ দেওয়া হচ্ছে
                     if title and link and not is_already_posted(title):
                         articles.append({'title': title, 'link': link, 'summary': summary})
         except Exception as e:
@@ -170,20 +170,40 @@ def make_image(title, category):
         width, height = 1200, 630
         img = Image.new('RGB', (width, height), color=(15, 23, 42))
         d = ImageDraw.Draw(img)
-        
-        # প্রিমিয়াম ডিজাইন ও বর্ডার
+
+        # Load English Font - Fix for GitHub Actions
+        try:
+            title_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 42)
+            cat_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 22)
+            brand_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 18)
+        except:
+            try:
+                title_font = ImageFont.truetype("DejaVuSans-Bold.ttf", 42)
+                cat_font = ImageFont.truetype("DejaVuSans-Bold.ttf", 22)
+                brand_font = ImageFont.truetype("DejaVuSans.ttf", 18)
+            except:
+                title_font = ImageFont.load_default()
+                cat_font = ImageFont.load_default()
+                brand_font = ImageFont.load_default()
+
+        # Premium Design & Border - 100% English Version
         d.rectangle([(15, 15), (width-15, height-15)], outline=(14, 165, 233), width=6)
         d.rectangle([(50, 50), (480, 105)], fill=(14, 165, 233))
-        d.text((70, 68), f"Category: {category}", fill=(255, 255, 255))
         
-        display_title = title[:65] + "..." if len(title) > 65 else title
-        d.text((60, 260), display_title, fill=(255, 255, 255))
-        
-        # ব্র্যান্ডিং ওয়াটারমার্ক বা ট্যাগলাইন
-        d.text((60, 540), "EUROPE EXPATS & GLOBAL INSIDER | Verified Live Updates", fill=(148, 163, 184))
-        
+        # Category in English
+        d.text((70, 68), f"Category: {category.upper()}", fill=(255, 255, 255), font=cat_font)
+
+        # Title in English with wrapping
+        display_title = title[:80] + "..." if len(title) > 80 else title
+        wrapped_title = textwrap.fill(display_title, width=35)
+        d.text((60, 180), wrapped_title, fill=(255, 255, 255), font=title_font, spacing=12)
+
+        # Branding in English
+        d.text((60, 540), "EUROPE EXPATS & GLOBAL INSIDER | Verified Live Updates", fill=(148, 163, 184), font=brand_font)
+
         img.save("final_post.jpg")
         return "final_post.jpg"
+        
     except Exception as e:
         print(f"Image Creation Error: {e}")
         return None
@@ -237,7 +257,7 @@ def post_to_blogger(title, content, labels, meta_desc):
 
 if __name__ == '__main__':
     self_heal()
-    init_db()  # ডাটাবেজ ইনিশিয়ালাইজেশন
+    init_db()
     
     articles = READ_RSS_FEEDS()
     slot = get_slot()
@@ -245,7 +265,6 @@ if __name__ == '__main__':
     if articles:
         item = random.choice(articles)
         
-        # ডুপ্লিকেট সুরক্ষা ডাবল চেক
         if not is_already_posted(item['title']):
             ai_data = enhance_with_gemini(item['title'], item.get('summary', ''), slot)
             
@@ -256,7 +275,6 @@ if __name__ == '__main__':
             post_text = f"**{item['title']}**\n\nCategory: {slot}\n\nLink: {item['link']}"
             img_path = make_image(item['title'], slot)
             
-            # টেলিগ্রামে নোটিফিকেশন পাঠানো
             if bot and ADMIN_CHAT_ID:
                 try:
                     if img_path and os.path.exists(img_path):
@@ -296,7 +314,6 @@ if __name__ == '__main__':
             </div>
             """
             
-            # ব্লগস্পটে পোস্ট করা এবং ডাটাবেজে এন্ট্রি সেভ করা
             success = post_to_blogger(seo_title, html_content, seo_labels, seo_meta)
             if success:
                 mark_as_posted(item['title'], item['link'])
