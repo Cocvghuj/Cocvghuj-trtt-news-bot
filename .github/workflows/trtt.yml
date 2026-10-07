@@ -2,7 +2,7 @@ name: TRTT All In One
 
 on:
   schedule:
-    - cron: '0 2,8,11,14,16,20 * * *'
+    - cron: '0 * * * *'  # ২৪ ঘণ্টার প্রতি ঘণ্টার প্রথম মিনিটে ১ বার রান হবে
   workflow_dispatch:
 
 jobs:
@@ -12,11 +12,11 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          
+
       - name: Install Dependencies
         run: |
           pip install -r requirements.txt
@@ -29,7 +29,6 @@ jobs:
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
           BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
-          GOOGLE_SHEET_WEBHOOK_URL: ${{ secrets.GOOGLE_SHEET_WEBHOOK_URL }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python automation.py
 
