@@ -1,5 +1,4 @@
 import feedparser, os, datetime, requests, json
-from google import genai
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
@@ -39,10 +38,12 @@ def get_category():
     return WEEK_PLAN[now.weekday()][slot]
 
 def rewrite(text, category):
-    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    api_key = os.environ["GEMINI_API_KEY"]
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
     prompt = f"Rewrite for TRTT NEWS 24 BD, category {category}, 100% unique, 350 words, SEO friendly, add 1 H2. Original: {text}"
-    res = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
-    return res.text
+    data = {"contents": [{"parts": [{"text": prompt}]}]}
+    r = requests.post(url, json=data, timeout=30)
+    return r.json()["candidates"][0]["content"]["parts"][0]["text"]
 
 def post_to_blogger(title, content, labels):
     BLOG_ID = os.environ["BLOGGER_ID"]
