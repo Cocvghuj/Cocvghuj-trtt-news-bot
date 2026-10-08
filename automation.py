@@ -1,9 +1,7 @@
 import feedparser, os, datetime, requests, json
-import google.generativeai as genai
+from google import genai
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
-
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 FEEDS = {
     "Bangladesh": "https://feeds.bbci.co.uk/news/world/asia/rss.xml",
@@ -34,13 +32,18 @@ TRAFFIC = {
     "Technology & Gadgets": "AI News Today",
     "Guest Post": "Guest Post News"
 }
+
 def get_category():
     now = datetime.datetime.now()
     slot = 0 if now.hour < 12 else 1
     return WEEK_PLAN[now.weekday()][slot]
+
 def rewrite(text, category):
-    model = genai.GenerativeModel("gemini-1.5-flash")
-    return model.generate_content(f"Rewrite for TRTT NEWS 24 BD, category {category}, 100% unique, 350 words, SEO friendly, add H2. Original: {text}").text
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    prompt = f"Rewrite for TRTT NEWS 24 BD, category {category}, 100% unique, 350 words, SEO friendly, add 1 H2. Original: {text}"
+    res = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+    return res.text
+
 def post_to_blogger(title, content, labels):
     BLOG_ID = os.environ["BLOGGER_ID"]
     creds = Credentials.from_authorized_user_info(json.loads(os.environ["BLOGGER_TOKEN_JSON"]))
@@ -48,6 +51,7 @@ def post_to_blogger(title, content, labels):
     body = {"kind": "blogger#post", "blog": {"id": BLOG_ID}, "title": title, "content": content, "labels": labels}
     post = service.posts().insert(blogId=BLOG_ID, body=body, isDraft=False).execute()
     return post["url"]
+
 def post_to_telegram(title, url):
     try:
         token = os.environ["TELEGRAM_BOT_TOKEN"]
@@ -60,5 +64,5 @@ category = get_category()
 feed = feedparser.parse(FEEDS[category])
 entry = feed.entries[0]
 new_content = rewrite(entry.title + " " + entry.summary, category)
-blog_url = post_to_blogger(entry.title, new_content, [category, TRAFFIC[category]])
-post_to_telegram(entry.title, blog_url)
+url = post_to_blogger(entry.title, new_content, [category, TRAFFIC[category]])
+post_to_telegram(entry.title, url)
