@@ -1,4 +1,4 @@
-import feedparser, os, datetime, requests, json, time
+import feedparser, os, json, requests, datetime, time
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
@@ -12,94 +12,143 @@ FEEDS = {
     "Technology & Gadgets": "http://feeds.bbci.co.uk/news/technology/rss.xml",
     "Guest Post": "http://feeds.bbci.co.uk/news/world/rss.xml"
 }
-WEEK_PLAN = {
-    0: ["Bangladesh", "Schengen Hub"],
-    1: ["Visa & Immigration", "International"],
-    2: ["Europe", "Education & Scholarship"],
-    3: ["Technology & Gadgets", "Bangladesh"],
-    4: ["Schengen Hub", "Visa & Immigration"],
-    5: ["International", "Europe"],
+WEEK = {
+    0: ["Bangladesh", "Schengen Hub"], 1: ["Visa & Immigration", "International"],
+    2: ["Europe", "Education & Scholarship"], 3: ["Technology & Gadgets", "Bangladesh"],
+    4: ["Schengen Hub", "Visa & Immigration"], 5: ["International", "Europe"],
     6: ["Education & Scholarship", "Guest Post"]
 }
 
-def get_category():
+def get_cat():
     now = datetime.datetime.now()
-    slot = 0 if now.hour < 12 else 1
-    return WEEK_PLAN[now.weekday()][slot]
+    return WEEK[now.weekday()][0 if now.hour < 12 else 1]
 
-def try_gemini(prompt):
-    key = os.environ.get("GEMINI_API_KEY")
-    if not key: return None
-    # v1 endpoint + correct model name - 404 fix
-    models = ["gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-pro"]
-    for model in models:
-        try:
-            url = f"https://generativelanguage.googleapis.com/v1/models/{model}:generateContent?key={key}"
-            r = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=30)
-            j = r.json()
-            if "candidates" in j:
-                print(f"✅ SUCCESS: GEMINI with {model}")
-                return j["candidates"][0]["content"]["parts"][0]["text"]
-            print(f"Gemini {model} -> {j}")
-        except Exception as e:
-            print(f"❌ Gemini {model} error: {e}")
-    return None
-
-def try_groq(prompt):
+def ai(prompt):
+    # 1. GROQ - তোমার সবচেয়ে ফাস্ট Key
     try:
-        key = os.environ.get("GROQ_API_KEY")
-        if not key: return None
-        r = requests.post("https://api.groq.com/openai/v1/chat/completions",
-            headers={"Authorization": f"Bearer {key}"},
-            json={"model": "llama-3.1-8b-instant", "messages": [{"role": "user", "content": prompt}]}, timeout=30)
-        data = r.json()
-        if "choices" in data:
-            print("✅ SUCCESS: GROQ")
-            return data["choices"][0]["message"]["content"]
-    except Exception as e: print(f"❌ Groq Failed: {e}")
+        k = os.environ.get("GROQ_API_KEY")
+        if k:
+            r = requests.post("https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {k}"},
+                json={"model": "llama-3.1-8b-instant", "messages": [{"role": "user", "content": prompt}]}, timeout=30)
+            j = r.json()
+            if "choices" in j:
+                print("✅ SUCCESS: GROQ")
+                return j["choices"][0]["message"]["content"]
+    except Exception as e: print(f"GROQ Fail: {e}")
+
+    # 2. OPENROUTER - তোমার ২য় ব্যাকআপ
+    try:
+        k = os.environ.get("OPENROUTER_API_KEY")
+        if k:
+            r = requests.post("https://openrouter.ai/api/v1/chat/completions",
+                headers={"Authorization": f"Bearer {k}"},
+                json={"model": "mistralai/mistral-7b-instruct:free", "messages": [{"role": "user", "content": prompt}]}, timeout=30)
+            j = r.json()
+            if "choices" in j:
+                print("✅ SUCCESS: OPENROUTER")
+                return j["choices"][0]["message"]["content"]
+    except Exception as e: print(f"OPENROUTER Fail: {e}")
+
+    # 3. MISTRAL
+    try:
+        k = os.environ.get("MISTRAL_API_KEY")
+        if k:
+            r = requests.post("https://api.mistral.ai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {k}"},
+                json={"model": "mistral-small-latest", "messages": [{"role": "user", "content": prompt}]}, timeout=30)
+            j = r.json()
+            if "choices" in j:
+                print("✅ SUCCESS: MISTRAL")
+                return j["choices"][0]["message"]["content"]
+    except Exception as e: print(f"MISTRAL Fail: {e}")
+
+    # 4. DEEPSEEK
+    try:
+        k = os.environ.get("DEEP_SEEK_API_KEY") or os.environ.get("DEEP_SEEK_KEY")
+        if k:
+            r = requests.post("https://api.deepseek.com/chat/completions",
+                headers={"Authorization": f"Bearer {k}"},
+                json={"model": "deepseek-chat", "messages": [{"role": "user", "content": prompt}]}, timeout=30)
+            j = r.json()
+            if "choices" in j:
+                print("✅ SUCCESS: DEEPSEEK")
+                return j["choices"][0]["message"]["content"]
+    except Exception as e: print(f"DEEPSEEK Fail: {e}")
+
+    # 5. COHERE
+    try:
+        k = os.environ.get("COHERE_API_KEY")
+        if k:
+            r = requests.post("https://api.cohere.ai/v1/chat",
+                headers={"Authorization": f"Bearer {k}", "Content-Type": "application/json"},
+                json={"model": "command-r-plus", "message": prompt}, timeout=30)
+            j = r.json()
+            if "text" in j:
+                print("✅ SUCCESS: COHERE")
+                return j["text"]
+    except Exception as e: print(f"COHERE Fail: {e}")
+
+    # 6. HUGGINGFACE
+    try:
+        k = os.environ.get("HUGGINGFACE_TOKEN")
+        if k:
+            r = requests.post("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2",
+                headers={"Authorization": f"Bearer {k}"},
+                json={"inputs": prompt}, timeout=40)
+            j = r.json()
+            if isinstance(j, list) and "generated_text" in j[0]:
+                print("✅ SUCCESS: HUGGINGFACE")
+                return j[0]["generated_text"]
+    except Exception as e: print(f"HUGGINGFACE Fail: {e}")
+
+    # 7. GEMINI - সবার শেষে, কারণ এখন 404 দিচ্ছে
+    try:
+        k = os.environ.get("GEMINI_API_KEY") or os.environ.get("CONSOLE_API_KEY")
+        if k:
+            for model in ["gemini-1.5-flash", "gemini-2.0-flash-lite"]:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={k}"
+                r = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=30)
+                j = r.json()
+                if "candidates" in j:
+                    print(f"✅ SUCCESS: GEMINI {model}")
+                    return j["candidates"][0]["content"]["parts"][0]["text"]
+    except Exception as e: print(f"GEMINI Fail: {e}")
+
     return None
 
-def rewrite_with_fallback(text, category):
-    prompt = f"Rewrite for TRTT NEWS 24 BD, Category {category}, 100% unique, 350 words, SEO friendly with H2 tag. Original: {text}"
-    # Groq আগে, Gemini পরে - যাতে 404 হলেও বট না থামে
-    for func in [try_groq, try_gemini]:
-        result = func(prompt)
-        if result and len(result) > 100:
-            return result
-        time.sleep(1)
-    print("⚠️ AI failed, using original")
-    return f"<h2>{category} Update 2026</h2><p>{text}</p>"
-
-# BLOGGER FIX - শুধু TOKEN_JSON দিয়ে চলবে, CLIENT_ID লাগবে না
-def get_blogger_service():
-    token_json_str = os.environ.get("BLOGGER_TOKEN_JSON")
-    if not token_json_str:
-        raise Exception("BLOGGER_TOKEN_JSON not found in secrets!")
-    creds_dict = json.loads(token_json_str)
-    creds = Credentials.from_authorized_user_info(creds_dict)
+def get_blogger():
+    s = os.environ.get("BLOGGER_TOKEN_JSON")
+    if not s or len(s) < 50:
+        raise Exception(f"BLOGGER_TOKEN_JSON খালি! Length={len(s) if s else 0}. Workflow yml এ env যোগ করো")
+    print(f"TOKEN_JSON OK length={len(s)}")
+    creds = Credentials.from_authorized_user_info(json.loads(s))
     return build("blogger", "v3", credentials=creds)
 
-def post_to_blogger(title, content, labels):
-    service = get_blogger_service()
-    body = {"kind": "blogger#post", "blog": {"id": os.environ["BLOGGER_ID"]}, "title": title, "content": content, "labels": labels}
-    post = service.posts().insert(blogId=os.environ["BLOGGER_ID"], body=body, isDraft=False).execute()
-    return post["url"]
-
-def post_to_telegram(title, url):
-    try:
-        token = os.environ.get("TELEGRAM_BOT_TOKEN")
-        chat_id = os.environ.get("TELEGRAM_CHANNEL_ID") or os.environ.get("TELEGRAM_CHAT_ID")
-        if not token or not chat_id: return
-        msg = f"🔴 <b>{title}</b>\n\n👉 <a href='{url}'>বিস্তারিত পড়ুন</a>"
-        requests.post(f"https://api.telegram.org/bot{token}/sendMessage", data={"chat_id": chat_id, "text": msg, "parse_mode": "HTML"}, timeout=15)
-        print("✅ Telegram Posted")
-    except Exception as e: print(f"Telegram Failed: {e}")
-
-category = get_category()
-print(f"Today Category: {category}")
-feed = feedparser.parse(FEEDS[category])
+# MAIN
+cat = get_cat()
+print(f"Today Category: {cat}")
+feed = feedparser.parse(FEEDS[cat])
 entry = feed.entries[0]
-new_content = rewrite_with_fallback(entry.title + " " + entry.summary, category)
-url = post_to_blogger(entry.title, new_content, [category])
-post_to_telegram(entry.title, url)
+prompt = f"Rewrite for TRTT NEWS 24 BD blog, Category {cat}, 100% unique, 350 words, SEO friendly, use H2, H3. Original Title: {entry.title} Content: {entry.summary}"
+
+content = ai(prompt)
+if not content:
+    content = f"<h2>{cat} Latest Update 2026</h2><p>{entry.summary}</p><p>Read more on TRTT NEWS 24 BD</p>"
+    print("⚠️ All AI failed, using original SEO")
+
+service = get_blogger()
+body = {"kind": "blogger#post", "blog": {"id": os.environ["BLOGGER_ID"]}, "title": entry.title, "content": content, "labels": [cat, "News 2026"]}
+post = service.posts().insert(blogId=os.environ["BLOGGER_ID"], body=body, isDraft=False).execute()
+url = post["url"]
 print(f"DONE: {url}")
+
+# Telegram
+try:
+    bot = os.environ.get("TELEGRAM_BOT_TOKEN")
+    chat = os.environ.get("TELEGRAM_CHANNEL_ID")
+    if bot and chat:
+        msg = f"🔴 <b>{entry.title}</b>\n\n👉 <a href='{url}'>বিস্তারিত পড়ুন</a>"
+        requests.post(f"https://api.telegram.org/bot{bot}/sendMessage", data={"chat_id": chat, "text": msg, "parse_mode": "HTML"}, timeout=15)
+        print("✅ Telegram Sent")
+except Exception as e: print(f"Telegram fail {e}")
