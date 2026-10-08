@@ -1,42 +1,36 @@
-name: TRTT All In One
+name: TRTT Auto Post - Blog + Telegram
 
 on:
   schedule:
-    - cron: '0 * * * *'  # ২৪ ঘণ্টার প্রতি ঘণ্টার প্রথম মিনিটে ১ বার রান হবে
-  workflow_dispatch:
+    - cron: '0 4 * * *'   # সকাল ১০টা BD - দিনের ১ম পোস্ট
+    - cron: '0 16 * * *'  # রাত ১০টা BD - দিনের ২য় পোস্ট
+  workflow_dispatch: # হাতে Run করার জন্য
 
 jobs:
-  build:
+  post-news:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.10'
 
-      - name: Install Dependencies
+      - name: Install libraries
         run: |
-          python -m pip install --upgrade pip
-          pip install pyTelegramBotAPI feedparser requests Pillow google-genai google-api-python-client google-auth-httplib2 google-auth-oauthlib
+          pip install feedparser
+          pip install google-generativeai
+          pip install google-api-python-client
+          pip install google-auth
+          pip install requests
 
-      - name: Run Bot
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          BLOGGER_ID: ${{ secrets.BLOGGER_ID }}
-          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
-          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
-          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - name: Run Auto Poster
         run: python automation.py
-
-      - name: Save
-        run: |
-          git config --global user.name 'TRTT Bot'
-          git config --global user.email 'bot@trtt.com'
-          git add -A || true
-          git commit -m "auto save [skip ci]" || true
-          git push || true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          BLOGGER_ID: ${{ secrets.BLOGGER_ID }}
+          BLOGGER_TOKEN_JSON: ${{ secrets.BLOGGER_TOKEN_JSON }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
