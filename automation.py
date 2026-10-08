@@ -30,25 +30,19 @@ def get_category():
 def try_gemini(prompt):
     key = os.environ.get("GEMINI_API_KEY")
     if not key: return None
-    # তুমি 3.8 চেয়েছো, তাই আমরা 3 টা মডেল ট্রাই করবো - যেটা পাবে সেটাই চলবে
-    models_to_try = [
-        "gemini-2.0-flash", # সবচেয়ে নতুন স্টেবল (তুমি 3.8 বলতে এটাই বুঝিয়েছো)
-        "gemini-1.5-flash-latest",
-        "gemini-1.5-flash-8b"
-    ]
-    for model in models_to_try:
+    # v1 endpoint + correct model name - 404 fix
+    models = ["gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-pro"]
+    for model in models:
         try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}"
+            url = f"https://generativelanguage.googleapis.com/v1/models/{model}:generateContent?key={key}"
             r = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=30)
             j = r.json()
             if "candidates" in j:
                 print(f"✅ SUCCESS: GEMINI with {model}")
                 return j["candidates"][0]["content"]["parts"][0]["text"]
-            else:
-                print(f"Gemini {model} response: {j}")
+            print(f"Gemini {model} -> {j}")
         except Exception as e:
-            print(f"❌ Gemini {model} Failed: {e}")
-            continue
+            print(f"❌ Gemini {model} error: {e}")
     return None
 
 def try_groq(prompt):
@@ -65,40 +59,25 @@ def try_groq(prompt):
     except Exception as e: print(f"❌ Groq Failed: {e}")
     return None
 
-def try_openrouter(prompt):
-    try:
-        key = os.environ.get("OPENROUTER_API_KEY")
-        if not key: return None
-        r = requests.post("https://openrouter.ai/api/v1/chat/completions",
-            headers={"Authorization": f"Bearer {key}"},
-            json={"model": "mistralai/mistral-7b-instruct:free", "messages": [{"role": "user", "content": prompt}]}, timeout=30)
-        data = r.json()
-        if "choices" in data:
-            print("✅ SUCCESS: OPENROUTER")
-            return data["choices"][0]["message"]["content"]
-    except Exception as e: print(f"❌ OpenRouter Failed: {e}")
-    return None
-
-def rewrite_with_all_keys(text, category):
-    prompt = f"Rewrite for TRTT NEWS 24 BD, Category {category}, 100% unique, 350 words, SEO, add H2. Original: {text}"
-    for func in [try_gemini, try_groq, try_openrouter]:
+def rewrite_with_fallback(text, category):
+    prompt = f"Rewrite for TRTT NEWS 24 BD, Category {category}, 100% unique, 350 words, SEO friendly with H2 tag. Original: {text}"
+    # Groq আগে, Gemini পরে - যাতে 404 হলেও বট না থামে
+    for func in [try_groq, try_gemini]:
         result = func(prompt)
         if result and len(result) > 100:
             return result
         time.sleep(1)
-    return f"<h2>{category} Latest Update 2026</h2><p>{text}</p>"
+    print("⚠️ AI failed, using original")
+    return f"<h2>{category} Update 2026</h2><p>{text}</p>"
 
+# BLOGGER FIX - শুধু TOKEN_JSON দিয়ে চলবে, CLIENT_ID লাগবে না
 def get_blogger_service():
-    if os.environ.get("BLOGGER_TOKEN_JSON"):
-        creds = Credentials.from_authorized_user_info(json.loads(os.environ["BLOGGER_TOKEN_JSON"]))
-        return build("blogger", "v3", credentials=creds)
-    else:
-        creds = Credentials.from_authorized_user_info({
-            "client_id": os.environ["BLOGGER_CLIENT_ID"],
-            "client_secret": os.environ["BLOGGER_CLIENT_SECRET"],
-            "refresh_token": os.environ["BLOGGER_REFRESH_TOKEN"]
-        })
-        return build("blogger", "v3", credentials=creds)
+    token_json_str = os.environ.get("BLOGGER_TOKEN_JSON")
+    if not token_json_str:
+        raise Exception("BLOGGER_TOKEN_JSON not found in secrets!")
+    creds_dict = json.loads(token_json_str)
+    creds = Credentials.from_authorized_user_info(creds_dict)
+    return build("blogger", "v3", credentials=creds)
 
 def post_to_blogger(title, content, labels):
     service = get_blogger_service()
@@ -108,17 +87,19 @@ def post_to_blogger(title, content, labels):
 
 def post_to_telegram(title, url):
     try:
-        token = os.environ.get("TELEGRAM_BOT_TOKEN") or os.environ.get("TELEGRAM_TOKEN")
+        token = os.environ.get("TELEGRAM_BOT_TOKEN")
         chat_id = os.environ.get("TELEGRAM_CHANNEL_ID") or os.environ.get("TELEGRAM_CHAT_ID")
         if not token or not chat_id: return
         msg = f"🔴 <b>{title}</b>\n\n👉 <a href='{url}'>বিস্তারিত পড়ুন</a>"
         requests.post(f"https://api.telegram.org/bot{token}/sendMessage", data={"chat_id": chat_id, "text": msg, "parse_mode": "HTML"}, timeout=15)
-    except: pass
+        print("✅ Telegram Posted")
+    except Exception as e: print(f"Telegram Failed: {e}")
 
 category = get_category()
+print(f"Today Category: {category}")
 feed = feedparser.parse(FEEDS[category])
 entry = feed.entries[0]
-new_content = rewrite_with_all_keys(entry.title + " " + entry.summary, category)
+new_content = rewrite_with_fallback(entry.title + " " + entry.summary, category)
 url = post_to_blogger(entry.title, new_content, [category])
 post_to_telegram(entry.title, url)
 print(f"DONE: {url}")
