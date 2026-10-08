@@ -1,26 +1,20 @@
-name: TRTT Auto Poster - Lifetime
+name: TRTT Auto Poster - Final
 
 on:
   schedule:
-    - cron: '0 2 * * *'   # সকাল ৮টা BD Time
-    - cron: '0 8 * * *'   # বিকাল ২টা BD Time
+    - cron: '0 2 * * *' # সকাল ৮টা BD
+    - cron: '0 8 * * *' # বিকাল ২টা BD
   workflow_dispatch:
 
 jobs:
   post:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
-      - name: Install libraries
-        run: pip install -r requirements.txt
-
+      - run: pip install -r requirements.txt
       - name: Run Auto Poster
         run: python automation.py
         env:
@@ -29,11 +23,12 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           DEEP_SEEK_KEY: ${{ secrets.DEEP_SEEK_KEY }}
-          DEEP_SEEK_API_KEY: ${{ secrets.DEEP_SEEK_API_KEY }}
           COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
-          HUGGINGFACE_TOKEN: ${{ secrets.HUGGINGFACE_TOKEN }}
+          HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
           CONSOLE_API_KEY: ${{ secrets.CONSOLE_API_KEY }}
           BLOGGER_ID: ${{ secrets.BLOGGER_ID }}
-          BLOGGER_TOKEN_JSON: ${{ secrets.BLOGGER_TOKEN_JSON }}
+          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
+          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
+          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
