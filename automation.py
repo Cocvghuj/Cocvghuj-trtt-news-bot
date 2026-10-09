@@ -1,4 +1,4 @@
-import feedparser, os, json, requests, random, re, traceback
+import feedparser, os, json, requests, random, re, traceback, datetime
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import facebook
@@ -13,9 +13,48 @@ FEEDS = {
     "Canada Immigration & Jobs": "https://www.cicnews.com/feed/",
     "USA Visa & Tech Laws": "https://www.immigration.ca/feed/",
     "UK Visa and Immigration": "https://www.freemovement.org.uk/feed/",
+    "DW Europe News": "https://www.dw.com/export/rss?sectionId=30973",
+    "Australia & NZ Policy Updates": "https://www.abc.net.au/news/feed/51120/rss.xml",
+    "Middle East Laws & Business": "https://www.aljazeera.com/xml/rss/all.rss",
+    "Global Tech Innovations": "https://techcrunch.com/feed/"
 }
 
-LOCATION_MAP = { "default": {"name": "Milan, Italy", "lat": 45.4642, "lng": 9.1900} }
+# === SMART COUNTRY LOCATION SYSTEM ===
+COUNTRY_LOCATIONS = {
+    "Italy": {"name": "Milan, Italy", "lat": 45.4642, "lng": 9.1900},
+    "Germany": {"name": "Berlin, Germany", "lat": 52.5200, "lng": 13.4050},
+    "France": {"name": "Paris, France", "lat": 48.8566, "lng": 2.3522},
+    "UK": {"name": "London, UK", "lat": 51.5072, "lng": -0.1276},
+    "USA": {"name": "Washington, USA", "lat": 38.9072, "lng": -77.0369},
+    "Canada": {"name": "Ottawa, Canada", "lat": 45.4215, "lng": -75.6972},
+    "Australia": {"name": "Sydney, Australia", "lat": -33.8688, "lng": 151.2093},
+    "New Zealand": {"name": "Wellington, New Zealand", "lat": -41.2865, "lng": 174.7762},
+    "Middle East": {"name": "Dubai, UAE", "lat": 25.2048, "lng": 55.2708},
+    "Schengen": {"name": "Brussels, Belgium", "lat": 50.8503, "lng": 4.3517},
+    "default": {"name": "Milan, Italy", "lat": 45.4642, "lng": 9.1900}
+}
+
+def get_smart_location(title, category):
+    text = (title + " " + category).lower()
+    if "italy" in text or "milan" in text or "schengen" in text or "europe" in text or "eu " in text:
+        return COUNTRY_LOCATIONS["Italy"]
+    if "canada" in text or "toronto" in text:
+        return COUNTRY_LOCATIONS["Canada"]
+    if "usa" in text or "america" in text or "us visa" in text or "washington" in text:
+        return COUNTRY_LOCATIONS["USA"]
+    if "uk" in text or "london" in text or "britain" in text:
+        return COUNTRY_LOCATIONS["UK"]
+    if "germany" in text or "berlin" in text:
+        return COUNTRY_LOCATIONS["Germany"]
+    if "france" in text or "paris" in text:
+        return COUNTRY_LOCATIONS["France"]
+    if "australia" in text or "sydney" in text:
+        return COUNTRY_LOCATIONS["Australia"]
+    if "zealand" in text or "wellington" in text:
+        return COUNTRY_LOCATIONS["New Zealand"]
+    if "middle east" in text or "dubai" in text or "qatar" in text or "saudi" in text or "al jazeera" in text:
+        return COUNTRY_LOCATIONS["Middle East"]
+    return COUNTRY_LOCATIONS["default"]
 
 def get_featured_image(query):
     try:
@@ -41,7 +80,7 @@ def call_gemini_modifier(draft, cat, title, summary, source_link):
     try:
         k = os.environ.get("GEMINI_API_KEY")
         if k:
-            p = f"You are expert SEO news editor. Rewrite draft into rich detailed 100% unique English news. Title: {title} Summary: {summary} Source: {source_link} Draft: {draft} Reply ONLY valid JSON: {{\"seo_title\": \"Catchy SEO Headline with {cat} 2027\", \"meta_description\": \"Compelling 140-150 char\", \"article_body\": \"Detailed HTML with <h2>, paragraphs, bullets\", \"fb_caption\": \"Caption with hashtags\"}}"
+            p = f"You are expert SEO news editor for US/EU audience. Rewrite draft into rich detailed 100% unique English news for American and European readers. Use high CPC keywords like remote work, digital nomad, salary, PR, immigration reform, tech jobs. Title: {title} Summary: {summary} Source: {source_link} Draft: {draft} Reply ONLY valid JSON: {{\"seo_title\": \"{cat} 2027: [Viral US/EU Style Headline]\", \"meta_description\": \"Compelling 140-150 char for US/EU readers\", \"article_body\": \"Detailed HTML with <h2>, paragraphs, bullets, include salary, cost, requirements table for US/EU audience\", \"fb_caption\": \"US/EU style caption with hashtags #USEVisa #EuropeVisa #DigitalNomad #WorkAbroad\"}}"
             url = GEMINI_URL_TEMPLATE.format(k=k)
             r = requests.post(url, json={"contents": [{"parts": [{"text": p}]}]}, timeout=30)
             j = r.json()
@@ -75,7 +114,7 @@ def post_to_telegram(token, chat_id, message, link):
     except Exception as e: print(f"❌ Telegram skipped: {e}")
 
 def main():
-    selected_entry = None; chosen_category = "Schengen & Europe EU Rules"; source_link = "https://trttnews24bd.blogspot.com"
+    selected_entry = None; chosen_category = "Europe Visa Latest"; source_link = "https://trttnews24bd.blogspot.com"
     headers = {'User-Agent': 'Mozilla/5.0'}
     for cat_name, feed_url in FEEDS.items():
         print(f"📡 Scanning: {cat_name}...")
@@ -101,7 +140,32 @@ def main():
         seo_title = data.get("seo_title", f"{chosen_category} 2027: {selected_entry.title[:80]}")
         meta_desc = data.get("meta_description", summary_text[:145])[:150]
         fb_caption = data.get("fb_caption", seo_title)
-        article_body_html = f"""<p><i><b>Overview:</b> {meta_desc}</i></p><div style="margin:15px 0;"><img src='{image_url}' alt='{seo_title}' style='width:100%; border-radius:8px'/></div>{data.get("article_body", f"<p>{summary_text}</p>")}<hr/><p><small>Source: <a href="{source_link}" target="_blank" rel="nofollow">Original Report</a></small></p>"""
+        
+        # SEO Bomb - JSON-LD Schema
+        pub_date = datetime.datetime.utcnow().isoformat() + "Z"
+        seo_schema = f"""
+        <script type="application/ld+json">
+        {{
+          "@context": "https://schema.org",
+          "@type": "NewsArticle",
+          "headline": "{seo_title}",
+          "description": "{meta_desc}",
+          "image": ["{image_url}"],
+          "datePublished": "{pub_date}",
+          "author": {{"@type": "Organization", "name": "TRTT News 24"}},
+          "publisher": {{"@type": "Organization", "name": "TRTT News 24", "logo": {{"@type": "ImageObject", "url": "https://trttnews24bd.blogspot.com/favicon.ico"}}}}
+        }}
+        </script>
+        """
+
+        article_body_html = f"""
+        {seo_schema}
+        <p><i><b>Overview:</b> {meta_desc}</i></p>
+        <div style="margin:15px 0;"><img src='{image_url}' alt='{seo_title}' style='width:100%; border-radius:8px'/></div>
+        {data.get("article_body", f"<p>{summary_text}</p>")}
+        <hr/>
+        <p><small>Source: <a href="{source_link}" target="_blank" rel="nofollow">Original Report</a></small></p>
+        """
 
         blogger_service = get_blogger()
         if blogger_service:
@@ -118,13 +182,19 @@ def main():
                         print(f"⚠️ Already posted, skipping: {seo_title}"); return
             except: pass
 
-            loc = LOCATION_MAP.get(chosen_category, LOCATION_MAP["default"])
-            post_body = {"kind": "blogger#post", "title": seo_title, "content": article_body_html, "labels": [chosen_category, "Official Updates", "Schengen Visa 2027"], "location": {"name": loc["name"], "lat": loc["lat"], "lng": loc["lng"]}}
+            loc = get_smart_location(selected_entry.title, chosen_category)
+            post_body = {
+                "kind": "blogger#post", 
+                "title": seo_title, 
+                "content": article_body_html, 
+                "labels": [chosen_category, "Global News", "Work Abroad 2027", "Digital Nomad Visa", "USA Jobs"], 
+                "location": {"name": loc["name"], "lat": loc["lat"], "lng": loc["lng"]}
+            }
             result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
             link = result.get('url')
-            print(f"✅ PUBLISHED: {link}")
+            print(f"✅ PUBLISHED: {link} with Location {loc['name']}")
 
-            # Social shares (Independent of main flow error handling)
+            # Social shares
             fb_token = os.environ.get("FB_PAGE_ACCESS_TOKEN")
             fb_id = os.environ.get("FB_PAGE_ID")
             if fb_token and fb_id: post_to_facebook_system(fb_token, fb_id, fb_caption, link)
