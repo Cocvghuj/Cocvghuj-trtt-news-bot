@@ -8,7 +8,6 @@ import re
 import traceback
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
-from google.auth.transport.requests import Request
 import facebook
 
 # URL Constants
@@ -87,7 +86,7 @@ JSON Structure: {{"seo_title": "SEO optimized catchy headline with {cat} 2027", 
         print(f"Gemini error: {e}")
     return None
 
-# সরাসরি தனி আলাদা সিক্রেটগুলো ব্যবহার করার জন্য ফাংশন
+# রিফ্রেশ এরর এড়াতে টোকেন রিফ্রেশ হ্যান্ডলিং বাদ দিয়ে সরাসরি ক্রেডেনশিয়াল বিল্ড করা হচ্ছে
 def get_blogger():
     try:
         client_id = os.environ.get("BLOGGER_CLIENT_ID")
@@ -106,9 +105,7 @@ def get_blogger():
             token_uri=TOKEN_URI,
         )
         
-        creds.refresh(Request())
-        print("✅ Blogger token refreshed successfully!")
-
+        print("✅ Blogger Credentials initialized successfully!")
         return build("blogger", "v3", credentials=creds)
     except Exception as e:
         print(f"❌ Blogger Auth Error: {e}")
