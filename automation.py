@@ -3,10 +3,11 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import facebook
 
-# Gemini v1beta endpoint with gemini-2.0-flash
-GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={k}"
-GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+GEMINI_MODELS = ["gemini-2.0-flash-001", "gemini-2.0-flash", "gemini-flash-latest", "gemini-1.5-flash-002"]
+GROQ_MODELS = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]
+
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
+GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 FEEDS = {
     "Schengen & Europe EU Rules": "https://www.schengenvisainfo.com/feed/",
@@ -67,11 +68,11 @@ def get_featured_image(query):
     except: pass
     return f"https://picsum.photos/seed/{random.randint(1,100000)}/800/400"
 
-# 1. Primary AI: Gemini (v1beta with gemini-2.0-flash)
 def call_gemini(cat, title, summary, source_link):
     k = os.environ.get("GEMINI_API_KEY")
     if not k: return None
-    p = f"""You are an expert SEO news editor. Write a rich, detailed, 600+ words English news article based on:
+    
+    p = f"""You are a professional senior news editor and AdSense compliance expert. Rewrite this report into a unique, highly detailed, 700+ words English news article with high journalistic value.
 Title: {title}
 Summary: {summary}
 Source: {source_link}
@@ -79,31 +80,32 @@ Category: {cat}
 
 Return ONLY a valid JSON object with these exact keys:
 {{
-  "seo_title": "{cat} 2027: Catchy Headline",
-  "meta_description": "Compelling 140-150 char meta description",
-  "article_body": "Detailed HTML with <h2>, paragraphs, bullet points, and a requirements table",
+  "seo_title": "{cat}: Catchy SEO Headline",
+  "meta_description": "Engaging 140-150 characters meta description for search engines",
+  "article_body": "Detailed HTML with <h2> headings, comprehensive paragraphs, informative bullet points, and a professional data table meeting Google AdSense quality guidelines",
   "fb_caption": "Caption with hashtags"
 }}"""
-    url = GEMINI_URL_TEMPLATE.format(k=k)
-    for attempt in range(2):
+
+    for model in GEMINI_MODELS:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={k}"
         try:
-            print(f"🔄 Gemini 2.0 Flash Attempt {attempt+1}/2...")
+            print(f"🔄 Trying Gemini Model: {model}...")
             r = requests.post(url, json={"contents": [{"parts": [{"text": p}]}]}, timeout=35)
-            print(f"Gemini Status: {r.status_code}")
-            j = r.json()
-            if "candidates" in j:
-                txt = j["candidates"][0]["content"]["parts"][0]["text"]
-                return re.sub(r'```(?:json)?\s*|\s*```', '', txt.strip(), flags=re.MULTILINE)
+            print(f"Response: {r.status_code} - {r.text[:300]}")
+            if r.status_code == 200:
+                j = r.json()
+                if "candidates" in j:
+                    txt = j["candidates"][0]["content"]["parts"][0]["text"]
+                    return re.sub(r'```(?:json)?\s*|\s*```', '', txt.strip(), flags=re.MULTILINE)
         except Exception as e:
-            print(f"⚠️ Gemini attempt {attempt+1} error: {e}")
-            time.sleep(3)
+            print(f"⚠️ Error with Gemini {model}: {e}")
     return None
 
-# 2. Backup AI: Groq (llama-3.1-8b-instant)
 def call_groq_backup(cat, title, summary, source_link):
     k = os.environ.get("GROQ_API_KEY")
     if not k: return None
-    p = f"""You are an expert SEO news editor. Write a rich, detailed, 600+ words English news article based on:
+    
+    p = f"""You are a professional senior news editor and AdSense compliance expert. Rewrite this report into a unique, highly detailed, 700+ words English news article with high journalistic value.
 Title: {title}
 Summary: {summary}
 Source: {source_link}
@@ -111,29 +113,33 @@ Category: {cat}
 
 Return ONLY a valid JSON object with these exact keys:
 {{
-  "seo_title": "{cat} 2027: Catchy Headline",
-  "meta_description": "Compelling 140-150 char meta description",
-  "article_body": "Detailed HTML with <h2>, paragraphs, bullet points, and a requirements table",
+  "seo_title": "{cat}: Catchy SEO Headline",
+  "meta_description": "Engaging 140-150 characters meta description for search engines",
+  "article_body": "Detailed HTML with <h2> headings, comprehensive paragraphs, informative bullet points, and a professional data table meeting Google AdSense quality guidelines",
   "fb_caption": "Caption with hashtags"
 }}"""
-    try:
-        print("🔄 Switching to Groq Backup AI...")
-        r = requests.post(
-            GROQ_URL, 
-            headers={"Authorization": f"Bearer {k}"}, 
-            json={
-                "model": "llama-3.1-8b-instant", 
-                "messages": [{"role": "user", "content": p}], 
-                "temperature": 0.3
-            }, 
-            timeout=30
-        )
-        j = r.json()
-        if "choices" in j:
-            txt = j["choices"][0]["message"]["content"]
-            return re.sub(r'```(?:json)?\s*|\s*```', '', txt.strip(), flags=re.MULTILINE)
-    except Exception as e:
-        print(f"❌ Groq Backup error: {e}")
+
+    for model in GROQ_MODELS:
+        try:
+            print(f"🔄 Trying Groq Model: {model}...")
+            r = requests.post(
+                GROQ_URL, 
+                headers={"Authorization": f"Bearer {k}"}, 
+                json={
+                    "model": model, 
+                    "messages": [{"role": "user", "content": p}], 
+                    "temperature": 0.3
+                }, 
+                timeout=25
+            )
+            print(f"Groq Response: {r.status_code} - {r.text[:300]}")
+            if r.status_code == 200:
+                j = r.json()
+                if "choices" in j:
+                    txt = j["choices"][0]["message"]["content"]
+                    return re.sub(r'```(?:json)?\s*|\s*```', '', txt.strip(), flags=re.MULTILINE)
+        except Exception as e:
+            print(f"⚠️ Error with Groq {model}: {e}")
     return None
 
 def get_blogger():
@@ -179,46 +185,49 @@ def main():
     summary_text = selected_entry.get('summary', selected_entry.title)
     image_url = get_featured_image(chosen_category)
     
-    # Try Gemini 2.0 Flash first, if fails switch to Groq Backup
     final_response = call_gemini(chosen_category, selected_entry.title, summary_text, source_link)
     if not final_response:
         print("⚠️ Gemini failed, trying Groq Backup...")
         final_response = call_groq_backup(chosen_category, selected_entry.title, summary_text, source_link)
     
+    current_date_tag = f" ({datetime.datetime.utcnow().strftime('%b %d, %Y')})"
+    
     if not final_response:
         print("❌ All AI failed, using RICH SEO Fallback")
-        seo_title = f"{chosen_category} 2027: {selected_entry.title[:80]}"
+        seo_title = f"{chosen_category}: {selected_entry.title[:70]}{current_date_tag}"
         meta_desc = summary_text[:145]
         fb_caption = f"🚨 {selected_entry.title} | Full details inside #USVisa #EuropeVisa #WorkAbroad"
         article_body_html = f"""
         <h2>{selected_entry.title}</h2>
-        <p><b>Breaking Update:</b> {summary_text}</p>
-        <p>According to official sources from {chosen_category}, this new policy will impact thousands of applicants worldwide.</p>
-        <h2>Key Highlights</h2>
+        <p><b>Overview & Editorial Insight:</b> {summary_text}</p>
+        <p>This comprehensive report outlines essential policy adjustments affecting international applicants and global mobility frameworks.</p>
+        <h2>Key Policy Highlights</h2>
         <ul>
-          <li>Effective Date: January 2027</li>
-          <li>Affected: Global Applicants</li>
-          <li>Reason: Internal Policy & Compliance Review</li>
+          <li>Official Implementation Timeline & Deadlines</li>
+          <li>Global Impact Assessment on Applicants</li>
+          <li>Compliance & Documentation Standards</li>
         </ul>
-        <h2>Salary & Cost Requirements (US/EU)</h2>
+        <h2>Requirements & Processing Overview</h2>
         <table border='1' cellpadding='8' style='width:100%; border-collapse:collapse;'>
-          <tr><th>Category</th><th>Requirement</th></tr>
-          <tr><td>Minimum Salary</td><td>$35,000 - $65,000 / Year</td></tr>
-          <tr><td>Processing Cost</td><td>$160 - $1,200</td></tr>
-          <tr><td>PR Timeline</td><td>2-5 Years</td></tr>
+          <tr><th>Parameter</th><th>Standard Guideline</th></tr>
+          <tr><td>Processing Period</td><td>3 to 6 Months</td></tr>
+          <tr><td>Verification Standard</td><td>Strict Compliance Review</td></tr>
+          <tr><td>Validity Status</td><td>Active for 2027 Guidelines</td></tr>
         </table>
-        <p><b>Source:</b> <a href='{source_link}' target='_blank'>{source_link}</a></p>
+        <p><b>Reference Source:</b> <a href='{source_link}' target='_blank' rel='nofollow'>Official News Network</a></p>
         """
     else:
         try:
             data = json.loads(final_response)
-            seo_title = data.get("seo_title", f"{chosen_category} 2027: {selected_entry.title[:80]}")
+            seo_title = data.get("seo_title", f"{chosen_category}: {selected_entry.title[:70]}")
+            if not current_date_tag in seo_title:
+                seo_title += current_date_tag
             meta_desc = data.get("meta_description", summary_text[:145])[:150]
             fb_caption = data.get("fb_caption", seo_title)
             article_body_html = data.get("article_body", f"<p>{summary_text}</p>")
         except Exception as json_err:
             print(f"⚠️ JSON parsing error ({json_err}), using rich fallback.")
-            seo_title = f"{chosen_category} 2027: {selected_entry.title[:80]}"
+            seo_title = f"{chosen_category}: {selected_entry.title[:70]}{current_date_tag}"
             meta_desc = summary_text[:145]
             fb_caption = seo_title
             article_body_html = f"<p>{summary_text}</p>"
@@ -234,7 +243,7 @@ def main():
           "description": "{meta_desc}",
           "image": ["{image_url}"],
           "datePublished": "{pub_date}",
-          "author": {{"@type": "Organization", "name": "TRTT News 24"}},
+          "author": {{"@type": "Organization", "name": "TRTT News 24 Editorial Team"}},
           "publisher": {{"@type": "Organization", "name": "TRTT News 24", "logo": {{"@type": "ImageObject", "url": "https://trttnews24bd.blogspot.com/favicon.ico"}}}}
         }}
         </script>
@@ -242,11 +251,11 @@ def main():
 
         full_article_html = f"""
         {seo_schema}
-        <p><i><b>Overview:</b> {meta_desc}</i></p>
+        <p><i><b>Editorial Note:</b> {meta_desc}</i></p>
         <div style="margin:15px 0;"><img src='{image_url}' alt='{seo_title}' style='width:100%; border-radius:8px'/></div>
         {article_body_html}
         <hr/>
-        <p><small>Source: <a href="{source_link}" target="_blank" rel="nofollow">Original Report</a></small></p>
+        <p><small>Original Source & Reference: <a href="{source_link}" target="_blank" rel="nofollow noopener">Verified News Wire</a></small></p>
         """
 
         blogger_service = get_blogger()
@@ -269,7 +278,7 @@ def main():
                 "kind": "blogger#post", 
                 "title": seo_title, 
                 "content": full_article_html, 
-                "labels": [chosen_category, "Global News", "Work Abroad 2027", "Digital Nomad Visa", "USA Jobs"], 
+                "labels": [chosen_category, "Global News", "Immigration 2027", "Work Visa Update"], 
                 "location": {"name": loc["name"], "lat": loc["lat"], "lng": loc["lng"]}
             }
             result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
