@@ -1,7 +1,4 @@
 
-<div align="center">
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:FF00CC,100:00CCFF&height=260&section=header&text=TRTT%20NEWS%2024%20BD&fontSize=50&fontColor=ffffff&animation=fadeIn&desc=Milan%20to%20Bangladesh%20Family%20Project&descAlignY=80" />
 
 # 🌟 আমার পরিবারের জন্য উৎসর্গ 🌟
 
@@ -22,7 +19,7 @@
 
 ## ❤️আমাদের গল্প❤️
 
-### আমি মিলানে থাকি, কিন্তু মন পড়ে থাকে বাংলাদেশে।
+### আমি মিলানে থাকি, কিন্তুু মন পড়ে থাকে বাংলাদেশে।
 ### আমার সহধর্মীনি **রোকসানা** সবসময় বলে - "মানুষের উপকার করলে আল্লাহ খুশি হয়"
 ### আমার মেয়ে **ফারিয়া জাহান তাইফা** আর ছেলে **তাইফুর রহমান তাশরিফ** এর জন্য এই ছোট উপহার।
 
