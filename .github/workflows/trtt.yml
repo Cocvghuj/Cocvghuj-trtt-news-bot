@@ -2,7 +2,7 @@ name: Auto Blog to Facebook Post
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # প্রতি ৬ ঘণ্টা পর পর কোডটি স্বয়ংক্রিয়ভাবে রান করবে
+    - cron: '0 */6 * * *' # প্রতি ৬ ঘণ্টা পর পর কোডটি স্বয়ংক্রিয়ভাবে ব্যাকগ্রাউন্ডে রান করবে
   workflow_dispatch: # ম্যানুয়ালি রান করানোর বাটন
 
 jobs:
@@ -32,5 +32,6 @@ jobs:
           FB_APP_ID: ${{ secrets.FB_APP_ID }}
           FB_APP_SECRET: ${{ secrets.FB_APP_SECRET }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }} # আপনার সিক্রেটের নাম অনুযায়ী নিখুঁতভাবে ম্যাপ করা হলো
         run: python automation.py
-
