@@ -70,7 +70,7 @@ def call_groq_draft(p):
     try:
         k = os.environ.get("GROQ_API_KEY")
         if k:
-            r = requests.post(GROQ_URL, headers={"Authorization": f"Bearer {k}"}, json={"model": "llama-3.3-70b-versatile", "messages": [{"role": "user", "content": p}], "temperature": 0.3})
+            r = requests.post(GROQ_URL, headers={"Authorization": f"Bearer {k}"}, json={"model": "llama-3.3-70b-versatile", "messages": [{"role": "user", "content": p}], "temperature": 0.3}, timeout=20)
             j = r.json()
             if "choices" in j: return j["choices"][0]["message"]["content"]
     except Exception as e: print(f"Groq error: {e}")
@@ -80,11 +80,25 @@ def call_gemini_modifier(draft, cat, title, summary, source_link):
     try:
         k = os.environ.get("GEMINI_API_KEY")
         if k:
-            p = f"You are expert SEO news editor for US/EU audience. Rewrite draft into rich detailed 100% unique English news for American and European readers. Use high CPC keywords like remote work, digital nomad, salary, PR, immigration reform, tech jobs. Title: {title} Summary: {summary} Source: {source_link} Draft: {draft} Reply ONLY valid JSON: {{\"seo_title\": \"{cat} 2027: [Viral US/EU Style Headline]\", \"meta_description\": \"Compelling 140-150 char for US/EU readers\", \"article_body\": \"Detailed HTML with <h2>, paragraphs, bullets, include salary, cost, requirements table for US/EU audience\", \"fb_caption\": \"US/EU style caption with hashtags #USEVisa #EuropeVisa #DigitalNomad #WorkAbroad\"}}"
+            p = f"""You are an expert SEO news editor for US/EU audience. Rewrite the draft into a rich, detailed, 100% unique English news article. 
+Title: {title} 
+Summary: {summary} 
+Source: {source_link} 
+Draft: {draft} 
+
+Return ONLY a valid JSON object with these exact keys (no markdown formatting outside JSON):
+{{
+  "seo_title": "{cat} 2027: Catchy Headline",
+  "meta_description": "Compelling 140-150 char meta description",
+  "article_body": "Detailed HTML with <h2>, paragraphs, bullets and a requirements table",
+  "fb_caption": "Caption with hashtags"
+}}"""
             url = GEMINI_URL_TEMPLATE.format(k=k)
             r = requests.post(url, json={"contents": [{"parts": [{"text": p}]}]}, timeout=30)
             j = r.json()
-            if "candidates" in j: return j["candidates"][0]["content"]["parts"][0]["text"]
+            if "candidates" in j:
+                text_res = j["candidates"][0]["content"]["parts"][0]["text"]
+                return text_res
     except Exception as e: print(f"Gemini error: {e}")
     return None
 
@@ -132,16 +146,29 @@ def main():
     image_url = get_featured_image(chosen_category)
     draft = call_groq_draft(f"Write comprehensive news article based on: {selected_entry.title}. Summary: {summary_text}. Category: {chosen_category}") or summary_text
     final_response = call_gemini_modifier(draft, chosen_category, selected_entry.title, summary_text, source_link)
-    if not final_response: print("❌ AI failed"); return
+    
+    if not final_response:
+        print("❌ AI failed to generate response. Using fallback content.")
+        seo_title = f"{chosen_category} Update 2027: {selected_entry.title[:80]}"
+        meta_desc = summary_text[:145]
+        fb_caption = seo_title
+        article_body_html = f"<p>{summary_text}</p>"
+    else:
+        try:
+            json_clean = re.sub(r'```(?:json)?\s*|\s*```', '', final_response.strip(), flags=re.MULTILINE)
+            data = json.loads(json_clean)
+            seo_title = data.get("seo_title", f"{chosen_category} 2027: {selected_entry.title[:80]}")
+            meta_desc = data.get("meta_description", summary_text[:145])[:150]
+            fb_caption = data.get("fb_caption", seo_title)
+            article_body_html = data.get("article_body", f"<p>{summary_text}</p>")
+        except Exception as json_err:
+            print(f"⚠️ JSON parsing error ({json_err}), using raw text fallback.")
+            seo_title = f"{chosen_category} 2027: {selected_entry.title[:80]}"
+            meta_desc = summary_text[:145]
+            fb_caption = seo_title
+            article_body_html = f"<p>{summary_text}</p>"
 
     try:
-        json_clean = re.sub(r'```(?:json)?\s*|\s*```', '', final_response.strip(), flags=re.MULTILINE)
-        data = json.loads(json_clean)
-        seo_title = data.get("seo_title", f"{chosen_category} 2027: {selected_entry.title[:80]}")
-        meta_desc = data.get("meta_description", summary_text[:145])[:150]
-        fb_caption = data.get("fb_caption", seo_title)
-        
-        # SEO Bomb - JSON-LD Schema
         pub_date = datetime.datetime.utcnow().isoformat() + "Z"
         seo_schema = f"""
         <script type="application/ld+json">
@@ -158,11 +185,11 @@ def main():
         </script>
         """
 
-        article_body_html = f"""
+        full_article_html = f"""
         {seo_schema}
         <p><i><b>Overview:</b> {meta_desc}</i></p>
         <div style="margin:15px 0;"><img src='{image_url}' alt='{seo_title}' style='width:100%; border-radius:8px'/></div>
-        {data.get("article_body", f"<p>{summary_text}</p>")}
+        {article_body_html}
         <hr/>
         <p><small>Source: <a href="{source_link}" target="_blank" rel="nofollow">Original Report</a></small></p>
         """
@@ -186,7 +213,7 @@ def main():
             post_body = {
                 "kind": "blogger#post", 
                 "title": seo_title, 
-                "content": article_body_html, 
+                "content": full_article_html, 
                 "labels": [chosen_category, "Global News", "Work Abroad 2027", "Digital Nomad Visa", "USA Jobs"], 
                 "location": {"name": loc["name"], "lat": loc["lat"], "lng": loc["lng"]}
             }
@@ -203,6 +230,6 @@ def main():
             tg_chat = os.environ.get("TELEGRAM_CHAT_ID")
             if tg_token and tg_chat: post_to_telegram(tg_token, tg_chat, fb_caption, link)
 
-    except Exception as e: print(f"❌ Error: {e}"); traceback.print_exc()
+    except Exception as e: print(f"❌ Error in publishing: {e}"); traceback.print_exc()
 
 if __name__ == "__main__": main()
