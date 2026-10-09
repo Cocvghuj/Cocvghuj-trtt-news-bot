@@ -44,7 +44,9 @@ def call_groq_draft(p):
         k = os.environ.get("GROQ_API_KEY")
         if k:
             r = requests.post(GROQ_URL, headers={"Authorization": f"Bearer {k}"}, json={"model": "llama-3.3-70b-versatile", "messages": [{"role": "user", "content": p}], "temperature": 0.3})
-            return r.json()["choices"][0]["message"]["content"]
+            j = r.json()
+            if "choices" in j and len(j["choices"]) > 0:
+                return j["choices"][0]["message"]["content"]
     except Exception as e:
         print(f"Groq error: {e}")
     return None
@@ -56,7 +58,11 @@ def call_gemini_modifier(draft, cat, title, summary):
             p = f"You are a senior native English Chief Editor. Rewrite draft to 100% unique elite English. Title: {title} Summary: {summary} Draft: {draft} Reply ONLY valid JSON. JSON: {{\"seo_title\": \"headline with {cat} 2027\", \"meta_description\": \"150 char\", \"article_body\": \"HTML starting with <h2>\", \"fb_caption\": \"caption with hashtags\"}}"
             url = GEMINI_URL_TEMPLATE.format(k=k)
             r = requests.post(url, json={"contents": [{"parts": [{"text": p}]}]}, timeout=30)
-            return r.json()["candidates"][0]["content"]["parts"][0]["text"]
+            j = r.json()
+            if "candidates" in j and len(j["candidates"]) > 0:
+                parts = j["candidates"][0].get("content", {}).get("parts", [])
+                if parts:
+                    return parts[0].get("text", "")
     except Exception as e:
         print(f"Gemini error: {e}")
     return None
@@ -129,12 +135,15 @@ def main():
     final_response = call_gemini_modifier(draft, chosen_category, selected_entry.title, summary_text)
 
     try:
-        json_clean = re.sub(r'```(?:json)?\s*|\s*```', '', final_response.strip(), flags=re.MULTILINE)
-        data = json.loads(json_clean)
-        seo_title = data["seo_title"]
-        article_body = f"<div><img src='{image_url}' style='width:100%; border-radius:8px'/></div>" + data["article_body"]
-        meta_desc = data["meta_description"]
-        fb_caption = data["fb_caption"]
+        if final_response:
+            json_clean = re.sub(r'```(?:json)?\s*|\s*```', '', final_response.strip(), flags=re.MULTILINE)
+            data = json.loads(json_clean)
+            seo_title = data.get("seo_title", f"{chosen_category} 2027: {selected_entry.title[:80]}")
+            article_body = f"<div><img src='{image_url}' style='width:100%; border-radius:8px'/></div>" + data.get("article_body", f"<p>{summary_text}</p>")
+            meta_desc = data.get("meta_description", "")
+            fb_caption = data.get("fb_caption", f"🌍 Global Update: {seo_title}")
+        else:
+            raise Exception("Empty AI response")
     except:
         seo_title = f"{chosen_category} 2027: {selected_entry.title[:80]}"
         article_body = f"<div><img src='{image_url}' style='width:100%; border-radius:8px'/></div><h2>{seo_title}</h2><p>{summary_text}</p>"
