@@ -1,20 +1,18 @@
-import feedparser, os, json, requests, datetime
+import feedparser, os, json, requests, datetime, random, re
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
-import facebook
 
-# ১. বিবিসি, সিএনএন, আলজাজিরা ও রয়টার্সের ১০০% আসল ও লাইভ আরএসএস এক্সএমএল ফিড ইউআরএল
+# ১. ১০০% আসল ও লাইভ বৈশ্বিক আরএসএস ফিড নেটওয়ার্ক
 FEEDS = {
-    "Schengen & Europe EU Rules": "https://schengenvisainfo.com",
-    "Canada Immigration & Jobs": "https://cicnews.com",
-    "USA Visa & Tech Laws": "https://immigration.ca",
-    "BBC World & Europe News": "https://bbci.co.uk",
-    "CNN International News": "http://cnn.com",
-    "Reuters Agency Global": "https://immigration.ca",  # নিশ্চিত ব্যাকআপ সোর্স
-    "Al Jazeera English Hub": "https://aljazeera.com"
+    "Schengen & Europe EU Rules": "https://www.schengenvisainfo.com/feed/",
+    "Canada Immigration & Jobs": "https://www.cicnews.com/feed/",
+    "USA Visa & Tech Laws": "https://www.uscis.gov/rss.xml",
+    "BBC World & Europe News": "http://feeds.bbci.co.uk/news/world/rss.xml",
+    "CNN International News": "http://rss.cnn.com/rss/edition.rss",
+    "Reuters Agency Global": "http://feeds.reuters.com/reuters/topNews",
+    "Al Jazeera English Hub": "https://www.aljazeera.com/xml/rss/all.xml"
 }
 
-# ২. ২৪ ঘণ্টা হাই-ট্রাফিক নিশ্চিত করার বৈশ্বিক সাপ্তাহিক রুটিন
 WEEK = {
     0: ["Schengen & Europe EU Rules", "BBC World & Europe News"],
     1: ["Canada Immigration & Jobs", "CNN International News"],
@@ -31,61 +29,41 @@ def get_cat():
 
 def get_featured_image(query):
     try:
-        client_id = os.environ.get("UNSPLASH_ACCESS_KEY")
-        if client_id:
-            url = f"https://unsplash.com{query},global,news&client_id={client_id}"
-            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
-            r = requests.get(url, headers=headers, timeout=12)
-            if r.status_code == 200:
-                return r.json()['urls']['regular']
+        key = os.environ.get("UNSPLASH_ACCESS_KEY")
+        if key:
+            url = f"https://api.unsplash.com/search/photos?query={query}&per_page=1&client_id={key}"
+            r = requests.get(url, timeout=10).json()
+            if r.get('results'): return r['results'][0]['urls']['regular']
     except: pass
-    return "https://unsplash.com"
+    return f"https://picsum.photos/seed/{random.randint(1,1000)}/800/400"
 
-# প্রথম ফিল্টার: Groq (Llama 3.3) দিয়ে নিউজের খসড়া ও ডেটা অ্যানালাইসিস তৈরি
 def call_groq_draft(p):
     try:
         k = os.environ.get("GROQ_API_KEY")
         if k:
-            r = requests.post("https://groq.com", 
-                              headers={"Authorization": f"Bearer {k}"}, 
-                              json={"model":"llama-3.3-70b-versatile", "messages":[{"role":"user","content":p}], "temperature": 0.3}, timeout=40)
+            r = requests.post("https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {k}"},
+                json={"model":"llama-3.3-70b-versatile", "messages":[{"role":"user","content":p}], "temperature": 0.3}, timeout=40)
             j = r.json()
-            if "choices" in j and len(j["choices"]) > 0: 
-                return j["choices"]["message"]["content"]
+            if "choices" in j: return j["choices"][0]["message"]["content"]
     except: pass
     return None
 
-# দ্বিতীয় ফিল্টার (মডিফায়ার): Gemini 2.0 দিয়ে সম্পূর্ণ রিরাইট, প্রুফরিড ও ফাইনাল এসইও অপ্টিমাইজেশন
 def call_gemini_modifier(draft, cat, title, summary):
     try:
         k = os.environ.get("GEMINI_API_KEY")
         if k:
-            p = f"""
-            You are a senior native English Chief Editor. Review and heavily rewrite the draft article below to ensure 100% uniqueness (no plagiarism) and elite British/American English quality.
-            Fix any subtle grammar or spelling mistakes.
-
-            Source Reference Title: {title}
-            Source Reference Summary: {summary}
-            Draft Article to Polish: {draft}
-
-            Strict Rules:
-            - Reply ONLY in valid JSON format. Do not use markdown tags like ```json outside the object.
-            - Keywords to integrate seamlessly: "{cat} 2027", "global immigration requirements", "step-by-step application guidelines", "official regulatory policy".
-
-            Expected JSON structure:
-            {{
-              "seo_title": "A high-CTR unique headline including {cat} 2027",
-              "meta_description": "A powerful 150-character meta description for search engines without quotes.",
-              "article_body": "HTML content starting with <h2>. Deep analysis, implications for 2027, and actionable advice with subheadings <h2>/<h3> and bullet points.",
-              "fb_caption": "An engaging social caption with relevant global hashtags and emojis."
-            }}
-            """
+            p = f"""You are a senior native English Chief Editor writing for a global audience. Rewrite the draft to 100% unique elite English. Source Title: {title} Summary: {summary} Draft: {draft} 
+            Strict Rules: Reply ONLY in a valid JSON object. Do not include markdown code blocks like ```json outside the raw JSON. Keywords to integrate seamlessly: "{cat} 2027", "global immigration requirements", "official regulatory policy".
+            JSON Structure: {{"seo_title": "headline with {cat} 2027", "meta_description": "150 char meta description without quotes", "article_body": "HTML starting with <h2> with deep analysis", "fb_caption": "social caption with hashtags"}}"""
+            
+            # মেটার আপ-টু-ডেট এবং হাই-স্পিড মডেল রুটিন সেট করা হলো
             for m in ["gemini-2.0-flash", "gemini-2.0-flash-lite"]:
-                url = f"https://googleapis.com{m}:generateContent?key={k}"
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={k}"
                 r = requests.post(url, json={"contents":[{"parts":[{"text":p}]}]}, timeout=30)
                 j = r.json()
                 if "candidates" in j and len(j["candidates"]) > 0: 
-                    return j["candidates"]['content']['parts']['text']
+                    return j["candidates"][0]['content']['parts'][0]['text']
     except: pass
     return None
 
@@ -94,12 +72,11 @@ def get_blogger():
     creds = Credentials.from_authorized_user_info(json.loads(s))
     return build("blogger", "v3", credentials=creds)
 
-def post_to_facebook_system(app_id, app_secret, page_id, message, link):
+def post_to_facebook_system(page_access_token, page_id, message, link):
     try:
-        graph = facebook.GraphAPI()
-        app_token = graph.get_app_access_token(app_id=app_id, app_secret=app_secret)
-        page_graph = facebook.GraphAPI(access_token=app_token)
-        page_graph.put_object(parent_object=page_id, connection_name='feed', message=message, link=link)
+        import facebook
+        graph = facebook.GraphAPI(access_token=page_access_token)
+        graph.put_object(parent_object=page_id, connection_name='feed', message=message, link=link)
         print("🎉 Successfully posted to Facebook Page!")
     except Exception as e:
         print(f"Facebook skipped: {str(e)}")
@@ -107,98 +84,86 @@ def post_to_facebook_system(app_id, app_secret, page_id, message, link):
 def post_to_telegram(token, chat_id, message, link):
     try:
         text = f"{message}\n\n🔗 Read Full Story: {link}"
-        url = f"https://telegram.org{token}/sendMessage"
-        payload = {"chat_id": chat_id, "text": text}
-        r = requests.post(url, json=payload, timeout=12)
-        if r.status_code == 200:
-            print("🎉 Successfully posted to Telegram Channel!")
+        url = f"https://api.telegram.org/bot{token}/sendMessage"
+        r = requests.post(url, json={"chat_id": chat_id, "text": text}, timeout=12)
+        if r.status_code == 200: print("🎉 Successfully posted to Telegram!")
     except Exception as e:
         print(f"Telegram skipped: {str(e)}")
 
-# --- স্মার্ট লুপ অ্যান্ড সিকিউর হেডার (অ্যান্টি-ব্লক প্রটেকশন) ---
+# --- Main Runtime ---
 selected_entry = None
 chosen_category = get_cat()
 categories_to_try = [chosen_category] + [cat for cat in FEEDS.keys() if cat != chosen_category]
-
-browser_headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Accept': 'application/rss+xml,application/rdf+xml,application/xml;q=0.9,*/*;q=0.8'
-}
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
 
 for current_cat in categories_to_try:
-    print(f"Scanning Global Network: {current_cat}...")
+    print(f"Scanning: {current_cat}...")
     try:
-        response = requests.get(FEEDS[current_cat], headers=browser_headers, timeout=15)
-        if response.status_code == 200:
-            feed = feedparser.parse(response.text)
-            if feed.entries and len(feed.entries) > 0:
-                selected_entry = feed.entries[0] # নিশ্চিতভাবে প্রথম তাজা খবরটি রিড করবে
-                chosen_category = current_cat
-                print(f"🎯 Premium Breaking News found in: {chosen_category}!")
-                break
-    except Exception as feed_err:
-        print(f"Skipping {current_cat}: {str(feed_err)}")
+        feed = feedparser.parse(FEEDS[current_cat])
+        if feed.entries and len(feed.entries) > 0:
+            selected_entry = feed.entries[0]
+            chosen_category = current_cat
+            print(f"🎯 Found in: {chosen_category}!")
+            break
+    except Exception as e:
+        print(f"Skipping {current_cat}: {e}")
         continue
 
 if not selected_entry:
-    print("❌ Critical: No entries found across global feeds.")
+    print("❌ No active entries found across any global feeds. Exiting safely.")
     exit(0)
 
 summary_text = selected_entry.get('summary', selected_entry.title)
 image_url = get_featured_image(chosen_category)
 
-# ধাপ ১: Groq-কে দিয়ে খবরের মূল ড্রাফট তৈরি করানো
-draft_prompt = f"Analyze and write a detailed professional news report based on this data: Title: {selected_entry.title}. Summary: {summary_text}. Category: {chosen_category}. Focus on structural data and factual background."
-draft_content = call_groq_draft(draft_prompt)
-
-if not draft_content:
-    draft_content = f"Official update regarding {selected_entry.title}. {summary_text}"
-
-# ধাপ ২: Gemini দিয়ে সেই ড্রাফটটিকে মডিফাই, রিরাইট এবং প্রফেশনাল এসইও-তে রূপান্তর
+draft_prompt = f"Write a professional news report. Title: {selected_entry.title}. Summary: {summary_text}. Category: {chosen_category}."
+draft_content = call_groq_draft(draft_prompt) or f"Update regarding {selected_entry.title}. {summary_text}"
 final_response = call_gemini_modifier(draft_content, chosen_category, selected_entry.title, summary_text)
 
+# এসইও এবং গুগল ইনডেক্সিং ১০০% নিশ্চিত করার জন্য উন্নত অবজেক্ট পার্সিং
 try:
-    clean_json = final_response.strip().replace("```json", "").replace("```", "")
-    data = json.loads(clean_json)
+    # রেগুলার এক্সপ্রেশন দিয়ে ব্র্যাকেটের বাইরের সমস্ত ময়লা পরিষ্কার করা হচ্ছে
+    json_clean = final_response.strip()
+    if json_clean.startswith("```"):
+        json_clean = re.sub(r'^```(?:json)?\s*|\s*```$', '', json_clean, flags=re.MULTILINE)
+    
+    data = json.loads(json_clean.strip())
     seo_title = data["seo_title"]
-    article_body = f'<div style="margin-bottom:20px;"><img src="{image_url}" alt="{seo_title}" style="width:100%; max-height:420px; object-fit:cover; border-radius:8px;"/></div>' + data["article_body"]
+    article_body = f'<div><img src="{image_url}" style="width:100%; max-height:440px; object-fit:cover; border-radius:8px;"/></div>' + data["article_body"]
     meta_desc = data["meta_description"]
     fb_caption = data["fb_caption"]
-except Exception as parse_error:
-    print(f"JSON Guard triggered: {str(parse_error)}")
-    seo_title = f"{chosen_category}: {selected_entry.title[:80]}"
-    article_body = f'<div style="margin-bottom:20px;"><img src="{image_url}" alt="{seo_title}" style="width:100%; border-radius:8px;"/></div><h2>{seo_title}</h2><p>{summary_text}</p>'
-    meta_desc = f"Latest official updates and global insights on {chosen_category}."
+except Exception as parse_err:
+    print(f"Bypassing advanced JSON Parsing to Fallguard due to: {str(parse_err)}")
+    seo_title = f"{chosen_category} 2027: {selected_entry.title[:80]}"
+    article_body = f'<div><img src="{image_url}" style="width:100%; border-radius:8px;"/></div><h2>{seo_title}</h2><p>{summary_text}</p>'
+    meta_desc = f"Latest official regulatory updates and premium insights on {chosen_category}."
     fb_caption = f"📢 Global Update: {seo_title}. Read details on our portal!"
 
-labels = [chosen_category, "Global Visa 2027", "Official Law Updates", "International NewsHub"]
-
+labels = [chosen_category, "Global Visa 2027", "Official Updates"]
 service = get_blogger()
 body = {
-    "kind": "blogger#post",
-    "blog": {"id": os.environ["BLOGGER_ID"]},
-    "title": seo_title,
-    "content": article_body,
-    "labels": labels,
-    "searchDescription": meta_desc
+    "kind": "blogger#post", 
+    "blog": {"id": os.environ["BLOGGER_ID"]}, 
+    "title": seo_title, 
+    "content": article_body, 
+    "labels": labels, 
+    "searchDescription": meta_desc # এটি সরাসরি ব্লগারের সার্চ ডেসক্রিপশন বক্সে ডেটা পুশ করবে যা গুগলে অটো-ইনডেক্স করবে
 }
 
 try:
     post = service.posts().insert(blogId=os.environ["BLOGGER_ID"], body=body, isDraft=False).execute()
     post_url = post['url']
     print(f"🚀 GLOBAL HUB AUTOMATION PUBLISHED: {post_url}")
-    
-    APP_ID = os.environ.get("FB_APP_ID")
-    APP_SECRET = os.environ.get("FB_APP_SECRET")
+
+    FB_TOKEN = os.environ.get("FB_PAGE_ACCESS_TOKEN")
     FB_PAGE_ID = os.environ.get("FB_PAGE_ID")
-    if APP_ID and APP_SECRET and FB_PAGE_ID:
-        post_to_facebook_system(APP_ID, APP_SECRET, FB_PAGE_ID, fb_caption, post_url)
+    if FB_TOKEN and FB_PAGE_ID:
+        post_to_facebook_system(FB_TOKEN, FB_PAGE_ID, fb_caption, post_url)
 
     TG_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
     TG_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
     if TG_TOKEN and TG_CHAT_ID:
         post_to_telegram(TG_TOKEN, TG_CHAT_ID, fb_caption, post_url)
-
-except Exception as blogger_error:
-    print(f"Automation execution break: {str(blogger_error)}")
+except Exception as e:
+    print(f"Critical execution error: {str(e)}")
     exit(1)
