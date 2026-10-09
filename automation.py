@@ -3,6 +3,8 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import facebook
 
+# Gemini API Endpoint (Correct model and path)
+GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={k}"
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
@@ -65,14 +67,13 @@ def get_featured_image(query):
     except: pass
     return f"https://picsum.photos/seed/{random.randint(1,100000)}/800/400"
 
-def call_groq_seo_article(cat, title, summary, source_link):
-    try:
-        k = os.environ.get("GROQ_API_KEY")
-        if not k: 
-            print("❌ GROQ_API_KEY নাই Secrets এ!")
-            return None
+def call_gemini_modifier(cat, title, summary, source_link):
+    k = os.environ.get("GEMINI_API_KEY")
+    if not k: 
+        print("❌ GEMINI_API_KEY নাই Secrets এ!")
+        return None
         
-        p = f"""You are an expert SEO news editor. Write a rich, detailed, 600+ words English news article based on:
+    p = f"""You are an expert SEO news editor. Write a rich, detailed, 600+ words English news article based on:
 Title: {title}
 Summary: {summary}
 Source: {source_link}
@@ -86,29 +87,24 @@ Return ONLY a valid JSON object with these exact keys (no markdown formatting ou
   "fb_caption": "Caption with hashtags"
 }}"""
 
-        for attempt in range(3):
-            print(f"🔄 Groq AI Call Attempt {attempt+1}/3...")
-            r = requests.post(
-                GROQ_URL, 
-                headers={"Authorization": f"Bearer {k}"}, 
-                json={
-                    "model": "llama-3.3-70b-versatile", 
-                    "messages": [{"role": "user", "content": p}], 
-                    "temperature": 0.3
-                }, 
-                timeout=30
-            )
+    url = GEMINI_URL_TEMPLATE.format(k=k)
+    
+    for attempt in range(3):
+        try:
+            print(f"🔄 Gemini AI Call Attempt {attempt+1}/3...")
+            r = requests.post(url, json={"contents": [{"parts": [{"text": p}]}]}, timeout=45)
+            print(f"Gemini Status: {r.status_code}")
             j = r.json()
-            if "choices" in j:
-                txt = j["choices"][0]["message"]["content"]
+            if "candidates" in j:
+                txt = j["candidates"][0]["content"]["parts"][0]["text"]
                 txt = re.sub(r'```(?:json)?\s*|\s*```', '', txt.strip(), flags=re.MULTILINE)
                 return txt
             else:
-                print(f"❌ Groq Error: {j}")
-        return None
-    except Exception as e:
-        print(f"Groq error: {e}")
-        return None
+                print(f"❌ Gemini Error Response: {j}")
+        except Exception as e:
+            print(f"⚠️ Gemini attempt {attempt+1} error/timeout: {e}")
+            time.sleep(5)
+    return None
 
 def get_blogger():
     try:
@@ -153,8 +149,8 @@ def main():
     summary_text = selected_entry.get('summary', selected_entry.title)
     image_url = get_featured_image(chosen_category)
     
-    # Generate high quality SEO article using Groq AI
-    final_response = call_groq_seo_article(chosen_category, selected_entry.title, summary_text, source_link)
+    # Generate high quality SEO article using Gemini AI
+    final_response = call_gemini_modifier(chosen_category, selected_entry.title, summary_text, source_link)
     
     if not final_response:
         print("❌ AI failed, using RICH SEO Fallback")
