@@ -1,37 +1,40 @@
 name: Auto Blog to Facebook Post
+
 on:
   schedule:
-    - cron: '0 */6 * * *'
-  workflow_dispatch:
+    - cron: '0 */6 * * *'  # প্রতি ৬ ঘণ্টা পর পর স্বয়ংক্রিয়ভাবে চলবে
+  workflow_dispatch:      # ম্যানুয়ালি Run করার বাটন চালু রাখবে
+
 jobs:
   run-script:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install feedparser requests google-auth google-api-python-client facebook-sdk
+
       - name: Run Automation Script
         env:
           BLOGGER_ID: ${{ secrets.BLOGGER_ID }}
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
           BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
-          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          FB_APP_ID: ${{ secrets.FB_APP_ID }}
-          FB_APP_SECRET: ${{ secrets.FB_APP_SECRET }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
         run: |
-          ls -la
-          python automation.py
+          ls -R
+          python automation.py || python Cocvghuj-trtt-news-bot/automation.py
