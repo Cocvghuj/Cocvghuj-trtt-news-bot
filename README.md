@@ -33,3 +33,15 @@
 | **Threads** | `Threads API` | 🧵 Threads Post |
 | **WhatsApp** | `WhatsApp Cloud API` | 💚 Channel Post |
 | **GitHub** | `Actions 0 */6 * * *` | ⚙️ প্রতি
+
+
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:FF00CC,100:00CCFF&height=260&section=header&text=TRTT%20NEWS%2024%20BD&fontSize=50&fontColor=ffffff&animation=fadeIn&desc=Milan%20to%20Bangladesh%20Family%20Project&descAlignY=80" />
+
+# 🌟 আমার পরিবারের জন্য উৎসর্গ 🌟
+
+<a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=32&pause=800&color=FF00CC&center=true&vCenter=true&width=800&height=80&lines=%E2%9C%A8+%E0%A6%B0%E0%A7%8B%E0%A6%95%E0%A6%B8%E0%A6%BE%E0%A6%A8%E0%A6%BE+%E2%9C%A8;%F0%9F%8C%B8+%E0%A6%AB%E0%A6%BE%E0%A6%B0%E0%A6%BF%E0%A6%AF%E0%A6%BC%E0%A6%BE+%E0%A6%9C%E0%A6%BE%E0%A6%B9%E0%A6%BE%E0%A6%A8+%E0%A6%A4%E0%A6%BE%E0%A6%87%E0%A6%AB%E0%A6%BE+%F0%9F%8C%B8;%F0%9F%8C%9F+%E0%A6%A4%E0%A6%BE%E0%A6%87%E0%A6%AB%E0%A7%81%E0%A6%B0+%E0%A6%B0%E0%A6%B9%E0%A6%AE%E0%A6%BE%E0%A6%A8+%E0%A6%A4%E0%A6%BE%E0%A6%B6%E0%A6%B0%E0%A6%BF%E0%A6%AB+%F0%9F%8C%9F" /></a>
+
+<p>
+<img src="https://img.shields.io/badge/ROKSANA-%E2%9D%A4%EF%B8%8F%20
