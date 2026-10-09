@@ -86,7 +86,6 @@ JSON Structure: {{"seo_title": "SEO optimized catchy headline with {cat} 2027", 
         print(f"Gemini error: {e}")
     return None
 
-# রিফ্রেশ এরর এড়াতে টোকেন রিফ্রেশ হ্যান্ডলিং বাদ দিয়ে সরাসরি ক্রেডেনশিয়াল বিল্ড করা হচ্ছে
 def get_blogger():
     try:
         client_id = os.environ.get("BLOGGER_CLIENT_ID")
@@ -199,6 +198,14 @@ def main():
                 post_to_telegram(TG_TOKEN, TG_CHAT_ID, fb_caption, post_url)
         except Exception as e:
             print(f"❌ Blogger Post Execution break: {str(e)}")
+            # যদি তবুও টোকেন ইস্যু করে, ফেসবুক ও টেলিগ্রামে অন্তত পোস্ট ব্যাকআপ হিসেবে পাঠিয়ে দেবে
+            try:
+                FB_TOKEN = os.environ.get("FB_PAGE_ACCESS_TOKEN")
+                FB_PAGE_ID = os.environ.get("FB_PAGE_ID")
+                if FB_TOKEN and FB_PAGE_ID:
+                    post_to_facebook_system(FB_TOKEN, FB_PAGE_ID, fb_caption, f"https://Trttnews24.blogspot.com")
+            except:
+                pass
             exit(1)
     else:
         print("❌ Blogger Service could not be initialized.")
