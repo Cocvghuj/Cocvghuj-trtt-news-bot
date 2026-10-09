@@ -10,8 +10,6 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import facebook
 
-# URL Constants
-TOKEN_URI = "https://oauth2.googleapis.com/token"
 GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={k}"
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
@@ -25,20 +23,6 @@ FEEDS = {
     "Global Tech & Dev Innovations": "https://techcrunch.com/feed/",
     "Global Finance & Investment": "http://feeds.bbci.co.uk/news/business/rss.xml"
 }
-
-WEEK = {
-    0: ["Schengen & Europe EU Rules", "Global Tech & Dev Innovations"],
-    1: ["Canada Immigration & Jobs", "Global Finance & Investment"],
-    2: ["USA Visa & Tech Laws", "Middle East Laws & Business"],
-    3: ["Australia & NZ Policy Updates", "Schengen & Europe EU Rules"],
-    4: ["Canada Immigration & Jobs", "Global Tech & Dev Innovations"],
-    5: ["USA Visa & Tech Laws", "Middle East Laws & Business"],
-    6: ["Australia & NZ Policy Updates", "Global Finance & Investment"]
-}
-
-def get_cat():
-    now = datetime.datetime.now()
-    return WEEK[now.weekday()][0 if now.hour < 12 else 1]
 
 def get_featured_image(query):
     try:
@@ -101,9 +85,8 @@ def get_blogger():
             refresh_token=refresh_token,
             client_id=client_id,
             client_secret=client_secret,
-            token_uri=TOKEN_URI,
+            token_uri="[https://oauth2.googleapis.com/token](https://oauth2.googleapis.com/token)",
         )
-        
         print("✅ Blogger Credentials initialized successfully!")
         return build("blogger", "v3", credentials=creds)
     except Exception as e:
@@ -130,28 +113,24 @@ def post_to_telegram(token, chat_id, message, link):
         print(f"📱 Telegram skipped: {str(e)}")
 
 def main():
+    # সরাসরি সেনজেন নিউজ সবার আগে স্ক্যান করার জন্য ফিক্সড করা হলো
+    chosen_category = "Schengen & Europe EU Rules"
     selected_entry = None
-    chosen_category = get_cat()
-    categories_to_try = [chosen_category] + [cat for cat in FEEDS.keys() if cat != chosen_category]
     browser_headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
 
-    for current_cat in categories_to_try:
-        print(f"📡 Scanning Network: {current_cat}...")
-        try:
-            response = requests.get(FEEDS[current_cat], headers=browser_headers, timeout=15)
-            if response.status_code == 200:
-                feed = feedparser.parse(response.text)
-                if feed.entries and len(feed.entries) > 0:
-                    selected_entry = feed.entries[0]
-                    chosen_category = current_cat
-                    print(f"🎯 Found in: {chosen_category}! Title: {selected_entry.title[:60]}")
-                    break
-        except Exception as e:
-            print(f"Skipping {current_cat}: {e}")
-            continue
+    print(f"📡 Scanning Network: {chosen_category}...")
+    try:
+        response = requests.get(FEEDS[chosen_category], headers=browser_headers, timeout=15)
+        if response.status_code == 200:
+            feed = feedparser.parse(response.text)
+            if feed.entries and len(feed.entries) > 0:
+                selected_entry = feed.entries[0]
+                print(f"🎯 Found in: {chosen_category}! Title: {selected_entry.title[:60]}")
+    except Exception as e:
+        print(f"Skipping {chosen_category}: {e}")
 
     if not selected_entry:
-        print("❌ No entries found across global networks.")
+        print("❌ No entries found.")
         exit(0)
 
     summary_text = selected_entry.get('summary', selected_entry.title)
@@ -171,13 +150,12 @@ def main():
         meta_desc = data["meta_description"]
         fb_caption = data["fb_caption"]
     except:
-        print("Bypassing advanced JSON Parsing to Fallback Guard template")
         seo_title = f"{chosen_category} 2027: {selected_entry.title[:80]}"
         article_body = f"<div><img src='{image_url}' style='width:100%; border-radius:8px'/></div><h2>{seo_title}</h2><p>{summary_text}</p>"
         meta_desc = f"Latest official updates and global insights on {chosen_category}."
         fb_caption = f"🌍 Global Update: {seo_title}. Read details on our portal!"
 
-    labels = [chosen_category, "Global Visa 2027", "Official Updates"]
+    labels = [chosen_category, "Schengen Visa 2027", "Official Updates"]
     service = get_blogger()
 
     if service:
