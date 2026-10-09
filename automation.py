@@ -220,7 +220,7 @@ def main():
                 blogs = blogger_service.blogs().listByUser(userId='self').execute()
                 if blogs.get('items'): blog_id = blogs['items'][0]['id']
 
-            # Strong Duplicate Check - শুধু Exact Match
+            # Strong Duplicate Check - Exact Match
             try:
                 existing = blogger_service.posts().list(blogId=blog_id, maxResults=15, fetchBodies=False).execute()
                 for p in existing.get('items', []):
