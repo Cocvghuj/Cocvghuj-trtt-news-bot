@@ -3,7 +3,7 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import facebook
 
-# ১. হাই-সিপিসি (High CPC) এবং গুগল নিউজ অ্যাপ্রুভড আরএসএস ফিডস
+# ১. টেকনোলজি ও কোডিং সহ সকল সচল ও লাইভ আরএসএস ফিডস
 FEEDS = {
     "Schengen Visa": "https://schengenvisainfo.com",
     "Europe Work Permit": "https://cicnews.com",
@@ -11,18 +11,19 @@ FEEDS = {
     "Study in Europe": "https://scholarship-positions.com",
     "Europe Business": "https://bbci.co.uk",
     "Europe Investment": "https://ft.com",
-    "Europe Tech": "https://bbci.co.uk",
+    "Europe Tech & Coding": "https://bbci.co.uk",
     "Europe Politics": "https://bbci.co.uk"
 }
 
+# ২. আপনার রুটিনে টেকনোলজি ক্যাটাগরি যুক্ত করা হলো
 WEEK = {
-    0: ["Schengen Visa", "Europe Investment"],
-    1: ["Europe Business", "Europe Work Permit"],
-    2: ["Europe Tech", "Europe Jobs"],
-    3: ["Europe Investment", "Schengen Visa"],
-    4: ["Europe Work Permit", "Europe Politics"],
-    5: ["Study in Europe", "Europe Business"],
-    6: ["Europe Jobs", "Schengen Visa"]
+    0: ["Schengen Visa", "Europe Tech & Coding"],   # সোমবার
+    1: ["Europe Business", "Europe Work Permit"],   # মঙ্গলবার
+    2: ["Europe Tech & Coding", "Europe Jobs"],     # বুধবার
+    3: ["Europe Investment", "Schengen Visa"],      # বৃহস্পতিবার
+    4: ["Europe Work Permit", "Europe Politics"],   # শুক্রবার
+    5: ["Study in Europe", "Europe Tech & Coding"], # শনিবার
+    6: ["Europe Jobs", "Schengen Visa"]             # রবিবার
 }
 
 def get_cat():
@@ -33,7 +34,7 @@ def get_featured_image(query):
     try:
         client_id = os.environ.get("UNSPLASH_ACCESS_KEY")
         if client_id:
-            url = f"https://unsplash.com{query},europe&client_id={client_id}"
+            url = f"https://unsplash.com{query},europe,coding&client_id={client_id}"
             r = requests.get(url, timeout=12)
             if r.status_code == 200:
                 return r.json()['urls']['regular']
@@ -41,7 +42,6 @@ def get_featured_image(query):
     return "https://unsplash.com"
 
 def ai_seo_generator(p):
-    # গিটহাব ফেল করা ঠেকাতে ডাবল ফলব্যাক মেকানিজম (Groq -> Gemini)
     try:
         k = os.environ.get("GROQ_API_KEY")
         if k:
@@ -50,7 +50,7 @@ def ai_seo_generator(p):
                               json={"model":"llama-3.3-70b-versatile", "messages":[{"role":"user","content":p}], "temperature": 0.3}, timeout=40)
             j = r.json()
             if "choices" in j and len(j["choices"]) > 0: 
-                return j["choices"][0]["message"]["content"]
+                return j["choices"]["message"]["content"]
     except: pass
 
     try:
@@ -61,7 +61,7 @@ def ai_seo_generator(p):
                 r = requests.post(url, json={"contents":[{"parts":[{"text":p}]}]}, timeout=30)
                 j = r.json()
                 if "candidates" in j and len(j["candidates"]) > 0: 
-                    return j["candidates"][0]['content']['parts'][0]['text']
+                    return j["candidates"]['content']['parts']['text']
     except: pass
     return None
 
@@ -78,38 +78,61 @@ def post_to_facebook_system(app_id, app_secret, page_id, message, link):
         page_graph.put_object(parent_object=page_id, connection_name='feed', message=message, link=link)
         print("🎉 Successfully posted to Facebook Page automatically!")
     except Exception as e:
-        print(f"Facebook warning (Workflow skipped fail to prevent crash): {str(e)}")
+        print(f"Facebook warning (Skipped to prevent crash): {str(e)}")
 
-# --- মূল রান টাইম ---
-cat = get_cat()
-feed = feedparser.parse(FEEDS[cat])
+def post_to_telegram(token, chat_id, message, link):
+    try:
+        text = f"{message}\n\n🔗 Read Full Story: {link}"
+        url = f"https://telegram.org{token}/sendMessage"
+        payload = {"chat_id": chat_id, "text": text}
+        r = requests.post(url, json=payload, timeout=12)
+        if r.status_code == 200:
+            print("🎉 Successfully posted to Telegram Channel automatically!")
+        else:
+            print(f"Telegram API response error: {r.text}")
+    except Exception as e:
+        print(f"Telegram warning: {str(e)}")
 
-if not feed.entries:
-    print(f"No active RSS entries found for {cat}. Exiting cleanly.")
+# --- স্মার্ট লুপ মেকানিজম (কোনো রান খালি যাবে激活) ---
+selected_entry = None
+chosen_category = get_cat()
+
+categories_to_try = [chosen_category] + [cat for cat in FEEDS.keys() if cat != chosen_category]
+
+for current_cat in categories_to_try:
+    print(f"Checking RSS source for category: {current_cat}...")
+    feed = feedparser.parse(FEEDS[current_cat])
+    
+    if feed.entries and len(feed.entries) > 0:
+        selected_entry = feed.entries[0]
+        chosen_category = current_cat
+        print(f"🎯 Target news found in category: {chosen_category}!")
+        break
+
+if not selected_entry:
+    print("❌ No news entries found across all categories. Exiting cleanly.")
     exit(0)
 
-sel = feed.entries[0]
-summary_text = sel.get('summary', 'Latest industry insight and detailed updates.')
-image_url = get_featured_image(cat)
+summary_text = selected_entry.get('summary', 'Latest industry insight and detailed tech updates.')
+image_url = get_featured_image(chosen_category)
 
-# বানান ভুল মুক্ত, প্রফেশনাল এবং গুগল ফ্রেন্ডলি আর্টিকেলের জন্য প্রম্পট
 prompt = f"""
-You are an elite native English financial journalist writing for a premium European News site.
+You are an elite native English technology and financial journalist writing for a premium European News site.
 Write a 100% unique, deep-dive, professional news article based on the source data below. Fix any grammar and spelling errors from the source.
 
-Category: {cat}
-Source Title: {sel.title}
+Category: {chosen_category}
+Source Title: {selected_entry.title}
 Source Summary: {summary_text}
 
 Strict Structural Rules:
 - Language: Native, flawless, high-vocabulary British/American English only.
-- Format: Reply ONLY in valid JSON format. Do not use Markdown blocks like ```json outside the object.
+- Format: Reply ONLY in valid JSON format. Do not include markdown indicators outside the JSON object.
 - Elements: Use <h2> and <h3> tags for subheadings. Use bullet points (<ul>/<li>) to present data clearly.
-- Target Keywords to Naturally Integrate: "{cat} 2027", "Europe 2027", "step-by-step application guidelines", "financial legal requirements", "investment risk updates".
+- Target Keywords to Naturally Integrate: "{chosen_category} 2027", "Europe 2027", "step-by-step application guidelines", "technical innovations", "development and coding trends".
 
 Expected JSON structure:
 {{
-  "seo_title": "A high-CTR unique headline including {cat} 2027",
+  "seo_title": "A high-CTR unique headline including {chosen_category} 2027",
   "meta_description": "A powerful 150-character meta description for search engines without quotes.",
   "article_body": "HTML content starting with <h2>. Deep analysis of the news, background information, implications for 2027, and actionable advice for readers.",
   "fb_caption": "Write an engaging Facebook post caption with relevant 2027 hashtags and emojis."
@@ -122,20 +145,18 @@ try:
     clean_json = response_raw.strip().replace("```json", "").replace("```", "")
     data = json.loads(clean_json)
     seo_title = data["seo_title"]
-    # গুগলের ব্লগে স্বয়ংক্রিয় ইমেজ সেটআপ
     article_body = f'<div style="margin-bottom:20px;"><img src="{image_url}" alt="{seo_title}" style="width:100%; max-height:420px; object-fit:cover; border-radius:8px;"/></div>' + data["article_body"]
     meta_desc = data["meta_description"]
     fb_caption = data["fb_caption"]
 except Exception as parse_error:
-    print(f"JSON Parsing failed, active failguard triggered: {str(parse_error)}")
-    seo_title = f"{cat} 2027: {sel.title[:80]}"
+    print(f"JSON Parsing fallguard triggered: {str(parse_error)}")
+    seo_title = f"{chosen_category} 2027: {selected_entry.title[:80]}"
     article_body = f'<div style="margin-bottom:20px;"><img src="{image_url}" alt="{seo_title}" style="width:100%; border-radius:8px;"/></div><h2>{seo_title}</h2><p>{summary_text}</p>'
-    meta_desc = f"Latest premium updates on {cat} 2027 and legal regulations in Europe."
+    meta_desc = f"Latest premium updates on {chosen_category} 2027 and technical regulations in Europe."
     fb_caption = f"📢 Latest Update: {seo_title}. Read more details on our blog!"
 
-labels = [cat, "Europe 2027", "Premium Insights"]
+labels = [chosen_category, "Europe 2027", "Premium Insights", "Tech News"]
 
-# ব্লগারে স্বয়ংক্রিয়ভাবে টাইটেল, বডি, ট্যাগ এবং মেটা সার্চ ডেসক্রিপশন পুশ করা
 service = get_blogger()
 body = {
     "kind": "blogger#post",
@@ -143,22 +164,25 @@ body = {
     "title": seo_title,
     "content": article_body,
     "labels": labels,
-    "searchDescription": meta_desc # এটি সরাসরি ব্লগারের সার্চ ডেসক্রিপশন বক্সে মেটা ডেটা বসিয়ে দেবে (SEO-র জন্য সবচেয়ে জরুরি)
+    "searchDescription": meta_desc
 }
 
 try:
     post = service.posts().insert(blogId=os.environ["BLOGGER_ID"], body=body, isDraft=False).execute()
     post_url = post['url']
-    print(f"SUCCESSFULLY PUBLISHED BLOG: {post_url}")
+    print(f"🚀 SUCCESSFULLY PUBLISHED BLOG: {post_url}")
     
     APP_ID = os.environ.get("FB_APP_ID")
     APP_SECRET = os.environ.get("FB_APP_SECRET")
     FB_PAGE_ID = os.environ.get("FB_PAGE_ID")
-
     if APP_ID and APP_SECRET and FB_PAGE_ID:
         post_to_facebook_system(APP_ID, APP_SECRET, FB_PAGE_ID, fb_caption, post_url)
-    else:
-        print("Facebook credentials missing in GitHub Secrets. Skipping Social share.")
+
+    TG_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+    TG_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
+    if TG_TOKEN and TG_CHAT_ID:
+        post_to_telegram(TG_TOKEN, TG_CHAT_ID, fb_caption, post_url)
+
 except Exception as blogger_error:
-    print(f"Blogger API critically failed: {str(blogger_error)}")
+    print(f"Automation critically failed: {str(blogger_error)}")
     exit(1)
