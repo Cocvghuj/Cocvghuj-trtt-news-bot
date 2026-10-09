@@ -1,34 +1,35 @@
-name: TRTT Auto Poster - Final
+name: Auto Blog to Facebook Post
 
 on:
   schedule:
-    - cron: '0 2 * * *' # সকাল ৮টা BD
-    - cron: '0 8 * * *' # বিকাল ২টা BD
-  workflow_dispatch:
+    - cron: '0 */6 * * *' # প্রতি ৬ ঘণ্টা পর পর কোডটি স্বয়ংক্রিয়ভাবে রান করবে
+  workflow_dispatch: # ম্যানুয়ালি রান করানোর বাটন
 
 jobs:
-  post:
+  run-script:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      - run: pip install -r requirements.txt
-      - name: Run Auto Poster
-        run: python automation.py
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Automation Script
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
-          DEEP_SEEK_KEY: ${{ secrets.DEEP_SEEK_KEY }}
-          COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
-          HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
-          CONSOLE_API_KEY: ${{ secrets.CONSOLE_API_KEY }}
           BLOGGER_ID: ${{ secrets.BLOGGER_ID }}
-          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
-          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
-          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          BLOGGER_TOKEN_JSON: ${{ secrets.BLOGGER_TOKEN_JSON }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FB_APP_ID: ${{ secrets.FB_APP_ID }}
+          FB_APP_SECRET: ${{ secrets.FB_APP_SECRET }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+        run: python script.py
