@@ -6,12 +6,12 @@ import datetime
 import random
 import re
 import traceback
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 import facebook
 
 # URL Constants
+TOKEN_URI = "https://oauth2.googleapis.com/token"
 GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={k}"
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
@@ -86,36 +86,30 @@ JSON Structure: {{"seo_title": "SEO optimized catchy headline with {cat} 2027", 
         print(f"Gemini error: {e}")
     return None
 
-# জিমেইল ইমেলের মাধ্যমে ব্লগারে অটো পোস্ট পাঠানোর ফাংশন (কোনো টোকেনের ঝামেলা নেই!)
-def post_to_blogger_via_email(title, html_body):
+def get_blogger():
     try:
-        gmail_user = os.environ.get("GMAIL_USER")
-        gmail_password = os.environ.get("GMAIL_APP_PASSWORD")
-        blogger_mail = os.environ.get("BLOGGER_EMAIL_SECRET") # আপনার ব্লগের সিক্রেট মেইল এড্রেস (Blogger Settings > Email Post থেকে পাবেন)
-
-        if not gmail_user or not gmail_password or not blogger_mail:
-            print("❌ Missing Gmail or Blogger Secret Email credentials!")
-            return False
-
-        msg = MIMEMultipart()
-        msg['From'] = gmail_user
-        msg['To'] = blogger_mail
-        msg['Subject'] = title  # ইমেলের সাবজেক্টই ব্লগের পোস্টের টাইটেল হবে
-
-        msg.attach(MIMEText(html_body, 'html'))
-
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login(gmail_user, gmail_password)
-        server.sendmail(gmail_user, blogger_mail, msg.as_string())
-        server.quit()
+        client_id = os.environ.get("BLOGGER_CLIENT_ID")
+        client_secret = os.environ.get("BLOGGER_CLIENT_SECRET")
+        refresh_token = os.environ.get("BLOGGER_REFRESH_TOKEN")
         
-        print("🚀 Successfully published to Blogger via Email Publishing!")
-        return True
+        if not client_id or not client_secret or not refresh_token:
+            print("❌ Missing Blogger OAuth Secrets!")
+            return None
+
+        creds = Credentials(
+            token=None,
+            refresh_token=refresh_token,
+            client_id=client_id,
+            client_secret=client_secret,
+            token_uri=TOKEN_URI,
+        )
+        
+        print("✅ Blogger Credentials initialized successfully!")
+        return build("blogger", "v3", credentials=creds)
     except Exception as e:
-        print(f"❌ Blogger Email Post Error: {e}")
+        print(f"❌ Blogger Auth Error: {e}")
         traceback.print_exc()
-        return False
+        return None
 
 def post_to_facebook_system(page_access_token, page_id, message, link):
     try:
@@ -183,24 +177,30 @@ def main():
         meta_desc = f"Latest official updates and global insights on {chosen_category}."
         fb_caption = f"🌍 Global Update: {seo_title}. Read details on our portal!"
 
-    # ব্লগে পোস্ট পাঠানোর জন্য ইমেল মেথড কল করা হলো
-    success = post_to_blogger_via_email(seo_title, article_body)
+    labels = [chosen_category, "Global Visa 2027", "Official Updates"]
+    service = get_blogger()
 
-    if success:
-        # যেহেতু ইমেল পোস্টিংয়ে ডাইরেক্ট পোস্টের ইউআরএল রিটার্ন করে না, তাই ডিফল্ট ব্লগ হোমপেজ লিংক ব্যবহার করা হবে
-        post_url = "https://Trttnews24.blogspot.com"
-        
-        FB_TOKEN = os.environ.get("FB_PAGE_ACCESS_TOKEN")
-        FB_PAGE_ID = os.environ.get("FB_PAGE_ID")
-        if FB_TOKEN and FB_PAGE_ID:
-            post_to_facebook_system(FB_TOKEN, FB_PAGE_ID, fb_caption, post_url)
+    if service:
+        try:
+            body = {"kind": "blogger#post", "blog": {"id": os.environ["BLOGGER_ID"]}, "title": seo_title, "content": article_body, "labels": labels}
+            post = service.posts().insert(blogId=os.environ["BLOGGER_ID"], body=body, isDraft=False).execute()
+            post_url = post['url']
+            print(f"🚀 GLOBAL HUB AUTOMATION PUBLISHED: {post_url}")
 
-        TG_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
-        TG_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
-        if TG_TOKEN and TG_CHAT_ID:
-            post_to_telegram(TG_TOKEN, TG_CHAT_ID, fb_caption, post_url)
+            FB_TOKEN = os.environ.get("FB_PAGE_ACCESS_TOKEN")
+            FB_PAGE_ID = os.environ.get("FB_PAGE_ID")
+            if FB_TOKEN and FB_PAGE_ID:
+                post_to_facebook_system(FB_TOKEN, FB_PAGE_ID, fb_caption, post_url)
+
+            TG_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+            TG_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
+            if TG_TOKEN and TG_CHAT_ID:
+                post_to_telegram(TG_TOKEN, TG_CHAT_ID, fb_caption, post_url)
+        except Exception as e:
+            print(f"❌ Blogger Post Execution break: {str(e)}")
+            exit(1)
     else:
-        print("❌ Failed to publish post via Email.")
+        print("❌ Blogger Service could not be initialized.")
         exit(1)
 
 if __name__ == "__main__":
