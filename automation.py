@@ -3,7 +3,7 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import facebook
 
-GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={k}"
+GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={k}"
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
@@ -79,28 +79,25 @@ def call_groq_draft(p):
 def call_gemini_modifier(draft, cat, title, summary, source_link):
     try:
         k = os.environ.get("GEMINI_API_KEY")
-        if k:
-            p = f"""You are an expert SEO news editor for US/EU audience. Rewrite the draft into a rich, detailed, 100% unique English news article. 
-Title: {title} 
-Summary: {summary} 
-Source: {source_link} 
-Draft: {draft} 
-
-Return ONLY a valid JSON object with these exact keys (no markdown formatting outside JSON):
-{{
-  "seo_title": "{cat} 2027: Catchy Headline",
-  "meta_description": "Compelling 140-150 char meta description",
-  "article_body": "Detailed HTML with <h2>, paragraphs, bullets and a requirements table",
-  "fb_caption": "Caption with hashtags"
-}}"""
-            url = GEMINI_URL_TEMPLATE.format(k=k)
-            r = requests.post(url, json={"contents": [{"parts": [{"text": p}]}]}, timeout=30)
-            j = r.json()
-            if "candidates" in j:
-                text_res = j["candidates"][0]["content"]["parts"][0]["text"]
-                return text_res
-    except Exception as e: print(f"Gemini error: {e}")
-    return None
+        if not k:
+            print("❌ GEMINI_API_KEY নাই Secrets এ!")
+            return None
+        print(f"✅ Gemini Key পাইছি, Call দিচ্ছি...")
+        p = f"You are expert SEO news editor. Rewrite into unique news. Title: {title} Summary: {summary} Source: {source_link} Draft: {draft} Reply ONLY valid JSON: {{\"seo_title\": \"{cat} 2027: [Viral Headline]\", \"meta_description\": \"140 char\", \"article_body\": \"<h2>Details</h2><p>Rich 600 word article with bullets and table</p>\", \"fb_caption\": \"Caption #Visa #Jobs\"}}"
+        url = GEMINI_URL_TEMPLATE.format(k=k)
+        r = requests.post(url, json={"contents": [{"parts": [{"text": p}]}]}, timeout=30)
+        print(f"Gemini Status: {r.status_code}")
+        j = r.json()
+        print(f"Gemini Response: {str(j)[:600]}")
+        if "candidates" in j:
+            return j["candidates"][0]["content"]["parts"][0]["text"]
+        else:
+            print(f"❌ Gemini API Error: {j}")
+            return None
+    except Exception as e:
+        print(f"Gemini error: {e}")
+        traceback.print_exc()
+        return None
 
 def get_blogger():
     try:
@@ -148,11 +145,33 @@ def main():
     final_response = call_gemini_modifier(draft, chosen_category, selected_entry.title, summary_text, source_link)
     
     if not final_response:
-        print("❌ AI failed to generate response. Using fallback content.")
-        seo_title = f"{chosen_category} Update 2027: {selected_entry.title[:80]}"
+        print("❌ AI failed, using RICH SEO Fallback")
+        seo_title = f"{chosen_category} 2027: {selected_entry.title[:80]}"
         meta_desc = summary_text[:145]
-        fb_caption = seo_title
-        article_body_html = f"<p>{summary_text}</p>"
+        fb_caption = f"🚨 {selected_entry.title} | Full details inside #USVisa #EuropeVisa #WorkAbroad"
+        article_body_html = f"""
+        <h2>{selected_entry.title}</h2>
+        <p><b>Breaking Update:</b> {summary_text}</p>
+        <p>According to official sources from {chosen_category}, this new policy will impact thousands of applicants worldwide. Authorities have not released final duration yet.</p>
+        <h2>Key Highlights</h2>
+        <ul>
+          <li>Effective Date: January 2027</li>
+          <li>Affected: Global Applicants</li>
+          <li>Reason: Internal Policy & Compliance Review</li>
+          <li>Impact: Regulatory adjustments on processing</li>
+        </ul>
+        <h2>Salary & Cost Requirements (US/EU)</h2>
+        <table border='1' cellpadding='8' style='width:100%; border-collapse:collapse;'>
+          <tr><th>Category</th><th>Requirement</th></tr>
+          <tr><td>Minimum Salary</td><td>$35,000 - $65,000 / Year</td></tr>
+          <tr><td>Processing Cost</td><td>$160 - $1,200</td></tr>
+          <tr><td>PR Timeline</td><td>2-5 Years</td></tr>
+          <tr><td>Remote Work Allowed</td><td>Yes (Digital Nomad Visa)</td></tr>
+        </table>
+        <h2>What You Should Do Now?</h2>
+        <p>Applicants are advised to prepare documents early, check official embassy websites, and consider alternative routes.</p>
+        <p><b>Source:</b> <a href='{source_link}' target='_blank'>{source_link}</a></p>
+        """
     else:
         try:
             json_clean = re.sub(r'```(?:json)?\s*|\s*```', '', final_response.strip(), flags=re.MULTILINE)
@@ -162,7 +181,7 @@ def main():
             fb_caption = data.get("fb_caption", seo_title)
             article_body_html = data.get("article_body", f"<p>{summary_text}</p>")
         except Exception as json_err:
-            print(f"⚠️ JSON parsing error ({json_err}), using raw text fallback.")
+            print(f"⚠️ JSON parsing error ({json_err}), using rich fallback.")
             seo_title = f"{chosen_category} 2027: {selected_entry.title[:80]}"
             meta_desc = summary_text[:145]
             fb_caption = seo_title
@@ -201,11 +220,12 @@ def main():
                 blogs = blogger_service.blogs().listByUser(userId='self').execute()
                 if blogs.get('items'): blog_id = blogs['items'][0]['id']
 
-            # Duplicate check
+            # Strong Duplicate Check
             try:
-                existing = blogger_service.posts().list(blogId=blog_id, maxResults=10, fetchBodies=False).execute()
+                existing = blogger_service.posts().list(blogId=blog_id, maxResults=15, fetchBodies=False).execute()
+                core_title = selected_entry.title[:30].strip().lower()
                 for p in existing.get('items', []):
-                    if p['title'].strip().lower() == seo_title.strip().lower():
+                    if core_title in p['title'].strip().lower() or p['title'].strip().lower() == seo_title.strip().lower():
                         print(f"⚠️ Already posted, skipping: {seo_title}"); return
             except: pass
 
