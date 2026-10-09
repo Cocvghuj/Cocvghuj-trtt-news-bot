@@ -2,8 +2,8 @@ name: Auto Blog to Facebook Post
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # প্রতি ৬ ঘণ্টা পর পর কোডটি স্বয়ংক্রিয়ভাবে ব্যাকগ্রাউন্ডে রান করবে
-  workflow_dispatch: # ম্যানুয়ালি রান করানোর বাটন
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   run-script:
@@ -25,9 +25,9 @@ jobs:
       - name: Run Automation Script
         env:
           BLOGGER_ID: ${{ secrets.BLOGGER_ID }}
-          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
-          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
-          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          BLOGGER_EMAIL_SECRET: ${{ secrets.BLOGGER_EMAIL_SECRET }}
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
