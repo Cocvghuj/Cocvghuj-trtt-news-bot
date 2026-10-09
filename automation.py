@@ -87,21 +87,22 @@ JSON Structure: {{"seo_title": "SEO optimized catchy headline with {cat} 2027", 
         print(f"Gemini error: {e}")
     return None
 
-# সরাসরি BLOGGER_TOKEN_JSON ব্যবহার করার জন্য আপডেট করা ফাংশন
+# সরাসরি தனி আলাদা সিক্রেটগুলো ব্যবহার করার জন্য ফাংশন
 def get_blogger():
     try:
-        token_json_str = os.environ.get("BLOGGER_TOKEN_JSON")
-        if not token_json_str:
-            print("❌ Missing BLOGGER_TOKEN_JSON in Secrets!")
+        client_id = os.environ.get("BLOGGER_CLIENT_ID")
+        client_secret = os.environ.get("BLOGGER_CLIENT_SECRET")
+        refresh_token = os.environ.get("BLOGGER_REFRESH_TOKEN")
+        
+        if not client_id or not client_secret or not refresh_token:
+            print("❌ Missing Blogger OAuth Secrets!")
             return None
 
-        token_data = json.loads(token_json_str)
-        
         creds = Credentials(
-            token=token_data.get("token"),
-            refresh_token=token_data.get("refresh_token"),
-            client_id=token_data.get("client_id"),
-            client_secret=token_data.get("client_secret"),
+            token=None,
+            refresh_token=refresh_token,
+            client_id=client_id,
+            client_secret=client_secret,
             token_uri=TOKEN_URI,
         )
         
