@@ -3,10 +3,10 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import facebook
 
-# Gemini API Endpoint (Correct model and path)
-GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={k}"
-TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
+# Gemini v1beta endpoint with gemini-2.0-flash
+GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={k}"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 
 FEEDS = {
     "Schengen & Europe EU Rules": "https://www.schengenvisainfo.com/feed/",
@@ -67,43 +67,73 @@ def get_featured_image(query):
     except: pass
     return f"https://picsum.photos/seed/{random.randint(1,100000)}/800/400"
 
-def call_gemini_modifier(cat, title, summary, source_link):
+# 1. Primary AI: Gemini (v1beta with gemini-2.0-flash)
+def call_gemini(cat, title, summary, source_link):
     k = os.environ.get("GEMINI_API_KEY")
-    if not k: 
-        print("❌ GEMINI_API_KEY নাই Secrets এ!")
-        return None
-        
+    if not k: return None
     p = f"""You are an expert SEO news editor. Write a rich, detailed, 600+ words English news article based on:
 Title: {title}
 Summary: {summary}
 Source: {source_link}
 Category: {cat}
 
-Return ONLY a valid JSON object with these exact keys (no markdown formatting outside JSON):
+Return ONLY a valid JSON object with these exact keys:
 {{
   "seo_title": "{cat} 2027: Catchy Headline",
   "meta_description": "Compelling 140-150 char meta description",
   "article_body": "Detailed HTML with <h2>, paragraphs, bullet points, and a requirements table",
   "fb_caption": "Caption with hashtags"
 }}"""
-
     url = GEMINI_URL_TEMPLATE.format(k=k)
-    
-    for attempt in range(3):
+    for attempt in range(2):
         try:
-            print(f"🔄 Gemini AI Call Attempt {attempt+1}/3...")
-            r = requests.post(url, json={"contents": [{"parts": [{"text": p}]}]}, timeout=45)
+            print(f"🔄 Gemini 2.0 Flash Attempt {attempt+1}/2...")
+            r = requests.post(url, json={"contents": [{"parts": [{"text": p}]}]}, timeout=35)
             print(f"Gemini Status: {r.status_code}")
             j = r.json()
             if "candidates" in j:
                 txt = j["candidates"][0]["content"]["parts"][0]["text"]
-                txt = re.sub(r'```(?:json)?\s*|\s*```', '', txt.strip(), flags=re.MULTILINE)
-                return txt
-            else:
-                print(f"❌ Gemini Error Response: {j}")
+                return re.sub(r'```(?:json)?\s*|\s*```', '', txt.strip(), flags=re.MULTILINE)
         except Exception as e:
-            print(f"⚠️ Gemini attempt {attempt+1} error/timeout: {e}")
-            time.sleep(5)
+            print(f"⚠️ Gemini attempt {attempt+1} error: {e}")
+            time.sleep(3)
+    return None
+
+# 2. Backup AI: Groq (llama-3.1-8b-instant)
+def call_groq_backup(cat, title, summary, source_link):
+    k = os.environ.get("GROQ_API_KEY")
+    if not k: return None
+    p = f"""You are an expert SEO news editor. Write a rich, detailed, 600+ words English news article based on:
+Title: {title}
+Summary: {summary}
+Source: {source_link}
+Category: {cat}
+
+Return ONLY a valid JSON object with these exact keys:
+{{
+  "seo_title": "{cat} 2027: Catchy Headline",
+  "meta_description": "Compelling 140-150 char meta description",
+  "article_body": "Detailed HTML with <h2>, paragraphs, bullet points, and a requirements table",
+  "fb_caption": "Caption with hashtags"
+}}"""
+    try:
+        print("🔄 Switching to Groq Backup AI...")
+        r = requests.post(
+            GROQ_URL, 
+            headers={"Authorization": f"Bearer {k}"}, 
+            json={
+                "model": "llama-3.1-8b-instant", 
+                "messages": [{"role": "user", "content": p}], 
+                "temperature": 0.3
+            }, 
+            timeout=30
+        )
+        j = r.json()
+        if "choices" in j:
+            txt = j["choices"][0]["message"]["content"]
+            return re.sub(r'```(?:json)?\s*|\s*```', '', txt.strip(), flags=re.MULTILINE)
+    except Exception as e:
+        print(f"❌ Groq Backup error: {e}")
     return None
 
 def get_blogger():
@@ -149,11 +179,14 @@ def main():
     summary_text = selected_entry.get('summary', selected_entry.title)
     image_url = get_featured_image(chosen_category)
     
-    # Generate high quality SEO article using Gemini AI
-    final_response = call_gemini_modifier(chosen_category, selected_entry.title, summary_text, source_link)
+    # Try Gemini 2.0 Flash first, if fails switch to Groq Backup
+    final_response = call_gemini(chosen_category, selected_entry.title, summary_text, source_link)
+    if not final_response:
+        print("⚠️ Gemini failed, trying Groq Backup...")
+        final_response = call_groq_backup(chosen_category, selected_entry.title, summary_text, source_link)
     
     if not final_response:
-        print("❌ AI failed, using RICH SEO Fallback")
+        print("❌ All AI failed, using RICH SEO Fallback")
         seo_title = f"{chosen_category} 2027: {selected_entry.title[:80]}"
         meta_desc = summary_text[:145]
         fb_caption = f"🚨 {selected_entry.title} | Full details inside #USVisa #EuropeVisa #WorkAbroad"
