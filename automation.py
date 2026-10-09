@@ -3,7 +3,7 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import facebook
 
-GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={k}"
+GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={k}"
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
@@ -79,24 +79,28 @@ def call_groq_draft(p):
 def call_gemini_modifier(draft, cat, title, summary, source_link):
     try:
         k = os.environ.get("GEMINI_API_KEY")
-        if not k:
-            print("❌ GEMINI_API_KEY নাই Secrets এ!")
-            return None
-        print(f"✅ Gemini Key পাইছি, Call দিচ্ছি...")
-        p = f"You are expert SEO news editor. Rewrite into unique news. Title: {title} Summary: {summary} Source: {source_link} Draft: {draft} Reply ONLY valid JSON: {{\"seo_title\": \"{cat} 2027: [Viral Headline]\", \"meta_description\": \"140 char\", \"article_body\": \"<h2>Details</h2><p>Rich 600 word article with bullets and table</p>\", \"fb_caption\": \"Caption #Visa #Jobs\"}}"
+        if not k: return None
+        p = f"""You are expert SEO editor. Rewrite this news into 600 words with H2, bullets, table.
+        Title: {title}
+        Summary: {summary}
+        Source: {source_link}
+        Draft: {draft}
+        Return ONLY valid JSON object with keys: seo_title, meta_description, article_body, fb_caption.
+        article_body must be full HTML.
+        """
         url = GEMINI_URL_TEMPLATE.format(k=k)
         r = requests.post(url, json={"contents": [{"parts": [{"text": p}]}]}, timeout=30)
         print(f"Gemini Status: {r.status_code}")
         j = r.json()
-        print(f"Gemini Response: {str(j)[:600]}")
         if "candidates" in j:
-            return j["candidates"][0]["content"]["parts"][0]["text"]
+            txt = j["candidates"][0]["content"]["parts"][0]["text"]
+            txt = re.sub(r'```(?:json)?\s*|\s*```', '', txt.strip(), flags=re.MULTILINE)
+            return txt
         else:
-            print(f"❌ Gemini API Error: {j}")
+            print(f"❌ Gemini Error: {j}")
             return None
     except Exception as e:
         print(f"Gemini error: {e}")
-        traceback.print_exc()
         return None
 
 def get_blogger():
@@ -152,13 +156,12 @@ def main():
         article_body_html = f"""
         <h2>{selected_entry.title}</h2>
         <p><b>Breaking Update:</b> {summary_text}</p>
-        <p>According to official sources from {chosen_category}, this new policy will impact thousands of applicants worldwide. Authorities have not released final duration yet.</p>
+        <p>According to official sources from {chosen_category}, this new policy will impact thousands of applicants worldwide.</p>
         <h2>Key Highlights</h2>
         <ul>
           <li>Effective Date: January 2027</li>
           <li>Affected: Global Applicants</li>
           <li>Reason: Internal Policy & Compliance Review</li>
-          <li>Impact: Regulatory adjustments on processing</li>
         </ul>
         <h2>Salary & Cost Requirements (US/EU)</h2>
         <table border='1' cellpadding='8' style='width:100%; border-collapse:collapse;'>
@@ -166,10 +169,7 @@ def main():
           <tr><td>Minimum Salary</td><td>$35,000 - $65,000 / Year</td></tr>
           <tr><td>Processing Cost</td><td>$160 - $1,200</td></tr>
           <tr><td>PR Timeline</td><td>2-5 Years</td></tr>
-          <tr><td>Remote Work Allowed</td><td>Yes (Digital Nomad Visa)</td></tr>
         </table>
-        <h2>What You Should Do Now?</h2>
-        <p>Applicants are advised to prepare documents early, check official embassy websites, and consider alternative routes.</p>
         <p><b>Source:</b> <a href='{source_link}' target='_blank'>{source_link}</a></p>
         """
     else:
@@ -220,12 +220,11 @@ def main():
                 blogs = blogger_service.blogs().listByUser(userId='self').execute()
                 if blogs.get('items'): blog_id = blogs['items'][0]['id']
 
-            # Strong Duplicate Check
+            # Strong Duplicate Check - শুধু Exact Match
             try:
                 existing = blogger_service.posts().list(blogId=blog_id, maxResults=15, fetchBodies=False).execute()
-                core_title = selected_entry.title[:30].strip().lower()
                 for p in existing.get('items', []):
-                    if core_title in p['title'].strip().lower() or p['title'].strip().lower() == seo_title.strip().lower():
+                    if p['title'].strip().lower() == seo_title.strip().lower():
                         print(f"⚠️ Already posted, skipping: {seo_title}"); return
             except: pass
 
