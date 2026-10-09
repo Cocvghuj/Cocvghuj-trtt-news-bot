@@ -2,26 +2,19 @@ name: Auto Blog to Facebook Post
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # প্রতি ৬ ঘণ্টা পর পর স্বয়ংক্রিয়ভাবে চলবে
-  workflow_dispatch:      # ম্যানুয়ালি Run করার বাটন চালু রাখবে
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-
+          python-version: '3.11'
       - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install feedparser requests google-auth google-api-python-client facebook-sdk
-
+        run: pip install feedparser requests google-auth google-api-python-client facebook-sdk
       - name: Run Automation Script
         env:
           BLOGGER_ID: ${{ secrets.BLOGGER_ID }}
