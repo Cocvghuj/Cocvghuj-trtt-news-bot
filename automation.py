@@ -3,8 +3,8 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import facebook
 
-GEMINI_MODELS = ["gemini-2.0-flash-001", "gemini-2.0-flash", "gemini-flash-latest", "gemini-1.5-flash-002"]
-GROQ_MODELS = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]
+GEMINI_MODELS = ["gemini-3.8-flash", "gemini-flash-latest", "gemini-2.5-flash"]
+GROQ_MODELS = ["openai/gpt-oss-20b", "openai/gpt-oss-120b"]
 
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
@@ -274,16 +274,19 @@ def main():
             except: pass
 
             loc = get_smart_location(selected_entry.title, chosen_category)
+            
             post_body = {
                 "kind": "blogger#post", 
                 "title": seo_title, 
                 "content": full_article_html, 
+                "searchDescription": meta_desc,
                 "labels": [chosen_category, "Global News", "Immigration 2027", "Work Visa Update"], 
                 "location": {"name": loc["name"], "lat": loc["lat"], "lng": loc["lng"]}
             }
+            
             result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
             link = result.get('url')
-            print(f"✅ PUBLISHED: {link} with Location {loc['name']}")
+            print(f"✅ PUBLISHED: {link} with Search Description & Location {loc['name']}")
 
             # Social shares
             fb_token = os.environ.get("FB_PAGE_ACCESS_TOKEN")
