@@ -11,7 +11,7 @@ from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
 import facebook
 
-# ইউআরএলগুলোকে ভ্যারিয়েবলে আলাদা রাখা হলো যাতে কোনো চ্যাট ইন্টারফেসে বা কপি-পেস্টে ব্র্যাকেট বা লিংক ফরম্যাটিংজনিত সমস্যা না হয়
+# URL Constants
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={k}"
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
@@ -87,27 +87,26 @@ JSON Structure: {{"seo_title": "SEO optimized catchy headline with {cat} 2027", 
         print(f"Gemini error: {e}")
     return None
 
+# সরাসরি BLOGGER_TOKEN_JSON ব্যবহার করার জন্য আপডেট করা ফাংশন
 def get_blogger():
     try:
-        client_id = os.environ.get("BLOGGER_CLIENT_ID")
-        client_secret = os.environ.get("BLOGGER_CLIENT_SECRET")
-        refresh_token = os.environ.get("BLOGGER_REFRESH_TOKEN")
-        
-        if not client_id or not client_secret or not refresh_token:
-            print("❌ Missing Secrets for Blogger!")
+        token_json_str = os.environ.get("BLOGGER_TOKEN_JSON")
+        if not token_json_str:
+            print("❌ Missing BLOGGER_TOKEN_JSON in Secrets!")
             return None
 
+        token_data = json.loads(token_json_str)
+        
         creds = Credentials(
-            token=None,
-            refresh_token=refresh_token,
-            client_id=client_id,
-            client_secret=client_secret,
+            token=token_data.get("token"),
+            refresh_token=token_data.get("refresh_token"),
+            client_id=token_data.get("client_id"),
+            client_secret=token_data.get("client_secret"),
             token_uri=TOKEN_URI,
         )
         
-        # টোকেন রিফ্রেশ করার জন্য সঠিক কোড যোগ করা হলো
         creds.refresh(Request())
-        print("✅ Blogger token refreshed!")
+        print("✅ Blogger token refreshed successfully!")
 
         return build("blogger", "v3", credentials=creds)
     except Exception as e:
