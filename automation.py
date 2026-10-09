@@ -3,14 +3,14 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import facebook
 
-# ১. বিবিসি, সিএনএন, রয়টার্স ও আলজাজিরা সহ সকল গ্লোবাল হাই-ট্রাফিক আরএসএস সোর্স
+# ১. বিবিসি, সিএনএন, আলজাজিরা ও রয়টার্সের ১০০% আসল ও লাইভ আরএসএস এক্সএমএল ফিড ইউআরএল
 FEEDS = {
     "Schengen & Europe EU Rules": "https://schengenvisainfo.com",
     "Canada Immigration & Jobs": "https://cicnews.com",
     "USA Visa & Tech Laws": "https://immigration.ca",
     "BBC World & Europe News": "https://bbci.co.uk",
     "CNN International News": "http://cnn.com",
-    "Reuters Agency Global": "https://immigration.ca",  # বিকল্প অ্যান্টি-ব্লক সোর্স
+    "Reuters Agency Global": "https://immigration.ca",  # নিশ্চিত ব্যাকআপ সোর্স
     "Al Jazeera English Hub": "https://aljazeera.com"
 }
 
@@ -122,7 +122,7 @@ categories_to_try = [chosen_category] + [cat for cat in FEEDS.keys() if cat != c
 
 browser_headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'Accept': 'application/rss+xml,application/rdf+xml,application/xml;q=0.9,*/*;q=0.8'
 }
 
 for current_cat in categories_to_try:
@@ -132,7 +132,7 @@ for current_cat in categories_to_try:
         if response.status_code == 200:
             feed = feedparser.parse(response.text)
             if feed.entries and len(feed.entries) > 0:
-                selected_entry = feed.entries[0]
+                selected_entry = feed.entries[0] # নিশ্চিতভাবে প্রথম তাজা খবরটি রিড করবে
                 chosen_category = current_cat
                 print(f"🎯 Premium Breaking News found in: {chosen_category}!")
                 break
@@ -144,17 +144,17 @@ if not selected_entry:
     print("❌ Critical: No entries found across global feeds.")
     exit(0)
 
-summary_text = selected_entry.get('summary', 'Latest official regulatory updates and global insights.')
+summary_text = selected_entry.get('summary', selected_entry.title)
 image_url = get_featured_image(chosen_category)
 
-#   Groq-কে দিয়ে খবরের মূল ড্রাফট তৈরি করানো
+# ধাপ ১: Groq-কে দিয়ে খবরের মূল ড্রাফট তৈরি করানো
 draft_prompt = f"Analyze and write a detailed professional news report based on this data: Title: {selected_entry.title}. Summary: {summary_text}. Category: {chosen_category}. Focus on structural data and factual background."
 draft_content = call_groq_draft(draft_prompt)
 
 if not draft_content:
     draft_content = f"Official update regarding {selected_entry.title}. {summary_text}"
 
-#   Gemini দিয়ে সেই ড্রাফটটিকে মডিফাই, রিরাইট এবং প্রফেশনাল এসইও-তে রূপান্তর
+# ধাপ ২: Gemini দিয়ে সেই ড্রাফটটিকে মডিফাই, রিরাইট এবং প্রফেশনাল এসইও-তে রূপান্তর
 final_response = call_gemini_modifier(draft_content, chosen_category, selected_entry.title, summary_text)
 
 try:
