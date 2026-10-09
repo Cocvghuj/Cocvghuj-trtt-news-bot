@@ -193,4 +193,82 @@ def main():
             article_body_html = data.get("article_body", f"<p>{summary_text}</p>")
         except Exception as json_err:
             print(f"⚠️ JSON parsing error ({json_err}), using rich fallback.")
-            seo_title = f"{chosen_category}: {selected_entry.title[:70]}{current_date_
+            seo_title = f"{chosen_category}: {selected_entry.title[:70]}{current_date_tag}"
+            meta_desc = summary_text[:145]
+            fb_caption = seo_title
+            article_body_html = f"<p>{summary_text}</p>"
+
+    try:
+        pub_date = datetime.datetime.utcnow().isoformat() + "Z"
+        seo_schema = f"""
+        <script type="application/ld+json">
+        {{
+          "@context": "https://schema.org",
+          "@type": "NewsArticle",
+          "headline": "{seo_title}",
+          "description": "{meta_desc}",
+          "image": ["{image_url}"],
+          "datePublished": "{pub_date}",
+          "author": {{"@type": "Organization", "name": "TRTT News 24 Editorial Team"}},
+          "publisher": {{"@type": "Organization", "name": "TRTT News 24", "logo": {{"@type": "ImageObject", "url": "https://trttnews24bd.blogspot.com/favicon.ico"}}}}
+        }}
+        </script>
+        """
+
+        full_article_html = f"""
+        {seo_schema}
+        <p><i><b>Editorial Note:</b> {meta_desc}</i></p>
+        <div style="margin:15px 0;"><img src='{image_url}' alt='{seo_title}' style='width:100%; border-radius:8px'/></div>
+        {article_body_html}
+        <hr/>
+        <p><small>Original Source & Reference: <a href="{source_link}" target="_blank" rel="nofollow noopener">Verified News Wire</a></small></p>
+        """
+
+        blogger_service = get_blogger()
+        if blogger_service:
+            blog_id = os.environ.get("BLOGGER_ID") or os.environ.get("BLOGGER_BLOG_ID")
+            if not blog_id:
+                blogs = blogger_service.blogs().listByUser(userId='self').execute()
+                if blogs.get('items'): blog_id = blogs['items'][0]['id']
+
+            # Smart Duplicate Check
+            try:
+                existing = blogger_service.posts().list(blogId=blog_id, maxResults=20, fetchBodies=False).execute()
+                current_date_str = datetime.datetime.utcnow().strftime('%b %d, %Y')
+                for p in existing.get('items', []):
+                    p_title = p.get('title', '')
+                    if p['title'].split('(')[0].strip().lower() == seo_title.split('(')[0].strip().lower():
+                        if current_date_str not in p_title:
+                            continue
+                        print(f"⚠️ Already posted today, skipping: {seo_title}")
+                        return
+            except Exception as dup_err:
+                print(f"Duplicate check warning: {dup_err}")
+
+            loc = get_smart_location(selected_entry.title, chosen_category)
+            
+            post_body = {
+                "kind": "blogger#post", 
+                "title": seo_title, 
+                "content": full_article_html, 
+                "searchDescription": meta_desc,
+                "labels": [chosen_category, "Global News", "Immigration 2027", "Work Visa Update"], 
+                "location": {"name": loc["name"], "lat": loc["lat"], "lng": loc["lng"]}
+            }
+            
+            result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
+            link = result.get('url')
+            print(f"✅ PUBLISHED: {link} with Search Description & Location {loc['name']}")
+
+            # Social shares
+            fb_token = os.environ.get("FB_PAGE_ACCESS_TOKEN")
+            fb_id = os.environ.get("FB_PAGE_ID")
+            if fb_token and fb_id: post_to_facebook_system(fb_token, fb_id, fb_caption, link)
+
+            tg_token = os.environ.get("TELEGRAM_BOT_TOKEN")
+            tg_chat = os.environ.get("TELEGRAM_CHAT_ID")
+            if tg_token and tg_chat: post_to_telegram(tg_token, tg_chat, fb_caption, link)
+
+    except Exception as e: print(f"❌ Error in publishing: {e}"); traceback.print_exc()
+
+if __name__ == "__main__": main()
