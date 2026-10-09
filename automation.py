@@ -3,7 +3,7 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import facebook
 
-GEMINI_MODELS = ["gemini-3.8-flash", "gemini-flash-latest", "gemini-2.5-flash"]
+GEMINI_MODELS = ["gemini-3.8-flash", "gemini-flash-latest"]
 GROQ_MODELS = ["openai/gpt-oss-20b", "openai/gpt-oss-120b"]
 
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
@@ -71,75 +71,41 @@ def get_featured_image(query):
 def call_gemini(cat, title, summary, source_link):
     k = os.environ.get("GEMINI_API_KEY")
     if not k: return None
-    
-    p = f"""You are a professional senior news editor and AdSense compliance expert. Rewrite this report into a unique, highly detailed, 700+ words English news article with high journalistic value.
-Title: {title}
-Summary: {summary}
-Source: {source_link}
-Category: {cat}
-
-Return ONLY a valid JSON object with these exact keys:
-{{
-  "seo_title": "{cat}: Catchy SEO Headline",
-  "meta_description": "Engaging 140-150 characters meta description for search engines",
-  "article_body": "Detailed HTML with <h2> headings, comprehensive paragraphs, informative bullet points, and a professional data table meeting Google AdSense quality guidelines",
-  "fb_caption": "Caption with hashtags"
-}}"""
-
+    p = f"""Title: {title} Summary: {summary} Category: {cat} Return ONLY valid JSON without line breaks inside values. Keys: seo_title, meta_description, article_body, fb_caption"""
     for model in GEMINI_MODELS:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={k}"
         try:
-            print(f"🔄 Trying Gemini Model: {model}...")
-            r = requests.post(url, json={"contents": [{"parts": [{"text": p}]}]}, timeout=35)
-            print(f"Response: {r.status_code} - {r.text[:300]}")
-            if r.status_code == 200:
-                j = r.json()
-                if "candidates" in j:
-                    txt = j["candidates"][0]["content"]["parts"][0]["text"]
-                    return re.sub(r'```(?:json)?\s*|\s*```', '', txt.strip(), flags=re.MULTILINE)
+            print(f"🔄 Trying Gemini {model}...")
+            r = requests.post(url, json={"contents": [{"parts": [{"text": p}]}]}, timeout=90)
+            if r.status_code == 200 and "candidates" in r.json():
+                txt = r.json()["candidates"][0]["content"]["parts"][0]["text"]
+                match = re.search(r'\{.*\}', txt, re.DOTALL)
+                if match:
+                    cleaned = match.group(0).replace('\n', ' ').replace('\r', '')
+                    json.loads(cleaned)
+                    return cleaned
         except Exception as e:
-            print(f"⚠️ Error with Gemini {model}: {e}")
+            print(f"⚠️ {model} error: {e}")
+            time.sleep(3)
     return None
 
 def call_groq_backup(cat, title, summary, source_link):
     k = os.environ.get("GROQ_API_KEY")
     if not k: return None
-    
-    p = f"""You are a professional senior news editor and AdSense compliance expert. Rewrite this report into a unique, highly detailed, 700+ words English news article with high journalistic value.
-Title: {title}
-Summary: {summary}
-Source: {source_link}
-Category: {cat}
-
-Return ONLY a valid JSON object with these exact keys:
-{{
-  "seo_title": "{cat}: Catchy SEO Headline",
-  "meta_description": "Engaging 140-150 characters meta description for search engines",
-  "article_body": "Detailed HTML with <h2> headings, comprehensive paragraphs, informative bullet points, and a professional data table meeting Google AdSense quality guidelines",
-  "fb_caption": "Caption with hashtags"
-}}"""
-
+    p = f"""Return ONLY valid JSON object. No markdown. Title: {title} Summary: {summary} Category: {cat} Keys: seo_title, meta_description, article_body, fb_caption"""
     for model in GROQ_MODELS:
         try:
-            print(f"🔄 Trying Groq Model: {model}...")
-            r = requests.post(
-                GROQ_URL, 
-                headers={"Authorization": f"Bearer {k}"}, 
-                json={
-                    "model": model, 
-                    "messages": [{"role": "user", "content": p}], 
-                    "temperature": 0.3
-                }, 
-                timeout=25
-            )
-            print(f"Groq Response: {r.status_code} - {r.text[:300]}")
+            print(f"🔄 Trying Groq {model}...")
+            r = requests.post(GROQ_URL, headers={"Authorization": f"Bearer {k}"}, json={"model": model, "messages": [{"role": "user", "content": p}], "temperature": 0.2}, timeout=60)
             if r.status_code == 200:
-                j = r.json()
-                if "choices" in j:
-                    txt = j["choices"][0]["message"]["content"]
-                    return re.sub(r'```(?:json)?\s*|\s*```', '', txt.strip(), flags=re.MULTILINE)
+                txt = r.json()["choices"][0]["message"]["content"]
+                match = re.search(r'\{.*\}', txt, re.DOTALL)
+                if match:
+                    cleaned = match.group(0).replace('\n', ' ').replace('\r', '')
+                    json.loads(cleaned)
+                    return cleaned
         except Exception as e:
-            print(f"⚠️ Error with Groq {model}: {e}")
+            print(f"Groq error: {e}")
     return None
 
 def get_blogger():
@@ -227,76 +193,4 @@ def main():
             article_body_html = data.get("article_body", f"<p>{summary_text}</p>")
         except Exception as json_err:
             print(f"⚠️ JSON parsing error ({json_err}), using rich fallback.")
-            seo_title = f"{chosen_category}: {selected_entry.title[:70]}{current_date_tag}"
-            meta_desc = summary_text[:145]
-            fb_caption = seo_title
-            article_body_html = f"<p>{summary_text}</p>"
-
-    try:
-        pub_date = datetime.datetime.utcnow().isoformat() + "Z"
-        seo_schema = f"""
-        <script type="application/ld+json">
-        {{
-          "@context": "https://schema.org",
-          "@type": "NewsArticle",
-          "headline": "{seo_title}",
-          "description": "{meta_desc}",
-          "image": ["{image_url}"],
-          "datePublished": "{pub_date}",
-          "author": {{"@type": "Organization", "name": "TRTT News 24 Editorial Team"}},
-          "publisher": {{"@type": "Organization", "name": "TRTT News 24", "logo": {{"@type": "ImageObject", "url": "https://trttnews24bd.blogspot.com/favicon.ico"}}}}
-        }}
-        </script>
-        """
-
-        full_article_html = f"""
-        {seo_schema}
-        <p><i><b>Editorial Note:</b> {meta_desc}</i></p>
-        <div style="margin:15px 0;"><img src='{image_url}' alt='{seo_title}' style='width:100%; border-radius:8px'/></div>
-        {article_body_html}
-        <hr/>
-        <p><small>Original Source & Reference: <a href="{source_link}" target="_blank" rel="nofollow noopener">Verified News Wire</a></small></p>
-        """
-
-        blogger_service = get_blogger()
-        if blogger_service:
-            blog_id = os.environ.get("BLOGGER_ID") or os.environ.get("BLOGGER_BLOG_ID")
-            if not blog_id:
-                blogs = blogger_service.blogs().listByUser(userId='self').execute()
-                if blogs.get('items'): blog_id = blogs['items'][0]['id']
-
-            # Strong Duplicate Check - Exact Match
-            try:
-                existing = blogger_service.posts().list(blogId=blog_id, maxResults=15, fetchBodies=False).execute()
-                for p in existing.get('items', []):
-                    if p['title'].strip().lower() == seo_title.strip().lower():
-                        print(f"⚠️ Already posted, skipping: {seo_title}"); return
-            except: pass
-
-            loc = get_smart_location(selected_entry.title, chosen_category)
-            
-            post_body = {
-                "kind": "blogger#post", 
-                "title": seo_title, 
-                "content": full_article_html, 
-                "searchDescription": meta_desc,
-                "labels": [chosen_category, "Global News", "Immigration 2027", "Work Visa Update"], 
-                "location": {"name": loc["name"], "lat": loc["lat"], "lng": loc["lng"]}
-            }
-            
-            result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
-            link = result.get('url')
-            print(f"✅ PUBLISHED: {link} with Search Description & Location {loc['name']}")
-
-            # Social shares
-            fb_token = os.environ.get("FB_PAGE_ACCESS_TOKEN")
-            fb_id = os.environ.get("FB_PAGE_ID")
-            if fb_token and fb_id: post_to_facebook_system(fb_token, fb_id, fb_caption, link)
-
-            tg_token = os.environ.get("TELEGRAM_BOT_TOKEN")
-            tg_chat = os.environ.get("TELEGRAM_CHAT_ID")
-            if tg_token and tg_chat: post_to_telegram(tg_token, tg_chat, fb_caption, link)
-
-    except Exception as e: print(f"❌ Error in publishing: {e}"); traceback.print_exc()
-
-if __name__ == "__main__": main()
+            seo_title = f"{chosen_category}: {selected_entry.title[:70]}{current_date_
