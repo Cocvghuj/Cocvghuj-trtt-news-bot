@@ -1,10 +1,9 @@
-import feedparser, os, json, requests, random, re, traceback, datetime
+import feedparser, os, json, requests, random, re, traceback, datetime, time
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import facebook
 
-# Updated to gemini-3.8-flash as per latest Google API requirement
-GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1/models/gemini-3.8-flash:generateContent?key={k}"
+GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={k}"
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
@@ -71,38 +70,42 @@ def call_groq_draft(p):
     try:
         k = os.environ.get("GROQ_API_KEY")
         if k:
-            r = requests.post(GROQ_URL, headers={"Authorization": f"Bearer {k}"}, json={"model": "llama-3.3-70b-versatile", "messages": [{"role": "user", "content": p}], "temperature": 0.3}, timeout=20)
+            r = requests.post(GROQ_URL, headers={"Authorization": f"Bearer {k}"}, json={"model": "llama-3.3-70b-versatile", "messages": [{"role": "user", "content": p}], "temperature": 0.3}, timeout=25)
             j = r.json()
             if "choices" in j: return j["choices"][0]["message"]["content"]
     except Exception as e: print(f"Groq error: {e}")
     return None
 
 def call_gemini_modifier(draft, cat, title, summary, source_link):
-    try:
-        k = os.environ.get("GEMINI_API_KEY")
-        if not k: return None
-        p = f"""You are expert SEO editor. Rewrite this news into 600 words with H2, bullets, table.
-        Title: {title}
-        Summary: {summary}
-        Source: {source_link}
-        Draft: {draft}
-        Return ONLY valid JSON object with keys: seo_title, meta_description, article_body, fb_caption.
-        article_body must be full HTML.
-        """
-        url = GEMINI_URL_TEMPLATE.format(k=k)
-        r = requests.post(url, json={"contents": [{"parts": [{"text": p}]}]}, timeout=30)
-        print(f"Gemini Status: {r.status_code}")
-        j = r.json()
-        if "candidates" in j:
-            txt = j["candidates"][0]["content"]["parts"][0]["text"]
-            txt = re.sub(r'```(?:json)?\s*|\s*```', '', txt.strip(), flags=re.MULTILINE)
-            return txt
-        else:
-            print(f"❌ Gemini Error: {j}")
-            return None
-    except Exception as e:
-        print(f"Gemini error: {e}")
-        return None
+    k = os.environ.get("GEMINI_API_KEY")
+    if not k: return None
+    p = f"""You are expert SEO editor. Rewrite this news into 600 words with H2, bullets, table.
+    Title: {title}
+    Summary: {summary}
+    Source: {source_link}
+    Draft: {draft}
+    Return ONLY valid JSON object with keys: seo_title, meta_description, article_body, fb_caption.
+    article_body must be full HTML.
+    """
+    url = GEMINI_URL_TEMPLATE.format(k=k)
+    
+    # Retry logic for Timeout prevention (3 attempts)
+    for attempt in range(3):
+        try:
+            print(f"🔄 Gemini Call Attempt {attempt+1}/3...")
+            r = requests.post(url, json={"contents": [{"parts": [{"text": p}]}]}, timeout=60)
+            print(f"Gemini Status: {r.status_code}")
+            j = r.json()
+            if "candidates" in j:
+                txt = j["candidates"][0]["content"]["parts"][0]["text"]
+                txt = re.sub(r'```(?:json)?\s*|\s*```', '', txt.strip(), flags=re.MULTILINE)
+                return txt
+            else:
+                print(f"❌ Gemini Error: {j}")
+        except Exception as e:
+            print(f"⚠️ Gemini attempt {attempt+1} timeout/error: {e}")
+            time.sleep(5)
+    return None
 
 def get_blogger():
     try:
@@ -125,7 +128,7 @@ def post_to_telegram(token, chat_id, message, link):
     try:
         text = f"{message}\n\n🔗 Read Full Story: {link}"
         url = TELEGRAM_URL_TEMPLATE.format(token=token)
-        r = requests.post(url, json={"chat_id": chat_id, "text": text}, timeout=12)
+        r = requests.post(url, json={"chat_id": chat_id, "text": text}, timeout=15)
         if r.status_code == 200: print("🚀 Posted to Telegram!")
     except Exception as e: print(f"❌ Telegram skipped: {e}")
 
