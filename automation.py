@@ -3,8 +3,8 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import facebook
 
-# v1 API - gemini-2.5-flash model
-GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key={k}"
+# Updated to gemini-3.8-flash as per latest Google API requirement
+GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1/models/gemini-3.8-flash:generateContent?key={k}"
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
