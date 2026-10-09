@@ -14,8 +14,9 @@ GEMINI_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1beta/models/g
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
+# শেনজেন নিউজের জন্য বিকল্প ওয়ার্কিং আরএসএস ফিড লিংক সহ আপডেট করা লিস্ট
 FEEDS = {
-    "Schengen & Europe EU Rules": "https://www.schengenvisainfo.com/news/feed/",
+    "Schengen & Europe EU Rules": "https://www.schengenvisainfo.com/feed/",
     "Canada Immigration & Jobs": "https://www.cicnews.com/feed/",
     "USA Visa & Tech Laws": "https://www.immigration.ca/feed/",
     "Australia & NZ Policy Updates": "https://www.abc.net.au/news/feed/51120/rss.xml",
@@ -113,24 +114,31 @@ def post_to_telegram(token, chat_id, message, link):
         print(f"📱 Telegram skipped: {str(e)}")
 
 def main():
-    # সরাসরি সেনজেন নিউজ সবার আগে স্ক্যান করার জন্য ফিক্সড করা হলো
     chosen_category = "Schengen & Europe EU Rules"
     selected_entry = None
     browser_headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
 
-    print(f"📡 Scanning Network: {chosen_category}...")
-    try:
-        response = requests.get(FEEDS[chosen_category], headers=browser_headers, timeout=15)
-        if response.status_code == 200:
-            feed = feedparser.parse(response.text)
-            if feed.entries and len(feed.entries) > 0:
-                selected_entry = feed.entries[0]
-                print(f"🎯 Found in: {chosen_category}! Title: {selected_entry.title[:60]}")
-    except Exception as e:
-        print(f"Skipping {chosen_category}: {e}")
+    # একাধিক ব্যাকআপ ফিড ইউআরএল যাতে নিউজ পেতে কোনো মিস না হয়
+    feed_candidates = [
+        "[https://www.schengenvisainfo.com/feed/](https://www.schengenvisainfo.com/feed/)",
+        "[https://www.schengenvisainfo.com/news/feed/](https://www.schengenvisainfo.com/news/feed/)"
+    ]
+
+    for feed_url in feed_candidates:
+        print(f"📡 Scanning Network: {chosen_category} via {feed_url}...")
+        try:
+            response = requests.get(feed_url, headers=browser_headers, timeout=15)
+            if response.status_code == 200:
+                feed = feedparser.parse(response.text)
+                if feed.entries and len(feed.entries) > 0:
+                    selected_entry = feed.entries[0]
+                    print(f"🎯 Found news! Title: {selected_entry.title[:60]}")
+                    break
+        except Exception as e:
+            print(f"Skipping feed: {e}")
 
     if not selected_entry:
-        print("❌ No entries found.")
+        print("❌ No entries found from Schengen feeds.")
         exit(0)
 
     summary_text = selected_entry.get('summary', selected_entry.title)
