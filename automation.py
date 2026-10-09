@@ -3,26 +3,26 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import facebook
 
-# ১. বৈশ্বিক হাই-সিপিসি ও ১০০% সচল লাইভ আরএসএস ফিড ডিরেক্টরি
+# ১. বৈশ্বিক হাই-সিপিসি ও ১০০% লাইভ আসল আরএসএস ফিড নেটওয়ার্ক
 FEEDS = {
-    "Schengen & Europe Visa": "https://schengenvisainfo.com",
+    "Schengen & Europe EU Rules": "https://schengenvisainfo.com",
+    "USA Visa & Tech Laws": "https://commonwealthfund.org",
     "Canada Immigration & Jobs": "https://cicnews.com",
-    "USA Visa & Career": "https://commonwealthfund.org", # ইউএসএ ইন্টারন্যাশনাল ফিড
-    "Australia & NZ Updates": "https://smartraveller.gov.au", # অস্ট্রেলিয়া ও নিউজিল্যান্ড সরকারি ফিড
-    "Middle East Jobs & Business": "https://arabianbusiness.com", # মধ্যপ্রাচ্যের শীর্ষ বিজনেস ফিড
-    "Global Tech & Coding": "https://bbci.co.uk",
+    "Australia & NZ Policy Updates": "https://smartraveller.gov.au",
+    "Middle East Laws & Business": "https://arabianbusiness.com",
+    "Global Tech & Dev Innovations": "https://bbci.co.uk",
     "Global Finance & Investment": "https://ft.com"
 }
 
-# ২. গ্লোবাল সাপ্তাহিক হাই-সিপিসি শিডিউল রুটিন
+# ২. ২৪ ঘণ্টা গ্লোবাল কভারেজ নিশ্চিত করার শিডিউল রুটিন (২০২৭ রেডি)
 WEEK = {
-    0: ["Schengen & Europe Visa", "Global Tech & Coding"],
+    0: ["Schengen & Europe EU Rules", "Global Tech & Dev Innovations"],
     1: ["Canada Immigration & Jobs", "Global Finance & Investment"],
-    2: ["USA Visa & Career", "Middle East Jobs & Business"],
-    3: ["Australia & NZ Updates", "Schengen & Europe Visa"],
-    4: ["Canada Immigration & Jobs", "Global Tech & Coding"],
-    5: ["USA Visa & Career", "Middle East Jobs & Business"],
-    6: ["Australia & NZ Updates", "Global Finance & Investment"]
+    2: ["USA Visa & Tech Laws", "Middle East Laws & Business"],
+    3: ["Australia & NZ Policy Updates", "Schengen & Europe EU Rules"],
+    4: ["Canada Immigration & Jobs", "Global Tech & Dev Innovations"],
+    5: ["USA Visa & Tech Laws", "Middle East Laws & Business"],
+    6: ["Australia & NZ Policy Updates", "Global Finance & Investment"]
 }
 
 def get_cat():
@@ -33,8 +33,9 @@ def get_featured_image(query):
     try:
         client_id = os.environ.get("UNSPLASH_ACCESS_KEY")
         if client_id:
-            url = f"https://unsplash.com{query},immigration,career&client_id={client_id}"
-            r = requests.get(url, timeout=12)
+            url = f"https://unsplash.com{query},global,news&client_id={client_id}"
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+            r = requests.get(url, headers=headers, timeout=12)
             if r.status_code == 200:
                 return r.json()['urls']['regular']
     except: pass
@@ -46,7 +47,7 @@ def ai_seo_generator(p):
         if k:
             r = requests.post("https://groq.com", 
                               headers={"Authorization": f"Bearer {k}"}, 
-                              json={"model":"llama-3.3-70b-versatile", "messages":[{"role":"user","content":p}], "temperature": 0.3}, timeout=40)
+                              json={"model":"llama-3.3-70b-versatile", "messages":[{"role":"user","content":p}], "temperature": 0.2}, timeout=40)
             j = r.json()
             if "choices" in j and len(j["choices"]) > 0: 
                 return j["choices"]["message"]["content"]
@@ -75,9 +76,9 @@ def post_to_facebook_system(app_id, app_secret, page_id, message, link):
         app_token = graph.get_app_access_token(app_id=app_id, app_secret=app_secret)
         page_graph = facebook.GraphAPI(access_token=app_token)
         page_graph.put_object(parent_object=page_id, connection_name='feed', message=message, link=link)
-        print("🎉 Successfully posted to Facebook Page automatically!")
+        print("🎉 Successfully posted to Facebook Page!")
     except Exception as e:
-        print(f"Facebook warning (Skipped to prevent crash): {str(e)}")
+        print(f"Facebook skipped: {str(e)}")
 
 def post_to_telegram(token, chat_id, message, link):
     try:
@@ -86,48 +87,56 @@ def post_to_telegram(token, chat_id, message, link):
         payload = {"chat_id": chat_id, "text": text}
         r = requests.post(url, json=payload, timeout=12)
         if r.status_code == 200:
-            print("🎉 Successfully posted to Telegram Channel automatically!")
-        else:
-            print(f"Telegram API error: {r.text}")
+            print("🎉 Successfully posted to Telegram Channel!")
     except Exception as e:
-        print(f"Telegram warning: {str(e)}")
+        print(f"Telegram skipped: {str(e)}")
 
-# --- স্মার্ট বৈশ্বিক লুপ মেকানিজম (নিউজ মিস হবে না) ---
+# --- স্মার্ট লুপ অ্যান্ড সিকিউর হেডার (অ্যান্টি-ব্লক প্রটেকশন) ---
 selected_entry = None
 chosen_category = get_cat()
-
 categories_to_try = [chosen_category] + [cat for cat in FEEDS.keys() if cat != chosen_category]
 
+browser_headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+}
+
 for current_cat in categories_to_try:
-    print(f"Scanning Global RSS source: {current_cat}...")
-    feed = feedparser.parse(FEEDS[current_cat])
-    
-    if feed.entries and len(feed.entries) > 0:
-        selected_entry = feed.entries[0]
-        chosen_category = current_cat
-        print(f"🎯 Premium Global News found in: {chosen_category}!")
-        break
+    print(f"Scanning Global Network: {current_cat}...")
+    try:
+        response = requests.get(FEEDS[current_cat], headers=browser_headers, timeout=15)
+        if response.status_code == 200:
+            feed = feedparser.parse(response.text)
+            if feed.entries and len(feed.entries) > 0:
+                selected_entry = feed.entries[0]
+                chosen_category = current_cat
+                print(f"🎯 Premium Breaking News found in: {chosen_category}!")
+                break
+    except Exception as feed_err:
+        print(f"Skipping {current_cat}: {str(feed_err)}")
+        continue
 
 if not selected_entry:
-    print("❌ Critical: No entries found across any global feeds. Exiting safely.")
+    print("❌ Critical: No entries found across global feeds.")
     exit(0)
 
-summary_text = selected_entry.get('summary', 'Latest global visa and industry career insights.')
+summary_text = selected_entry.get('summary', 'Latest official regulatory updates and global insights.')
 image_url = get_featured_image(chosen_category)
 
+# গ্লোবাল অডিয়েন্স এবং অটো-ইনডেক্সিং এর জন্য আল্ট্রা-এসইও প্রম্পট
 prompt = f"""
-You are an elite native English international journalist and SEO expert.
-Write a 100% unique, deep-dive, professional news article based on the source data below. Eliminate any errors from the source.
+You are a senior native English international journalist and elite SEO architect.
+Write a 100% unique, deep-dive, professional news article in flawless, advanced native English based on the source data below. Eliminate any grammar or spelling issues.
 
 Category: {chosen_category}
 Source Title: {selected_entry.title}
 Source Summary: {summary_text}
 
 Strict Structural Rules:
-- Language: Flawless, advanced native English only.
-- Format: Reply ONLY in valid JSON format without markdown code blocks.
-- Elements: Use <h2>/<h3> tags and bullet points (<ul>/<li>) to present data with deep clarity.
-- Keywords to Integrate Naturally: "{chosen_category} 2027", "global visa guidelines", "step-by-step application requirements", "international career updates".
+- Language: Flawless, highly advanced native British/American English only.
+- Format: Reply ONLY in valid JSON format without markdown ticks outside the object.
+- Elements: Use <h2> and <h3> tags for subheadings. Use clean bullet points (<ul>/<li>) to present data with deep clarity.
+- Keywords to Integrate Naturally: "{chosen_category} 2027", "global immigration requirements", "step-by-step application guidelines", "official regulatory policy", "international technical innovations".
 
 Expected JSON structure:
 {{
@@ -148,13 +157,14 @@ try:
     meta_desc = data["meta_description"]
     fb_caption = data["fb_caption"]
 except Exception as parse_error:
-    print(f"JSON System Fallguard triggered: {str(parse_error)}")
+    print(f"JSON Guard triggered: {str(parse_error)}")
     seo_title = f"{chosen_category}: {selected_entry.title[:80]}"
     article_body = f'<div style="margin-bottom:20px;"><img src="{image_url}" alt="{seo_title}" style="width:100%; border-radius:8px;"/></div><h2>{seo_title}</h2><p>{summary_text}</p>'
-    meta_desc = f"Latest official regulatory updates on {chosen_category}."
+    meta_desc = f"Latest official updates and global insights on {chosen_category}."
     fb_caption = f"📢 Global Update: {seo_title}. Read details on our portal!"
 
-labels = [chosen_category, "Global Visa 2027", "Career Insights", "World News"]
+# ক্যাটাগরি ও দেশের ওপর ভিত্তি করে গুগলের গ্লোবাল ট্যাগ
+labels = [chosen_category, "Global Immigration 2027", "Official Law Updates", "International NewsHub"]
 
 service = get_blogger()
 body = {
@@ -163,7 +173,7 @@ body = {
     "title": seo_title,
     "content": article_body,
     "labels": labels,
-    "searchDescription": meta_desc
+    "searchDescription": meta_desc # এটি মেটা ডেসক্রিপশন বক্সে ডেটা পুশ করবে যা গুগলে অটো-ইনডেক্স করবে
 }
 
 try:
@@ -183,5 +193,5 @@ try:
         post_to_telegram(TG_TOKEN, TG_CHAT_ID, fb_caption, post_url)
 
 except Exception as blogger_error:
-    print(f"Global Automation failure: {str(blogger_error)}")
+    print(f"Automation execution break: {str(blogger_error)}")
     exit(1)
