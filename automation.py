@@ -11,19 +11,16 @@ GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 HISTORY_FILE = "posted_history.json"
 
-# === ALL CATEGORIES & GLOBAL NEWS FEEDS ===
+# === UPDATED MIXED FEEDS ===
 FEEDS = {
-    "Global Tech Innovations": "https://techcrunch.com/feed/",
-    "World News & Politics": "https://www.aljazeera.com/xml/rss/all.rss",
-    "European Breaking News": "https://www.dw.com/export/rss?sectionId=30973",
-    "Global Business & Markets": "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
-    "International Science & Tech": "https://www.theverge.com/rss/index.xml",
-    "Global Economy & Finance": "https://www.cnbc.com/id/10003114/device/rss/rss.html",
-    "Schengen & Europe EU Rules": "https://www.schengenvisainfo.com/feed/",
+    "Schengen & EU Rules": "https://www.schengenvisainfo.com/feed/",
     "Europe Visa Latest": "https://visaguide.world/news/feed/",
-    "Canada Immigration & Jobs": "https://www.cicnews.com/feed/",
-    "USA & Global Policy": "https://www.immigration.ca/feed/",
-    "Australia & NZ Policy Updates": "https://www.abc.net.au/news/feed/51120/rss.xml"
+    "Italy & Schengen Updates": "https://www.thelocal.it/feed/",
+    "Germany Work Visa": "https://www.dw.com/export/rss?sectionId=30973",
+    "UK Visa and Immigration": "https://www.freemovement.org.uk/feed/",
+    "France Visa News": "https://visaguide.world/europe/france/visa/feed/",
+    "Europe Breaking News": "https://www.euronews.com/rss?format=mrss",
+    "Global Tech & AI": "https://techcrunch.com/feed/"
 }
 
 COUNTRY_LOCATIONS = {
@@ -55,20 +52,14 @@ def save_history(link):
 
 def get_smart_location(title, category):
     text = (title + " " + category).lower()
-    if "usa" in text or "america" in text or "washington" in text:
-        return COUNTRY_LOCATIONS["USA"]
-    if "canada" in text or "toronto" in text:
-        return COUNTRY_LOCATIONS["Canada"]
-    if "uk" in text or "london" in text or "britain" in text:
-        return COUNTRY_LOCATIONS["UK"]
+    if "italy" in text or "milan" in text:
+        return COUNTRY_LOCATIONS["Italy"]
     if "germany" in text or "berlin" in text:
         return COUNTRY_LOCATIONS["Germany"]
     if "france" in text or "paris" in text:
         return COUNTRY_LOCATIONS["France"]
-    if "australia" in text or "sydney" in text:
-        return COUNTRY_LOCATIONS["Australia"]
-    if "middle east" in text or "dubai" in text or "qatar" in text or "saudi" in text:
-        return COUNTRY_LOCATIONS["Middle East"]
+    if "uk" in text or "london" in text or "britain" in text:
+        return COUNTRY_LOCATIONS["UK"]
     if "europe" in text or "schengen" in text or "eu " in text:
         return COUNTRY_LOCATIONS["Europe"]
     return COUNTRY_LOCATIONS["default"]
@@ -78,16 +69,13 @@ def get_featured_image(title, category=""):
         key = os.environ.get("UNSPLASH_ACCESS_KEY")
         text = (title + " " + category).lower()
 
-        if "tech" in text or "software" in text or "ai" in text: q = "technology innovation computer"
-        elif "business" in text or "market" in text or "economy" in text: q = "global business economy finance"
-        elif "mali" in text: q = "Mali africa landscape"
-        elif "usa" in text or "america" in text: q = "USA city skyline"
-        elif "canada" in text: q = "Canada landscape"
-        elif "uk" in text or "britain" in text: q = "London city UK"
-        elif "germany" in text: q = "Berlin city Germany"
-        elif "europe" in text or "schengen" in text: q = "Europe architecture city"
-        elif "australia" in text: q = "Sydney Australia"
-        else: q = "world news breaking global"
+        if "tech" in text or "ai" in text: q = "technology innovation computer"
+        elif "france" in text: q = "Paris France landmark"
+        elif "germany" in text: q = "Berlin Germany city"
+        elif "italy" in text: q = "Italy landscape city"
+        elif "uk" in text or "britain" in text: q = "London UK city"
+        elif "schengen" in text or "europe" in text: q = "Europe travel architecture"
+        else: q = "visa passport travel"
 
         if key:
             url = f"https://api.unsplash.com/search/photos?query={q}&per_page=1&orientation=landscape&client_id={key}"
@@ -182,10 +170,9 @@ def post_to_telegram(token, chat_id, message, link):
 
 def main():
     history = load_history()
-    selected_entry = None; chosen_category = "Global News"; source_link = "https://trttnews24bd.blogspot.com"
+    selected_entry = None; chosen_category = "Europe Breaking News"; source_link = "https://trttnews24bd.blogspot.com"
     headers = {'User-Agent': 'Mozilla/5.0'}
     
-    # Shuffle feeds randomly so it doesn't always check the same category first
     feed_items = list(FEEDS.items())
     random.shuffle(feed_items)
 
@@ -230,25 +217,25 @@ def main():
         if len(meta_desc) < 20:
             meta_desc = re.sub(r'[^a-zA-Z0-9,.\-]', ' ', summary_text)[:148].strip()
 
-        fb_caption = f"🚨 {selected_entry.title} | Full details inside #{chosen_category.replace(' ', '')} #GlobalNews"
+        fb_caption = f"🚨 {selected_entry.title} | Full details inside #{chosen_category.replace(' ', '')} #EuropeNews"
         article_body_html = f"""
         <h2>{selected_entry.title}</h2>
         <p><b>Overview & Editorial Insight:</b> {summary_text}</p>
-        <p>This comprehensive report outlines essential global updates and industry developments.</p>
+        <p>This comprehensive report outlines essential regional and international updates.</p>
         <h2>Key Highlights</h2>
         <ul>
-          <li>Major Industry Impacts & Updates</li>
-          <li>Global Expert Analysis & Perspectives</li>
-          <li>Future Outlook and Strategic Growth</li>
+          <li>Core Policy Changes & Impact</li>
+          <li>Official Directives and Timelines</li>
+          <li>Global Expert Analysis</li>
         </ul>
         <h2>Overview & Comparison Table</h2>
         <table border='1' cellpadding='8' style='width:100%; border-collapse:collapse;'>
           <tr><th>Parameter</th><th>Details</th></tr>
-          <tr><td>Impact Level</td><td>High Global Significance</td></tr>
+          <tr><td>Impact Level</td><td>High Significance</td></tr>
           <tr><td>Analysis Standard</td><td>Comprehensive Review</td></tr>
           <tr><td>Status</td><td>Active Development</td></tr>
         </table>
-        <p><b>Reference Source:</b> <a href='{source_link}' target='_blank' rel='nofollow'>Verified News Wire</a></p>
+        <p><b>Reference Source:</b> <a href='{source_link}' target='_blank' rel='nofollow'>Official News Network</a></p>
         """
     else:
         try:
@@ -319,7 +306,7 @@ def main():
                 "title": seo_title, 
                 "content": full_article_html, 
                 "searchDescription": meta_desc,
-                "labels": [chosen_category, "Global News", "Trending Update", "World Affairs"], 
+                "labels": [chosen_category, "Europe News", "Global Updates", "Breaking News"], 
                 "location": {"name": loc["name"], "lat": loc["lat"], "lng": loc["lng"]}
             }
             
