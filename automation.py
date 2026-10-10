@@ -48,7 +48,7 @@ def save_history(link):
     hist = load_history()
     if link not in hist:
         hist.append(link)
-        hist = hist[-100:] # Keep last 100 links
+        hist = hist[-100:]
         open(HISTORY_FILE, "w").write(json.dumps(hist))
 
 def get_smart_location(title, category):
@@ -77,20 +77,25 @@ def get_featured_image(title):
     try:
         key = os.environ.get("UNSPLASH_ACCESS_KEY")
         if key:
-            # Search using title keywords instead of category name
             q = title[:50].replace(" ", ",")
             url = f"https://api.unsplash.com/search/photos?query={q}&per_page=1&client_id={key}"
             r = requests.get(url, timeout=10).json()
             if r.get('results'): 
                 return r['results'][0]['urls']['regular']
     except: pass
-    # Unique random fallback image each time
     return f"https://picsum.photos/seed/{random.randint(1,1000000)}/800/600"
 
 def call_gemini(cat, title, summary, source_link):
     k = os.environ.get("GEMINI_API_KEY")
     if not k: return None
-    p = f"""Title: {title} Summary: {summary} Category: {cat} Return ONLY valid JSON without line breaks inside values. Keys: seo_title, meta_description, article_body, fb_caption"""
+    p = f"""Write a detailed SEO news article in English, 700+ words.
+Title: {title}
+Summary: {summary}
+Category: {cat}
+Must include: h2 headings, bullet points, a comparison table, and FAQ.
+Return ONLY valid JSON without line breaks inside values.
+Keys: seo_title, meta_description (max 148 chars, no double quotes), article_body (HTML with h2, p, ul, table), fb_caption
+"""
     for model in GEMINI_MODELS:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={k}"
         try:
@@ -111,7 +116,14 @@ def call_gemini(cat, title, summary, source_link):
 def call_groq_backup(cat, title, summary, source_link):
     k = os.environ.get("GROQ_API_KEY")
     if not k: return None
-    p = f"""Return ONLY valid JSON object. No markdown. Title: {title} Summary: {summary} Category: {cat} Keys: seo_title, meta_description, article_body, fb_caption"""
+    p = f"""Write a detailed SEO news article in English, 700+ words.
+Title: {title}
+Summary: {summary}
+Category: {cat}
+Must include: h2 headings, bullet points, a comparison table, and FAQ.
+Return ONLY valid JSON without line breaks inside values.
+Keys: seo_title, meta_description (max 148 chars, no double quotes), article_body (HTML with h2, p, ul, table), fb_caption
+"""
     for model in GROQ_MODELS:
         try:
             print(f"🔄 Trying Groq {model}...")
@@ -157,7 +169,6 @@ def main():
     selected_entry = None; chosen_category = "Europe Visa Latest"; source_link = "https://trttnews24bd.blogspot.com"
     headers = {'User-Agent': 'Mozilla/5.0'}
     
-    # Scan feeds and pick the first unposted entry from top 5 items
     for cat_name, feed_url in FEEDS.items():
         print(f"📡 Scanning: {cat_name}...")
         try:
@@ -192,7 +203,7 @@ def main():
     if not final_response:
         print("❌ All AI failed, using RICH SEO Fallback")
         seo_title = f"{chosen_category}: {selected_entry.title[:70]}{current_date_tag}"
-        meta_desc = summary_text[:145]
+        meta_desc = summary_text.replace('"', "'").replace('\n',' ').strip()[:145]
         fb_caption = f"🚨 {selected_entry.title} | Full details inside #USVisa #EuropeVisa #WorkAbroad"
         article_body_html = f"""
         <h2>{selected_entry.title}</h2>
@@ -219,13 +230,17 @@ def main():
             seo_title = data.get("seo_title", f"{chosen_category}: {selected_entry.title[:70]}")
             if not current_date_tag in seo_title:
                 seo_title += current_date_tag
-            meta_desc = data.get("meta_description", summary_text[:145])[:150]
+            
+            # Clean Search Description: removes quotes and linebreaks to ensure Blogger API saves it properly
+            raw_desc = data.get("meta_description", summary_text[:145])
+            meta_desc = raw_desc.replace('"', "'").replace('\n',' ').replace('\r',' ').strip()[:150]
+
             fb_caption = data.get("fb_caption", seo_title)
             article_body_html = data.get("article_body", f"<p>{summary_text}</p>")
         except Exception as json_err:
             print(f"⚠️ JSON parsing error ({json_err}), using rich fallback.")
             seo_title = f"{chosen_category}: {selected_entry.title[:70]}{current_date_tag}"
-            meta_desc = summary_text[:145]
+            meta_desc = summary_text.replace('"', "'").replace('\n',' ').strip()[:145]
             fb_caption = seo_title
             article_body_html = f"<p>{summary_text}</p>"
 
@@ -275,12 +290,10 @@ def main():
             
             result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
             link = result.get('url')
-            print(f"✅ PUBLISHED: {link} with Unique Title Image & Location {loc['name']}")
+            print(f"✅ PUBLISHED: {link} with Search Description & Location {loc['name']}")
 
-            # Save link to history so it won't repeat
             save_history(source_link)
 
-            # Social shares
             fb_token = os.environ.get("FB_PAGE_ACCESS_TOKEN")
             fb_id = os.environ.get("FB_PAGE_ID")
             if fb_token and fb_id: post_to_facebook_system(fb_token, fb_id, fb_caption, link)
