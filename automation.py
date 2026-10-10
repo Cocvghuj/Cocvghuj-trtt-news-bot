@@ -11,7 +11,6 @@ GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 HISTORY_FILE = "posted_history.json"
 
-# === UPDATED MIXED FEEDS ===
 FEEDS = {
     "Schengen & EU Rules": "https://www.schengenvisainfo.com/feed/",
     "Europe Visa Latest": "https://visaguide.world/news/feed/",
@@ -69,11 +68,11 @@ def get_featured_image(title, category=""):
         key = os.environ.get("UNSPLASH_ACCESS_KEY")
         text = (title + " " + category).lower()
 
-        if "tech" in text or "ai" in text: q = "technology innovation computer"
+        if "tech" in text or "ai" in text or "ram" in text: q = "technology innovation computer laptop"
         elif "france" in text: q = "Paris France landmark"
         elif "germany" in text: q = "Berlin Germany city"
         elif "italy" in text: q = "Italy landscape city"
-        elif "uk" in text or "britain" in text: q = "London UK city"
+        elif "uk" in text or "britain" in text or "london" in text: q = "London Big Ben UK"
         elif "schengen" in text or "europe" in text: q = "Europe travel architecture"
         else: q = "visa passport travel"
 
@@ -310,9 +309,19 @@ def main():
                 "location": {"name": loc["name"], "lat": loc["lat"], "lng": loc["lng"]}
             }
             
+            # পোস্ট ইনসার্ট করো
             result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
             link = result.get('url')
-            print(f"✅ PUBLISHED: {link} under [{chosen_category}] with Search Description & Location {loc['name']}")
+            post_id = result.get('id')
+            print(f"✅ PUBLISHED: {link} under [{chosen_category}] with Location {loc['name']}")
+
+            # গ্যারান্টিড ফিক্স: আলাদাভাবে Search Description প্যাচ করে দাও যাতে বক্সে লেখা ১০০% বসে যায়
+            try:
+                patch_body = {"searchDescription": meta_desc}
+                blogger_service.posts().patch(blogId=blog_id, postId=post_id, body=patch_body).execute()
+                print(f"✅ Search Description successfully patched: {meta_desc}")
+            except Exception as patch_err:
+                print(f"⚠️ Patch warning: {patch_err}")
 
             save_history(source_link)
 
