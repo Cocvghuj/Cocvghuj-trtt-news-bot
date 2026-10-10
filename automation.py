@@ -9,6 +9,8 @@ GROQ_MODELS = ["openai/gpt-oss-20b", "openai/gpt-oss-120b"]
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
+HISTORY_FILE = "posted_history.json"
+
 FEEDS = {
     "Schengen & Europe EU Rules": "https://www.schengenvisainfo.com/feed/",
     "Europe Visa Latest": "https://visaguide.world/news/feed/",
@@ -36,6 +38,19 @@ COUNTRY_LOCATIONS = {
     "default": {"name": "Milan, Italy", "lat": 45.4642, "lng": 9.1900}
 }
 
+def load_history():
+    if os.path.exists(HISTORY_FILE):
+        try: return json.load(open(HISTORY_FILE))
+        except: return []
+    return []
+
+def save_history(link):
+    hist = load_history()
+    if link not in hist:
+        hist.append(link)
+        hist = hist[-100:] # Keep last 100 links
+        open(HISTORY_FILE, "w").write(json.dumps(hist))
+
 def get_smart_location(title, category):
     text = (title + " " + category).lower()
     if "italy" in text or "milan" in text or "schengen" in text or "europe" in text or "eu " in text:
@@ -58,15 +73,19 @@ def get_smart_location(title, category):
         return COUNTRY_LOCATIONS["Middle East"]
     return COUNTRY_LOCATIONS["default"]
 
-def get_featured_image(query):
+def get_featured_image(title):
     try:
         key = os.environ.get("UNSPLASH_ACCESS_KEY")
         if key:
-            url = f"https://api.unsplash.com/search/photos?query={query}&per_page=1&client_id={key}"
-            r = requests.get(url).json()
-            if r.get('results'): return r['results'][0]['urls']['regular']
+            # Search using title keywords instead of category name
+            q = title[:50].replace(" ", ",")
+            url = f"https://api.unsplash.com/search/photos?query={q}&per_page=1&client_id={key}"
+            r = requests.get(url, timeout=10).json()
+            if r.get('results'): 
+                return r['results'][0]['urls']['regular']
     except: pass
-    return f"https://picsum.photos/seed/{random.randint(1,100000)}/800/400"
+    # Unique random fallback image each time
+    return f"https://picsum.photos/seed/{random.randint(1,1000000)}/800/600"
 
 def call_gemini(cat, title, summary, source_link):
     k = os.environ.get("GEMINI_API_KEY")
@@ -134,22 +153,34 @@ def post_to_telegram(token, chat_id, message, link):
     except Exception as e: print(f"❌ Telegram skipped: {e}")
 
 def main():
+    history = load_history()
     selected_entry = None; chosen_category = "Europe Visa Latest"; source_link = "https://trttnews24bd.blogspot.com"
     headers = {'User-Agent': 'Mozilla/5.0'}
+    
+    # Scan feeds and pick the first unposted entry from top 5 items
     for cat_name, feed_url in FEEDS.items():
         print(f"📡 Scanning: {cat_name}...")
         try:
             response = requests.get(feed_url, headers=headers, timeout=15)
             if response.status_code == 200:
                 feed = feedparser.parse(response.text)
-                if feed.entries:
-                    selected_entry = feed.entries[0]; chosen_category = cat_name; source_link = selected_entry.get('link', feed_url)
-                    print(f"🎯 Found: {selected_entry.title[:60]}"); break
-        except Exception as e: print(f"Skipping: {e}")
-    if not selected_entry: print("❌ No entries found"); return
+                for entry in feed.entries[:5]:
+                    link = entry.get('link')
+                    if link and link not in history:
+                        selected_entry = entry
+                        chosen_category = cat_name
+                        source_link = link
+                        print(f"🎯 Found new entry: {selected_entry.title[:60]}")
+                        break
+                if selected_entry: break
+        except Exception as e: print(f"Skipping feed error: {e}")
+        
+    if not selected_entry: 
+        print("❌ No new unposted entries found")
+        return
 
     summary_text = selected_entry.get('summary', selected_entry.title)
-    image_url = get_featured_image(chosen_category)
+    image_url = get_featured_image(selected_entry.title)
     
     final_response = call_gemini(chosen_category, selected_entry.title, summary_text, source_link)
     if not final_response:
@@ -231,20 +262,6 @@ def main():
                 blogs = blogger_service.blogs().listByUser(userId='self').execute()
                 if blogs.get('items'): blog_id = blogs['items'][0]['id']
 
-            # Smart Duplicate Check
-            try:
-                existing = blogger_service.posts().list(blogId=blog_id, maxResults=20, fetchBodies=False).execute()
-                current_date_str = datetime.datetime.utcnow().strftime('%b %d, %Y')
-                for p in existing.get('items', []):
-                    p_title = p.get('title', '')
-                    if p['title'].split('(')[0].strip().lower() == seo_title.split('(')[0].strip().lower():
-                        if current_date_str not in p_title:
-                            continue
-                        print(f"⚠️ Already posted today, skipping: {seo_title}")
-                        return
-            except Exception as dup_err:
-                print(f"Duplicate check warning: {dup_err}")
-
             loc = get_smart_location(selected_entry.title, chosen_category)
             
             post_body = {
@@ -258,7 +275,10 @@ def main():
             
             result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
             link = result.get('url')
-            print(f"✅ PUBLISHED: {link} with Search Description & Location {loc['name']}")
+            print(f"✅ PUBLISHED: {link} with Unique Title Image & Location {loc['name']}")
+
+            # Save link to history so it won't repeat
+            save_history(source_link)
 
             # Social shares
             fb_token = os.environ.get("FB_PAGE_ACCESS_TOKEN")
