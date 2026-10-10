@@ -11,19 +11,21 @@ GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 HISTORY_FILE = "posted_history.json"
 
+# === ALL CATEGORIES & GLOBAL NEWS FEEDS ===
 FEEDS = {
+    "Global Tech Innovations": "https://techcrunch.com/feed/",
+    "World News & Politics": "https://www.aljazeera.com/xml/rss/all.rss",
+    "European Breaking News": "https://www.dw.com/export/rss?sectionId=30973",
+    "Global Business & Markets": "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
+    "International Science & Tech": "https://www.theverge.com/rss/index.xml",
+    "Global Economy & Finance": "https://www.cnbc.com/id/10003114/device/rss/rss.html",
     "Schengen & Europe EU Rules": "https://www.schengenvisainfo.com/feed/",
     "Europe Visa Latest": "https://visaguide.world/news/feed/",
     "Canada Immigration & Jobs": "https://www.cicnews.com/feed/",
-    "USA Visa & Tech Laws": "https://www.immigration.ca/feed/",
-    "UK Visa and Immigration": "https://www.freemovement.org.uk/feed/",
-    "DW Europe News": "https://www.dw.com/export/rss?sectionId=30973",
-    "Australia & NZ Policy Updates": "https://www.abc.net.au/news/feed/51120/rss.xml",
-    "Middle East Laws & Business": "https://www.aljazeera.com/xml/rss/all.rss",
-    "Global Tech Innovations": "https://techcrunch.com/feed/"
+    "USA & Global Policy": "https://www.immigration.ca/feed/",
+    "Australia & NZ Policy Updates": "https://www.abc.net.au/news/feed/51120/rss.xml"
 }
 
-# === SMART COUNTRY LOCATION SYSTEM ===
 COUNTRY_LOCATIONS = {
     "Italy": {"name": "Milan, Italy", "lat": 45.4642, "lng": 9.1900},
     "Germany": {"name": "Berlin, Germany", "lat": 52.5200, "lng": 13.4050},
@@ -34,7 +36,7 @@ COUNTRY_LOCATIONS = {
     "Australia": {"name": "Sydney, Australia", "lat": -33.8688, "lng": 151.2093},
     "New Zealand": {"name": "Wellington, New Zealand", "lat": -41.2865, "lng": 174.7762},
     "Middle East": {"name": "Dubai, UAE", "lat": 25.2048, "lng": 55.2708},
-    "Schengen": {"name": "Brussels, Belgium", "lat": 50.8503, "lng": 4.3517},
+    "Europe": {"name": "Brussels, Belgium", "lat": 50.8503, "lng": 4.3517},
     "default": {"name": "Milan, Italy", "lat": 45.4642, "lng": 9.1900}
 }
 
@@ -53,12 +55,10 @@ def save_history(link):
 
 def get_smart_location(title, category):
     text = (title + " " + category).lower()
-    if "italy" in text or "milan" in text or "schengen" in text or "europe" in text or "eu " in text:
-        return COUNTRY_LOCATIONS["Italy"]
+    if "usa" in text or "america" in text or "washington" in text:
+        return COUNTRY_LOCATIONS["USA"]
     if "canada" in text or "toronto" in text:
         return COUNTRY_LOCATIONS["Canada"]
-    if "usa" in text or "america" in text or "us visa" in text or "washington" in text:
-        return COUNTRY_LOCATIONS["USA"]
     if "uk" in text or "london" in text or "britain" in text:
         return COUNTRY_LOCATIONS["UK"]
     if "germany" in text or "berlin" in text:
@@ -67,22 +67,38 @@ def get_smart_location(title, category):
         return COUNTRY_LOCATIONS["France"]
     if "australia" in text or "sydney" in text:
         return COUNTRY_LOCATIONS["Australia"]
-    if "zealand" in text or "wellington" in text:
-        return COUNTRY_LOCATIONS["New Zealand"]
-    if "middle east" in text or "dubai" in text or "qatar" in text or "saudi" in text or "al jazeera" in text:
+    if "middle east" in text or "dubai" in text or "qatar" in text or "saudi" in text:
         return COUNTRY_LOCATIONS["Middle East"]
+    if "europe" in text or "schengen" in text or "eu " in text:
+        return COUNTRY_LOCATIONS["Europe"]
     return COUNTRY_LOCATIONS["default"]
 
-def get_featured_image(title):
+def get_featured_image(title, category=""):
     try:
         key = os.environ.get("UNSPLASH_ACCESS_KEY")
+        text = (title + " " + category).lower()
+
+        if "tech" in text or "software" in text or "ai" in text: q = "technology innovation computer"
+        elif "business" in text or "market" in text or "economy" in text: q = "global business economy finance"
+        elif "mali" in text: q = "Mali africa landscape"
+        elif "usa" in text or "america" in text: q = "USA city skyline"
+        elif "canada" in text: q = "Canada landscape"
+        elif "uk" in text or "britain" in text: q = "London city UK"
+        elif "germany" in text: q = "Berlin city Germany"
+        elif "europe" in text or "schengen" in text: q = "Europe architecture city"
+        elif "australia" in text: q = "Sydney Australia"
+        else: q = "world news breaking global"
+
         if key:
-            q = title[:50].replace(" ", ",")
-            url = f"https://api.unsplash.com/search/photos?query={q}&per_page=1&client_id={key}"
-            r = requests.get(url, timeout=10).json()
-            if r.get('results'): 
-                return r['results'][0]['urls']['regular']
-    except: pass
+            url = f"https://api.unsplash.com/search/photos?query={q}&per_page=1&orientation=landscape&client_id={key}"
+            r = requests.get(url, timeout=15).json()
+            if r.get('results'):
+                img = r['results'][0]['urls']['regular']
+                print(f"✅ Image found for {q}")
+                return img
+    except Exception as e:
+        print(f"Image error: {e}")
+
     return f"https://picsum.photos/seed/{random.randint(1,1000000)}/800/600"
 
 def call_gemini(cat, title, summary, source_link):
@@ -166,10 +182,14 @@ def post_to_telegram(token, chat_id, message, link):
 
 def main():
     history = load_history()
-    selected_entry = None; chosen_category = "Europe Visa Latest"; source_link = "https://trttnews24bd.blogspot.com"
+    selected_entry = None; chosen_category = "Global News"; source_link = "https://trttnews24bd.blogspot.com"
     headers = {'User-Agent': 'Mozilla/5.0'}
     
-    for cat_name, feed_url in FEEDS.items():
+    # Shuffle feeds randomly so it doesn't always check the same category first
+    feed_items = list(FEEDS.items())
+    random.shuffle(feed_items)
+
+    for cat_name, feed_url in feed_items:
         print(f"📡 Scanning: {cat_name}...")
         try:
             response = requests.get(feed_url, headers=headers, timeout=15)
@@ -181,7 +201,7 @@ def main():
                         selected_entry = entry
                         chosen_category = cat_name
                         source_link = link
-                        print(f"🎯 Found new entry: {selected_entry.title[:60]}")
+                        print(f"🎯 Found new entry from [{cat_name}]: {selected_entry.title[:60]}")
                         break
                 if selected_entry: break
         except Exception as e: print(f"Skipping feed error: {e}")
@@ -191,7 +211,7 @@ def main():
         return
 
     summary_text = selected_entry.get('summary', selected_entry.title)
-    image_url = get_featured_image(selected_entry.title)
+    image_url = get_featured_image(selected_entry.title, chosen_category)
     
     final_response = call_gemini(chosen_category, selected_entry.title, summary_text, source_link)
     if not final_response:
@@ -203,26 +223,32 @@ def main():
     if not final_response:
         print("❌ All AI failed, using RICH SEO Fallback")
         seo_title = f"{chosen_category}: {selected_entry.title[:70]}{current_date_tag}"
-        meta_desc = summary_text.replace('"', "'").replace('\n',' ').strip()[:145]
-        fb_caption = f"🚨 {selected_entry.title} | Full details inside #USVisa #EuropeVisa #WorkAbroad"
+        
+        raw_desc = summary_text
+        clean = re.sub(r'[^a-zA-Z0-9,.\-:\(\)$]', ' ', raw_desc)
+        meta_desc = ' '.join(clean.split())[:148].strip()
+        if len(meta_desc) < 20:
+            meta_desc = re.sub(r'[^a-zA-Z0-9,.\-]', ' ', summary_text)[:148].strip()
+
+        fb_caption = f"🚨 {selected_entry.title} | Full details inside #{chosen_category.replace(' ', '')} #GlobalNews"
         article_body_html = f"""
         <h2>{selected_entry.title}</h2>
         <p><b>Overview & Editorial Insight:</b> {summary_text}</p>
-        <p>This comprehensive report outlines essential policy adjustments affecting international applicants and global mobility frameworks.</p>
-        <h2>Key Policy Highlights</h2>
+        <p>This comprehensive report outlines essential global updates and industry developments.</p>
+        <h2>Key Highlights</h2>
         <ul>
-          <li>Official Implementation Timeline & Deadlines</li>
-          <li>Global Impact Assessment on Applicants</li>
-          <li>Compliance & Documentation Standards</li>
+          <li>Major Industry Impacts & Updates</li>
+          <li>Global Expert Analysis & Perspectives</li>
+          <li>Future Outlook and Strategic Growth</li>
         </ul>
-        <h2>Requirements & Processing Overview</h2>
+        <h2>Overview & Comparison Table</h2>
         <table border='1' cellpadding='8' style='width:100%; border-collapse:collapse;'>
-          <tr><th>Parameter</th><th>Standard Guideline</th></tr>
-          <tr><td>Processing Period</td><td>3 to 6 Months</td></tr>
-          <tr><td>Verification Standard</td><td>Strict Compliance Review</td></tr>
-          <tr><td>Validity Status</td><td>Active for 2027 Guidelines</td></tr>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Impact Level</td><td>High Global Significance</td></tr>
+          <tr><td>Analysis Standard</td><td>Comprehensive Review</td></tr>
+          <tr><td>Status</td><td>Active Development</td></tr>
         </table>
-        <p><b>Reference Source:</b> <a href='{source_link}' target='_blank' rel='nofollow'>Official News Network</a></p>
+        <p><b>Reference Source:</b> <a href='{source_link}' target='_blank' rel='nofollow'>Verified News Wire</a></p>
         """
     else:
         try:
@@ -231,16 +257,25 @@ def main():
             if not current_date_tag in seo_title:
                 seo_title += current_date_tag
             
-            # Clean Search Description: removes quotes and linebreaks to ensure Blogger API saves it properly
-            raw_desc = data.get("meta_description", summary_text[:145])
-            meta_desc = raw_desc.replace('"', "'").replace('\n',' ').replace('\r',' ').strip()[:150]
+            raw_desc = data.get("meta_description") or data.get("seo_title") or summary_text
+            clean = re.sub(r'[^a-zA-Z0-9,.\-:\(\)$]', ' ', raw_desc)
+            meta_desc = ' '.join(clean.split())[:148].strip()
+            if len(meta_desc) < 20:
+                meta_desc = re.sub(r'[^a-zA-Z0-9,.\-]', ' ', summary_text)[:148].strip()
+            print(f"DEBUG SearchDesc OK: {meta_desc}")
 
             fb_caption = data.get("fb_caption", seo_title)
             article_body_html = data.get("article_body", f"<p>{summary_text}</p>")
         except Exception as json_err:
             print(f"⚠️ JSON parsing error ({json_err}), using rich fallback.")
             seo_title = f"{chosen_category}: {selected_entry.title[:70]}{current_date_tag}"
-            meta_desc = summary_text.replace('"', "'").replace('\n',' ').strip()[:145]
+            
+            raw_desc = summary_text
+            clean = re.sub(r'[^a-zA-Z0-9,.\-:\(\)$]', ' ', raw_desc)
+            meta_desc = ' '.join(clean.split())[:148].strip()
+            if len(meta_desc) < 20:
+                meta_desc = re.sub(r'[^a-zA-Z0-9,.\-]', ' ', summary_text)[:148].strip()
+
             fb_caption = seo_title
             article_body_html = f"<p>{summary_text}</p>"
 
@@ -284,13 +319,13 @@ def main():
                 "title": seo_title, 
                 "content": full_article_html, 
                 "searchDescription": meta_desc,
-                "labels": [chosen_category, "Global News", "Immigration 2027", "Work Visa Update"], 
+                "labels": [chosen_category, "Global News", "Trending Update", "World Affairs"], 
                 "location": {"name": loc["name"], "lat": loc["lat"], "lng": loc["lng"]}
             }
             
             result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
             link = result.get('url')
-            print(f"✅ PUBLISHED: {link} with Search Description & Location {loc['name']}")
+            print(f"✅ PUBLISHED: {link} under [{chosen_category}] with Search Description & Location {loc['name']}")
 
             save_history(source_link)
 
