@@ -2,32 +2,48 @@ name: Auto Blog to Facebook Post
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '23 6,13,19 * * *' # প্রতিদিন ৩টি নির্দিষ্ট সময়ে (ইটালি সময় সকাল ৮:২৩, দুপুর ৩:২৩ এবং রাত ৯:২৩) রান করবে
   workflow_dispatch:
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.10'
+
       - name: Install Dependencies
-        run: pip install feedparser requests google-auth google-api-python-client facebook-sdk
+        run: |
+          python -m pip install --upgrade pip
+          pip install feedparser google-api-python-client google-auth-oauthlib facebook-sdk requests
+
       - name: Run Automation Script
         env:
-          BLOGGER_ID: ${{ secrets.BLOGGER_ID }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
           BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          BLOGGER_ID: ${{ secrets.BLOGGER_ID }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+        run: python automation.py
+
+      - name: Save history
         run: |
-          ls -R
-          python automation.py || python Cocvghuj-trtt-news-bot/automation.py
+          git config --local user.email "bot@trtt.com"
+          git config --local user.name "TRTT Bot"
+          git add posted_history.json || true
+          git commit -m "Update posted history" || true
+          git push || true
