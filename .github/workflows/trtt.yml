@@ -2,14 +2,14 @@ name: Auto Blog to Facebook Post
 
 on:
   schedule:
-    - cron: '23 6,13,19 * * *' # প্রতিদিন ৩টি নির্দিষ্ট সময়ে (ইটালি সময় সকাল ৮:২৩, দুপুর ৩:২৩ এবং রাত ৯:২৩) রান করবে
+    - cron: '23 6,13,19 * * *' # প্রতিদিন ৩টি নির্দিষ্ট সময়ে রান করবে
   workflow_dispatch:
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write # গিটহাবে ফাইল কমিট ও পুশ করার পার্মিশন
 
     steps:
       - name: Checkout repository
