@@ -22,17 +22,19 @@ FEEDS = {
     "Global Tech & AI": "https://techcrunch.com/feed/"
 }
 
+# === SMART GLOBAL COUNTRY & LOCATION SYSTEM ===
 COUNTRY_LOCATIONS = {
-    "Italy": {"name": "Milan, Italy", "lat": 45.4642, "lng": 9.1900},
-    "Germany": {"name": "Berlin, Germany", "lat": 52.5200, "lng": 13.4050},
-    "France": {"name": "Paris, France", "lat": 48.8566, "lng": 2.3522},
-    "UK": {"name": "London, UK", "lat": 51.5072, "lng": -0.1276},
-    "USA": {"name": "Washington, USA", "lat": 38.9072, "lng": -77.0369},
-    "Canada": {"name": "Ottawa, Canada", "lat": 45.4215, "lng": -75.6972},
-    "Australia": {"name": "Sydney, Australia", "lat": -33.8688, "lng": 151.2093},
-    "New Zealand": {"name": "Wellington, New Zealand", "lat": -41.2865, "lng": 174.7762},
-    "Middle East": {"name": "Dubai, UAE", "lat": 25.2048, "lng": 55.2708},
-    "Europe": {"name": "Brussels, Belgium", "lat": 50.8503, "lng": 4.3517},
+    "italy": {"name": "Milan, Italy", "lat": 45.4642, "lng": 9.1900},
+    "germany": {"name": "Berlin, Germany", "lat": 52.5200, "lng": 13.4050},
+    "france": {"name": "Paris, France", "lat": 48.8566, "lng": 2.3522},
+    "uk": {"name": "London, UK", "lat": 51.5072, "lng": -0.1276},
+    "usa": {"name": "Washington, USA", "lat": 38.9072, "lng": -77.0369},
+    "canada": {"name": "Ottawa, Canada", "lat": 45.4215, "lng": -75.6972},
+    "australia": {"name": "Sydney, Australia", "lat": -33.8688, "lng": 151.2093},
+    "morocco": {"name": "Rabat, Morocco", "lat": 34.0209, "lng": -6.8416},
+    "africa": {"name": "Casablanca, Morocco", "lat": 33.5731, "lng": -7.5898},
+    "asia": {"name": "Dubai, UAE", "lat": 25.2048, "lng": 55.2708},
+    "europe": {"name": "Brussels, Belgium", "lat": 50.8503, "lng": 4.3517},
     "default": {"name": "Milan, Italy", "lat": 45.4642, "lng": 9.1900}
 }
 
@@ -51,16 +53,9 @@ def save_history(link):
 
 def get_smart_location(title, category):
     text = (title + " " + category).lower()
-    if "italy" in text or "milan" in text:
-        return COUNTRY_LOCATIONS["Italy"]
-    if "germany" in text or "berlin" in text:
-        return COUNTRY_LOCATIONS["Germany"]
-    if "france" in text or "paris" in text:
-        return COUNTRY_LOCATIONS["France"]
-    if "uk" in text or "london" in text or "britain" in text:
-        return COUNTRY_LOCATIONS["UK"]
-    if "europe" in text or "schengen" in text or "eu " in text:
-        return COUNTRY_LOCATIONS["Europe"]
+    for key, loc in COUNTRY_LOCATIONS.items():
+        if key in text and key != "default":
+            return loc
     return COUNTRY_LOCATIONS["default"]
 
 def get_featured_image(title, category=""):
@@ -68,20 +63,26 @@ def get_featured_image(title, category=""):
         key = os.environ.get("UNSPLASH_ACCESS_KEY")
         text = (title + " " + category).lower()
 
-        if "tech" in text or "ai" in text or "ram" in text: q = "technology innovation computer laptop"
-        elif "france" in text: q = "Paris France landmark"
-        elif "germany" in text: q = "Berlin Germany city"
-        elif "italy" in text: q = "Italy landscape city"
-        elif "uk" in text or "britain" in text or "london" in text: q = "London Big Ben UK"
-        elif "schengen" in text or "europe" in text: q = "Europe travel architecture"
-        else: q = "visa passport travel"
+        if any(x in text for x in ["tech", "ai", "ram", "ddr", "chip", "intel", "amd"]):
+            q = "technology innovation computer"
+        else:
+            q = None
+            for country_key, loc in COUNTRY_LOCATIONS.items():
+                if country_key in text and country_key != "default":
+                    q = f"{loc['name']} landmark city"
+                    break
+            
+            if not q:
+                clean_title = re.sub(r'[^a-zA-Z ]', '', title)
+                words = clean_title.split()[:3]
+                q = ' '.join(words) + " city landscape"
 
         if key:
             url = f"https://api.unsplash.com/search/photos?query={q}&per_page=1&orientation=landscape&client_id={key}"
             r = requests.get(url, timeout=15).json()
             if r.get('results'):
                 img = r['results'][0]['urls']['regular']
-                print(f"✅ Image found for {q}")
+                print(f"✅ Image found for query: {q}")
                 return img
     except Exception as e:
         print(f"Image error: {e}")
@@ -309,13 +310,11 @@ def main():
                 "location": {"name": loc["name"], "lat": loc["lat"], "lng": loc["lng"]}
             }
             
-            # পোস্ট ইনসার্ট করো
             result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
             link = result.get('url')
             post_id = result.get('id')
             print(f"✅ PUBLISHED: {link} under [{chosen_category}] with Location {loc['name']}")
 
-            # গ্যারান্টিড ফিক্স: আলাদাভাবে Search Description প্যাচ করে দাও যাতে বক্সে লেখা ১০০% বসে যায়
             try:
                 patch_body = {"searchDescription": meta_desc}
                 blogger_service.posts().patch(blogId=blog_id, postId=post_id, body=patch_body).execute()
