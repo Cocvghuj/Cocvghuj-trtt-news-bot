@@ -120,14 +120,16 @@ def get_featured_image(title, category=""):
         if not key: return fallback_img, fallback_alt
         
         lower_title = title.lower()
-        if "windborne" in lower_title or "balloon" in lower_title or "weather" in lower_title:
+        if "morocco" in lower_title or "afcon" in lower_title:
+            q = "morocco flag stadium"
+        elif "usa" in lower_title or "h2b" in lower_title:
+            q = "usa passport travel work"
+        elif "canada" in lower_title or "lmia" in lower_title:
+            q = "canada flag passport travel"
+        elif "italy" in lower_title or "sanluri" in lower_title:
+            q = "italy visa passport travel"
+        elif "windborne" in lower_title or "balloon" in lower_title:
             q = "weather balloon sky atmosphere"
-        elif "morocco" in lower_title or "afcon" in lower_title:
-            q = "morocco flag stadium african football"
-        elif "mali" in lower_title:
-            q = "mali flag landmark africa"
-        elif "visa" in lower_title or "immigration" in lower_title or "citizens" in lower_title:
-            q = "global travel border checkpoint"
         else:
             clean_title = re.sub(r'[^a-zA-Z0-9\s]', '', title)
             words = [w for w in clean_title.split() if len(w) > 3]
@@ -152,16 +154,18 @@ def validate_post(content, title):
     errors = []
     if "[...]" in content or "[…]" in content:
         errors.append("Found [...] - Incomplete content")
-    if "actively coordinating" in content or "structural changes will impact" in content:
-        errors.append("Found filler phrase")
-    if "All participants and registered entities" in content:
-        errors.append("Found fake FAQ answer")
+    if "actively coordinating responses" in content or "structural changes" in content:
+        errors.append("Found banned filler phrase")
+    if "critical juncture" in content or "Global Mobility Desk" in content:
+        errors.append("Found banned filler phrase")
+    if "operational stakeholders" in content or "Silicon Valley Tech Desk" in content:
+        errors.append("Found banned filler phrase")
     if "US Passport" in content and "Morocco" in title:
         errors.append("Image Mismatch: Morocco title with US Passport")
 
     words = len(re.sub(r'<[^>]+>', '', content).split())
-    if words < 250:
-        errors.append(f"Post too short ({words} words). Minimum required: 250 words.")
+    if words < 300:
+        errors.append(f"Post too short ({words} words). Minimum required: 300 words.")
 
     if errors:
         print("❌ POST REJECTED BY VALIDATOR:")
@@ -180,249 +184,3 @@ def send_telegram_notification(title, url):
             msg = f"👑 <b>Media Empire Alert</b>\n\n<b>Title:</b> {title}\n\n<b>Link:</b> {url}"
             api_url = TELEGRAM_URL_TEMPLATE.format(token=bot_token)
             requests.post(api_url, json={"chat_id": chat_id, "text": msg, "parse_mode": "HTML"}, timeout=10)
-        except Exception as e:
-            print(f"⚠️ Telegram Error: {e}")
-
-def calculate_read_time(body_html):
-    words = len(re.sub(r'<[^>]+>', '', body_html).split())
-    minutes = max(2, round(words / 180))
-    return f"⏱️ <b>Estimated Read Time:</b> {minutes} min read ({words} words)"
-
-def generate_fact_check_badge():
-    score = random.randint(93, 99)
-    return f'<div style="background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; padding:10px 14px; border-radius:6px; margin-bottom:12px; font-size:13px;">✅ <b>AI Fact-Check Score:</b> {score}% True &bull; 🧠 <b>AI Manipulation Risk:</b> Low (Verified Syndicate Wire)</div>'
-
-def generate_schema_markup(title, desc, url, image_url):
-    schema = {
-        "@context": "https://schema.org",
-        "@type": "NewsArticle",
-        "headline": title,
-        "description": desc,
-        "image": [image_url],
-        "datePublished": datetime.datetime.utcnow().isoformat() + "Z",
-        "author": [{"@type": "Organization", "name": "Global Syndicate News Bureau"}],
-        "publisher": {"@type": "Organization", "name": "Global Media Empire Hub", "logo": {"@type": "ImageObject", "url": image_url}}
-    }
-    return f'<script type="application/ld+json">{json.dumps(schema)}</script>'
-
-def apply_internal_links(article_body):
-    hist = load_history()
-    if not hist: return article_body
-    for post in hist[-30:]:
-        if not isinstance(post, dict):
-            continue
-        p_title = post.get("title", "")
-        p_url = post.get("post_url", "")
-        if not p_title or not p_url:
-            continue
-        words = p_title.split()
-        if len(words) > 1:
-            keyword = f"{words[0]} {words[1]}"
-            if keyword.lower() in article_body.lower() and p_url not in article_body:
-                article_body = article_body.replace(keyword, f'<a href="{p_url}" target="_blank" rel="noopener" style="color:#2563eb; font-weight:600;">{keyword}</a>', 1)
-                break
-    return article_body
-
-def generate_audio_summary(title, summary):
-    try:
-        text_to_speak = f"Executive Audio Briefing: {title}. {summary[:180]}"
-        tts = gTTS(text=text_to_speak, lang='en', slow=False)
-        audio_filename = f"podcast_{int(time.time())}.mp3"
-        tts.save(audio_filename)
-        return f'<div style="background:#f8fafc; border:1px solid #e2e8f0; padding:12px; border-radius:8px; margin:15px 0;">🎙️ <b>Executive Audio Summary Available</b></div>'
-    except Exception:
-        return ""
-
-def get_source_publisher_name(source_link):
-    low_link = source_link.lower()
-    if "reuters" in low_link: return "Reuters Wire Desk"
-    elif "cnbc" in low_link or "bloomberg" in low_link: return "Bloomberg & Financial Wire"
-    elif "politico" in low_link: return "Politico EU Bureau"
-    elif "euronews" in low_link: return "Euronews International"
-    elif "bbc" in low_link: return "BBC World Intelligence"
-    elif "schengenvisainfo" in low_link: return "Schengen Visa Hub"
-    elif "visaguide" in low_link: return "Global Mobility Desk"
-    elif "techcrunch" in low_link or "wired" in low_link: return "Silicon Valley Tech Desk"
-    elif "thehackernews" in low_link: return "Global Cyber Security Wire"
-    elif "simpleflying" in low_link: return "Aviation Supply Chain Wire"
-    else: return "Official Syndicate Wire Desk"
-
-def generate_article_with_ai(cat, title, summary, source_link):
-    clean_summary = summary.replace("[…]", "").replace("[...]", "").strip()
-    source_name = get_source_publisher_name(source_link)
-    
-    prompt = f"""You are a professional news writer for TRTT NEWS 24 BD.
-
-STRICT RULES - NEVER BREAK:
-1. NEVER use [...] or [..] or ... at the end of a sentence. Always complete the sentence fully.
-2. NEVER use filler phrases like: "actively coordinating responses", "structural changes will impact", "critical juncture", "Global Mobility Desk", "operational stakeholders".
-3. Provide REAL and accurate answers in the FAQ section based strictly on story context.
-4. Write 400-500 words of simple, informative news in English.
-5. Embed the source link ({source_link}) naturally using anchor text ({source_name}).
-
-Story Title: {title}
-Context: {clean_summary}
-Category: {cat}
-Source Name: {source_name}
-Source URL: {source_link}
-
-Return ONLY valid JSON format with keys: "seo_title", "meta_description", "article_body"."""
-
-    gemini_key = os.environ.get("GEMINI_API_KEY")
-    if gemini_key:
-        for model in ["gemini-2.5-flash", "gemini-1.5-flash"]:
-            try:
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={gemini_key}"
-                r = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=90)
-                if r.status_code == 200 and "candidates" in r.json():
-                    txt = r.json()["candidates"][0]["content"]["parts"][0]["text"]
-                    match = re.search(r'\{.*\}', txt, re.DOTALL)
-                    if match:
-                        data = json.loads(match.group(0))
-                        if len(data.get("article_body","")) > 400:
-                            return data
-            except Exception as e:
-                print(f"⚠️ Gemini error: {e}")
-
-    groq_key = os.environ.get("GROQ_API_KEY")
-    if groq_key:
-        try:
-            url = "https://api.groq.com/openai/v1/chat/completions"
-            headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
-            payload = {"model": "llama-3.3-70b-versatile", "messages": [{"role": "user", "content": prompt}], "temperature": 0.7}
-            r = requests.post(url, json=payload, headers=headers, timeout=90)
-            if r.status_code == 200:
-                txt = r.json()["choices"][0]["message"]["content"]
-                match = re.search(r'\{.*\}', txt, re.DOTALL)
-                if match:
-                    data = json.loads(match.group(0))
-                    if len(data.get("article_body","")) > 400:
-                        return data
-        except Exception as e:
-            print(f"⚠️ Groq error: {e}")
-
-    return None
-
-def get_blogger():
-    try:
-        client_id = os.environ.get("BLOGGER_CLIENT_ID")
-        client_secret = os.environ.get("BLOGGER_CLIENT_SECRET")
-        refresh_token = os.environ.get("BLOGGER_REFRESH_TOKEN")
-        creds = Credentials(token=None, refresh_token=refresh_token, client_id=client_id, client_secret=client_secret, token_uri="https://oauth2.googleapis.com/token")
-        creds.refresh(Request())
-        return build("blogger", "v3", credentials=creds)
-    except Exception as e:
-        print(f"❌ Blogger Auth Error: {e}")
-        return None
-
-def main():
-    selected_entry = None; chosen_category = ""; source_link = ""
-    headers = {'User-Agent': 'Mozilla/5.0'}
-
-    breaking_count = get_today_breaking_count()
-    feed_items = list(FEEDS.items())
-    random.shuffle(feed_items)
-
-    if breaking_count >= 3:
-        feed_items = [f for f in feed_items if f[0] not in BREAKING_CATEGORIES]
-
-    for cat_name, feed_url in feed_items:
-        try:
-            response = requests.get(feed_url, headers=headers, timeout=15)
-            if response.status_code == 200:
-                feed = feedparser.parse(response.text)
-                for entry in feed.entries[:8]:
-                    link = entry.get('link')
-                    title = entry.get('title', '')
-                    if link and title and not is_duplicate(link, title):
-                        selected_entry = entry
-                        chosen_category = cat_name
-                        source_link = link
-                        break
-            if selected_entry: break
-        except Exception as e:
-            print(f"Skipping Feed: {e}")
-
-    if not selected_entry:
-        print("❌ No new unique entries found.")
-        return
-
-    entry_title = selected_entry.get('title', 'Global Strategic Intelligence Wire')
-    summary_text = selected_entry.get('summary', entry_title)
-    
-    image_url, image_alt = get_featured_image(entry_title, chosen_category)
-    ai_data = generate_article_with_ai(chosen_category, entry_title, summary_text, source_link)
-
-    # 🛑 যদি এআই ফেল করে, তবে পোস্ট পাবলিশ না করে স্ক্রিপ্ট বন্ধ হয়ে যাবে
-    if not ai_data or not isinstance(ai_data, dict):
-        print("❌ AI Generation failed. Aborting script safely. No junk post will be published.")
-        sys.exit(1)
-
-    seo_title = ai_data.get("seo_title", entry_title[:70])
-    raw_desc = ai_data.get("meta_description") or summary_text
-    clean_desc = re.sub(r'[^a-zA-Z0-9\s.,-]', '', raw_desc)
-    meta_desc = ' '.join(clean_desc.split())[:148].strip()
-    article_body_html = ai_data.get("article_body", "")
-
-    article_body_html = clean_post(article_body_html)
-    article_body_html = apply_internal_links(article_body_html)
-    
-    # 🛑 ভ্যালিডেশন চেক পাস না করলে কোড এখানে থেমে যাবে
-    validate_post(article_body_html, seo_title)
-
-    fact_badge = generate_fact_check_badge()
-    read_time = calculate_read_time(article_body_html)
-    audio_widget = generate_audio_summary(seo_title, meta_desc)
-    source_pub_name = get_source_publisher_name(source_link)
-
-    temp_post_url = "https://yourblog.blogspot.com"
-    schema_script = generate_schema_markup(seo_title, meta_desc, temp_post_url, image_url)
-
-    full_article_html = f"""
-    {schema_script}
-    {fact_badge}
-    <div style="color:#64748b; font-size:12px; margin-bottom:10px;">{read_time}</div>
-    <p><i><b>Summary:</b> {meta_desc}</i></p>
-    {audio_widget}
-    <div style="margin:20px 0;">
-        <img src="{image_url}" alt="{image_alt}" title="{seo_title}" style="width:100%; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1);"/>
-        <div style="font-size:11px; color:#64748b; margin-top:5px; text-align:right;"><b>Image Credit:</b> Original Content via <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7;">{source_pub_name}</a> / TRTT NEWS 24 BD Syndicate Bureau</div>
-    </div>
-    {article_body_html}
-    <hr/>
-    <p><small><b>Source:</b> <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7; font-weight:600;">{source_pub_name}</a> &bull; TRTT NEWS 24 BD Syndicate Bureau</small></p>
-    """
-
-    blogger_service = get_blogger()
-    if blogger_service:
-        blog_id = os.environ.get("BLOGGER_ID") or os.environ.get("BLOGGER_BLOG_ID")
-        loc = get_smart_location(entry_title, chosen_category)
-
-        raw_labels = [chosen_category, "Global Media Empire", "B2B Intelligence", "Master Syndicate", "AI Fact-Check"]
-        unique_labels = list(set(raw_labels))
-
-        post_body = {
-            "kind": "blogger#post",
-            "title": seo_title,
-            "content": full_article_html,
-            "searchDescription": meta_desc,
-            "labels": unique_labels,
-            "location": {"name": loc["name"], "lat": loc["lat"], "lng": loc["lng"]}
-        }
-
-        result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
-        post_id = result.get('id')
-        post_url = result.get('url')
-        print(f"👑 MEDIA EMPIRE ARTICLE PUBLISHED: {post_url}")
-
-        try:
-            patch_body = {"searchDescription": meta_desc}
-            blogger_service.posts().patch(blogId=blog_id, postId=post_id, body=patch_body).execute()
-        except Exception:
-            pass
-
-        save_history(source_link, seo_title, chosen_category, post_url)
-        send_telegram_notification(seo_title, post_url)
-
-if __name__ == "__main__":
-    main()
