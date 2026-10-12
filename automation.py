@@ -148,39 +148,6 @@ def generate_fact_check_badge():
     score = random.randint(93, 99)
     return f'<div style="background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; padding:10px 14px; border-radius:6px; margin-bottom:12px; font-size:13px;">✅ <b>AI Fact-Check Score:</b> {score}% True &bull; 🧠 <b>AI Manipulation Risk:</b> Low (Verified Syndicate Wire)</div>'
 
-def generate_live_tracker_widget(category, title):
-    if "Geopolitics" in category or "Conflict" in title or "War" in title or "Defense" in category:
-        return '<div style="background:#0f172a; color:#38bdf8; padding:12px; border-radius:8px; margin:15px 0; font-size:13px;">🗺️ <b>Live Geopolitical Intelligence Map:</b> Real-time regional airspace and movement tracking active via FlightRadar & Crisis Indices.</div>'
-    return ""
-
-def generate_salary_calculator_widget(category, title):
-    if "Visa" in category or "Immigration" in category or "Work" in title:
-        return """
-        <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:15px; border-radius:8px; margin:15px 0;">
-        🧮 <b>Interactive EU/Germany Work Visa & Tax Estimator:</b><br/>
-        <p style="font-size:13px; color:#475569; margin:5px 0;">Estimated Gross Annual Salary: <b>€55,000</b> &rarr; Estimated Net Take-Home (Tax Class 1): ~<b>€32,400 / year</b> (~€2,700/month).</p>
-        </div>
-        """
-    return ""
-
-def generate_language_translator_widget():
-    return """
-    <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 15px; border-radius:8px; margin:10px 0 20px 0; display:flex; align-items:center; gap:10px;">
-        <span style="font-size:13px; font-weight:600; color:#334155;">🌐 Select Language / ভাষা পরিবর্তন করুন:</span>
-        <div id="google_translate_element"></div>
-        <script type="text/javascript">
-            function googleTranslateElementInit() {
-                new google.translate.TranslateElement({
-                    pageLanguage: 'en',
-                    includedLanguages: 'bn,en,fr,de,hi,es,it,ar',
-                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-                }, 'google_translate_element');
-            }
-        </script>
-        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    </div>
-    """
-
 def generate_schema_markup(title, desc, url, image_url):
     schema = {
         "@context": "https://schema.org",
@@ -226,24 +193,23 @@ def generate_audio_summary(title, summary):
         return ""
 
 def generate_article_with_ai(cat, title, summary, source_link):
-    prompt = f"""You are the chief executive editor for an elite global news wire agency. 
-STRICT REQUIREMENT: Write a precise, high-quality, professional international news report strictly between 400 to 600 words in professional English. Adhere strictly to Google E-E-A-T and Helpful Content Guidelines.
+    prompt = f"""You are a senior professional international news editor. Write an exhaustive, comprehensive, high-quality news report strictly between 500 and 600 words in professional ENGLISH based on the information below.
 
-Source Title: {title}
+Source Headline: {title}
 Original Context: {summary}
 Category: {cat}
-Official Source Reference Link: {source_link}
+Source URL: {source_link}
 
-Mandatory Article Structure & Rules:
-1. Headline (seo_title): Authoritative and concise global news headline in English.
-2. Executive Summary (meta_description): A clear 100-word summary in English.
-3. Detailed Article Body (article_body) in HTML format containing:
-   - Engaging introduction and core context.
-   - Bullet points (`<ul>`, `<li>`) for key updates.
-   - **Crucial Requirement:** Naturally mention and embed the official source reference link ({source_link}) inside the text as an HTML anchor tag (e.g., <a href="{source_link}" target="_blank" rel="nofollow" style="color:#0284c7; font-weight:600;">Official Wire Source & Documentation</a>).
-   - Brief impact analysis or concluding outlook.
+INSTRUCTIONS & FORMAT:
+- Write completely in ENGLISH.
+- Total word count MUST be between 400 and 600 words.
+- Provide background context, key updates with bullet points (<ul><li>), analytical details, and geopolitical/economic implications.
+- Inside the article body, naturally embed the source link: <a href="{source_link}" target="_blank" rel="nofollow" style="color:#0284c7; font-weight:600;">Official Wire Source & Documentation</a>.
 
-Return ONLY valid JSON format with keys: "seo_title", "meta_description", "article_body". Do not include unescaped control characters inside JSON strings."""
+Return ONLY valid JSON with exact keys:
+1. "seo_title": A high-impact professional English news title.
+2. "meta_description": A 100-word executive summary in English.
+3. "article_body": Complete HTML formatted article content with headings, paragraphs, bullet points, and source reference link. Do not include unescaped control characters inside strings."""
 
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
@@ -340,40 +306,23 @@ def main():
     article_body_html = apply_internal_links(article_body_html)
     market_ticker = fetch_live_market_data()
     fact_badge = generate_fact_check_badge()
-    live_tracker = generate_live_tracker_widget(chosen_category, entry_title)
-    salary_calc = generate_salary_calculator_widget(chosen_category, entry_title)
-    translator_widget = generate_language_translator_widget()
     read_time = calculate_read_time(article_body_html)
     audio_widget = generate_audio_summary(seo_title, meta_desc)
-
-    multilingual_box = f"""
-    <div style="background:#f1f5f9; padding:12px; border-radius:6px; margin:15px 0; font-size:13px; border-left:4px solid #64748b;">
-    🌍 <b>Multilingual Global Briefing / আন্তর্জাতিক সংক্ষিপ্তসার:</b><br/>
-    <i>BN:</i> {meta_desc}<br/>
-    <i>HI:</i> वैश्विक भू-राजनीतिक और व्यापक आर्थिक विश्लेषण अपडेट।<br/>
-    <i>FR:</i> Analyse géopolitique et macroéconomique mondiale.<br/>
-    <i>DE:</i> Globale geopolitische und makroökonomische Analyse.
-    </div>
-    """
 
     temp_post_url = "https://yourblog.blogspot.com"
     schema_script = generate_schema_markup(seo_title, meta_desc, temp_post_url, image_url)
 
     full_article_html = f"""
     {schema_script}
-    {translator_widget}
     {market_ticker}
     {fact_badge}
-    {live_tracker}
-    {salary_calc}
     <div style="color:#64748b; font-size:12px; margin-bottom:10px;">{read_time}</div>
-    <i><b>Executive Synthesis:</b> {meta_desc}</i></p>
+    <p><i><b>Executive Summary:</b> {meta_desc}</i></p>
     {audio_widget}
     <div style="margin:20px 0;"><img src="{image_url}" alt="{image_alt}" title="{seo_title}" style="width:100%; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1);"/></div>
     {article_body_html}
-    {multilingual_box}
     <hr/>
-    <p><small><b>Verified Global Syndicate Source:</b> Cross-referenced and authenticated via international news desks. Primary reference link: <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7;">Official Wire Feed & Documentation</a></small></p>
+    <p><small><b>Verified Wire Desk Source:</b> Cross-referenced and authenticated via international news desks. Reference link: <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7;">Official Wire Feed & Documentation</a></small></p>
     """
 
     blogger_service = get_blogger()
