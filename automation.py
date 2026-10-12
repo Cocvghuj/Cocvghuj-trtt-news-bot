@@ -226,8 +226,8 @@ def generate_audio_summary(title, summary):
         return ""
 
 def generate_article_with_ai(cat, title, summary, source_link):
-    prompt = f"""You are the chief executive editor for an elite global news wire agency (like Reuters or Bloomberg). 
-STRICT REQUIREMENT: Write a comprehensive, highly analytical, and exhaustive investigative news report of AT LEAST 1000 to 1300 words in professional English. Adhere strictly to Google E-E-A-T and Helpful Content Guidelines.
+    prompt = f"""You are the chief executive editor for an elite global news wire agency. 
+STRICT REQUIREMENT: Write a precise, high-quality, professional international news report strictly between 400 to 600 words in professional English. Adhere strictly to Google E-E-A-T and Helpful Content Guidelines.
 
 Source Title: {title}
 Original Context: {summary}
@@ -235,17 +235,13 @@ Category: {cat}
 Official Source Reference Link: {source_link}
 
 Mandatory Article Structure & Rules:
-1. Headline (seo_title): Powerful, authoritative, and catchy global news headline in English.
-2. Executive Summary (meta_description): A 150-word high-level executive briefing in English.
+1. Headline (seo_title): Authoritative and concise global news headline in English.
+2. Executive Summary (meta_description): A clear 100-word summary in English.
 3. Detailed Article Body (article_body) in HTML format containing:
-   - Must be very long, detailed, and rich in context. Do not write short summaries.
-   - Introduction & Global Significance (with H2 heading).
-   - In-depth background analysis and core developments using bullet points (`<ul>`, `<li>`).
-   - Macroeconomic or geopolitical impact breakdown (with H2 heading).
-   - **Crucial Requirement:** Inside the body text, naturally mention and embed the official source link provided ({source_link}) as an HTML anchor tag (e.g., <a href="{source_link}" target="_blank" rel="nofollow" style="color:#2563eb; font-weight:600;">Official Wire Source & Documentation</a>).
-   - Comparative Data Table using HTML `<table>` with clean styling.
-   - Strategic Implications & Future Outlook (with H2 heading).
-   - Frequently Asked Questions (FAQ) Section with at least 3 detailed Q&As.
+   - Engaging introduction and core context.
+   - Bullet points (`<ul>`, `<li>`) for key updates.
+   - **Crucial Requirement:** Naturally mention and embed the official source reference link ({source_link}) inside the text as an HTML anchor tag (e.g., <a href="{source_link}" target="_blank" rel="nofollow" style="color:#0284c7; font-weight:600;">Official Wire Source & Documentation</a>).
+   - Brief impact analysis or concluding outlook.
 
 Return ONLY valid JSON format with keys: "seo_title", "meta_description", "article_body". Do not include unescaped control characters inside JSON strings."""
 
