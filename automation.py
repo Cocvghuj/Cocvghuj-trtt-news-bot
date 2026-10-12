@@ -1,4 +1,4 @@
-import feedparser, os, json, requests, random, re, datetime, time, subprocess
+import feedparser, os, json, requests, random, re, datetime, time, subprocess, sys
 from gtts import gTTS
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
@@ -64,7 +64,6 @@ def commit_history_to_github():
         subprocess.run(["git", "add", HISTORY_FILE], check=True)
         subprocess.run(["git", "commit", "-m", "Auto-update posted history & URLs [skip ci]"], check=True)
         subprocess.run(["git", "push"], check=True)
-        print("✔️ History committed and pushed to GitHub successfully!")
     except Exception as e:
         print(f"⚠️ Git commit warning: {e}")
 
@@ -121,20 +120,14 @@ def get_featured_image(title, category=""):
         if not key: return fallback_img, fallback_alt
         
         lower_title = title.lower()
-        if "morocco" in lower_title or "afcon" in lower_title:
+        if "windborne" in lower_title or "balloon" in lower_title or "weather" in lower_title:
+            q = "weather balloon sky atmosphere"
+        elif "morocco" in lower_title or "afcon" in lower_title:
             q = "morocco flag stadium african football"
         elif "mali" in lower_title:
             q = "mali flag landmark africa"
         elif "visa" in lower_title or "immigration" in lower_title or "citizens" in lower_title:
             q = "global travel border checkpoint"
-        elif "leyen" in lower_title or "commission" in lower_title or "eu" in lower_title or "artificial intelligence" in lower_title:
-            q = "artificial intelligence european union digital technology"
-        elif "ireland" in lower_title or "secretary" in lower_title:
-            q = "uk parliament london politics"
-        elif "cat" in lower_title or "kitten" in lower_title:
-            q = "cute cat animal pet"
-        elif "market" in lower_title or "business" in lower_title:
-            q = "global economy finance business market"
         else:
             clean_title = re.sub(r'[^a-zA-Z0-9\s]', '', title)
             words = [w for w in clean_title.split() if len(w) > 3]
@@ -151,21 +144,33 @@ def get_featured_image(title, category=""):
     return fallback_img, fallback_alt
 
 def clean_post(content):
-    # Remove truncated or incomplete bracket markers
     content = content.replace("[...]", "")
     content = content.replace("[…]", "")
-    
-    # Remove generic or filler template phrases
-    filler_phrases = [
-        "Observers point out that structural changes will impact day-to-day operations",
-        "This development marks a critical juncture for international stakeholders",
-        "Analysts tracking Global Work Permits & Immigration note that",
-        "Verified via Global Mobility Desk"
-    ]
-    for phrase in filler_phrases:
-        content = content.replace(phrase, "")
-        
     return content
+
+def validate_post(content, title):
+    errors = []
+    if "[...]" in content or "[…]" in content:
+        errors.append("Found [...] - Incomplete content")
+    if "actively coordinating" in content or "structural changes will impact" in content:
+        errors.append("Found filler phrase")
+    if "All participants and registered entities" in content:
+        errors.append("Found fake FAQ answer")
+    if "US Passport" in content and "Morocco" in title:
+        errors.append("Image Mismatch: Morocco title with US Passport")
+
+    words = len(re.sub(r'<[^>]+>', '', content).split())
+    if words < 250:
+        errors.append(f"Post too short ({words} words). Minimum required: 250 words.")
+
+    if errors:
+        print("❌ POST REJECTED BY VALIDATOR:")
+        for e in errors:
+            print(f" - {e}")
+        sys.exit(1)
+    else:
+        print("✅ Post is Clean - Ready for AdSense")
+        return True
 
 def send_telegram_notification(title, url):
     bot_token = os.environ.get("TELEGRAM_BOT_TOKEN")
@@ -199,17 +204,6 @@ def generate_schema_markup(title, desc, url, image_url):
         "publisher": {"@type": "Organization", "name": "Global Media Empire Hub", "logo": {"@type": "ImageObject", "url": image_url}}
     }
     return f'<script type="application/ld+json">{json.dumps(schema)}</script>'
-
-def fetch_dynamic_widget(title, category):
-    lower_t = (title + " " + category).lower()
-    if "market" in lower_t or "business" in lower_t:
-        return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">📈 <b>MARKET PULSE:</b> S&P 500: Active | NASDAQ: Bullish | GOLD: $2,390</div>'
-    elif "visa" in lower_t or "immigration" in lower_t or "pass" in lower_t:
-        return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">🛂 <b>GLOBAL MOBILITY DESK:</b> Visa & Travel Updates Active 24/7</div>'
-    elif "tech" in lower_t or "artificial intelligence" in lower_t:
-        return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">🤖 <b>TECH WIRE PULSE:</b> Silicon Valley & AI Systems Monitoring Active</div>'
-    else:
-        return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">🌐 <b>GEOPOLITICAL DESK:</b> International Wire & Policy Tracking Active</div>'
 
 def apply_internal_links(article_body):
     hist = load_history()
@@ -257,21 +251,22 @@ def generate_article_with_ai(cat, title, summary, source_link):
     clean_summary = summary.replace("[…]", "").replace("[...]", "").strip()
     source_name = get_source_publisher_name(source_link)
     
-    prompt = f"""You are a professional senior news journalist writing for a major international news portal.
-    STRICT RULES:
-    1. Write a 600-word news article in simple, clean, professional English.
-    2. DO NOT use template phrases like "Executive Briefing", "Key Analysis & Findings", "Observers point out", or "Background & Context". Use natural news paragraphs and simple `<h2>` subheadings relevant to the story.
-    3. DO NOT leave any truncated sentences, placeholders, or '[...]' symbols anywhere in the article. Complete every single sentence fully.
-    4. Include a Frequently Asked Questions (FAQ) section at the end with 3 specific, real answers directly addressing the news topic (no template or filler answers).
-    5. Naturally embed the official source link ({source_link}) using the publisher name ({source_name}) as anchor text inside the body.
-    
-    Source Title: {title} 
-    Context: {clean_summary} 
-    Category: {cat} 
-    Source Name: {source_name} 
-    Source URL: {source_link}
-    
-    Return ONLY valid JSON format with keys: "seo_title", "meta_description", "article_body"."""
+    prompt = f"""You are a professional news writer for TRTT NEWS 24 BD.
+
+STRICT RULES - NEVER BREAK:
+1. NEVER use [...] or [..] or ... at the end of a sentence. Always complete the sentence fully.
+2. NEVER use filler phrases like: "actively coordinating responses", "structural changes will impact", "critical juncture", "Global Mobility Desk", "operational stakeholders".
+3. Provide REAL and accurate answers in the FAQ section based strictly on story context.
+4. Write 400-500 words of simple, informative news in English.
+5. Embed the source link ({source_link}) naturally using anchor text ({source_name}).
+
+Story Title: {title}
+Context: {clean_summary}
+Category: {cat}
+Source Name: {source_name}
+Source URL: {source_link}
+
+Return ONLY valid JSON format with keys: "seo_title", "meta_description", "article_body"."""
 
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
@@ -284,7 +279,7 @@ def generate_article_with_ai(cat, title, summary, source_link):
                     match = re.search(r'\{.*\}', txt, re.DOTALL)
                     if match:
                         data = json.loads(match.group(0))
-                        if len(data.get("article_body","")) > 500:
+                        if len(data.get("article_body","")) > 400:
                             return data
             except Exception as e:
                 print(f"⚠️ Gemini error: {e}")
@@ -301,27 +296,12 @@ def generate_article_with_ai(cat, title, summary, source_link):
                 match = re.search(r'\{.*\}', txt, re.DOTALL)
                 if match:
                     data = json.loads(match.group(0))
-                    if len(data.get("article_body","")) > 500:
+                    if len(data.get("article_body","")) > 400:
                         return data
         except Exception as e:
             print(f"⚠️ Groq error: {e}")
 
-    # EMERGENCY FALLBACK
-    print("⚠️ AI Failed, Using Clean Simple Template!")
-    emergency_body = f"""
-    <h2>{title}</h2>
-    <p>{clean_summary} This development has captured significant attention across international channels and requires careful observation by all participants.</p>
-    
-    <h2>Main Developments</h2>
-    <p>According to reports verified via <a href="{source_link}" target="_blank" rel="nofollow">{source_name}</a>, authorities are actively coordinating responses and implementing new guidelines to manage the situation effectively.</p>
-    <p>Stakeholders across the sector are reviewing these updates to ensure full compliance and smooth operational continuity in the upcoming period.</p>
-    
-    <h2>Frequently Asked Questions</h2>
-    <p><b>Q1: What is the main update regarding this report?</b><br/>A: {clean_summary}</p>
-    <p><b>Q2: Who is affected by these changes?</b><br/>A: All participants and registered entities operating within the relevant jurisdiction.</p>
-    <p><b>Q3: What actions should be taken next?</b><br/>A: Review official guidelines and monitor subsequent announcements from authorized desks.</p>
-    """
-    return {"seo_title": title[:70], "meta_description": clean_summary[:155], "article_body": emergency_body}
+    return None
 
 def get_blogger():
     try:
@@ -373,22 +353,23 @@ def main():
     image_url, image_alt = get_featured_image(entry_title, chosen_category)
     ai_data = generate_article_with_ai(chosen_category, entry_title, summary_text, source_link)
 
-    if ai_data and isinstance(ai_data, dict):
-        seo_title = ai_data.get("seo_title", entry_title[:70])
-        raw_desc = ai_data.get("meta_description") or summary_text
-        clean_desc = re.sub(r'[^a-zA-Z0-9\s.,-]', '', raw_desc)
-        meta_desc = ' '.join(clean_desc.split())[:148].strip()
-        article_body_html = ai_data.get("article_body", f"<p>{summary_text}</p>")
-    else:
-        seo_title = entry_title[:70]
-        meta_desc = re.sub(r'[^a-zA-Z0-9\s]', '', summary_text)[:148].strip()
-        article_body_html = f"<p>{summary_text}</p>"
+    # 🛑 যদি এআই ফেল করে, তবে পোস্ট পাবলিশ না করে স্ক্রিপ্ট বন্ধ হয়ে যাবে
+    if not ai_data or not isinstance(ai_data, dict):
+        print("❌ AI Generation failed. Aborting script safely. No junk post will be published.")
+        sys.exit(1)
 
-    # Apply safety cleaning filter
+    seo_title = ai_data.get("seo_title", entry_title[:70])
+    raw_desc = ai_data.get("meta_description") or summary_text
+    clean_desc = re.sub(r'[^a-zA-Z0-9\s.,-]', '', raw_desc)
+    meta_desc = ' '.join(clean_desc.split())[:148].strip()
+    article_body_html = ai_data.get("article_body", "")
+
     article_body_html = clean_post(article_body_html)
     article_body_html = apply_internal_links(article_body_html)
     
-    dynamic_widget = fetch_dynamic_widget(entry_title, chosen_category)
+    # 🛑 ভ্যালিডেশন চেক পাস না করলে কোড এখানে থেমে যাবে
+    validate_post(article_body_html, seo_title)
+
     fact_badge = generate_fact_check_badge()
     read_time = calculate_read_time(article_body_html)
     audio_widget = generate_audio_summary(seo_title, meta_desc)
@@ -399,18 +380,17 @@ def main():
 
     full_article_html = f"""
     {schema_script}
-    {dynamic_widget}
     {fact_badge}
     <div style="color:#64748b; font-size:12px; margin-bottom:10px;">{read_time}</div>
     <p><i><b>Summary:</b> {meta_desc}</i></p>
     {audio_widget}
     <div style="margin:20px 0;">
         <img src="{image_url}" alt="{image_alt}" title="{seo_title}" style="width:100%; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1);"/>
-        <div style="font-size:11px; color:#64748b; margin-top:5px; text-align:right;"><b>Image Credit:</b> Original Content via <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7;">{source_pub_name}</a> / TRTTNEWS24BD Syndicate Bureau, Sanluri, Sardinia, Italy</div>
+        <div style="font-size:11px; color:#64748b; margin-top:5px; text-align:right;"><b>Image Credit:</b> Original Content via <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7;">{source_pub_name}</a> / TRTT NEWS 24 BD Syndicate Bureau</div>
     </div>
     {article_body_html}
     <hr/>
-    <p><small><b>Source:</b> <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7; font-weight:600;">{source_pub_name}</a> &bull; TRTTNEWS24BD Syndicate Bureau, Sanluri, Sardinia, Italy</small></p>
+    <p><small><b>Source:</b> <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7; font-weight:600;">{source_pub_name}</a> &bull; TRTT NEWS 24 BD Syndicate Bureau</small></p>
     """
 
     blogger_service = get_blogger()
