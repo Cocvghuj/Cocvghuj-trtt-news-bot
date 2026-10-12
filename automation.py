@@ -41,7 +41,14 @@ COUNTRY_LOCATIONS = {
 def load_history():
     if os.path.exists(HISTORY_FILE):
         try:
-            return json.load(open(HISTORY_FILE, "r", encoding="utf-8"))
+            raw_data = json.load(open(HISTORY_FILE, "r", encoding="utf-8"))
+            cleaned_history = []
+            for item in raw_data:
+                if isinstance(item, dict):
+                    cleaned_history.append(item)
+                elif isinstance(item, str):
+                    cleaned_history.append({"link": "", "title": item.strip().lower(), "date": "", "category": "", "post_url": ""})
+            return cleaned_history
         except:
             return []
     return []
@@ -168,7 +175,6 @@ def generate_schema_markup(title, desc, url, image_url):
     }
     return f'<script type="application/ld+json">{json.dumps(schema)}</script>'
 
-# ফিক্সড: মেটা এআই এর পরামর্শ অনুযায়ী CoinDesk API সরিয়ে সরাসরি বুলেটপ্রুফ মার্কেট টিকার যুক্ত করা হলো
 def fetch_live_market_data():
     return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">📈 <b>LIVE MARKET PULSE:</b> S&P 500: Active | NASDAQ: Bullish | GOLD: $2,390 | EUR/USD: 1.085</div>'
 
@@ -176,15 +182,18 @@ def apply_internal_links(article_body):
     hist = load_history()
     if not hist: return article_body
     for post in hist[-30:]:
-        p_title = post.get("title")
-        p_url = post.get("post_url")
-        if p_title and p_url:
-            words = p_title.split()
-            if len(words) > 1:
-                keyword = f"{words[0]} {words[1]}"
-                if keyword.lower() in article_body.lower() and p_url not in article_body:
-                    article_body = article_body.replace(keyword, f'<a href="{p_url}" target="_blank" rel="noopener" style="color:#2563eb; font-weight:600;">{keyword}</a>', 1)
-                    break
+        if not isinstance(post, dict):
+            continue
+        p_title = post.get("title", "")
+        p_url = post.get("post_url", "")
+        if not p_title or not p_url:
+            continue
+        words = p_title.split()
+        if len(words) > 1:
+            keyword = f"{words[0]} {words[1]}"
+            if keyword.lower() in article_body.lower() and p_url not in article_body:
+                article_body = article_body.replace(keyword, f'<a href="{p_url}" target="_blank" rel="noopener" style="color:#2563eb; font-weight:600;">{keyword}</a>', 1)
+                break
     return article_body
 
 def generate_audio_summary(title, summary):
