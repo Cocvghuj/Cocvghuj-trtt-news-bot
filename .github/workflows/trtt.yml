@@ -2,15 +2,15 @@ name: Auto Blog to Facebook Post
 
 on:
   schedule:
-    - cron: '23 6,13,19 * * *' # প্রতিদিন ৩টি নির্দিষ্ট সময়ে রান করবে
+    # প্রতিদিন ১৬ বার রান করার জন্য অপ্টিমাইজড ক্রন শিডিউল (UTC টাইম অনুযায়ী)
+    - cron: '0 1,3,5,7,8,9,10,11,12,14,15,16,17,19,21,23 * * *'
   workflow_dispatch:
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # গিটহাবে ফাইল কমিট ও পুশ করার পার্মিশন
-
+      contents: write # গিটহাবে ফাইল কমিট ও পুশ করার পারমিশন
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -38,7 +38,8 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
-        run: python automation.py
+        run: |
+          python automation.py
 
       - name: Save history
         run: |
