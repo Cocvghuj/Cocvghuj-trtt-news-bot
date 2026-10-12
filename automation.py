@@ -339,7 +339,7 @@ def main():
 
     article_body_html = apply_internal_links(article_body_html)
     market_ticker = fetch_live_market_data()
-    fact_badge = generate_fact_check_badge() # AI Fact-Check & Manipulation Risk Badge
+    fact_badge = generate_fact_check_badge()
     read_time = calculate_read_time(article_body_html)
     audio_widget = generate_audio_summary(seo_title, meta_desc)
 
@@ -378,4 +378,17 @@ def main():
 
         result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
         post_id = result.get('id')
-        post_url =
+        post_url = result.get('url')
+        print(f"👑 MEDIA EMPIRE ARTICLE PUBLISHED: {post_url}")
+
+        try:
+            patch_body = {"searchDescription": meta_desc}
+            blogger_service.posts().patch(blogId=blog_id, postId=post_id, body=patch_body).execute()
+        except Exception:
+            pass
+
+        save_history(source_link, seo_title, chosen_category, post_url)
+        send_telegram_notification(seo_title, post_url)
+
+if __name__ == "__main__":
+    main()
