@@ -320,9 +320,11 @@ def main():
     read_time = calculate_read_time(article_body_html)
     audio_widget = generate_audio_summary(seo_title, meta_desc)
 
-    multilingual_box = """
+    multilingual_box = f"""
     <div style="background:#f1f5f9; padding:12px; border-radius:6px; margin:15px 0; font-size:13px; border-left:4px solid #64748b;">
-    🌍 <b>Multilingual Global Briefing:</b><br/>
+    🌍 <b>Multilingual Global Briefing / আন্তর্জাতিক সংক্ষিপ্তসার:</b><br/>
+    <i>BN:</i> {meta_desc}<br/>
+    <i>HI:</i> वैश्विक भू-राजनीतिक और व्यापक आर्थिक विश्लेषण अपडेट।<br/>
     <i>FR:</i> Analyse géopolitique et macroéconomique mondiale.<br/>
     <i>DE:</i> Globale geopolitische und makroökonomische Analyse.
     </div>
