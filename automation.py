@@ -121,7 +121,15 @@ def get_featured_image(title, category=""):
         if not key: return fallback_img, fallback_alt
         clean_title = re.sub(r'[^a-zA-Z0-9\s]', '', title)
         words = [w for w in clean_title.split() if len(w) > 3]
-        cat_keyword = "global economy finance market" if "Market" in category else "international geopolitics"
+        
+        # Category wise smart keyword mapping for accurate images
+        if "Artificial Intelligence" in category or "Silicon Valley" in category:
+            cat_keyword = "artificial intelligence technology software innovation"
+        elif "Market" in category or "Business" in category:
+            cat_keyword = "global economy finance market business"
+        else:
+            cat_keyword = "international geopolitics business news"
+            
         q = f"{cat_keyword} {' '.join(words[:2])}"
         url = f"https://api.unsplash.com/search/photos?query={q}&per_page=10&orientation=landscape&client_id={key}"
         r = requests.get(url, timeout=15).json()
@@ -146,7 +154,7 @@ def send_telegram_notification(title, url):
 
 def calculate_read_time(body_html):
     words = len(re.sub(r'<[^>]+>', '', body_html).split())
-    minutes = max(1, words // 200)
+    minutes = max(2, round(words / 180))
     return f"⏱️ <b>Estimated Read Time:</b> {minutes} min read ({words} words)"
 
 def generate_fact_check_badge():
@@ -284,7 +292,8 @@ def generate_article_with_ai(cat, title, summary, source_link):
     </ul>
     
     <h2>Macroeconomic and Geopolitical Impact</h2>
-    <table border="1" cellpadding="8" style="border-collapse:collapse; width:100%;"><tr style="background:#0f172a; color:white;"><th>Indicator</th><th>Current Status</th><th>Projected Impact</th></tr><tr><td>Global Markets</td><td>Active Volatility</td><td>High Risk / High Opportunity</td></tr><tr><td>EU/US Policy</td><td>Under Review</td><td>Regulatory Tightening Expected</td></tr><tr><td>Investor Sentiment</td><td>Cautious Optimism</td><td>Strategic Reallocation</td></tr></table>
+    <table border="1" cellpadding="8" style="border-collapse:collapse; width:100%
+    ;"><tr style="background:#0f172a; color:white;"><th>Indicator</th><th>Current Status</th><th>Projected Impact</th></tr><tr><td>Global Markets</td><td>Active Volatility</td><td>High Risk / High Opportunity</td></tr><tr><td>EU/US Policy</td><td>Under Review</td><td>Regulatory Tightening Expected</td></tr><tr><td>Investor Sentiment</td><td>Cautious Optimism</td><td>Strategic Reallocation</td></tr></table>
     
     <h2>Strategic Implications & Future Outlook</h2>
     <p>For executives and decision-makers operating within {cat}, the strategic calculus has shifted significantly. Long-term resilience will depend heavily on adaptive supply chains, diversified energy sourcing, and proactive regulatory engagement. The upcoming period will be decisive for market stabilization and policy execution.</p>
