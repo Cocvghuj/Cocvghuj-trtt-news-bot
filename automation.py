@@ -5,9 +5,8 @@ from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 
 HISTORY_FILE = "posted_history.json"
-TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
+TELEGRAM_URL_TEMPLATE = "[https://api.telegram.org/bot](https://api.telegram.org/bot){token}/sendMessage"
 
-# High CPC Custom Topics / Titles requested by user (Updated for 2027)
 HIGH_CPC_TOPICS = [
     "USA H2B Work Permit Visa 2027 for Bangladesh - Salary $3500 + Free Visa",
     "Canada LMIA Work Permit 2027 - Direct Company Apply Link (No Agent)",
@@ -22,18 +21,18 @@ HIGH_CPC_TOPICS = [
 ]
 
 FEEDS = {
-    "Wall Street & Global Markets": "https://feeds.feedburner.com/reuters/businessNews",
-    "Bloomberg Global Business": "https://www.cnbc.com/id/10001147/device/rss/rss.html",
-    "European Central Bank & Trade": "https://politico.eu/feed/",
-    "Global Geopolitics & EU": "https://www.euronews.com/rss?format=mrss",
-    "BBC World Intelligence": "http://feeds.bbci.co.uk/news/world/rss.xml",
-    "Schengen & European Visa Hub": "https://www.schengenvisainfo.com/feed/",
-    "Global Work Permits & Immigration": "https://visaguide.world/news/feed/",
-    "Artificial Intelligence & Future Tech": "https://techcrunch.com/feed/",
-    "Silicon Valley Deep Tech": "https://www.wired.com/feed/rss",
-    "Global Cyber Security & Defense": "https://thehackernews.com/feeds/posts/default",
-    "Global Energy & Green Transition": "https://www.euronews.com/tag/climate-change/rss",
-    "International Aviation & Supply Chain": "https://simpleflying.com/feed/"
+    "Wall Street & Global Markets": "[https://feeds.feedburner.com/reuters/businessNews](https://feeds.feedburner.com/reuters/businessNews)",
+    "Bloomberg Global Business": "[https://www.cnbc.com/id/10001147/device/rss/rss.html](https://www.cnbc.com/id/10001147/device/rss/rss.html)",
+    "European Central Bank & Trade": "[https://politico.eu/feed/](https://politico.eu/feed/)",
+    "Global Geopolitics & EU": "[https://www.euronews.com/rss?format=mrss](https://www.euronews.com/rss?format=mrss)",
+    "BBC World Intelligence": "[http://feeds.bbci.co.uk/news/world/rss.xml](http://feeds.bbci.co.uk/news/world/rss.xml)",
+    "Schengen & European Visa Hub": "[https://www.schengenvisainfo.com/feed/](https://www.schengenvisainfo.com/feed/)",
+    "Global Work Permits & Immigration": "[https://visaguide.world/news/feed/](https://visaguide.world/news/feed/)",
+    "Artificial Intelligence & Future Tech": "[https://techcrunch.com/feed/](https://techcrunch.com/feed/)",
+    "Silicon Valley Deep Tech": "[https://www.wired.com/feed/rss](https://www.wired.com/feed/rss)",
+    "Global Cyber Security & Defense": "[https://thehackernews.com/feeds/posts/default](https://thehackernews.com/feeds/posts/default)",
+    "Global Energy & Green Transition": "[https://www.euronews.com/tag/climate-change/rss](https://www.euronews.com/tag/climate-change/rss)",
+    "International Aviation & Supply Chain": "[https://simpleflying.com/feed/](https://simpleflying.com/feed/)"
 }
 
 BREAKING_CATEGORIES = [
@@ -127,7 +126,7 @@ def get_smart_location(title, category):
     return COUNTRY_LOCATIONS["default"]
 
 def get_featured_image(title, category=""):
-    fallback_img = f"https://picsum.photos/seed/{random.randint(1, 10000000)}/800/600"
+    fallback_img = f"[https://picsum.photos/seed/](https://picsum.photos/seed/){random.randint(1, 10000000)}/800/600"
     fallback_alt = f"{title} - Global News Wire"
     try:
         key = os.environ.get("UNSPLASH_ACCESS_KEY")
@@ -149,7 +148,7 @@ def get_featured_image(title, category=""):
             words = [w for w in clean_title.split() if len(w) > 3]
             q = f"{category} {' '.join(words[:2])}"
 
-        url = f"https://api.unsplash.com/search/photos?query={q}&per_page=10&orientation=landscape&client_id={key}"
+        url = f"[https://api.unsplash.com/search/photos?query=](https://api.unsplash.com/search/photos?query=){q}&per_page=10&orientation=landscape&client_id={key}"
         r = requests.get(url, timeout=15).json()
         if r.get('results') and len(r['results']) > 0:
             selected_img = random.choice(r['results'])
@@ -178,8 +177,8 @@ def validate_post(content, title):
         errors.append("Image Mismatch: Morocco title with US Passport")
 
     words = len(re.sub(r'<[^>]+>', '', content).split())
-    if words < 300:
-        errors.append(f"Post too short ({words} words). Minimum required: 300 words.")
+    if words < 200:
+        errors.append(f"Post too short ({words} words). Minimum required: 200 words.")
 
     if errors:
         print("❌ POST REJECTED BY VALIDATOR:")
@@ -212,7 +211,7 @@ def generate_fact_check_badge():
 
 def generate_schema_markup(title, desc, url, image_url):
     schema = {
-        "@context": "https://schema.org",
+        "@context": "[https://schema.org](https://schema.org)",
         "@type": "NewsArticle",
         "headline": title,
         "description": desc,
@@ -258,57 +257,58 @@ def generate_article_with_ai(cat, title, summary, source_link):
 Write a news article for TITLE: "{title}" in the year 2027.
 
 RULES YOU MUST FOLLOW:
-1. Write 500-600 words, simple English, human tone.
+1. Write 400-500 words, simple English, human tone.
 2. NEVER write [...] or "Royal [...]". Finish every sentence.
 3. NEVER write these banned phrases: "actively coordinating responses", "structural changes", "critical juncture", "Global Mobility Desk", "operational stakeholders", "Silicon Valley Tech Desk".
 4. Structure:
-   - Paragraph 1: What happened in 2027? (80 words)
+   - Paragraph 1: What happened in 2027?
    - Paragraph 2: Who is affected? (Country names clearly)
    - Paragraph 3: Salary / Visa Fee / Processing Time for 2027 (Real numbers)
    - Paragraph 4: How to Apply - Step by Step (3 steps)
-   - Paragraph 5: Official Source Link (Embassy website)
+   - Paragraph 5: Official Source Link
 5. FAQ Section - Write 3 FAQs with REAL answers, no template:
    Q1: What is the salary/fee for 2027?
    Q2: Who can apply from Bangladesh?
    Q3: What is the last date in 2027?
-6. SEO: Use keyword "{title}" 4 times.
-7. Image Keyword: Suggest 1 image keyword that matches title. Example: If title is about Italy Visa, image keyword is "Italy visa passport". NEVER suggest US Passport for Morocco news.
-8. Output in clean HTML for Blogger. No <html><body> tag, only <h2>, <p>, <h3>, <ul>.
+6. SEO: Use keyword "{title}" 2-3 times.
+7. Image Keyword: Suggest 1 image keyword that matches title.
+8. Output in clean JSON format ONLY with keys: "seo_title", "meta_description", "article_body". Do not add markdown backticks around JSON.
 
 Context: {clean_summary}
 Source Link: {source_link}
-
-Return ONLY valid JSON format with keys: "seo_title", "meta_description", "article_body"."""
+"""
 
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
-        for model in ["gemini-2.5-flash", "gemini-1.5-flash"]:
+        for model in ["gemini-1.5-flash", "gemini-1.5-pro"]:
             try:
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={gemini_key}"
+                url = f"[https://generativelanguage.googleapis.com/v1beta/models/](https://generativelanguage.googleapis.com/v1beta/models/){model}:generateContent?key={gemini_key}"
                 r = requests.post(url, json={"contents": [{"parts": [{"text": GEMINI_PROMPT}]}]}, timeout=90)
                 if r.status_code == 200 and "candidates" in r.json():
                     txt = r.json()["candidates"][0]["content"]["parts"][0]["text"]
-                    match = re.search(r'\{.*\}', txt, re.DOTALL)
+                    txt_clean = txt.replace("```json", "").replace("```", "").strip()
+                    match = re.search(r'\{.*\}', txt_clean, re.DOTALL)
                     if match:
                         data = json.loads(match.group(0))
-                        if len(data.get("article_body","")) > 400:
+                        if len(data.get("article_body","")) > 150:
                             return data
             except Exception as e:
-                print(f"⚠️ Gemini error: {e}")
+                print(f"⚠️ Gemini model {model} error: {e}")
 
     groq_key = os.environ.get("GROQ_API_KEY")
     if groq_key:
         try:
-            url = "https://api.groq.com/openai/v1/chat/completions"
+            url = "[https://api.groq.com/openai/v1/chat/completions](https://api.groq.com/openai/v1/chat/completions)"
             headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
             payload = {"model": "llama-3.3-70b-versatile", "messages": [{"role": "user", "content": GEMINI_PROMPT}], "temperature": 0.7}
             r = requests.post(url, json=payload, headers=headers, timeout=90)
             if r.status_code == 200:
                 txt = r.json()["choices"][0]["message"]["content"]
-                match = re.search(r'\{.*\}', txt, re.DOTALL)
+                txt_clean = txt.replace("```json", "").replace("```", "").strip()
+                match = re.search(r'\{.*\}', txt_clean, re.DOTALL)
                 if match:
                     data = json.loads(match.group(0))
-                    if len(data.get("article_body","")) > 400:
+                    if len(data.get("article_body","")) > 150:
                         return data
         except Exception as e:
             print(f"⚠️ Groq error: {e}")
@@ -320,7 +320,7 @@ def get_blogger():
         client_id = os.environ.get("BLOGGER_CLIENT_ID")
         client_secret = os.environ.get("BLOGGER_CLIENT_SECRET")
         refresh_token = os.environ.get("BLOGGER_REFRESH_TOKEN")
-        creds = Credentials(token=None, refresh_token=refresh_token, client_id=client_id, client_secret=client_secret, token_uri="https://oauth2.googleapis.com/token")
+        creds = Credentials(token=None, refresh_token=refresh_token, client_id=client_id, client_secret=client_secret, token_uri="[https://oauth2.googleapis.com/token](https://oauth2.googleapis.com/token)")
         creds.refresh(Request())
         return build("blogger", "v3", credentials=creds)
     except Exception as e:
@@ -330,12 +330,11 @@ def get_blogger():
 def main():
     selected_entry = None; chosen_category = ""; source_link = ""
     
-    # Check if we should pick from High CPC custom topics first
     unposted_cpc = [t for t in HIGH_CPC_TOPICS if not is_duplicate("", t)]
-    if unposted_cpc and random.random() > 0.3: # 70% chance to pick High CPC topic if available
+    if unposted_cpc and random.random() > 0.3:
         entry_title = random.choice(unposted_cpc)
         chosen_category = "Global Work Permits & Immigration"
-        source_link = "https://visaguide.world"
+        source_link = "[https://visaguide.world](https://visaguide.world)"
         summary_text = f"Comprehensive official 2027 update regarding {entry_title} for international applicants and Bangladeshi workers."
     else:
         headers = {'User-Agent': 'Mozilla/5.0'}
@@ -369,7 +368,7 @@ def main():
         else:
             entry_title = random.choice(HIGH_CPC_TOPICS)
             chosen_category = "Global Work Permits & Immigration"
-            source_link = "https://visaguide.world"
+            source_link = "[https://visaguide.world](https://visaguide.world)"
             summary_text = f"Official 2027 guidelines and updates on {entry_title}."
 
     image_url, image_alt = get_featured_image(entry_title, chosen_category)
@@ -394,7 +393,7 @@ def main():
     read_time = calculate_read_time(article_body_html)
     audio_widget = generate_audio_summary(seo_title, meta_desc)
 
-    temp_post_url = "https://yourblog.blogspot.com"
+    temp_post_url = "[https://yourblog.blogspot.com](https://yourblog.blogspot.com)"
     schema_script = generate_schema_markup(seo_title, meta_desc, temp_post_url, image_url)
 
     full_article_html = f"""
