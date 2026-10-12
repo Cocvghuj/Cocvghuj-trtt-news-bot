@@ -119,18 +119,21 @@ def get_featured_image(title, category=""):
     try:
         key = os.environ.get("UNSPLASH_ACCESS_KEY")
         if not key: return fallback_img, fallback_alt
-        clean_title = re.sub(r'[^a-zA-Z0-9\s]', '', title)
-        words = [w for w in clean_title.split() if len(w) > 3]
         
-        # Category wise smart keyword mapping for accurate images
-        if "Artificial Intelligence" in category or "Silicon Valley" in category:
-            cat_keyword = "artificial intelligence technology software innovation"
-        elif "Market" in category or "Business" in category:
-            cat_keyword = "global economy finance market business"
+        lower_title = title.lower()
+        if "cat" in lower_title or "kitten" in lower_title or "pet" in lower_title:
+            q = "cute orange cat pet animal"
+        elif "apple" in lower_title or "smart home" in lower_title or "hub" in lower_title:
+            q = "smart home technology apple device"
+        elif "artificial intelligence" in lower_title or "tech" in lower_title or "model" in lower_title:
+            q = "artificial intelligence futuristic technology software"
+        elif "market" in lower_title or "business" in lower_title or "stock" in lower_title:
+            q = "global economy finance market business"
         else:
-            cat_keyword = "international geopolitics business news"
-            
-        q = f"{cat_keyword} {' '.join(words[:2])}"
+            clean_title = re.sub(r'[^a-zA-Z0-9\s]', '', title)
+            words = [w for w in clean_title.split() if len(w) > 3]
+            q = f"{category} {' '.join(words[:2])}"
+
         url = f"https://api.unsplash.com/search/photos?query={q}&per_page=10&orientation=landscape&client_id={key}"
         r = requests.get(url, timeout=15).json()
         if r.get('results') and len(r['results']) > 0:
@@ -222,7 +225,7 @@ def get_source_publisher_name(source_link):
 def generate_article_with_ai(cat, title, summary, source_link):
     clean_summary = summary.replace("[…]", "").replace("[...]", "").strip()
     source_name = get_source_publisher_name(source_link)
-    prompt = f"""You are the chief executive editor for an elite global news wire agency (like Reuters or Bloomberg).
+    prompt = f"""You are the chief executive editor for an elite global news wire agency.
     STRICT REQUIREMENT: Write a comprehensive, highly analytical, and exhaustive investigative news report of AT LEAST 1000 to 1300 words in professional English.
     Adhere strictly to Google E-E-A-T and Helpful Content Guidelines.
     Source Title: {title} Context: {clean_summary} Category: {cat} Source Name: {source_name} Source URL: {source_link}
@@ -230,12 +233,12 @@ def generate_article_with_ai(cat, title, summary, source_link):
     1. Headline (seo_title): Powerful, authoritative, and catchy global news headline in English.
     2. Executive Summary (meta_description): A 150-word high-level executive briefing in English.
     3. Detailed Article Body (article_body) in HTML format containing:
-    - Must be very long, detailed, and rich in context (1000+ words). Do not write short summaries.
-    - Introduction & Global Significance (with H2 heading).
+    - Must be very long, detailed, and contextually relevant to the specific topic ({title}). Do not use generic market templates for non-market news.
+    - Introduction & Significance (with H2 heading).
     - In-depth background analysis and core developments using bullet points (`<ul>`, `<li>`).
-    - Macroeconomic or geopolitical impact breakdown (with H2 heading).
+    - Impact breakdown or key findings (with H2 heading).
     - **Crucial Requirement:** Inside the body, naturally mention and embed the official source link provided ({source_link}) using the publisher name as anchor text (e.g., <a href="{source_link}" target="_blank" rel="nofollow">{source_name}</a>).
-    - Comparative Data Table using HTML `<table>` with clean styling.
+    - Comparative Data Table using HTML `<table>` with clean styling relevant to the topic.
     - Strategic Implications & Future Outlook (with H2 heading).
     - Frequently Asked Questions (FAQ) Section with at least 3 detailed Q&As.
     Return ONLY valid JSON format with keys: "seo_title", "meta_description", "article_body". Do not include unescaped control characters inside JSON strings."""
@@ -277,31 +280,34 @@ def generate_article_with_ai(cat, title, summary, source_link):
     print("⚠️ AI Failed, Using Emergency Long Template!")
     emergency_body = f"""
     <h2>Global Intelligence Report: {title}</h2>
-    <p><b>Executive Briefing on {cat}:</b> {clean_summary} This development marks a pivotal moment in the current global landscape, requiring immediate attention from policymakers, investors, and strategic planners worldwide.</p>
+    <p><b>Executive Briefing:</b> {clean_summary} This development marks a pivotal moment in the current landscape, requiring immediate attention from analysts, enthusiasts, and strategic planners worldwide.</p>
     
-    <h2>Introduction & Global Significance</h2>
-    <p>The unfolding situation around {title} represents more than an isolated incident. It is symptomatic of broader structural shifts within {cat}. Our syndicate bureau has tracked related movements across European and global markets, indicating a sustained pattern that demands comprehensive analysis. For global diaspora communities, investors, and stakeholders, this shift carries immediate practical consequences.</p>
-    <p>Verified via <a href="{source_link}" target="_blank" rel="nofollow">{source_name}</a>, this intelligence has been cross-referenced with multiple international desks.</p>
+    <h2>Introduction & Significance</h2>
+    <p>The unfolding situation around {title} represents more than an isolated event. It reflects ongoing shifts within {cat}. Our bureau has tracked related developments across international channels, indicating a sustained pattern that demands comprehensive analysis.</p>
+    <p>Verified via <a href="{source_link}" target="_blank" rel="nofollow">{source_name}</a>, this intelligence has been cross-referenced with available documentation.</p>
     
     <h2>Core Developments & Background Analysis</h2>
     <ul>
-        <li><b>Primary Event:</b> {title} has emerged as a critical global data point requiring strategic tracking.</li>
-        <li><b>Market Reaction:</b> Immediate volatility observed across major international indices, including S&P 500, NASDAQ, and regional EU markets.</li>
-        <li><b>Policy Dimension:</b> Key regulatory authorities in Brussels and Washington are coordinating policy frameworks.</li>
-        <li><b>Security Angle:</b> Direct implications for global mobility, supply chains, and infrastructure security.</li>
+        <li><b>Primary Event:</b> {title} has emerged as a critical focal point.</li>
+        <li><b>Contextual Background:</b> Detailed observations indicate broader engagement across sectors.</li>
+        <li><b>Industry Impact:</b> Stakeholders are reviewing structural adaptations.</li>
     </ul>
     
-    <h2>Macroeconomic and Geopolitical Impact</h2>
-    <table border="1" cellpadding="8" style="border-collapse:collapse; width:100%
-    ;"><tr style="background:#0f172a; color:white;"><th>Indicator</th><th>Current Status</th><th>Projected Impact</th></tr><tr><td>Global Markets</td><td>Active Volatility</td><td>High Risk / High Opportunity</td></tr><tr><td>EU/US Policy</td><td>Under Review</td><td>Regulatory Tightening Expected</td></tr><tr><td>Investor Sentiment</td><td>Cautious Optimism</td><td>Strategic Reallocation</td></tr></table>
+    <h2>Impact Analysis & Overview</h2>
+    <table border="1" cellpadding="8" style="border-collapse:collapse; width:100%;">
+    <tr style="background:#0f172a; color:white;"><th>Aspect</th><th>Current Status</th><th>Projected Direction</th></tr>
+    <tr><td>Core Subject</td><td>Active Development</td><td>High Engagement</td></tr>
+    <tr><td>Industry Response</td><td>Under Review</td><td>Strategic Adaptation</td></tr>
+    <tr><td>Outlook</td><td>Optimistic</td><td>Continuous Growth</td></tr>
+    </table>
     
     <h2>Strategic Implications & Future Outlook</h2>
-    <p>For executives and decision-makers operating within {cat}, the strategic calculus has shifted significantly. Long-term resilience will depend heavily on adaptive supply chains, diversified energy sourcing, and proactive regulatory engagement. The upcoming period will be decisive for market stabilization and policy execution.</p>
+    <p>Long-term outcomes will depend heavily on adaptive frameworks and stakeholder engagement. The upcoming period will be decisive for execution and monitoring.</p>
     
     <h2>Frequently Asked Questions (FAQ)</h2>
-    <p><b>Q1: What exactly happened regarding {title}?</b><br/>A: {clean_summary} Full investigative details are maintained via official documentation.</p>
-    <p><b>Q2: Why does this matter for international audiences?</b><br/>A: Interconnected global economic systems mean regional developments directly influence global markets and mobility frameworks.</p>
-    <p><b>Q3: What should stakeholders expect next?</b><br/>A: Continuous monitoring, formal briefings from relevant authorities, and necessary strategic adjustments.</p>
+    <p><b>Q1: What is the main focus of {title}?</b><br/>A: {clean_summary}</p>
+    <p><b>Q2: Why is this development significant?</b><br/>A: It provides key insights into current trends within {cat}.</p>
+    <p><b>Q3: What can we expect next?</b><br/>A: Further updates, monitoring, and strategic adjustments.</p>
     """
     return {"seo_title": title[:70], "meta_description": clean_summary[:155], "article_body": emergency_body}
 
@@ -385,7 +391,7 @@ def main():
     {audio_widget}
     <div style="margin:20px 0;">
         <img src="{image_url}" alt="{image_alt}" title="{seo_title}" style="width:100%; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1);"/>
-        <div style="font-size:11px; color:#64748b; margin-top:5px; text-align:right;"><b>Image Credit:</b> Original Content via <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7;">{source_pub_name}</a> / TRTTNEWS24BD Syndicate Bureau</div>
+        <div style="font-size:11px; color:#64748b; margin-top:5px; text-align:right;"><b>Image Credit:</b> Original Content via <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7;">{source_pub_name}</a> / TRTTNEWS24BD Syndicate Bureau, Sanluri, Sardinia, Italy</div>
     </div>
     {article_body_html}
     <hr/>
