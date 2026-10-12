@@ -192,12 +192,27 @@ def generate_audio_summary(title, summary):
     except Exception:
         return ""
 
+def get_source_publisher_name(source_link):
+    low_link = source_link.lower()
+    if "reuters" in low_link: return "Reuters Wire Desk"
+    elif "cnbc" in low_link or "bloomberg" in low_link: return "Bloomberg & Financial Wire"
+    elif "politico" in low_link: return "Politico EU Bureau"
+    elif "euronews" in low_link: return "Euronews International"
+    elif "bbc" in low_link: return "BBC World Intelligence"
+    elif "schengenvisainfo" in low_link: return "Schengen Visa Hub"
+    elif "visaguide" in low_link: return "Global Mobility Desk"
+    elif "techcrunch" in low_link or "wired" in low_link: return "Silicon Valley Tech Desk"
+    elif "thehackernews" in low_link: return "Global Cyber Security Wire"
+    elif "simpleflying" in low_link: return "Aviation Supply Chain Wire"
+    else: return "Official Syndicate Wire Desk"
+
 def generate_article_with_ai(cat, title, summary, source_link):
     clean_summary = summary.replace("[…]", "").replace("[...]", "").strip()
+    source_name = get_source_publisher_name(source_link)
     prompt = f"""You are the chief executive editor for an elite global news wire agency (like Reuters or Bloomberg).
     STRICT REQUIREMENT: Write a comprehensive, highly analytical, and exhaustive investigative news report of AT LEAST 1000 to 1300 words in professional English.
     Adhere strictly to Google E-E-A-T and Helpful Content Guidelines.
-    Source Title: {title} Context: {clean_summary} Category: {cat} Source: {source_link}
+    Source Title: {title} Context: {clean_summary} Category: {cat} Source Name: {source_name} Source URL: {source_link}
     Mandatory Article Structure & Rules: 
     1. Headline (seo_title): Powerful, authoritative, and catchy global news headline in English.
     2. Executive Summary (meta_description): A 150-word high-level executive briefing in English.
@@ -206,7 +221,7 @@ def generate_article_with_ai(cat, title, summary, source_link):
     - Introduction & Global Significance (with H2 heading).
     - In-depth background analysis and core developments using bullet points (`<ul>`, `<li>`).
     - Macroeconomic or geopolitical impact breakdown (with H2 heading).
-    - **Crucial Requirement:** Inside the body, naturally mention and embed the official source link provided ({source_link}) as an HTML anchor tag (e.g., <a href="{source_link}" target="_blank" rel="nofollow">Official Wire Source & Documentation</a>).
+    - **Crucial Requirement:** Inside the body, naturally mention and embed the official source link provided ({source_link}) using the publisher name as anchor text (e.g., <a href="{source_link}" target="_blank" rel="nofollow">{source_name}</a>).
     - Comparative Data Table using HTML `<table>` with clean styling.
     - Strategic Implications & Future Outlook (with H2 heading).
     - Frequently Asked Questions (FAQ) Section with at least 3 detailed Q&As.
@@ -245,7 +260,7 @@ def generate_article_with_ai(cat, title, summary, source_link):
         except Exception as e:
             print(f"⚠️ Groq error: {e}")
 
-    # EMERGENCY FALLBACK - নিশ্চিতভাবে 1000+ words সমৃদ্ধ রিপোর্ট যাবে!
+    # EMERGENCY FALLBACK
     print("⚠️ AI Failed, Using Emergency Long Template!")
     emergency_body = f"""
     <h2>Global Intelligence Report: {title}</h2>
@@ -253,7 +268,7 @@ def generate_article_with_ai(cat, title, summary, source_link):
     
     <h2>Introduction & Global Significance</h2>
     <p>The unfolding situation around {title} represents more than an isolated incident. It is symptomatic of broader structural shifts within {cat}. Our syndicate bureau has tracked related movements across European and global markets, indicating a sustained pattern that demands comprehensive analysis. For global diaspora communities, investors, and stakeholders, this shift carries immediate practical consequences.</p>
-    <p>Verified via <a href="{source_link}" target="_blank" rel="nofollow">Official Wire Source & Documentation</a>, this intelligence has been cross-referenced with multiple international desks.</p>
+    <p>Verified via <a href="{source_link}" target="_blank" rel="nofollow">{source_name}</a>, this intelligence has been cross-referenced with multiple international desks.</p>
     
     <h2>Core Developments & Background Analysis</h2>
     <ul>
@@ -342,6 +357,7 @@ def main():
     fact_badge = generate_fact_check_badge()
     read_time = calculate_read_time(article_body_html)
     audio_widget = generate_audio_summary(seo_title, meta_desc)
+    source_pub_name = get_source_publisher_name(source_link)
 
     temp_post_url = "https://yourblog.blogspot.com"
     schema_script = generate_schema_markup(seo_title, meta_desc, temp_post_url, image_url)
@@ -356,7 +372,7 @@ def main():
     <div style="margin:20px 0;"><img src="{image_url}" alt="{image_alt}" title="{seo_title}" style="width:100%; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1);"/></div>
     {article_body_html}
     <hr/>
-    <p><small><b>Verified Wire Desk Source:</b> Cross-referenced and authenticated via international news desks. Reference link: <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7;">Official Wire Feed & Documentation</a></small></p>
+    <p><small><b>Source:</b> <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7; font-weight:600;">{source_pub_name}</a> &bull; TRTTNEWS24BD Syndicate Bureau, Sanluri, Sardinia, Italy</small></p>
     """
 
     blogger_service = get_blogger()
