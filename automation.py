@@ -369,7 +369,10 @@ def main():
     <div style="color:#64748b; font-size:12px; margin-bottom:10px;">{read_time}</div>
     <p><i><b>Executive Summary:</b> {meta_desc}</i></p>
     {audio_widget}
-    <div style="margin:20px 0;"><img src="{image_url}" alt="{image_alt}" title="{seo_title}" style="width:100%; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1);"/></div>
+    <div style="margin:20px 0;">
+        <img src="{image_url}" alt="{image_alt}" title="{seo_title}" style="width:100%; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1);"/>
+        <div style="font-size:11px; color:#64748b; margin-top:5px; text-align:right;"><b>Image Credit:</b> Original Content via <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7;">{source_pub_name}</a> / TRTTNEWS24BD Syndicate Bureau</div>
+    </div>
     {article_body_html}
     <hr/>
     <p><small><b>Source:</b> <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7; font-weight:600;">{source_pub_name}</a> &bull; TRTTNEWS24BD Syndicate Bureau, Sanluri, Sardinia, Italy</small></p>
