@@ -121,12 +121,12 @@ def get_featured_image(title, category=""):
         if not key: return fallback_img, fallback_alt
         
         lower_title = title.lower()
-        if "leyen" in lower_title or "commission" in lower_title or "eu" in lower_title or "artificial intelligence" in lower_title:
+        if "visa" in lower_title or "immigration" in lower_title or "citizens" in lower_title:
+            q = "passport travel immigration document visa"
+        elif "leyen" in lower_title or "commission" in lower_title or "eu" in lower_title or "artificial intelligence" in lower_title:
             q = "artificial intelligence european union digital technology"
         elif "ireland" in lower_title or "secretary" in lower_title:
             q = "uk parliament london politics"
-        elif "visa" in lower_title or "immigration" in lower_title:
-            q = "passport travel immigration document"
         elif "cat" in lower_title or "kitten" in lower_title:
             q = "cute cat animal pet"
         elif "market" in lower_title or "business" in lower_title:
@@ -181,12 +181,12 @@ def generate_schema_markup(title, desc, url, image_url):
 
 def fetch_dynamic_widget(title, category):
     lower_t = (title + " " + category).lower()
-    if "market" in lower_t or "business" in lower_t or "wall street" in lower_t:
+    if "market" in lower_t or "business" in lower_t:
         return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">📈 <b>MARKET PULSE:</b> S&P 500: Active | NASDAQ: Bullish | GOLD: $2,390</div>'
     elif "visa" in lower_t or "immigration" in lower_t:
         return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">🛂 <b>GLOBAL MOBILITY DESK:</b> Visa & Consular Updates Active 24/7</div>'
-    elif "tech" in lower_t or "artificial intelligence" in lower_t or "commission" in lower_t or "leyen" in lower_t:
-        return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">🇪🇺 <b>EU POLICY & AI WIRE:</b> Commission & Digital Framework Monitoring Active</div>'
+    elif "tech" in lower_t or "artificial intelligence" in lower_t:
+        return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">🤖 <b>TECH WIRE PULSE:</b> Silicon Valley & AI Systems Monitoring Active</div>'
     else:
         return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">🌐 <b>GEOPOLITICAL DESK:</b> International Wire & Policy Tracking Active</div>'
 
@@ -235,23 +235,31 @@ def get_source_publisher_name(source_link):
 def generate_article_with_ai(cat, title, summary, source_link):
     clean_summary = summary.replace("[…]", "").replace("[...]", "").strip()
     source_name = get_source_publisher_name(source_link)
-    prompt = f"""You are the chief executive editor for an elite global news wire agency.
-    STRICT REQUIREMENT: Write a comprehensive, highly analytical, and exhaustive investigative news report of AT LEAST 1000 to 1300 words in professional English.
-    Adhere strictly to Google E-E-A-T and Helpful Content Guidelines.
+    
+    # Random writing angles to ensure absolute uniqueness across posts
+    tones = [
+        "Focus heavily on the geopolitical backdrop, institutional policy shifts, and strategic implications.",
+        "Focus on the timeline of events, stakeholder reactions, and direct impact on international readers.",
+        "Focus on analytical breakdown, historical context, and future projections regarding this specific development."
+    ]
+    selected_tone = random.choice(tones)
+
+    prompt = f"""You are an elite senior investigative journalist for a top international news wire agency.
+    STRICT REQUIREMENT: Write a completely unique, highly analytical, and natural investigative news report of AT LEAST 800 to 1000 words in professional English.
+    Editorial Directive for this specific article: {selected_tone}
+    Do not use repetitive boilerplate paragraphs or generic filler text. Ensure every single article has a distinct narrative flow based on the headline.
     Source Title: {title} Context: {clean_summary} Category: {cat} Source Name: {source_name} Source URL: {source_link}
-    Mandatory Article Structure & Rules: 
-    1. Headline (seo_title): Powerful, authoritative, and catchy global news headline in English.
-    2. Executive Summary (meta_description): A 150-word high-level executive briefing in English.
-    3. Detailed Article Body (article_body) in HTML format containing:
-    - Must be very long, detailed, and 100% contextually relevant to the specific topic ({title}). DO NOT use generic templates or mention unrelated institutions (like European Central Bank unless specifically part of the news). Strictly focus on the exact core subject.
-    - Introduction & Significance (with H2 heading) with deep contextual background.
-    - In-depth background analysis and core developments using bullet points (`<ul>`, `<li>`).
-    - Topic-specific analytical breakdown or key stakeholder/commission reactions (with H2 heading).
-    - **Crucial Requirement:** Inside the body, naturally mention and embed the official source link provided ({source_link}) using the publisher name as anchor text (e.g., <a href="{source_link}" target="_blank" rel="nofollow">{source_name}</a>).
-    - Comparative Data Table using HTML `<table>` with clean styling relevant specifically to this news topic.
-    - Strategic Implications & Future Outlook (with H2 heading).
-    - Frequently Asked Questions (FAQ) Section with at least 3 detailed, topic-specific Q&As.
-    Return ONLY valid JSON format with keys: "seo_title", "meta_description", "article_body". Do not include unescaped control characters inside JSON strings."""
+    
+    Structure the report professionally in HTML format with:
+    1. seo_title: Catchy and authoritative news headline.
+    2. meta_description: A complete 150-word executive summary without cuts.
+    3. article_body: Containing:
+       - Engaging opening paragraphs exploring the core event uniquely.
+       - Detailed contextual analysis sections with custom subheadings (`<h2>`).
+       - Naturally embed the official source link ({source_link}) using the publisher name ({source_name}) as anchor text.
+       - A clean, topic-specific HTML table (`<table>`) containing relevant metrics or key takeaways.
+       - A robust FAQ section with at least 3 detailed, topic-specific Q&As.
+    Return ONLY valid JSON format with keys: "seo_title", "meta_description", "article_body"."""
 
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
@@ -287,37 +295,28 @@ def generate_article_with_ai(cat, title, summary, source_link):
             print(f"⚠️ Groq error: {e}")
 
     # EMERGENCY FALLBACK
-    print("⚠️ AI Failed, Using Emergency Long Template!")
+    print("⚠️ AI Failed, Using Clean Long Template!")
     emergency_body = f"""
     <h2>Global Intelligence Report: {title}</h2>
-    <p><b>Executive Briefing:</b> {clean_summary} This development marks a pivotal moment in the current landscape, requiring immediate attention from analysts, policymakers, and strategic planners worldwide.</p>
+    <p><b>Executive Briefing:</b> {clean_summary} This development marks a critical juncture for international stakeholders and requires immediate evaluation.</p>
     
-    <h2>Introduction & Significance</h2>
-    <p>The unfolding situation around {title} represents more than an isolated event. It reflects ongoing shifts within {cat}. Our bureau has tracked related developments across international channels, indicating a sustained pattern that demands comprehensive analysis.</p>
-    <p>Verified via <a href="{source_link}" target="_blank" rel="nofollow">{source_name}</a>, this intelligence has been cross-referenced with available documentation.</p>
+    <h2>Background & Context</h2>
+    <p>The situation surrounding {title} has evolved significantly over recent reporting cycles. Analysts tracking {cat} note that policy adjustments and institutional responses are shifting rapidly across borders.</p>
+    <p>Verified via <a href="{source_link}" target="_blank" rel="nofollow">{source_name}</a>, this report synthesizes key updates from official dispatches.</p>
     
-    <h2>Core Developments & Background Analysis</h2>
-    <ul>
-        <li><b>Primary Event:</b> {title} has emerged as a critical focal point.</li>
-        <li><b>Contextual Background:</b> Detailed observations indicate broader engagement across sectors.</li>
-        <li><b>Stakeholder Reaction:</b> Key authorities are reviewing policy adaptations and responses.</li>
-    </ul>
+    <h2>Key Analysis & Findings</h2>
+    <p>Observers point out that structural changes will impact day-to-day operations and policy compliance. Stakeholders are advised to monitor ongoing updates closely as implementation guidelines emerge.</p>
     
-    <h2>Key Overview & Analysis</h2>
     <table border="1" cellpadding="8" style="border-collapse:collapse; width:100%;">
-    <tr style="background:#0f172a; color:white;"><th>Aspect</th><th>Details</th><th>Status</th></tr>
-    <tr><td>Core Subject</td><td>{title[:35]}...</td><td>Active</td></tr>
-    <tr><td>Official Response</td><td>Under Review</td><td>Pending</td></tr>
-    <tr><td>Outlook</td><td>Strategic Monitoring</td><td>Ongoing</td></tr>
+    <tr style="background:#0f172a; color:white;"><th>Dimension</th><th>Current Status</th><th>Outlook</th></tr>
+    <tr><td>Core Issue</td><td>Active Development</td><td>High Priority</td></tr>
+    <tr><td>Regulatory Stance</td><td>Under Review</td><td>Pending Guidance</td></tr>
     </table>
     
-    <h2>Strategic Implications & Future Outlook</h2>
-    <p>Long-term outcomes will depend heavily on adaptive frameworks and stakeholder engagement. The upcoming period will be decisive for execution and monitoring.</p>
-    
-    <h2>Frequently Asked Questions (FAQ)</h2>
-    <p><b>Q1: What is the main focus of {title}?</b><br/>A: {clean_summary}</p>
-    <p><b>Q2: Why is this development significant?</b><br/>A: It provides key insights into current trends within {cat}.</p>
-    <p><b>Q3: What can we expect next?</b><br/>A: Further updates, monitoring, and strategic adjustments.</p>
+    <h2>Frequently Asked Questions</h2>
+    <p><b>Q1: What initiated this development?</b><br/>A: {clean_summary}</p>
+    <p><b>Q2: Who is directly impacted by this update?</b><br/>A: International participants and operational stakeholders within {cat}.</p>
+    <p><b>Q3: What are the expected next steps?</b><br/>A: Official clarifications and compliance frameworks are anticipated shortly.</p>
     """
     return {"seo_title": title[:70], "meta_description": clean_summary[:155], "article_body": emergency_body}
 
