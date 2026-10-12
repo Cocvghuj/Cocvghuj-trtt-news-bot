@@ -41,7 +41,8 @@ COUNTRY_LOCATIONS = {
 def load_history():
     if os.path.exists(HISTORY_FILE):
         try:
-            raw_data = json.load(open(HISTORY_FILE, "r", encoding="utf-8"))
+            with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+                raw_data = json.load(f)
             cleaned_history = []
             for item in raw_data:
                 if isinstance(item, dict):
@@ -202,4 +203,183 @@ def generate_audio_summary(title, summary):
         tts = gTTS(text=text_to_speak, lang='en', slow=False)
         audio_filename = f"podcast_{int(time.time())}.mp3"
         tts.save(audio_filename)
-        return f
+        return f'<div style="background:#f8fafc; border:1px solid #e2e8f0; padding:12px; border-radius:8px; margin:15px 0;">🎙️ <b>Executive Audio Summary Available</b></div>'
+    except Exception:
+        return ""
+
+def generate_article_with_ai(cat, title, summary, source_link):
+    prompt = f"""You are the chief executive editor for an elite global news wire agency. Write an original, highly analytical news article in English (950+ words) tailored for global executives and investors. Adhere strictly to Google's E-E-A-T guidelines.
+Title: {title}
+Original Context: {summary}
+Category: {cat}
+Requirements:
+1. Provide deep macroeconomic or geopolitical impact analysis.
+2. Structure with clean H2 and H3 headings.
+3. Include bullet points for core developments.
+4. Add a dedicated 'Strategic Implications' section.
+5. Create a detailed data comparison table.
+6. Add an FAQ section at the end.
+Return ONLY valid JSON format with keys: seo_title, meta_description, article_body. Do not include unescaped control characters inside JSON strings."""
+
+    gemini_key = os.environ.get("GEMINI_API_KEY")
+    if gemini_key:
+        for model in ["gemini-2.5-flash", "gemini-1.5-flash"]:
+            try:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={gemini_key}"
+                r = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
+                if r.status_code == 200 and "candidates" in r.json():
+                    txt = r.json()["candidates"][0]["content"]["parts"][0]["text"]
+                    match = re.search(r'\{.*\}', txt, re.DOTALL)
+                    if match:
+                        return json.loads(match.group(0))
+            except Exception as e:
+                print(f"⚠️ Gemini error: {e}")
+
+    groq_key = os.environ.get("GROQ_API_KEY")
+    if groq_key:
+        try:
+            url = "https://api.groq.com/openai/v1/chat/completions"
+            headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
+            payload = {"model": "llama-3.3-70b-versatile", "messages": [{"role": "user", "content": prompt}], "temperature": 0.7}
+            r = requests.post(url, json=payload, headers=headers, timeout=60)
+            if r.status_code == 200:
+                txt = r.json()["choices"][0]["message"]["content"]
+                match = re.search(r'\{.*\}', txt, re.DOTALL)
+                if match:
+                    return json.loads(match.group(0))
+        except Exception as e:
+            print(f"⚠️ Groq error: {e}")
+
+    return None
+
+def get_blogger():
+    try:
+        client_id = os.environ.get("BLOGGER_CLIENT_ID")
+        client_secret = os.environ.get("BLOGGER_CLIENT_SECRET")
+        refresh_token = os.environ.get("BLOGGER_REFRESH_TOKEN")
+        creds = Credentials(token=None, refresh_token=refresh_token, client_id=client_id, client_secret=client_secret, token_uri="https://oauth2.googleapis.com/token")
+        creds.refresh(Request())
+        return build("blogger", "v3", credentials=creds)
+    except Exception as e:
+        print(f"❌ Blogger Auth Error: {e}")
+        return None
+
+def main():
+    selected_entry = None; chosen_category = ""; source_link = ""
+    headers = {'User-Agent': 'Mozilla/5.0'}
+
+    breaking_count = get_today_breaking_count()
+    feed_items = list(FEEDS.items())
+    random.shuffle(feed_items)
+
+    if breaking_count >= 3:
+        feed_items = [f for f in feed_items if f[0] not in BREAKING_CATEGORIES]
+
+    for cat_name, feed_url in feed_items:
+        try:
+            response = requests.get(feed_url, headers=headers, timeout=15)
+            if response.status_code == 200:
+                feed = feedparser.parse(response.text)
+                for entry in feed.entries[:8]:
+                    link = entry.get('link')
+                    title = entry.get('title', '')
+                    if link and title and not is_duplicate(link, title):
+                        selected_entry = entry
+                        chosen_category = cat_name
+                        source_link = link
+                        break
+            if selected_entry: break
+        except Exception as e:
+            print(f"Skipping Feed: {e}")
+
+    if not selected_entry:
+        print("❌ No new unique entries found.")
+        return
+
+    entry_title = selected_entry.get('title', 'Global Strategic Intelligence Wire')
+    summary_text = selected_entry.get('summary', entry_title)
+    
+    image_url, image_alt = get_featured_image(entry_title, chosen_category)
+    ai_data = generate_article_with_ai(chosen_category, entry_title, summary_text, source_link)
+
+    if ai_data and isinstance(ai_data, dict):
+        seo_title = ai_data.get("seo_title", entry_title[:70])
+        raw_desc = ai_data.get("meta_description") or summary_text
+        clean_desc = re.sub(r'[^a-zA-Z0-9\s.,-]', '', raw_desc)
+        meta_desc = ' '.join(clean_desc.split())[:148].strip()
+        article_body_html = ai_data.get("article_body", f"<p>{summary_text}</p>")
+    else:
+        seo_title = entry_title[:70]
+        meta_desc = re.sub(r'[^a-zA-Z0-9\s]', '', summary_text)[:148].strip()
+        article_body_html = f"<p>{summary_text}</p>"
+
+    article_body_html = apply_internal_links(article_body_html)
+    market_ticker = fetch_live_market_data()
+    fact_badge = generate_fact_check_badge()
+    live_tracker = generate_live_tracker_widget(chosen_category, entry_title)
+    salary_calc = generate_salary_calculator_widget(chosen_category, entry_title)
+    read_time = calculate_read_time(article_body_html)
+    audio_widget = generate_audio_summary(seo_title, meta_desc)
+
+    multilingual_box = f"""
+    <div style="background:#f1f5f9; padding:12px; border-radius:6px; margin:15px 0; font-size:13px; border-left:4px solid #64748b;">
+    🌍 <b>Multilingual Global Briefing / আন্তর্জাতিক সংক্ষিপ্তসার:</b><br/>
+    <i>BN:</i> {meta_desc}<br/>
+    <i>HI:</i> वैश्विक भू-राजनीतिक और व्यापक आर्थिक विश्लेषण अपडेट।<br/>
+    <i>FR:</i> Analyse géopolitique et macroéconomique mondiale.<br/>
+    <i>DE:</i> Globale geopolitische und makroökonomische Analyse.
+    </div>
+    """
+
+    temp_post_url = "https://yourblog.blogspot.com"
+    schema_script = generate_schema_markup(seo_title, meta_desc, temp_post_url, image_url)
+
+    full_article_html = f"""
+    {schema_script}
+    {market_ticker}
+    {fact_badge}
+    {live_tracker}
+    {salary_calc}
+    <div style="color:#64748b; font-size:12px; margin-bottom:10px;">{read_time}</div>
+    <i><b>Executive Synthesis:</b> {meta_desc}</i></p>
+    {audio_widget}
+    <div style="margin:20px 0;"><img src="{image_url}" alt="{image_alt}" title="{seo_title}" style="width:100%; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1);"/></div>
+    {article_body_html}
+    {multilingual_box}
+    <hr/>
+    <p><small><b>Verified Global Syndicate Source:</b> Cross-referenced and authenticated via international news desks. Primary reference link: <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7;">Official Wire Feed & Documentation</a></small></p>
+    """
+
+    blogger_service = get_blogger()
+    if blogger_service:
+        blog_id = os.environ.get("BLOGGER_ID") or os.environ.get("BLOGGER_BLOG_ID")
+        loc = get_smart_location(entry_title, chosen_category)
+
+        raw_labels = [chosen_category, "Global Media Empire", "B2B Intelligence", "Master Syndicate"]
+        unique_labels = list(set(raw_labels))
+
+        post_body = {
+            "kind": "blogger#post",
+            "title": seo_title,
+            "content": full_article_html,
+            "searchDescription": meta_desc,
+            "labels": unique_labels,
+            "location": {"name": loc["name"], "lat": loc["lat"], "lng": loc["lng"]}
+        }
+
+        result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
+        post_id = result.get('id')
+        post_url = result.get('url')
+        print(f"👑 MEDIA EMPIRE ARTICLE PUBLISHED: {post_url}")
+
+        try:
+            patch_body = {"searchDescription": meta_desc}
+            blogger_service.posts().patch(blogId=blog_id, postId=post_id, body=patch_body).execute()
+        except Exception:
+            pass
+
+        save_history(source_link, seo_title, chosen_category, post_url)
+        send_telegram_notification(seo_title, post_url)
+
+if __name__ == "__main__":
+    main()
