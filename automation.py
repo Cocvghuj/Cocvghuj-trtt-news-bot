@@ -82,12 +82,17 @@ def save_history(link, title, category, url=""):
 
 def is_duplicate(entry_link, entry_title):
     hist = load_history()
-    clean_entry_title = entry_title.strip().lower()
+    clean_entry_link = entry_link.strip().lower()
+    clean_entry_title = re.sub(r'[^a-zA-Z0-9\s]', '', entry_title).strip().lower()
+    
     for item in hist:
         if isinstance(item, dict):
-            if item.get("link") == entry_link:
+            item_link = item.get("link", "").strip().lower()
+            item_title = re.sub(r'[^a-zA-Z0-9\s]', '', item.get("title", "")).strip().lower()
+            
+            if item_link and clean_entry_link and item_link == clean_entry_link:
                 return True
-            if item.get("title") == clean_entry_title:
+            if item_title and clean_entry_title and item_title == clean_entry_title:
                 return True
     return False
 
