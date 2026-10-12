@@ -1,8 +1,8 @@
-name: Auto Blog to Facebook Post
+name: Auto News Syndicate Hub
 
 on:
   schedule:
-    # প্রতিদিন ১৬ বার রান করার জন্য অপ্টিমাইজড ক্রন শিডিউল (UTC টাইম অনুযায়ী)
+    # প্রতিদিন ১৬ বার রান করার ক্রন এক্সপ্রেশন (UTC টাইম অনুযায়ী)
     - cron: '0 1,3,5,7,8,9,10,11,12,14,15,16,17,19,21,23 * * *'
   workflow_dispatch:
 
@@ -10,7 +10,7 @@ jobs:
   run-script:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # গিটহাবে ফাইল কমিট ও পুশ করার পারমিশন
+      contents: write # গিটহাবে হিস্ট্রি ও ইউআরএল কমিট ও পুশ করার রাইটস
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,7 +23,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install feedparser google-api-python-client google-auth-oauthlib facebook-sdk requests
+          pip install feedparser google-api-python-client google-auth-oauthlib requests gtts
 
       - name: Run Automation Script
         env:
@@ -33,18 +33,8 @@ jobs:
           BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
           BLOGGER_ID: ${{ secrets.BLOGGER_ID }}
-          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
-          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
         run: |
           python automation.py
-
-      - name: Save history
-        run: |
-          git config --local user.email "bot@trtt.com"
-          git config --local user.name "TRTT Bot"
-          git add posted_history.json || true
-          git commit -m "Update posted history" || true
-          git push || true
