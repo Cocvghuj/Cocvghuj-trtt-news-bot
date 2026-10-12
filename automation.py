@@ -10,7 +10,7 @@ TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 FEEDS = {
     "Wall Street & Global Markets": "https://feeds.feedburner.com/reuters/businessNews",
     "Bloomberg Global Business": "https://www.cnbc.com/id/10001147/device/rss/rss.html",
-    "European Central Bank & Trade": "https://www.politico.eu/feed/",
+    "European Central Bank & Trade": "https://politico.eu/feed/",
     "Global Geopolitics & EU": "https://www.euronews.com/rss?format=mrss",
     "BBC World Intelligence": "http://feeds.bbci.co.uk/news/world/rss.xml",
     "Schengen & European Visa Hub": "https://www.schengenvisainfo.com/feed/",
@@ -226,26 +226,28 @@ def generate_audio_summary(title, summary):
         return ""
 
 def generate_article_with_ai(cat, title, summary, source_link):
-    prompt = f"""You are the chief executive editor for an elite global news wire agency. 
-STRICT REQUIREMENT: Regardless of the original language of the input, write the entire output 100% in professional High-Standard ENGLISH.
-Write a comprehensive, highly detailed, and analytical news report of AT LEAST 900 to 1200 words following Google E-E-A-T and Helpful Content Guidelines.
+    prompt = f"""You are the chief executive editor for an elite global news wire agency (like Reuters or Bloomberg). 
+STRICT REQUIREMENT: Write a comprehensive, highly analytical, and exhaustive investigative news report of AT LEAST 1000 to 1300 words in professional English. Adhere strictly to Google E-E-A-T and Helpful Content Guidelines.
 
-Input Title: {title}
-Original Context/Summary: {summary}
+Source Title: {title}
+Original Context: {summary}
 Category: {cat}
+Official Source Reference Link: {source_link}
 
-Mandatory Article Structure:
-1. Headline (seo_title): Clean, powerful, in English.
-2. Executive Summary (meta_description): 150-word concise synthesis in English.
+Mandatory Article Structure & Rules:
+1. Headline (seo_title): Powerful, authoritative, and catchy global news headline in English.
+2. Executive Summary (meta_description): A 150-word high-level executive briefing in English.
 3. Detailed Article Body (article_body) in HTML format containing:
-   - Deep Background & Context (H2)
-   - Key Strategic Developments & Bullet Points (H2)
-   - Macroeconomic & Geopolitical Impact Analysis (H2)
-   - Comparative Data Table with HTML <table> tags (H2)
-   - Future Outlook & Implications (H2)
-   - Frequently Asked Questions (FAQ) Section with 3 Q&As (H2)
+   - Must be very long, detailed, and rich in context. Do not write short summaries.
+   - Introduction & Global Significance (with H2 heading).
+   - In-depth background analysis and core developments using bullet points (`<ul>`, `<li>`).
+   - Macroeconomic or geopolitical impact breakdown (with H2 heading).
+   - **Crucial Requirement:** Inside the body text, naturally mention and embed the official source link provided ({source_link}) as an HTML anchor tag (e.g., <a href="{source_link}" target="_blank" rel="nofollow" style="color:#2563eb; font-weight:600;">Official Wire Source & Documentation</a>).
+   - Comparative Data Table using HTML `<table>` with clean styling.
+   - Strategic Implications & Future Outlook (with H2 heading).
+   - Frequently Asked Questions (FAQ) Section with at least 3 detailed Q&As.
 
-Return ONLY valid JSON format with keys: "seo_title", "meta_description", "article_body". Do not include unescaped line breaks inside strings."""
+Return ONLY valid JSON format with keys: "seo_title", "meta_description", "article_body". Do not include unescaped control characters inside JSON strings."""
 
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
