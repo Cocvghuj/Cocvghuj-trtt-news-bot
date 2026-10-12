@@ -121,14 +121,16 @@ def get_featured_image(title, category=""):
         if not key: return fallback_img, fallback_alt
         
         lower_title = title.lower()
-        if "cat" in lower_title or "kitten" in lower_title or "pet" in lower_title:
-            q = "cute orange cat pet animal"
-        elif "apple" in lower_title or "smart home" in lower_title or "hub" in lower_title:
-            q = "smart home technology apple device"
-        elif "artificial intelligence" in lower_title or "tech" in lower_title or "model" in lower_title:
-            q = "artificial intelligence futuristic technology software"
-        elif "market" in lower_title or "business" in lower_title or "stock" in lower_title:
-            q = "global economy finance market business"
+        if "ireland" in lower_title or "secretary" in lower_title or "parliament" in lower_title:
+            q = "uk parliament london politics"
+        elif "visa" in lower_title or "immigration" in lower_title:
+            q = "passport travel immigration document"
+        elif "cat" in lower_title or "kitten" in lower_title:
+            q = "cute cat animal pet"
+        elif "tech" in lower_title or "ai" in lower_title or "apple" in lower_title:
+            q = "artificial intelligence technology innovation"
+        elif "market" in lower_title or "business" in lower_title:
+            q = "global economy finance business market"
         else:
             clean_title = re.sub(r'[^a-zA-Z0-9\s]', '', title)
             words = [w for w in clean_title.split() if len(w) > 3]
@@ -177,8 +179,16 @@ def generate_schema_markup(title, desc, url, image_url):
     }
     return f'<script type="application/ld+json">{json.dumps(schema)}</script>'
 
-def fetch_live_market_data():
-    return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">📈 <b>LIVE MARKET PULSE:</b> S&P 500: Active | NASDAQ: Bullish | GOLD: $2,390 | EUR/USD: 1.085</div>'
+def fetch_dynamic_widget(title, category):
+    lower_t = (title + " " + category).lower()
+    if "market" in lower_t or "business" in lower_t or "wall street" in lower_t:
+        return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">📈 <b>MARKET PULSE:</b> S&P 500: Active | NASDAQ: Bullish | GOLD: $2,390</div>'
+    elif "visa" in lower_t or "immigration" in lower_t:
+        return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">🛂 <b>GLOBAL MOBILITY DESK:</b> Visa & Consular Updates Active 24/7</div>'
+    elif "tech" in lower_t or "artificial intelligence" in lower_t:
+        return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">🤖 <b>TECH WIRE PULSE:</b> Silicon Valley & AI Systems Monitoring Active</div>'
+    else:
+        return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">🌐 <b>GEOPOLITICAL DESK:</b> International Wire & Policy Tracking Active</div>'
 
 def apply_internal_links(article_body):
     hist = load_history()
@@ -233,12 +243,12 @@ def generate_article_with_ai(cat, title, summary, source_link):
     1. Headline (seo_title): Powerful, authoritative, and catchy global news headline in English.
     2. Executive Summary (meta_description): A 150-word high-level executive briefing in English.
     3. Detailed Article Body (article_body) in HTML format containing:
-    - Must be very long, detailed, and contextually relevant to the specific topic ({title}). Do not use generic market templates for non-market news.
+    - Must be very long, detailed, and contextually relevant to the specific topic ({title}). DO NOT use financial market templates for political or general news. Match the content strictly to the topic.
     - Introduction & Significance (with H2 heading).
     - In-depth background analysis and core developments using bullet points (`<ul>`, `<li>`).
-    - Impact breakdown or key findings (with H2 heading).
+    - Topic-specific analytical breakdown or key stakeholder reactions (with H2 heading).
     - **Crucial Requirement:** Inside the body, naturally mention and embed the official source link provided ({source_link}) using the publisher name as anchor text (e.g., <a href="{source_link}" target="_blank" rel="nofollow">{source_name}</a>).
-    - Comparative Data Table using HTML `<table>` with clean styling relevant to the topic.
+    - Comparative Data Table using HTML `<table>` with clean styling relevant specifically to this news topic.
     - Strategic Implications & Future Outlook (with H2 heading).
     - Frequently Asked Questions (FAQ) Section with at least 3 detailed Q&As.
     Return ONLY valid JSON format with keys: "seo_title", "meta_description", "article_body". Do not include unescaped control characters inside JSON strings."""
@@ -280,7 +290,7 @@ def generate_article_with_ai(cat, title, summary, source_link):
     print("⚠️ AI Failed, Using Emergency Long Template!")
     emergency_body = f"""
     <h2>Global Intelligence Report: {title}</h2>
-    <p><b>Executive Briefing:</b> {clean_summary} This development marks a pivotal moment in the current landscape, requiring immediate attention from analysts, enthusiasts, and strategic planners worldwide.</p>
+    <p><b>Executive Briefing:</b> {clean_summary} This development marks a pivotal moment in the current landscape, requiring immediate attention from analysts, policymakers, and strategic planners worldwide.</p>
     
     <h2>Introduction & Significance</h2>
     <p>The unfolding situation around {title} represents more than an isolated event. It reflects ongoing shifts within {cat}. Our bureau has tracked related developments across international channels, indicating a sustained pattern that demands comprehensive analysis.</p>
@@ -290,15 +300,15 @@ def generate_article_with_ai(cat, title, summary, source_link):
     <ul>
         <li><b>Primary Event:</b> {title} has emerged as a critical focal point.</li>
         <li><b>Contextual Background:</b> Detailed observations indicate broader engagement across sectors.</li>
-        <li><b>Industry Impact:</b> Stakeholders are reviewing structural adaptations.</li>
+        <li><b>Stakeholder Reaction:</b> Key authorities are reviewing policy adaptations and responses.</li>
     </ul>
     
-    <h2>Impact Analysis & Overview</h2>
+    <h2>Key Overview & Analysis</h2>
     <table border="1" cellpadding="8" style="border-collapse:collapse; width:100%;">
-    <tr style="background:#0f172a; color:white;"><th>Aspect</th><th>Current Status</th><th>Projected Direction</th></tr>
-    <tr><td>Core Subject</td><td>Active Development</td><td>High Engagement</td></tr>
-    <tr><td>Industry Response</td><td>Under Review</td><td>Strategic Adaptation</td></tr>
-    <tr><td>Outlook</td><td>Optimistic</td><td>Continuous Growth</td></tr>
+    <tr style="background:#0f172a; color:white;"><th>Aspect</th><th>Details</th><th>Status</th></tr>
+    <tr><td>Core Subject</td><td>{title[:35]}...</td><td>Active</td></tr>
+    <tr><td>Official Response</td><td>Under Review</td><td>Pending</td></tr>
+    <tr><td>Outlook</td><td>Strategic Monitoring</td><td>Ongoing</td></tr>
     </table>
     
     <h2>Strategic Implications & Future Outlook</h2>
@@ -373,7 +383,7 @@ def main():
         article_body_html = f"<p>{summary_text}</p>"
 
     article_body_html = apply_internal_links(article_body_html)
-    market_ticker = fetch_live_market_data()
+    dynamic_widget = fetch_dynamic_widget(entry_title, chosen_category)
     fact_badge = generate_fact_check_badge()
     read_time = calculate_read_time(article_body_html)
     audio_widget = generate_audio_summary(seo_title, meta_desc)
@@ -384,7 +394,7 @@ def main():
 
     full_article_html = f"""
     {schema_script}
-    {market_ticker}
+    {dynamic_widget}
     {fact_badge}
     <div style="color:#64748b; font-size:12px; margin-bottom:10px;">{read_time}</div>
     <p><i><b>Executive Summary:</b> {meta_desc}</i></p>
