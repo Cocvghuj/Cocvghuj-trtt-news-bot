@@ -194,13 +194,13 @@ def generate_audio_summary(title, summary):
 
 def generate_article_with_ai(cat, title, summary, source_link):
     prompt = f"""You are the chief executive editor for an elite global news wire agency (like Reuters or Bloomberg).
-    STRICT REQUIREMENT: Write a comprehensive, highly analytical, and exhaustive investigative news report of AT LEAST 1000 to 1300 words in professional English.
+    STRICT REQUIREMENT: Write a comprehensive, highly analytical, and exhaustive investigative news report of AT LEAST 800 words in professional English.
     Adhere strictly to Google E-E-A-T and Helpful Content Guidelines.
     Source Title: {title} Original Context: {summary} Category: {cat} Official Source Reference Link: {source_link}
     Mandatory Article Structure & Rules: 1. Headline (seo_title): Powerful, authoritative, and catchy global news headline in English.
     2. Executive Summary (meta_description): A 150-word high-level executive briefing in English.
     3. Detailed Article Body (article_body) in HTML format containing:
-    - Must be very long, detailed, and rich in context. Do not write short summaries.
+    - Must be detailed, exhaustive, and rich in context (around 800 words).
     - Introduction & Global Significance (with H2 heading).
     - In-depth background analysis and core developments using bullet points (`<ul>`, `<li>`).
     - Macroeconomic or geopolitical impact breakdown (with H2 heading).
@@ -332,7 +332,7 @@ def main():
 
     article_body_html = apply_internal_links(article_body_html)
     market_ticker = fetch_live_market_data()
-    fact_badge = generate_fact_check_badge()
+    fact_badge = generate_fact_check_badge() # AI Fact-Check & Manipulation Risk Badge
     read_time = calculate_read_time(article_body_html)
     audio_widget = generate_audio_summary(seo_title, meta_desc)
 
@@ -357,7 +357,7 @@ def main():
         blog_id = os.environ.get("BLOGGER_ID") or os.environ.get("BLOGGER_BLOG_ID")
         loc = get_smart_location(entry_title, chosen_category)
 
-        raw_labels = [chosen_category, "Global Media Empire", "B2B Intelligence", "Master Syndicate"]
+        raw_labels = [chosen_category, "Global Media Empire", "B2B Intelligence", "Master Syndicate", "AI Fact-Check"]
         unique_labels = list(set(raw_labels))
 
         post_body = {
