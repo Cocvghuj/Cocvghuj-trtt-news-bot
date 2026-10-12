@@ -163,6 +163,24 @@ def generate_salary_calculator_widget(category, title):
         """
     return ""
 
+def generate_language_translator_widget():
+    return """
+    <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 15px; border-radius:8px; margin:10px 0 20px 0; display:flex; align-items:center; gap:10px;">
+        <span style="font-size:13px; font-weight:600; color:#334155;">🌐 Select Language / ভাষা পরিবর্তন করুন:</span>
+        <div id="google_translate_element"></div>
+        <script type="text/javascript">
+            function googleTranslateElementInit() {
+                new google.translate.TranslateElement({
+                    pageLanguage: 'en',
+                    includedLanguages: 'bn,en,fr,de,hi,es,it,ar',
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+                }, 'google_translate_element');
+            }
+        </script>
+        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    </div>
+    """
+
 def generate_schema_markup(title, desc, url, image_url):
     schema = {
         "@context": "https://schema.org",
@@ -208,18 +226,26 @@ def generate_audio_summary(title, summary):
         return ""
 
 def generate_article_with_ai(cat, title, summary, source_link):
-    prompt = f"""You are the chief executive editor for an elite global news wire agency. Write an original, highly analytical news article in English (950+ words) tailored for global executives and investors. Adhere strictly to Google's E-E-A-T guidelines.
-Title: {title}
-Original Context: {summary}
+    prompt = f"""You are the chief executive editor for an elite global news wire agency. 
+STRICT REQUIREMENT: Regardless of the original language of the input, write the entire output 100% in professional High-Standard ENGLISH.
+Write a comprehensive, highly detailed, and analytical news report of AT LEAST 900 to 1200 words following Google E-E-A-T and Helpful Content Guidelines.
+
+Input Title: {title}
+Original Context/Summary: {summary}
 Category: {cat}
-Requirements:
-1. Provide deep macroeconomic or geopolitical impact analysis.
-2. Structure with clean H2 and H3 headings.
-3. Include bullet points for core developments.
-4. Add a dedicated 'Strategic Implications' section.
-5. Create a detailed data comparison table.
-6. Add an FAQ section at the end.
-Return ONLY valid JSON format with keys: seo_title, meta_description, article_body. Do not include unescaped control characters inside JSON strings."""
+
+Mandatory Article Structure:
+1. Headline (seo_title): Clean, powerful, in English.
+2. Executive Summary (meta_description): 150-word concise synthesis in English.
+3. Detailed Article Body (article_body) in HTML format containing:
+   - Deep Background & Context (H2)
+   - Key Strategic Developments & Bullet Points (H2)
+   - Macroeconomic & Geopolitical Impact Analysis (H2)
+   - Comparative Data Table with HTML <table> tags (H2)
+   - Future Outlook & Implications (H2)
+   - Frequently Asked Questions (FAQ) Section with 3 Q&As (H2)
+
+Return ONLY valid JSON format with keys: "seo_title", "meta_description", "article_body". Do not include unescaped line breaks inside strings."""
 
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
@@ -318,6 +344,7 @@ def main():
     fact_badge = generate_fact_check_badge()
     live_tracker = generate_live_tracker_widget(chosen_category, entry_title)
     salary_calc = generate_salary_calculator_widget(chosen_category, entry_title)
+    translator_widget = generate_language_translator_widget()
     read_time = calculate_read_time(article_body_html)
     audio_widget = generate_audio_summary(seo_title, meta_desc)
 
@@ -336,6 +363,7 @@ def main():
 
     full_article_html = f"""
     {schema_script}
+    {translator_widget}
     {market_ticker}
     {fact_badge}
     {live_tracker}
