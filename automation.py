@@ -121,14 +121,14 @@ def get_featured_image(title, category=""):
         if not key: return fallback_img, fallback_alt
         
         lower_title = title.lower()
-        if "ireland" in lower_title or "secretary" in lower_title or "parliament" in lower_title:
+        if "leyen" in lower_title or "commission" in lower_title or "eu" in lower_title or "artificial intelligence" in lower_title:
+            q = "artificial intelligence european union digital technology"
+        elif "ireland" in lower_title or "secretary" in lower_title:
             q = "uk parliament london politics"
         elif "visa" in lower_title or "immigration" in lower_title:
             q = "passport travel immigration document"
         elif "cat" in lower_title or "kitten" in lower_title:
             q = "cute cat animal pet"
-        elif "tech" in lower_title or "ai" in lower_title or "apple" in lower_title:
-            q = "artificial intelligence technology innovation"
         elif "market" in lower_title or "business" in lower_title:
             q = "global economy finance business market"
         else:
@@ -185,8 +185,8 @@ def fetch_dynamic_widget(title, category):
         return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">📈 <b>MARKET PULSE:</b> S&P 500: Active | NASDAQ: Bullish | GOLD: $2,390</div>'
     elif "visa" in lower_t or "immigration" in lower_t:
         return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">🛂 <b>GLOBAL MOBILITY DESK:</b> Visa & Consular Updates Active 24/7</div>'
-    elif "tech" in lower_t or "artificial intelligence" in lower_t:
-        return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">🤖 <b>TECH WIRE PULSE:</b> Silicon Valley & AI Systems Monitoring Active</div>'
+    elif "tech" in lower_t or "artificial intelligence" in lower_t or "commission" in lower_t or "leyen" in lower_t:
+        return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">🇪🇺 <b>EU POLICY & AI WIRE:</b> Commission & Digital Framework Monitoring Active</div>'
     else:
         return '<div style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-radius:6px; margin-bottom:12px; font-size:13px; border-left:4px solid #0284c7;">🌐 <b>GEOPOLITICAL DESK:</b> International Wire & Policy Tracking Active</div>'
 
@@ -243,14 +243,14 @@ def generate_article_with_ai(cat, title, summary, source_link):
     1. Headline (seo_title): Powerful, authoritative, and catchy global news headline in English.
     2. Executive Summary (meta_description): A 150-word high-level executive briefing in English.
     3. Detailed Article Body (article_body) in HTML format containing:
-    - Must be very long, detailed, and contextually relevant to the specific topic ({title}). DO NOT use financial market templates for political or general news. Match the content strictly to the topic.
-    - Introduction & Significance (with H2 heading).
+    - Must be very long, detailed, and 100% contextually relevant to the specific topic ({title}). DO NOT use generic templates or mention unrelated institutions (like European Central Bank unless specifically part of the news). Strictly focus on the exact core subject.
+    - Introduction & Significance (with H2 heading) with deep contextual background.
     - In-depth background analysis and core developments using bullet points (`<ul>`, `<li>`).
-    - Topic-specific analytical breakdown or key stakeholder reactions (with H2 heading).
+    - Topic-specific analytical breakdown or key stakeholder/commission reactions (with H2 heading).
     - **Crucial Requirement:** Inside the body, naturally mention and embed the official source link provided ({source_link}) using the publisher name as anchor text (e.g., <a href="{source_link}" target="_blank" rel="nofollow">{source_name}</a>).
     - Comparative Data Table using HTML `<table>` with clean styling relevant specifically to this news topic.
     - Strategic Implications & Future Outlook (with H2 heading).
-    - Frequently Asked Questions (FAQ) Section with at least 3 detailed Q&As.
+    - Frequently Asked Questions (FAQ) Section with at least 3 detailed, topic-specific Q&As.
     Return ONLY valid JSON format with keys: "seo_title", "meta_description", "article_body". Do not include unescaped control characters inside JSON strings."""
 
     gemini_key = os.environ.get("GEMINI_API_KEY")
