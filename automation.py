@@ -1,5 +1,5 @@
 import feedparser, os, json, requests, random, re, datetime, time, subprocess, sys
-import google.generativeai as genai
+from google import genai
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
@@ -120,7 +120,7 @@ def send_telegram_notification(title, url):
         except Exception as e:
             print(f"⚠️ Telegram Error: {e}")
 
-# DUAL-ENGINE FALLBACK (Stable Gemini + Groq Llama-3)
+# DUAL-ENGINE FALLBACK (Google GenAI SDK + Groq Llama-3)
 def generate_safe_news_with_fallback(topic: str):
     info = get_info(topic)
     
@@ -150,20 +150,20 @@ ABSOLUTE RULES - BREAK = FAIL:
 Now write news for: {topic}
 """
 
-    # Try Gemini First
+    # Try Google GenAI SDK First
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
-        for model_name in ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"]:
-            try:
-                genai.configure(api_key=gemini_key)
-                model = genai.GenerativeModel(model_name)
-                response = model.generate_content(prompt)
-                if response and response.text:
-                    text = response.text
-                    print(f"✅ Generated successfully using Gemini ({model_name}).")
-                    return text, info['label']
-            except Exception as e:
-                print(f"⚠️ Gemini model {model_name} failed: {e}")
+        try:
+            client = genai.Client(api_key=gemini_key)
+            response = client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt,
+            )
+            if response and response.text:
+                print("✅ Generated successfully using Google GenAI SDK.")
+                return response.text, info['label']
+        except Exception as e:
+            print(f"⚠️ Gemini SDK Failed: {e}. Switching to Groq fallback...")
 
     # Fallback to Groq (Llama-3)
     groq_key = os.environ.get("GROQ_API_KEY")
