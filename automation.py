@@ -7,10 +7,10 @@ from googleapiclient.discovery import build
 HISTORY_FILE = "posted_history.json"
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 
-# ডায়নামিক বছর নির্ধারণ (স্বয়ংক্রিয়ভাবে বর্তমান বছর নেবে)
+# স্বয়ংক্রিয়ভাবে বর্তমান বছর নেবে
 CURRENT_YEAR = datetime.datetime.now().year
 
-# ১. OFFICIAL & TRUSTED INTERNATIONAL DESKS (Brackets Removed)
+# ১. OFFICIAL & TRUSTED INTERNATIONAL DESKS
 OFFICIAL_DB = {
     "WORLD": {
         "desk": "Reuters World News Bureau", 
@@ -129,14 +129,20 @@ def get_featured_image(keyword):
         print(f"Image API Error: {e}")
     return fallback_img
 
-def send_telegram_notification(title, url):
+# টেলিগ্রামে লাইভ পোস্টের বার্তা পাঠানোর ফাংশন
+def send_telegram_notification(title, post_url):
     bot_token = os.environ.get("TELEGRAM_BOT_TOKEN")
     chat_id = os.environ.get("TELEGRAM_CHAT_ID")
     if bot_token and chat_id:
         try:
-            msg = f"👑 <b>TRTT Draft Alert</b>\n\n<b>Title:</b> {title}\n\n<b>Status:</b> Saved as Draft"
+            msg = (
+                f"🚨 <b>NEW POST PUBLISHED</b> 🚨\n\n"
+                f"<b>📰 Title:</b> {title}\n\n"
+                f"🔗 <b>Read Article:</b> {post_url}\n\n"
+                f"🌐 <i>TRTT NEWS 24 BD Global Bureau</i>"
+            )
             api_url = TELEGRAM_URL_TEMPLATE.format(token=bot_token)
-            requests.post(api_url, json={"chat_id": chat_id, "text": msg, "parse_mode": "HTML"}, timeout=10)
+            requests.post(api_url, json={"chat_id": chat_id, "text": msg, "parse_mode": "HTML", "disable_web_page_preview": False}, timeout=10)
         except Exception as e:
             print(f"⚠️ Telegram Error: {e}")
 
@@ -260,13 +266,18 @@ def main():
             "location": {"name": "London, United Kingdom", "lat": 51.5074, "lng": -0.1278}
         }
 
-        # Blogger API v3 দিয়ে ড্রাফটে সংরক্ষণ
-        result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=True, fetchImages=True).execute()
+        # isDraft=False করায় সরাসরি ব্লগে লাইভ পাবলিশ হবে
+        result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
+        
         post_id = result.get('id')
-        print(f"👑 DRAFT SAVED SUCCESSFULLY: {entry_title} (ID: {post_id})")
+        published_url = result.get('url', '')
+        
+        print(f"🚀 ARTICLE PUBLISHED SUCCESSFULLY: {entry_title} (URL: {published_url})")
 
-        save_history(info['url'], entry_title, label, f"Draft ID: {post_id}")
-        send_telegram_notification(entry_title, "Saved as Draft")
+        # গিটহাব হিস্ট্রি সেভ ও টেলিগ্রামে অটো-শেয়ার
+        save_history(info['url'], entry_title, label, published_url)
+        send_telegram_notification(entry_title, published_url)
+        
         time.sleep(5)
 
 if __name__ == "__main__":
