@@ -1,4 +1,5 @@
-google-generativeai
+google-genai
+groq
 requests
 feedparser
-gtts
+python-dotenv
