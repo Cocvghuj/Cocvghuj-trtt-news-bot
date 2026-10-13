@@ -13,37 +13,37 @@ OFFICIAL_DB = {
     "WORLD": {
         "desk": "Reuters World News Bureau", 
         "url": "https://www.reuters.com/world/", 
-        "keyword": "World News International Politics Policy", 
+        "keyword": "world news politics diplomacy global affairs", 
         "label": "World News 24"
     },
     "BUSINESS": {
         "desk": "Global Business Intelligence Desk", 
         "url": "https://www.reuters.com/business/", 
-        "keyword": "Global Business Enterprise Strategy Market", 
+        "keyword": "global economy stock market finance business", 
         "label": "Global Business Fix"
     },
     "VISA": {
         "desk": "Schengen Visa & Immigration Authority", 
         "url": "https://www.make-it-in-germany.com/en/", 
-        "keyword": "Schengen Visa Immigration Regulation Policy", 
+        "keyword": "passport visa travel immigration european union", 
         "label": "Schengen Visa & Immigration"
     },
     "TECH": {
         "desk": "Global Technology Press Release", 
         "url": "https://www.reuters.com/technology/", 
-        "keyword": "Global Technology AI Innovation Digital", 
+        "keyword": "artificial intelligence technology future server coding", 
         "label": "Technology & Education"
     },
     "STARTUP": {
         "desk": "European Business & Startup Desk", 
         "url": "https://vistos.mne.gov.pt/en/", 
-        "keyword": "Europe Startup Business Investment Economy", 
+        "keyword": "startup innovation tech company europe investment", 
         "label": "Europe Startup & Business"
     },
     "TOOLS": {
         "desk": "TRTT Developer & SEO Tools Desk", 
         "url": "https://www.google.com", 
-        "keyword": "Free SEO Tools Digital Marketing Analytics", 
+        "keyword": "digital analytics software developer code seo", 
         "label": "Free Tools"
     }
 }
@@ -113,17 +113,26 @@ def is_duplicate(entry_title):
     return False
 
 def get_featured_image(keyword):
-    fallback_img = "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80"
+    # ডায়নামিক ভিন্ন ছবি পাওয়ার জন্য র্যান্ডম সার্চ পেজ ও কিওয়ার্ড ফিল্টার
+    fallback_imgs = [
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80"
+    ]
     try:
         key = os.environ.get("UNSPLASH_ACCESS_KEY")
-        if not key: return fallback_img
-        url = f"https://api.unsplash.com/search/photos?query={keyword}&per_page=10&orientation=landscape&client_id={key}".strip()
+        if not key: return random.choice(fallback_imgs)
+        page = random.randint(1, 3)
+        url = f"https://api.unsplash.com/search/photos?query={keyword}&page={page}&per_page=15&orientation=landscape&client_id={key}".strip()
         r = requests.get(url, timeout=15).json()
         if r.get('results') and len(r['results']) > 0:
-            return random.choice(r['results']).get('urls', {}).get('regular', fallback_img)
+            selected_img = random.choice(r['results']).get('urls', {}).get('regular')
+            if selected_img:
+                return selected_img
     except Exception as e:
         print(f"Image API Error: {e}")
-    return fallback_img
+    return random.choice(fallback_imgs)
 
 def send_telegram_notification(title, post_url):
     bot_token = os.environ.get("TELEGRAM_BOT_TOKEN")
@@ -163,7 +172,6 @@ WRITING INSTRUCTIONS:
 4. Compliance: Maintain high editorial standards, strictly avoid spammy phrasing, and ensure complete accuracy for the year {CURRENT_YEAR}.
 """
 
-    # ১. Gemini মডেল দিয়ে চেষ্টা করবে
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
         for attempt in range(3):
@@ -179,7 +187,6 @@ WRITING INSTRUCTIONS:
                 print(f"Gemini API warning (Attempt {attempt+1}): {e}")
                 time.sleep(5)
 
-    # ২. Groq API দিয়ে চেষ্টা করবে
     groq_key = os.environ.get("GROQ_API_KEY")
     if groq_key:
         try:
@@ -196,7 +203,6 @@ WRITING INSTRUCTIONS:
         except Exception as e:
             print(f"Groq error: {e}")
 
-    # ৩. দুইটাই ফেইল করলে পূর্ণাঙ্গ বড় ফলব্যাক টেক্সট রিটার্ন করবে
     print("⚠️ All AI failed, using detailed fallback template")
     fallback_html = f"""
     <h2>Comprehensive Overview and Strategic Analysis of {topic}</h2>
@@ -208,7 +214,6 @@ WRITING INSTRUCTIONS:
 
     <h2>Global Impact and Cross-Border Policy Framework</h2>
     <p>The broader implications of these developments extend far beyond immediate regional boundaries, influencing international standards and cross-border cooperation. Observers note that regulatory compliance mechanisms are undergoing rigorous harmonization to address contemporary challenges.</p>
-    <p>Furthermore, stakeholder engagement and institutional readiness remain paramount as new guidelines take full effect throughout {CURRENT_YEAR}. Transparent communication channels and structured policy frameworks ensure sustainable growth and operational stability.</p>
 
     <h2>Market Dynamics and Strategic Implementation</h2>
     <p>Evaluating the practical applications reveals a strong correlation between strategic preparedness and long-term success. Organizations operating within these sectors must align their internal protocols with updated compliance directives to mitigate potential risks and capitalize on emerging opportunities.</p>
@@ -216,7 +221,6 @@ WRITING INSTRUCTIONS:
 
     <h2>Conclusion and Future Outlook</h2>
     <p>In conclusion, the trajectory of {topic} in {CURRENT_YEAR} reflects a definitive move toward enhanced transparency, strict regulatory alignment, and continuous innovation. Stakeholders are advised to monitor ongoing updates closely and integrate resilient frameworks into their strategic planning.</p>
-    <p><i>Note: This analytical overview is part of the continuous reporting series maintained by the TRTT Global Bureau to ensure timely and reliable information distribution.</i></p>
     """
     return fallback_html, info['label']
 
@@ -240,66 +244,69 @@ def main():
 
     blog_id = os.environ.get("BLOGGER_ID") or os.environ.get("BLOGGER_BLOG_ID")
 
+    # লুপ থেকে ডুপ্লিকেট ছাড়া প্রথম টপিকটি বেছে নিয়ে কেবল ১টি পোস্ট করবে
+    target_item = None
     for item in topics_to_post:
-        try:
-            entry_title = item["title"]
-            cat_key = item["category"]
-            
-            if is_duplicate(entry_title):
-                print(f"Skipping duplicate: {entry_title}")
-                continue
+        if not is_duplicate(item["title"]):
+            target_item = item
+            break
 
-            info = OFFICIAL_DB[cat_key]
-            article_body_html, label = generate_safe_news_with_fallback(entry_title, cat_key)
-            image_url = get_featured_image(info["keyword"])
+    if not target_item:
+        print("ℹ️ No new topics to post today. All topics already posted.")
+        return
 
-            full_html = f"""
-            <div style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 14px; margin-bottom: 20px; font-size: 14px; font-family: sans-serif;">
-                <b>✍️ Verified Editorial & Global Bureau Standards:</b> Reviewed by TRTT International Desk.
-                <br><b>Official Source Reference:</b> <a href="{info['url']}" target="_blank" rel="nofollow">{info['desk']}</a>
+    try:
+        entry_title = target_item["title"]
+        cat_key = target_item["category"]
+
+        info = OFFICIAL_DB[cat_key]
+        article_body_html, label = generate_safe_news_with_fallback(entry_title, cat_key)
+        image_url = get_featured_image(info["keyword"])
+
+        full_html = f"""
+        <div style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 14px; margin-bottom: 20px; font-size: 14px; font-family: sans-serif;">
+            <b>✍️ Verified Editorial & Global Bureau Standards:</b> Reviewed by TRTT International Desk.
+            <br><b>Official Source Reference:</b> <a href="{info['url']}" target="_blank" rel="nofollow">{info['desk']}</a>
+        </div>
+        
+        <div style="margin:20px 0;"><img src="{image_url}" alt="{entry_title}" style="width:100%; border-radius:8px;"/></div>
+        
+        {article_body_html}
+
+        <!-- Hire Me Button -->
+        <div style="text-align:center; margin-top:20px;">
+        <a href="https://ttnews24bd.blogspot.com/p/hire-me-advertise.html" style="background:#2563eb; color:white; padding:12px 20px; text-decoration:none; border-radius:6px; font-weight:bold;">Need Help? Hire Me</a>
+        </div>
+
+        <!-- Community & Social Links Box -->
+        <div style="margin-top:30px; padding:20px; background:#f1f5f9; text-align:center; border-radius:10px; border:1px solid #cbd5e1; font-family: sans-serif;">
+            <h3 style="margin-top:0; color:#0f172a; font-size:18px;">📢 Join Our Official Community for Daily Updates</h3>
+            <p style="font-size:14px; color:#475569; margin-bottom:15px;">Get verified global news, policy guides, and instant analytical updates directly on your device.</p>
+            <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+                <a href="https://whatsapp.com/channel/0029Vb8co9VDeONEz0B5e51M" target="_blank" style="background:#25D366; color:white; padding:10px 18px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:14px;">📲 Join WhatsApp Channel</a>
+                <a href="https://t.me/trttnews24bd" target="_blank" style="background:#0088cc; color:white; padding:10px 18px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:14px;">✈️ Join Telegram Channel</a>
             </div>
-            
-            <div style="margin:20px 0;"><img src="{image_url}" alt="{entry_title}" style="width:100%; border-radius:8px;"/></div>
-            
-            {article_body_html}
+        </div>
+        """
 
-            <!-- Hire Me Button -->
-            <div style="text-align:center; margin-top:20px;">
-            <a href="https://ttnews24bd.blogspot.com/p/hire-me-advertise.html" style="background:#2563eb; color:white; padding:12px 20px; text-decoration:none; border-radius:6px; font-weight:bold;">Need Help? Hire Me</a>
-            </div>
+        post_body = {
+            "kind": "blogger#post",
+            "title": entry_title[:75],
+            "content": full_html,
+            "labels": [label, "Global Insights", f"Verified News {CURRENT_YEAR}"],
+            "location": {"name": "London, United Kingdom", "lat": 51.5074, "lng": -0.1278}
+        }
 
-            <!-- Community & Social Links Box -->
-            <div style="margin-top:30px; padding:20px; background:#f1f5f9; text-align:center; border-radius:10px; border:1px solid #cbd5e1; font-family: sans-serif;">
-                <h3 style="margin-top:0; color:#0f172a; font-size:18px;">📢 Join Our Official Community for Daily Updates</h3>
-                <p style="font-size:14px; color:#475569; margin-bottom:15px;">Get verified global news, policy guides, and instant analytical updates directly on your device.</p>
-                <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
-                    <a href="https://whatsapp.com/channel/0029Vb8co9VDeONEz0B5e51M" target="_blank" style="background:#25D366; color:white; padding:10px 18px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:14px;">📲 Join WhatsApp Channel</a>
-                    <a href="https://t.me/trttnews24bd" target="_blank" style="background:#0088cc; color:white; padding:10px 18px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:14px;">✈️ Join Telegram Channel</a>
-                </div>
-            </div>
-            """
+        result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
+        
+        published_url = result.get('url', '')
+        print(f"🚀 SINGLE ARTICLE PUBLISHED SUCCESSFULLY: {entry_title} (URL: {published_url})")
 
-            post_body = {
-                "kind": "blogger#post",
-                "title": entry_title[:75],
-                "content": full_html,
-                "labels": [label, "Global Insights", f"Verified News {CURRENT_YEAR}"],
-                "location": {"name": "London, United Kingdom", "lat": 51.5074, "lng": -0.1278}
-            }
+        save_history(info['url'], entry_title, label, published_url)
+        send_telegram_notification(entry_title, published_url)
 
-            result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
-            
-            published_url = result.get('url', '')
-            print(f"🚀 ARTICLE PUBLISHED SUCCESSFULLY: {entry_title} (URL: {published_url})")
-
-            save_history(info['url'], entry_title, label, published_url)
-            send_telegram_notification(entry_title, published_url)
-            
-            time.sleep(5)
-            
-        except Exception as e:
-            print(f"❌ Failed post {item.get('title', 'Unknown')}: {e}")
-            continue
+    except Exception as e:
+        print(f"❌ Failed post {target_item.get('title', 'Unknown')}: {e}")
 
 if __name__ == "__main__":
     main()
