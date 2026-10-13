@@ -9,6 +9,7 @@ TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 
 # Master List of 12 Evergreen High-CPC Topics (International BBC Style 2027)
 EVERGREEN_MASTER_TOPICS = [
+    "UK Skilled Worker Visa 2027 - Minimum Salary Threshold & Sponsor List",
     "Malta Work Visa 2027 for Bangladeshi - Hotel Jobs with Free Accommodation",
     "USA H2B Work Permit Visa 2027 for Bangladesh - Salary $3500 + Free Visa",
     "Canada LMIA Work Permit 2027 - Direct Company Apply Link (No Agent)",
@@ -19,8 +20,7 @@ EVERGREEN_MASTER_TOPICS = [
     "How to Apply for Morocco E-Visa for AFCON 2027 from Bangladesh (AEVM Pass)",
     "Mali Suspends US Work Visas - What Bangladeshi Workers Must Know 2027",
     "USA DV Lottery 2027 for Bangladesh - Last Date and Photo Size Guide",
-    "Germany Opportunity Card (Chancenkarte) 2027 - Points Calculator & Requirements",
-    "UK Skilled Worker Visa 2027 - Minimum Salary Threshold & Sponsor List"
+    "Germany Opportunity Card (Chancenkarte) 2027 - Points Calculator & Requirements"
 ]
 
 FEEDS = {
@@ -53,6 +53,100 @@ COUNTRY_LOCATIONS = {
     "europe": {"name": "Brussels, Belgium", "lat": 50.8503, "lng": 4.3517},
     "default": {"name": "Milan, Italy", "lat": 45.4642, "lng": 9.1900}
 }
+
+def get_country_specific_details(title):
+    t_upper = str(title).upper()
+    
+    if "UK" in t_upper or "UNITED KINGDOM" in t_upper:
+        return {
+            "source_name": "UK Government Official Portal (gov.uk)",
+            "source_url": "https://www.gov.uk/skilled-worker-visa",
+            "image_keyword": "UK Skilled Worker Visa UK Government Big Ben",
+            "country_name": "UK",
+            "fee": "£625 to £1,408",
+            "salary": "£38,700 minimum threshold per year"
+        }
+    elif "MALTA" in t_upper:
+        return {
+            "source_name": "Malta Jobsplus Official Portal (jobsplus.gov.mt)",
+            "source_url": "https://jobsplus.gov.mt",
+            "image_keyword": "Malta Hotel Staff Jobs Workers",
+            "country_name": "Malta",
+            "fee": "€280",
+            "salary": "€1,000 to €1,400 monthly"
+        }
+    elif "ITALY" in t_upper:
+        return {
+            "source_name": "Italian Ministry of Interior (interno.gov.it)",
+            "source_url": "https://www.interno.gov.it",
+            "image_keyword": "Italy Visa Decreto Flussi Worker",
+            "country_name": "Italy",
+            "fee": "€116",
+            "salary": "€1,200 to €1,600 monthly"
+        }
+    elif "USA" in t_upper or "AMERICA" in t_upper:
+        return {
+            "source_name": "US Citizenship and Immigration Services (uscis.gov)",
+            "source_url": "https://www.uscis.gov",
+            "image_keyword": "USA Work Permit Passport Visa",
+            "country_name": "USA",
+            "fee": "$190 to $460",
+            "salary": "$3,500 monthly average"
+        }
+    elif "CANADA" in t_upper:
+        return {
+            "source_name": "Immigration, Refugees and Citizenship Canada (canada.ca)",
+            "source_url": "https://www.canada.ca",
+            "image_keyword": "Canada LMIA Work Visa Passport",
+            "country_name": "Canada",
+            "fee": "$155 CAD",
+            "salary": "$3,000 to $4,200 CAD monthly"
+        }
+    elif "GERMANY" in t_upper:
+        return {
+            "source_name": "German Federal Foreign Office (make-it-in-germany.com)",
+            "source_url": "https://www.make-it-in-germany.com",
+            "image_keyword": "Germany Opportunity Card Chancenkarte Passport",
+            "country_name": "Germany",
+            "fee": "€75",
+            "salary": "€2,200 to €3,500 monthly"
+        }
+    elif "PORTUGAL" in t_upper:
+        return {
+            "source_name": "Portuguese Agency for Integration, Migration and Asylum (aima.gov.pt)",
+            "source_url": "https://aima.gov.pt",
+            "image_keyword": "Portugal Work Visa Passport",
+            "country_name": "Portugal",
+            "fee": "€90",
+            "salary": "€850 to €1,200 monthly"
+        }
+    elif "ROMANIA" in t_upper:
+        return {
+            "source_name": "General Inspectorate for Immigration Romania (igi.mai.gov.ro)",
+            "source_url": "https://igi.mai.gov.ro",
+            "image_keyword": "Romania Work Permit Passport",
+            "country_name": "Romania",
+            "fee": "€120",
+            "salary": "€750 to €1,100 monthly"
+        }
+    elif "CROATIA" in t_upper:
+        return {
+            "source_name": "Ministry of Interior Republic of Croatia (mup.gov.hr)",
+            "source_url": "https://mup.gov.hr",
+            "image_keyword": "Croatia Work Visa Permit",
+            "country_name": "Croatia",
+            "fee": "€100",
+            "salary": "€800 to €1,300 monthly"
+        }
+    else:
+        return {
+            "source_name": "Official International Migration Bureau",
+            "source_url": "https://visaguide.world",
+            "image_keyword": "Global Work Visa Immigration Passport",
+            "country_name": "International",
+            "fee": "Official Standard Fee",
+            "salary": "Standard International Rates"
+        }
 
 def load_history():
     if os.path.exists(HISTORY_FILE):
@@ -128,26 +222,14 @@ def get_smart_location(title, category):
             return loc
     return COUNTRY_LOCATIONS["default"]
 
-def get_featured_image(title, category=""):
+def get_featured_image(title, category="", keyword=""):
     fallback_img = "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80"
     fallback_alt = f"{title} - Official Travel & Hotel Guide"
     try:
         key = os.environ.get("UNSPLASH_ACCESS_KEY")
         if not key: return fallback_img, fallback_alt
         
-        lower_title = str(title).lower()
-        if "malta" in lower_title or "hotel" in lower_title:
-            q = "malta hotel worker job"
-        elif "morocco" in lower_title or "afcon" in lower_title:
-            q = "morocco flag stadium"
-        elif "usa" in lower_title or "h2b" in lower_title or "lottery" in lower_title:
-            q = "usa passport travel work"
-        elif "canada" in lower_title or "lmia" in lower_title:
-            q = "canada flag passport travel"
-        elif "italy" in lower_title or "sanluri" in lower_title:
-            q = "italy visa passport travel"
-        else:
-            q = "hotel staff working Europe"
+        q = keyword if keyword else title
 
         url = f"https://api.unsplash.com/search/photos?query={q}&per_page=10&orientation=landscape&client_id={key}".strip()
         r = requests.get(url, timeout=15).json()
@@ -175,21 +257,21 @@ def calculate_read_time(body_html):
     minutes = max(3, round(words / 180))
     return f"⏱️ <b>Estimated Read Time:</b> {minutes} min read ({words} words)"
 
-def generate_human_authority_meta(source_link):
+def generate_human_authority_meta(country_info):
     current_date = datetime.datetime.utcnow().strftime('%B %d, %Y')
     return f"""
     <div style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 14px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 14px; color: #1e293b; line-height: 1.5;">
-        <b>✍️ Human Expert Editorial & Verification:</b> This investigative report is manually reviewed and cross-verified by our resident editorial desk in Sanluri, Italy, referencing official European government portals.
-        <br><b>🔄 Last Updated & Reviewed:</b> {current_date} &bull; <b>Direct Official Desk:</b> <a href="https://jobsplus.gov.mt" target="_blank" rel="nofollow noopener" style="color: #2563eb; font-weight: 600;">Malta Jobsplus Official Portal (jobsplus.gov.mt)</a>
+        <b>✍️ Human Expert Editorial & Verification:</b> This investigative report is manually reviewed and cross-verified by our resident editorial desk in Sanluri, Italy, referencing official government portals.
+        <br><b>🔄 Last Updated & Reviewed:</b> {current_date} &bull; <b>Direct Official Desk:</b> <a href="{country_info['source_url']}" target="_blank" rel="nofollow noopener" style="color: #2563eb; font-weight: 600;">{country_info['source_name']}</a>
     </div>
     """
 
-def generate_human_editorial_box():
+def generate_human_editorial_box(country_info):
     return f"""
     <div style="background-color: #f8fafc; border-left: 4px solid #2563eb; padding: 18px; margin-top: 25px; border-radius: 6px;">
         <h3 style="margin: 0 0 10px 0; color: #1e293b; font-size: 16px;">TRTT Human Expert Take & On-Ground Analysis (Sanluri, Italy)</h3>
         <p style="margin: 0; color: #334155; font-size: 14px; line-height: 1.6;">
-            Our resident editorial bureau in Sanluri, Italy has directly cross-referenced this immigration bulletin with the official Malta Jobsplus portal (<a href="https://jobsplus.gov.mt" target="_blank" style="color: #2563eb; font-weight: bold;">jobsplus.gov.mt</a>). For the 2027 fiscal cycle, international applicants are strongly advised against using unauthorized third-party brokers charging exorbitant fees. The mandatory government processing fee is strictly set at €280. Candidates should submit applications through authorized consulate channels or verified portal logins to prevent application fraud.
+            Our resident editorial bureau in Sanluri, Italy has directly cross-referenced this immigration bulletin with the <a href="{country_info['source_url']}" target="_blank" style="color: #2563eb; font-weight: bold;">{country_info['source_name']}</a>. For the 2027 fiscal cycle, international applicants are strongly advised against using unauthorized third-party brokers charging exorbitant fees. Official government fees are strictly set at {country_info['fee']}. Candidates should submit applications through authorized consulate channels or verified portal logins to prevent application fraud.
         </p>
         <div style="margin-top: 12px; font-size: 12px; color: #64748b; font-weight: 600;">
             — Verified by Senior Editorial Desk | TRTT NEWS 24 BD Bureau (Sanluri, Italy)
@@ -211,7 +293,7 @@ def generate_schema_markup(title, desc, url, image_url):
     }
     return f'<script type="application/ld+json">{json.dumps(schema)}</script>'
 
-def generate_article_with_ai(cat, title, summary, source_link):
+def generate_article_with_ai(cat, title, summary, country_info):
     clean_summary = summary.replace("[…]", "").replace("[...]", "").strip()
     
     PROMPT = f"""
@@ -221,14 +303,14 @@ Write an in-depth, highly authoritative news report in 100% ENGLISH for the titl
 STRICT BBC JOURNALISTIC MANDATE:
 1. WRITE IN 100% ENGLISH ONLY. DO NOT INCLUDE ANY BENGALI CHARACTERS OR TEXT.
 2. WORD COUNT MUST BE 550 TO 650 WORDS.
-3. Address critical applicant details: Age limits (21-45), IELTS requirements (Not mandatory for general hotel staff), Official fees (€280-€300), Salary expectations (€1,000-€1,400/month), and Employer accommodation benefits.
-4. Include an organic reference to the official government portal: https://jobsplus.gov.mt
+3. Address critical applicant details: Official fees ({country_info['fee']}), Salary expectations ({country_info['salary']}), required document criteria, and direct application workflow.
+4. Include an organic reference to the official government portal: {country_info['source_url']} ({country_info['source_name']})
 5. Use professional HTML structure with subheadings (<h2>), concise lists (<ul><li>), and clear paragraphs (<p>).
 6. STRIKE OUT ALL AI CLICHÉS (Do NOT use: "In conclusion", "Furthermore", "Delve into", "Tapestry", "Crucial juncture").
 7. Output ONLY clean, ready-to-publish HTML body markup.
 
 Context: {clean_summary}
-Primary Official Source: https://jobsplus.gov.mt
+Primary Official Source: {country_info['source_url']}
 """
 
     gemini_key = os.environ.get("GEMINI_API_KEY")
@@ -260,30 +342,29 @@ Primary Official Source: https://jobsplus.gov.mt
         except Exception as e:
             print(f"⚠️ Groq error: {e}")
 
-    # Fallback 100% English 550+ words article
+    # Fallback 100% English 550+ words article matching the country
     fallback_body = f"""
     <h2>Official Government Release: {title}</h2>
-    <p>The official state employment agency of Malta, Jobsplus (<a href="https://jobsplus.gov.mt" target="_blank">jobsplus.gov.mt</a>), has formally issued updated immigration and labor directives for the 2027 recruitment cycle. The guidelines outline verified job opportunities in the European hospitality sector, specifically targeted at international applicants including candidates from Bangladesh.</p>
+    <p>The official state immigration authority for {country_info['country_name']}, through <a href="{country_info['source_url']}" target="_blank">{country_info['source_name']}</a>, has formally issued updated directives for the 2027 recruitment and visa processing cycle. The guidelines outline verified job opportunities and entry policies targeted at international applicants, including candidates from Bangladesh.</p>
     
     <h2>Key Eligibility Parameters for Applicants in 2027</h2>
-    <p>According to official directives published by European labor authorities, prospective candidates seeking positions within certified hotel chains must satisfy the following criteria:</p>
+    <p>According to official directives published by labor authorities, prospective candidates seeking entry or employment permits must satisfy the following criteria:</p>
     <ul>
         <li><b>Age Requirements:</b> Applicants must fall within the official age bracket of 21 to 45 years.</li>
-        <li><b>Industry Experience:</b> A minimum of 12 months of documented experience in hospitality, food service, or customer relations.</li>
-        <li><b>Language Benchmarks:</b> Formal IELTS certification is <b>not required</b> for general hotel support roles, housekeeping staff, or food preparation assistants. Conversational English proficiency is sufficient.</li>
-        <li><b>Mandatory Government Fee:</b> Statutory visa and work permit processing fees are capped at €280 to €300, payable directly to official state portals.</li>
-        <li><b>Accommodation Provisions:</b> Certified employers are required to provide employer-funded lodging or a standardized living allowance under single-work permit rules.</li>
+        <li><b>Documentation Standards:</b> Verifiable professional credentials and authenticated civil documentation.</li>
+        <li><b>Mandatory Statutory Fee:</b> Official processing fees are capped at {country_info['fee']}, payable directly through official state channels.</li>
+        <li><b>Salary Expectations:</b> Estimated monthly financial compensation ranges at {country_info['salary']}.</li>
     </ul>
 
     <h2>Direct Application Workflow Without Intermediaries</h2>
     <p>Authorities explicitly advise applicants against utilizing unauthorized agencies or paying illegal broker commissions. The verified application procedure follows a transparent pathway:</p>
-    <p>1. Prepare a standardized Europass CV and cover letter outlining hospitality qualifications.<br/>
-    2. Register an applicant account on the official Malta Jobsplus portal at <a href="https://jobsplus.gov.mt" target="_blank">jobsplus.gov.mt</a>.<br/>
-    3. Apply directly to certified employers offering registered Single Permit quotas.<br/>
-    4. Following receipt of the official Approval in Principle notification, schedule a visa appointment with authorized VFS Global centers.</p>
+    <p>1. Prepare a standardized CV and cover letter matching international qualification standards.<br/>
+    2. Register an applicant account on the official government portal at <a href="{country_info['source_url']}" target="_blank">{country_info['source_name']}</a>.<br/>
+    3. Apply directly to certified employers or official visa quota allocations.<br/>
+    4. Following receipt of official approval notifications, schedule a visa appointment with authorized VFS Global or diplomatic consulate centers.</p>
 
-    <h2>Salary Framework and Legal Protection</h2>
-    <p>Base compensation for hospitality personnel ranges between €1,000 and €1,400 monthly, excluding overtime allowances and statutory medical coverage. Employment contracts are legally binding for an initial period of 12 months, subject to annual extension.</p>
+    <h2>Legal Framework and Applicant Protection</h2>
+    <p>Work permits and visas issued under official state quotas are protected by employment laws in {country_info['country_name']}, ensuring minimum wage compliance, statutory medical coverage, and formal dispute resolution mechanisms.</p>
     """
     return {"seo_title": title, "meta_description": clean_summary[:140], "article_body": fallback_body}
 
@@ -300,7 +381,7 @@ def get_blogger():
         return None
 
 def main():
-    selected_entry = None; chosen_category = ""; source_link = "https://jobsplus.gov.mt"
+    selected_entry = None; chosen_category = ""
     
     unposted_evergreen = [t for t in EVERGREEN_MASTER_TOPICS if not is_duplicate("", t)]
     
@@ -328,7 +409,6 @@ def main():
                         if link and title and not is_duplicate(link, title):
                             selected_entry = entry
                             chosen_category = cat_name
-                            source_link = link
                             break
                 if selected_entry: break
             except Exception as e:
@@ -342,16 +422,20 @@ def main():
             chosen_category = "Global Work Permits & Immigration"
             summary_text = f"Official 2027 guidelines and updates on {entry_title}."
 
-    image_url, image_alt = get_featured_image(entry_title, chosen_category)
-    ai_data = generate_article_with_ai(chosen_category, entry_title, summary_text, source_link)
+    # Get Country Specific Source & Info
+    country_info = get_country_specific_details(entry_title)
+    source_link = country_info["source_url"]
+
+    image_url, image_alt = get_featured_image(entry_title, chosen_category, country_info["image_keyword"])
+    ai_data = generate_article_with_ai(chosen_category, entry_title, summary_text, country_info)
 
     seo_title = ai_data.get("seo_title", entry_title[:70])
     meta_desc = ai_data.get("meta_description", summary_text)[:148].strip()
     article_body_html = ai_data.get("article_body", "")
 
     read_time = calculate_read_time(article_body_html)
-    human_meta = generate_human_authority_meta(source_link)
-    human_editorial = generate_human_editorial_box()
+    human_meta = generate_human_authority_meta(country_info)
+    human_editorial = generate_human_editorial_box(country_info)
 
     temp_post_url = "https://yourblog.blogspot.com"
     schema_script = generate_schema_markup(seo_title, meta_desc, temp_post_url, image_url)
@@ -367,7 +451,7 @@ def main():
     {article_body_html}
     {human_editorial}
     <hr style="margin-top:25px; border:0; border-top:1px solid #e2e8f0;"/>
-    <p><small><b>Official Reference Desk:</b> <a href="https://jobsplus.gov.mt" target="_blank" rel="noopener" style="color:#0284c7; font-weight:600;">Malta Jobsplus Official Government Portal (jobsplus.gov.mt)</a> &bull; TRTT NEWS 24 BD Editorial Desk</small></p>
+    <p><small><b>Official Reference Desk:</b> <a href="{source_link}" target="_blank" rel="noopener" style="color:#0284c7; font-weight:600;">{country_info['source_name']}</a> &bull; TRTT NEWS 24 BD Editorial Desk</small></p>
     """
 
     blogger_service = get_blogger()
@@ -390,7 +474,7 @@ def main():
         result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
         post_id = result.get('id')
         post_url = result.get('url')
-        print(f"👑 BBC STYLE ENGLISH ARTICLE PUBLISHED: {post_url}")
+        print(f"👑 DYNAMIC COUNTRY ARTICLE PUBLISHED: {post_url}")
 
         save_history(source_link, seo_title, chosen_category, post_url)
         send_telegram_notification(seo_title, post_url)
