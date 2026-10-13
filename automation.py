@@ -62,7 +62,7 @@ def commit_history_to_github():
         if not status.stdout.strip():
             return
         subprocess.run(["git", "add", HISTORY_FILE], check=True)
-        subprocess.run(["git", "commit", "-m", "Auto-update posted history & URLs [skip ci]"], check=True)
+        subprocess.run(["git", "commit", -m, "Auto-update posted history & URLs [skip ci]"], check=True)
         subprocess.run(["git", "push"], check=True)
     except Exception as e:
         print(f"⚠️ Git commit warning: {e}")
@@ -120,7 +120,7 @@ def send_telegram_notification(title, url):
         except Exception as e:
             print(f"⚠️ Telegram Error: {e}")
 
-# DUAL-ENGINE FALLBACK (Google GenAI SDK with gemini-3.8-flash + Groq Llama-3)
+# DUAL-ENGINE FALLBACK WITH RETRY MECHANISM
 def generate_safe_news_with_fallback(topic: str):
     info = get_info(topic)
     
@@ -150,41 +150,45 @@ ABSOLUTE RULES - BREAK = FAIL:
 Now write news for: {topic}
 """
 
-    # Try Google GenAI SDK First with gemini-3.8-flash
+    # Try Gemini with 3 Retries in case of 503 High Demand
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
-        try:
-            client = genai.Client(api_key=gemini_key)
-            response = client.models.generate_content(
-                model='gemini-3.8-flash',
-                contents=prompt,
-            )
-            if response and response.text:
-                print("✅ Generated successfully using Google GenAI SDK (gemini-3.8-flash).")
-                return response.text, info['label']
-        except Exception as e:
-            print(f"⚠️ Gemini SDK Failed: {e}. Switching to Groq fallback...")
+        for attempt in range(3):
+            try:
+                client = genai.Client(api_key=gemini_key)
+                response = client.models.generate_content(
+                    model='gemini-2.5-flash',
+                    contents=prompt,
+                )
+                if response and response.text:
+                    print("✅ Generated successfully using Google GenAI SDK.")
+                    return response.text, info['label']
+            except Exception as e:
+                print(f"⚠️ Gemini attempt {attempt+1} failed: {e}")
+                time.sleep(5) # ৫ সেকেন্ড অপেক্ষা করে আবার চেষ্টা করবে
 
-    # Fallback to Groq (Llama-3)
+    # Fallback to Groq (Llama-3) if Gemini fails completely
     groq_key = os.environ.get("GROQ_API_KEY")
     if groq_key:
-        try:
-            url = "https://api.groq.com/openai/v1/chat/completions"
-            headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
-            payload = {
-                "model": "llama-3.3-70b-versatile",
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.1
-            }
-            r = requests.post(url, json=payload, headers=headers, timeout=60)
-            if r.status_code == 200:
-                text = r.json()['choices'][0]['message']['content']
-                print("✅ Generated successfully using Groq (Llama-3) Fallback.")
-                return text, info['label']
-        except Exception as e:
-            print(f"⚠️ Groq Fallback Failed: {e}")
+        for attempt in range(3):
+            try:
+                url = "https://api.groq.com/openai/v1/chat/completions"
+                headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
+                payload = {
+                    "model": "llama-3.3-70b-versatile",
+                    "messages": [{"role": "user", "content": prompt}],
+                    "temperature": 0.1
+                }
+                r = requests.post(url, json=payload, headers=headers, timeout=60)
+                if r.status_code == 200:
+                    text = r.json()['choices'][0]['message']['content']
+                    print("✅ Generated successfully using Groq (Llama-3) Fallback.")
+                    return text, info['label']
+            except Exception as e:
+                print(f"⚠️ Groq attempt {attempt+1} failed: {e}")
+                time.sleep(5)
 
-    raise ValueError("❌ Both Gemini and Groq APIs failed.")
+    raise ValueError("❌ Both Gemini and Groq APIs failed due to server congestion.")
 
 def get_blogger():
     try:
