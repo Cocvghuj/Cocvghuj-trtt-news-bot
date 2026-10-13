@@ -7,10 +7,8 @@ from googleapiclient.discovery import build
 HISTORY_FILE = "posted_history.json"
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 
-# স্বয়ংক্রিয়ভাবে বর্তমান বছর নেবে (2026+)
 CURRENT_YEAR = datetime.datetime.now().year
 
-# OFFICIAL & TRUSTED INTERNATIONAL DESKS (Brackets Removed)
 OFFICIAL_DB = {
     "WORLD": {
         "desk": "Reuters World News Bureau", 
@@ -53,7 +51,6 @@ OFFICIAL_DB = {
 def get_today_topics():
     today_weekday = datetime.datetime.utcnow().strftime('%A')
     
-    # দৈনিক ৬টি অটো পোস্ট
     topics = [
         {"title": f"Global Geopolitical Shifts and International Policy Frameworks {CURRENT_YEAR}", "category": "WORLD"},
         {"title": f"Artificial Intelligence and Enterprise Technology Innovation Trends {CURRENT_YEAR}", "category": "TECH"},
@@ -63,7 +60,6 @@ def get_today_topics():
         {"title": f"Schengen Visa Regulations and Official Immigration Compliance {CURRENT_YEAR}", "category": "VISA"}
     ]
     
-    # সাপ্তাহিক নির্দিষ্ট দিনের এক্সট্রা পোস্ট
     if today_weekday == "Monday":
         topics.append({"title": f"Europe Startup Ecosystem and Cross-Border Investment Guide {CURRENT_YEAR}", "category": "STARTUP"})
     elif today_weekday == "Sunday":
@@ -145,7 +141,6 @@ def send_telegram_notification(title, post_url):
         except Exception as e:
             print(f"⚠️ Telegram Error: {e}")
 
-# Gemini & Grok Dual AI Generation with Fallback
 def generate_safe_news_with_fallback(topic: str, cat_key: str):
     info = OFFICIAL_DB[cat_key]
     
@@ -168,14 +163,13 @@ WRITING INSTRUCTIONS:
 4. Compliance: Maintain high editorial standards, strictly avoid spammy phrasing, and ensure complete accuracy for the year {CURRENT_YEAR}.
 """
 
-    # ১. প্রথমে Gemini দিয়ে চেষ্টা করবে
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
         for attempt in range(2):
             try:
                 client = genai.Client(api_key=gemini_key)
                 response = client.models.generate_content(
-                    model='gemini-2.5-flash',
+                    model='gemini-3.8-flash',
                     contents=prompt,
                 )
                 if response and response.text:
@@ -184,7 +178,6 @@ WRITING INSTRUCTIONS:
                 print(f"Gemini API warning: {e}")
                 time.sleep(3)
 
-    # ২. জিমিনি ফেইল করলে Grok (Groq API) দিয়ে ব্যাকআপ নেবে
     groq_key = os.environ.get("GROQ_API_KEY")
     if groq_key:
         try:
@@ -199,7 +192,7 @@ WRITING INSTRUCTIONS:
             if r.status_code == 200:
                 return r.json()['choices'][0]['message']['content'], info['label']
         except Exception as e:
-            print(f"Groq/Grok error: {e}")
+            print(f"Groq error: {e}")
 
     raise ValueError("Both Gemini and Groq APIs Failed")
 
@@ -269,7 +262,6 @@ def main():
             "location": {"name": "London, United Kingdom", "lat": 51.5074, "lng": -0.1278}
         }
 
-        # সরাসরি ব্লগারে লাইভ পাবলিশ করা
         result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
         
         post_id = result.get('id')
@@ -283,4 +275,4 @@ def main():
         time.sleep(5)
 
 if __name__ == "__main__":
-    main()
+    main()ৃ
