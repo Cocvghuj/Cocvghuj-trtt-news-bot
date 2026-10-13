@@ -94,13 +94,13 @@ def save_history(link, title, category, url=""):
 
 def is_duplicate(entry_link, entry_title):
     hist = load_history()
-    clean_entry_link = entry_link.strip().lower()
-    clean_entry_title = re.sub(r'[^a-zA-Z0-9\s]', '', entry_title).strip().lower()
+    clean_entry_link = str(entry_link).strip().lower()
+    clean_entry_title = re.sub(r'[^a-zA-Z0-9\s]', '', str(entry_title)).strip().lower()
     
     for item in hist:
         if isinstance(item, dict):
-            item_link = item.get("link", "").strip().lower()
-            item_title = re.sub(r'[^a-zA-Z0-9\s]', '', item.get("title", "")).strip().lower()
+            item_link = str(item.get("link", "")).strip().lower()
+            item_title = re.sub(r'[^a-zA-Z0-9\s]', '', str(item.get("title", ""))).strip().lower()
             
             if item_link and clean_entry_link and item_link == clean_entry_link:
                 return True
@@ -119,7 +119,7 @@ def get_today_breaking_count():
     return count
 
 def get_smart_location(title, category):
-    text = (title + " " + category).lower()
+    text = (str(title) + " " + str(category)).lower()
     for key, loc in COUNTRY_LOCATIONS.items():
         if key in text and key != "default":
             return loc
@@ -132,4 +132,233 @@ def get_featured_image(title, category=""):
         key = os.environ.get("UNSPLASH_ACCESS_KEY")
         if not key: return fallback_img, fallback_alt
         
-        lower_title
+        lower_title = str(title).lower()
+        if "morocco" in lower_title or "afcon" in lower_title:
+            q = "morocco flag stadium"
+        elif "usa" in lower_title or "h2b" in lower_title or "lottery" in lower_title:
+            q = "usa passport travel work"
+        elif "canada" in lower_title or "lmia" in lower_title:
+            q = "canada flag passport travel"
+        elif "italy" in lower_title or "sanluri" in lower_title:
+            q = "italy visa passport travel"
+        elif "portugal" in lower_title or "romania" in lower_title or "malta" in lower_title or "croatia" in lower_title:
+            q = "europe work visa passport"
+        else:
+            clean_title = re.sub(r'[^a-zA-Z0-9\s]', '', title)
+            words = [w for w in clean_title.split() if len(w) > 3]
+            q = f"{category} {' '.join(words[:2])}"
+
+        url = f"https://api.unsplash.com/search/photos?query={q}&per_page=10&orientation=landscape&client_id={key}".strip()
+        r = requests.get(url, timeout=15).json()
+        if r.get('results') and len(r['results']) > 0:
+            selected_img = random.choice(r['results'])
+            img_url = selected_img.get('urls', {}).get('regular', fallback_img)
+            return img_url, f"{title} - {category} Intelligence"
+    except Exception as e:
+        print(f"Image API Error: {e}")
+    return fallback_img, fallback_alt
+
+def send_telegram_notification(title, url):
+    bot_token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+    if bot_token and chat_id:
+        try:
+            msg = f"👑 <b>Media Empire Alert</b>\n\n<b>Title:</b> {title}\n\n<b>Link:</b> {url}"
+            api_url = TELEGRAM_URL_TEMPLATE.format(token=bot_token)
+            requests.post(api_url, json={"chat_id": chat_id, "text": msg, "parse_mode": "HTML"}, timeout=10)
+        except Exception as e:
+            print(f"⚠️ Telegram Error: {e}")
+
+def calculate_read_time(body_html):
+    words = len(re.sub(r'<[^>]+>', '', body_html).split())
+    minutes = max(2, round(words / 180))
+    return f"⏱️ <b>Estimated Read Time:</b> {minutes} min read ({words} words)"
+
+def generate_editorial_box(title):
+    return f"""
+    <div style="border-left: 4px solid #0284c7; background-color: #f8fafc; padding: 15px; margin-top: 25px; border-radius: 6px;">
+        <h4 style="margin: 0 0 8px 0; color: #0f172a; font-size: 15px;">TRTT Executive Analysis & Editorial Take</h4>
+        <p style="margin: 0; color: #334155; font-size: 14px; line-height: 1.6;">
+            Sanluri, Italy ডেস্ক থেকে আমাদের এডিটোরিয়াল টিম জানায়: 2027 সালে প্রকাশিত এই খবরের তথ্যগুলো প্রবাসী বাংলাদেশি কর্মী ও আবেদনকারীদের জন্য অত্যন্ত স্পর্শকাতর। কোনো দালালের প্রলোভনে না পড়ে সরাসরি অফিশিয়াল সরকারি ওয়েবসাইট ও ভিসা প্রসেসিং সেন্টারের মাধ্যমে তথ্য যাচাই করে আবেদন সম্পন্ন করার পরামর্শ দেওয়া যাচ্ছে।
+        </p>
+        <div style="margin-top: 10px; font-size: 12px; color: #64748b; font-weight: 600;">
+            — Verification Bureau | TRTT NEWS 24 BD (Sanluri, Italy)
+        </div>
+    </div>
+    """
+
+def generate_schema_markup(title, desc, url, image_url):
+    schema = {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": title,
+        "description": desc,
+        "image": [image_url],
+        "datePublished": datetime.datetime.utcnow().isoformat() + "Z",
+        "author": [{"@type": "Organization", "name": "TRTT NEWS 24 BD Bureau"}],
+        "publisher": {"@type": "Organization", "name": "TRTT NEWS 24 BD", "logo": {"@type": "ImageObject", "url": image_url}}
+    }
+    return f'<script type="application/ld+json">{json.dumps(schema)}</script>'
+
+def generate_article_with_ai(cat, title, summary, source_link):
+    clean_summary = summary.replace("[…]", "").replace("[...]", "").strip()
+    
+    PROMPT = f"""
+You are a senior international journalist writing for TRTT NEWS 24 BD.
+Write an authentic, human-like news report for the title: "{title}" (Year 2027 context).
+
+STRICT JOURNALISTIC RULES:
+1. Write 450-550 words in clear, professional English with natural flow.
+2. ABSOLUTELY NO AI CLICHÉS OR BANNER WORDS (Do NOT use: "In conclusion", "Furthermore", "Delve into", "Tapestry", "Crucial juncture", "It is important to note").
+3. DO NOT include any FAQ, Q&A, or repetition.
+4. Structure using clear HTML subheadings (<h2>) and short, readable paragraphs (<p>).
+5. Output ONLY clean, ready-to-publish HTML body content.
+
+News Context: {clean_summary}
+Source Link: {source_link}
+"""
+
+    gemini_key = os.environ.get("GEMINI_API_KEY")
+    if gemini_key:
+        for model in ["gemini-1.5-flash", "gemini-1.5-pro"]:
+            try:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={gemini_key}"
+                r = requests.post(url, json={"contents": [{"parts": [{"text": PROMPT}]}]}, timeout=90)
+                if r.status_code == 200 and "candidates" in r.json():
+                    txt = r.json()["candidates"][0]["content"]["parts"][0]["text"]
+                    txt_clean = txt.replace("```html", "").replace("```", "").strip()
+                    if len(txt_clean) > 250:
+                        return {"seo_title": title, "meta_description": clean_summary[:140], "article_body": txt_clean}
+            except Exception as e:
+                print(f"⚠️ Gemini model {model} error: {e}")
+
+    groq_key = os.environ.get("GROQ_API_KEY")
+    if groq_key:
+        try:
+            url = "https://api.groq.com/openai/v1/chat/completions"
+            headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
+            payload = {"model": "llama-3.3-70b-versatile", "messages": [{"role": "user", "content": PROMPT}], "temperature": 0.7}
+            r = requests.post(url, json=payload, headers=headers, timeout=90)
+            if r.status_code == 200:
+                txt = r.json()["choices"][0]["message"]["content"]
+                txt_clean = txt.replace("```html", "").replace("```", "").strip()
+                if len(txt_clean) > 250:
+                    return {"seo_title": title, "meta_description": clean_summary[:140], "article_body": txt_clean}
+        except Exception as e:
+            print(f"⚠️ Groq error: {e}")
+
+    return None
+
+def get_blogger():
+    try:
+        client_id = os.environ.get("BLOGGER_CLIENT_ID")
+        client_secret = os.environ.get("BLOGGER_CLIENT_SECRET")
+        refresh_token = os.environ.get("BLOGGER_REFRESH_TOKEN")
+        creds = Credentials(token=None, refresh_token=refresh_token, client_id=client_id, client_secret=client_secret, token_uri="https://oauth2.googleapis.com/token")
+        creds.refresh(Request())
+        return build("blogger", "v3", credentials=creds)
+    except Exception as e:
+        print(f"❌ Blogger Auth Error: {e}")
+        return None
+
+def main():
+    selected_entry = None; chosen_category = ""; source_link = ""
+    
+    unposted_cpc = [t for t in HIGH_CPC_TOPICS if not is_duplicate("", t)]
+    if unposted_cpc and random.random() > 0.3:
+        entry_title = random.choice(unposted_cpc)
+        chosen_category = "Global Work Permits & Immigration"
+        source_link = "https://visaguide.world"
+        summary_text = f"Comprehensive official 2027 update regarding {entry_title} for international applicants and Bangladeshi workers."
+    else:
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        breaking_count = get_today_breaking_count()
+        feed_items = list(FEEDS.items())
+        random.shuffle(feed_items)
+
+        if breaking_count >= 3:
+            feed_items = [f for f in feed_items if f[0] not in BREAKING_CATEGORIES]
+
+        for cat_name, feed_url in feed_items:
+            try:
+                response = requests.get(feed_url, headers=headers, timeout=15)
+                if response.status_code == 200:
+                    feed = feedparser.parse(response.text)
+                    for entry in feed.entries[:8]:
+                        link = entry.get('link')
+                        title = entry.get('title', '')
+                        if link and title and not is_duplicate(link, title):
+                            selected_entry = entry
+                            chosen_category = cat_name
+                            source_link = link
+                            break
+                if selected_entry: break
+            except Exception as e:
+                print(f"Skipping Feed: {e}")
+
+        if selected_entry:
+            entry_title = selected_entry.get('title', 'Global Strategic Intelligence Wire')
+            summary_text = selected_entry.get('summary', entry_title)
+        else:
+            entry_title = random.choice(HIGH_CPC_TOPICS)
+            chosen_category = "Global Work Permits & Immigration"
+            source_link = "https://visaguide.world"
+            summary_text = f"Official 2027 guidelines and updates on {entry_title}."
+
+    image_url, image_alt = get_featured_image(entry_title, chosen_category)
+    ai_data = generate_article_with_ai(chosen_category, entry_title, summary_text, source_link)
+
+    if not ai_data or not isinstance(ai_data, dict):
+        print("❌ Article generation failed. Safe abort executed to protect blog quality.")
+        sys.exit(1)
+
+    seo_title = ai_data.get("seo_title", entry_title[:70])
+    meta_desc = ai_data.get("meta_description", summary_text)[:148].strip()
+    article_body_html = ai_data.get("article_body", "")
+
+    read_time = calculate_read_time(article_body_html)
+    editorial_box = generate_editorial_box(seo_title)
+
+    temp_post_url = "https://yourblog.blogspot.com"
+    schema_script = generate_schema_markup(seo_title, meta_desc, temp_post_url, image_url)
+
+    full_article_html = f"""
+    {schema_script}
+    <div style="color:#64748b; font-size:12px; margin-bottom:12px;">{read_time} &bull; Verified Wire Report</div>
+    <p style="font-size: 15px; color: #1e293b; line-height: 1.6;"><i><b>Executive Summary:</b> {meta_desc}</i></p>
+    <div style="margin:20px 0;">
+        <img src="{image_url}" alt="{image_alt}" title="{seo_title}" style="width:100%; border-radius:8px; box-shadow:0 4px 6px rgba(0,0,0,0.08);"/>
+    </div>
+    {article_body_html}
+    {editorial_box}
+    <hr style="margin-top:25px; border:0; border-top:1px solid #e2e8f0;"/>
+    <p><small><b>Official Source Desk:</b> <a href="{source_link}" target="_blank" rel="nofollow noopener" style="color:#0284c7; font-weight:600;">Global Syndicate Wire</a> &bull; TRTT NEWS 24 BD Verification</small></p>
+    """
+
+    blogger_service = get_blogger()
+    if blogger_service:
+        blog_id = os.environ.get("BLOGGER_ID") or os.environ.get("BLOGGER_BLOG_ID")
+        loc = get_smart_location(entry_title, chosen_category)
+
+        raw_labels = [chosen_category, "TRTT Verification", "International News", "2027 Immigration"]
+        unique_labels = list(set(raw_labels))
+
+        post_body = {
+            "kind": "blogger#post",
+            "title": seo_title,
+            "content": full_article_html,
+            "searchDescription": meta_desc,
+            "labels": unique_labels,
+            "location": {"name": loc["name"], "lat": loc["lat"], "lng": loc["lng"]}
+        }
+
+        result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
+        post_id = result.get('id')
+        post_url = result.get('url')
+        print(f"👑 PROFESSIONAL ARTICLE PUBLISHED: {post_url}")
+
+        save_history(source_link, seo_title, chosen_category, post_url)
+        send_telegram_notification(seo_title, post_url)
+
+if __name__ == "__main__":
+    main()
