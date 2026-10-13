@@ -120,7 +120,7 @@ def send_telegram_notification(title, url):
         except Exception as e:
             print(f"⚠️ Telegram Error: {e}")
 
-# DUAL-ENGINE FALLBACK (Google GenAI SDK + Groq Llama-3)
+# DUAL-ENGINE FALLBACK (Google GenAI SDK with gemini-3.8-flash + Groq Llama-3)
 def generate_safe_news_with_fallback(topic: str):
     info = get_info(topic)
     
@@ -150,17 +150,17 @@ ABSOLUTE RULES - BREAK = FAIL:
 Now write news for: {topic}
 """
 
-    # Try Google GenAI SDK First
+    # Try Google GenAI SDK First with gemini-3.8-flash
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
         try:
             client = genai.Client(api_key=gemini_key)
             response = client.models.generate_content(
-                model='gemini-2.5-flash',
+                model='gemini-3.8-flash',
                 contents=prompt,
             )
             if response and response.text:
-                print("✅ Generated successfully using Google GenAI SDK.")
+                print("✅ Generated successfully using Google GenAI SDK (gemini-3.8-flash).")
                 return response.text, info['label']
         except Exception as e:
             print(f"⚠️ Gemini SDK Failed: {e}. Switching to Groq fallback...")
