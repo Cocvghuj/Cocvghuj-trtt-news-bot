@@ -1,6 +1,5 @@
 import feedparser, os, json, requests, random, re, datetime, time, subprocess, sys
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
@@ -19,7 +18,6 @@ OFFICIAL_DB = {
     "DEFAULT": {"desk": "Verified Official Government Source", "url": "https://www.reuters.com/", "fee": "N/A", "salary": "Standard International Rates", "keyword": "Global Work Visa Immigration Passport", "label": "Lifestyle & Europe News"}
 }
 
-# আপাতত ফিল্টার শিথিল রাখা হয়েছে যাতে পোস্ট আটকে না যায়
 BANNED_PHRASES = []
 
 EVERGREEN_MASTER_TOPICS = [
@@ -122,7 +120,7 @@ def send_telegram_notification(title, url):
         except Exception as e:
             print(f"⚠️ Telegram Error: {e}")
 
-# DUAL-ENGINE FALLBACK (New google-genai SDK + Groq Llama-3)
+# DUAL-ENGINE FALLBACK (Stable Gemini + Groq Llama-3)
 def generate_safe_news_with_fallback(topic: str):
     info = get_info(topic)
     
@@ -152,21 +150,20 @@ ABSOLUTE RULES - BREAK = FAIL:
 Now write news for: {topic}
 """
 
-    # Try New Google GenAI Client First
+    # Try Gemini First
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
-        try:
-            client = genai.Client(api_key=gemini_key)
-            response = client.models.generate_content(
-                model='gemini-2.5-flash',
-                contents=prompt,
-            )
-            if response and response.text:
-                text = response.text
-                print("✅ Generated successfully using new Google GenAI Client.")
-                return text, info['label']
-        except Exception as e:
-            print(f"⚠️ New Gemini Client Failed: {e}. Switching to Groq fallback...")
+        for model_name in ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"]:
+            try:
+                genai.configure(api_key=gemini_key)
+                model = genai.GenerativeModel(model_name)
+                response = model.generate_content(prompt)
+                if response and response.text:
+                    text = response.text
+                    print(f"✅ Generated successfully using Gemini ({model_name}).")
+                    return text, info['label']
+            except Exception as e:
+                print(f"⚠️ Gemini model {model_name} failed: {e}")
 
     # Fallback to Groq (Llama-3)
     groq_key = os.environ.get("GROQ_API_KEY")
