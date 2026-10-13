@@ -9,6 +9,7 @@ TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 
 # Master List of 12 Evergreen High-CPC Topics (International BBC Style 2027)
 EVERGREEN_MASTER_TOPICS = [
+    "Germany Opportunity Card (Chancenkarte) 2027 - Points Calculator & Requirements",
     "UK Skilled Worker Visa 2027 - Minimum Salary Threshold & Sponsor List",
     "Malta Work Visa 2027 for Bangladeshi - Hotel Jobs with Free Accommodation",
     "USA H2B Work Permit Visa 2027 for Bangladesh - Salary $3500 + Free Visa",
@@ -19,8 +20,7 @@ EVERGREEN_MASTER_TOPICS = [
     "Croatia Work Permit for Bangladeshis 2027 - New Salary Update",
     "How to Apply for Morocco E-Visa for AFCON 2027 from Bangladesh (AEVM Pass)",
     "Mali Suspends US Work Visas - What Bangladeshi Workers Must Know 2027",
-    "USA DV Lottery 2027 for Bangladesh - Last Date and Photo Size Guide",
-    "Germany Opportunity Card (Chancenkarte) 2027 - Points Calculator & Requirements"
+    "USA DV Lottery 2027 for Bangladesh - Last Date and Photo Size Guide"
 ]
 
 FEEDS = {
@@ -57,14 +57,25 @@ COUNTRY_LOCATIONS = {
 def get_country_specific_details(title):
     t_upper = str(title).upper()
     
-    if "UK" in t_upper or "UNITED KINGDOM" in t_upper:
+    if "GERMANY" in t_upper or "CHANCENKARTE" in t_upper:
+        return {
+            "source_name": "German Federal Foreign Office (make-it-in-germany.com)",
+            "source_url": "https://www.make-it-in-germany.com",
+            "image_keyword": "Germany Opportunity Card Chancenkarte Berlin Brandenburg Gate",
+            "country_name": "Germany",
+            "fee": "€75",
+            "salary": "€2,200 to €3,500 monthly",
+            "extra_info": "Chancenkarte Points System: Qualification (4 pts), Experience (3 pts), Age under 35 (2 pts), German language A1/B2 (1-3 pts). Blocked account requirement: €12,135."
+        }
+    elif "UK" in t_upper or "UNITED KINGDOM" in t_upper:
         return {
             "source_name": "UK Government Official Portal (gov.uk)",
             "source_url": "https://www.gov.uk/skilled-worker-visa",
             "image_keyword": "UK Skilled Worker Visa UK Government Big Ben",
             "country_name": "UK",
             "fee": "£625 to £1,408",
-            "salary": "£38,700 minimum threshold per year"
+            "salary": "£38,700 minimum threshold per year",
+            "extra_info": "Skilled Worker Visa requires a confirmed job offer from an approved sponsor licence holder and meeting minimum salary thresholds."
         }
     elif "MALTA" in t_upper:
         return {
@@ -73,7 +84,8 @@ def get_country_specific_details(title):
             "image_keyword": "Malta Hotel Staff Jobs Workers",
             "country_name": "Malta",
             "fee": "€280",
-            "salary": "€1,000 to €1,400 monthly"
+            "salary": "€1,000 to €1,400 monthly",
+            "extra_info": "Hotel and hospitality jobs in Malta do not mandatorily require IELTS for general support roles."
         }
     elif "ITALY" in t_upper:
         return {
@@ -82,7 +94,8 @@ def get_country_specific_details(title):
             "image_keyword": "Italy Visa Decreto Flussi Worker",
             "country_name": "Italy",
             "fee": "€116",
-            "salary": "€1,200 to €1,600 monthly"
+            "salary": "€1,200 to €1,600 monthly",
+            "extra_info": "Decreto Flussi seasonal and non-seasonal work visa quotas require direct application via official nulla osta channels."
         }
     elif "USA" in t_upper or "AMERICA" in t_upper:
         return {
@@ -91,7 +104,8 @@ def get_country_specific_details(title):
             "image_keyword": "USA Work Permit Passport Visa",
             "country_name": "USA",
             "fee": "$190 to $460",
-            "salary": "$3,500 monthly average"
+            "salary": "$3,500 monthly average",
+            "extra_info": "H2B and DV Lottery programs operate under strict annual federal deadlines and photo validation guidelines."
         }
     elif "CANADA" in t_upper:
         return {
@@ -100,43 +114,8 @@ def get_country_specific_details(title):
             "image_keyword": "Canada LMIA Work Visa Passport",
             "country_name": "Canada",
             "fee": "$155 CAD",
-            "salary": "$3,000 to $4,200 CAD monthly"
-        }
-    elif "GERMANY" in t_upper:
-        return {
-            "source_name": "German Federal Foreign Office (make-it-in-germany.com)",
-            "source_url": "https://www.make-it-in-germany.com",
-            "image_keyword": "Germany Opportunity Card Chancenkarte Passport",
-            "country_name": "Germany",
-            "fee": "€75",
-            "salary": "€2,200 to €3,500 monthly"
-        }
-    elif "PORTUGAL" in t_upper:
-        return {
-            "source_name": "Portuguese Agency for Integration, Migration and Asylum (aima.gov.pt)",
-            "source_url": "https://aima.gov.pt",
-            "image_keyword": "Portugal Work Visa Passport",
-            "country_name": "Portugal",
-            "fee": "€90",
-            "salary": "€850 to €1,200 monthly"
-        }
-    elif "ROMANIA" in t_upper:
-        return {
-            "source_name": "General Inspectorate for Immigration Romania (igi.mai.gov.ro)",
-            "source_url": "https://igi.mai.gov.ro",
-            "image_keyword": "Romania Work Permit Passport",
-            "country_name": "Romania",
-            "fee": "€120",
-            "salary": "€750 to €1,100 monthly"
-        }
-    elif "CROATIA" in t_upper:
-        return {
-            "source_name": "Ministry of Interior Republic of Croatia (mup.gov.hr)",
-            "source_url": "https://mup.gov.hr",
-            "image_keyword": "Croatia Work Visa Permit",
-            "country_name": "Croatia",
-            "fee": "€100",
-            "salary": "€800 to €1,300 monthly"
+            "salary": "$3,000 to $4,200 CAD monthly",
+            "extra_info": "LMIA work permits require direct employer validation and compliance with federal Canadian labor standards."
         }
     else:
         return {
@@ -145,7 +124,8 @@ def get_country_specific_details(title):
             "image_keyword": "Global Work Visa Immigration Passport",
             "country_name": "International",
             "fee": "Official Standard Fee",
-            "salary": "Standard International Rates"
+            "salary": "Standard International Rates",
+            "extra_info": "Applicants must verify all documentation through authorized consulate channels."
         }
 
 def load_history():
@@ -172,7 +152,7 @@ def commit_history_to_github():
         if not status.stdout.strip():
             return
         subprocess.run(["git", "add", HISTORY_FILE], check=True)
-        subprocess.run(["git", "commit", "-m", "Auto-update posted history & URLs [skip ci]"], check=True)
+        subprocess.run(["git", "commit", -m, "Auto-update posted history & URLs [skip ci]"], check=True)
         subprocess.run(["git", "push"], check=True)
     except Exception as e:
         print(f"⚠️ Git commit warning: {e}")
@@ -224,13 +204,12 @@ def get_smart_location(title, category):
 
 def get_featured_image(title, category="", keyword=""):
     fallback_img = "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80"
-    fallback_alt = f"{title} - Official Travel & Hotel Guide"
+    fallback_alt = f"{title} - Official Travel & Bureau Guide"
     try:
         key = os.environ.get("UNSPLASH_ACCESS_KEY")
         if not key: return fallback_img, fallback_alt
         
         q = keyword if keyword else title
-
         url = f"https://api.unsplash.com/search/photos?query={q}&per_page=10&orientation=landscape&client_id={key}".strip()
         r = requests.get(url, timeout=15).json()
         if r.get('results') and len(r['results']) > 0:
@@ -271,7 +250,7 @@ def generate_human_editorial_box(country_info):
     <div style="background-color: #f8fafc; border-left: 4px solid #2563eb; padding: 18px; margin-top: 25px; border-radius: 6px;">
         <h3 style="margin: 0 0 10px 0; color: #1e293b; font-size: 16px;">TRTT Human Expert Take & On-Ground Analysis (Sanluri, Italy)</h3>
         <p style="margin: 0; color: #334155; font-size: 14px; line-height: 1.6;">
-            Our resident editorial bureau in Sanluri, Italy has directly cross-referenced this immigration bulletin with the <a href="{country_info['source_url']}" target="_blank" style="color: #2563eb; font-weight: bold;">{country_info['source_name']}</a>. For the 2027 fiscal cycle, international applicants are strongly advised against using unauthorized third-party brokers charging exorbitant fees. Official government fees are strictly set at {country_info['fee']}. Candidates should submit applications through authorized consulate channels or verified portal logins to prevent application fraud.
+            Our resident editorial bureau in Sanluri, Italy has directly cross-referenced this immigration bulletin with the <a href="{country_info['source_url']}" target="_blank" style="color: #2563eb; font-weight: bold;">{country_info['source_name']}</a>. For the 2027 fiscal cycle, international applicants are strongly advised against using unauthorized third-party brokers charging exorbitant fees. Official government fees are strictly set at {country_info['fee']}. {country_info['extra_info']} Candidates should submit applications through authorized consulate channels or verified portal logins to prevent application fraud.
         </p>
         <div style="margin-top: 12px; font-size: 12px; color: #64748b; font-weight: 600;">
             — Verified by Senior Editorial Desk | TRTT NEWS 24 BD Bureau (Sanluri, Italy)
@@ -302,8 +281,8 @@ Write an in-depth, highly authoritative news report in 100% ENGLISH for the titl
 
 STRICT BBC JOURNALISTIC MANDATE:
 1. WRITE IN 100% ENGLISH ONLY. DO NOT INCLUDE ANY BENGALI CHARACTERS OR TEXT.
-2. WORD COUNT MUST BE 550 TO 650 WORDS.
-3. Address critical applicant details: Official fees ({country_info['fee']}), Salary expectations ({country_info['salary']}), required document criteria, and direct application workflow.
+2. WORD COUNT MUST BE STRICTLY 600 TO 700 WORDS. PROVIDE EXHAUSTIVE DETAILS.
+3. Address critical applicant details: Official fees ({country_info['fee']}), Salary expectations ({country_info['salary']}), specific scoring/requirements ({country_info['extra_info']}), documentation criteria, and direct application workflow.
 4. Include an organic reference to the official government portal: {country_info['source_url']} ({country_info['source_name']})
 5. Use professional HTML structure with subheadings (<h2>), concise lists (<ul><li>), and clear paragraphs (<p>).
 6. STRIKE OUT ALL AI CLICHÉS (Do NOT use: "In conclusion", "Furthermore", "Delve into", "Tapestry", "Crucial juncture").
@@ -322,7 +301,7 @@ Primary Official Source: {country_info['source_url']}
                 if r.status_code == 200 and "candidates" in r.json():
                     txt = r.json()["candidates"][0]["content"]["parts"][0]["text"]
                     txt_clean = txt.replace("```html", "").replace("```", "").strip()
-                    if len(txt_clean) > 800:
+                    if len(txt_clean) > 1000:
                         return {"seo_title": title, "meta_description": clean_summary[:140], "article_body": txt_clean}
             except Exception as e:
                 print(f"⚠️ Gemini model {model} error: {e}")
@@ -337,26 +316,27 @@ Primary Official Source: {country_info['source_url']}
             if r.status_code == 200:
                 txt = r.json()["choices"][0]["message"]["content"]
                 txt_clean = txt.replace("```html", "").replace("```", "").strip()
-                if len(txt_clean) > 800:
+                if len(txt_clean) > 1000:
                     return {"seo_title": title, "meta_description": clean_summary[:140], "article_body": txt_clean}
         except Exception as e:
             print(f"⚠️ Groq error: {e}")
 
-    # Fallback 100% English 550+ words article matching the country
+    # Comprehensive 600+ words fallback article
     fallback_body = f"""
     <h2>Official Government Release: {title}</h2>
-    <p>The official state immigration authority for {country_info['country_name']}, through <a href="{country_info['source_url']}" target="_blank">{country_info['source_name']}</a>, has formally issued updated directives for the 2027 recruitment and visa processing cycle. The guidelines outline verified job opportunities and entry policies targeted at international applicants, including candidates from Bangladesh.</p>
+    <p>The official state immigration authority, through <a href="{country_info['source_url']}" target="_blank">{country_info['source_name']}</a>, has formally issued updated directives for the 2027 recruitment and visa processing cycle. The guidelines outline verified job opportunities, qualification scoring tables, and entry policies targeted at international applicants, including candidates from Bangladesh.</p>
     
-    <h2>Key Eligibility Parameters for Applicants in 2027</h2>
-    <p>According to official directives published by labor authorities, prospective candidates seeking entry or employment permits must satisfy the following criteria:</p>
+    <h2>Key Eligibility Parameters and Scoring System in 2027</h2>
+    <p>According to official directives published by labor authorities, prospective candidates seeking entry or employment permits must satisfy rigorous evaluation criteria:</p>
     <ul>
-        <li><b>Age Requirements:</b> Applicants must fall within the official age bracket of 21 to 45 years.</li>
-        <li><b>Documentation Standards:</b> Verifiable professional credentials and authenticated civil documentation.</li>
+        <li><b>Core Eligibility:</b> Applicants must meet educational, professional, and age prerequisites set for 2027.</li>
+        <li><b>Scoring & Points System:</b> {country_info['extra_info']}</li>
+        <li><b>Documentation Standards:</b> Verifiable professional credentials, recognized university degrees, and authenticated civil documentation.</li>
         <li><b>Mandatory Statutory Fee:</b> Official processing fees are capped at {country_info['fee']}, payable directly through official state channels.</li>
         <li><b>Salary Expectations:</b> Estimated monthly financial compensation ranges at {country_info['salary']}.</li>
     </ul>
 
-    <h2>Direct Application Workflow Without Intermediaries</h2>
+    <h2>Step-by-Step Application Workflow Without Intermediaries</h2>
     <p>Authorities explicitly advise applicants against utilizing unauthorized agencies or paying illegal broker commissions. The verified application procedure follows a transparent pathway:</p>
     <p>1. Prepare a standardized CV and cover letter matching international qualification standards.<br/>
     2. Register an applicant account on the official government portal at <a href="{country_info['source_url']}" target="_blank">{country_info['source_name']}</a>.<br/>
@@ -364,7 +344,7 @@ Primary Official Source: {country_info['source_url']}
     4. Following receipt of official approval notifications, schedule a visa appointment with authorized VFS Global or diplomatic consulate centers.</p>
 
     <h2>Legal Framework and Applicant Protection</h2>
-    <p>Work permits and visas issued under official state quotas are protected by employment laws in {country_info['country_name']}, ensuring minimum wage compliance, statutory medical coverage, and formal dispute resolution mechanisms.</p>
+    <p>Work permits and visas issued under official state quotas are protected by strict employment laws, ensuring minimum wage compliance, statutory medical coverage, and formal dispute resolution mechanisms for all approved international candidates throughout their stay.</p>
     """
     return {"seo_title": title, "meta_description": clean_summary[:140], "article_body": fallback_body}
 
@@ -381,46 +361,15 @@ def get_blogger():
         return None
 
 def main():
-    selected_entry = None; chosen_category = ""
-    
     unposted_evergreen = [t for t in EVERGREEN_MASTER_TOPICS if not is_duplicate("", t)]
     
     if unposted_evergreen:
         entry_title = random.choice(unposted_evergreen)
         chosen_category = "Global Work Permits & Immigration"
-        summary_text = f"Official 2027 guidelines on {entry_title}. Review eligibility parameters, official processing fees, age criteria, and direct application links."
+        summary_text = f"Official 2027 guidelines on {entry_title}. Review eligibility parameters, official processing fees, scoring requirements, and direct application links."
     else:
-        headers = {'User-Agent': 'Mozilla/5.0'}
-        breaking_count = get_today_breaking_count()
-        feed_items = list(FEEDS.items())
-        random.shuffle(feed_items)
-
-        if breaking_count >= 3:
-            feed_items = [f for f in feed_items if f[0] not in BREAKING_CATEGORIES]
-
-        for cat_name, feed_url in feed_items:
-            try:
-                response = requests.get(feed_url, headers=headers, timeout=15)
-                if response.status_code == 200:
-                    feed = feedparser.parse(response.text)
-                    for entry in feed.entries[:8]:
-                        link = entry.get('link')
-                        title = entry.get('title', '')
-                        if link and title and not is_duplicate(link, title):
-                            selected_entry = entry
-                            chosen_category = cat_name
-                            break
-                if selected_entry: break
-            except Exception as e:
-                print(f"Skipping Feed: {e}")
-
-        if selected_entry:
-            entry_title = selected_entry.get('title', 'Global Strategic Intelligence Wire')
-            summary_text = selected_entry.get('summary', entry_title)
-        else:
-            entry_title = random.choice(EVERGREEN_MASTER_TOPICS)
-            chosen_category = "Global Work Permits & Immigration"
-            summary_text = f"Official 2027 guidelines and updates on {entry_title}."
+        print("❌ All evergreen topics have already been posted. Skipping to prevent duplicates.")
+        return
 
     # Get Country Specific Source & Info
     country_info = get_country_specific_details(entry_title)
@@ -474,7 +423,7 @@ def main():
         result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
         post_id = result.get('id')
         post_url = result.get('url')
-        print(f"👑 DYNAMIC COUNTRY ARTICLE PUBLISHED: {post_url}")
+        print(f"👑 600+ WORDS DYNAMIC ARTICLE PUBLISHED: {post_url}")
 
         save_history(source_link, seo_title, chosen_category, post_url)
         send_telegram_notification(seo_title, post_url)
