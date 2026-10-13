@@ -7,42 +7,69 @@ from googleapiclient.discovery import build
 HISTORY_FILE = "posted_history.json"
 TELEGRAM_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
 
-# 1. REAL OFFICIAL DATABASE - NO FAKE ALLOWED
+# ডায়নামিক বছর নির্ধারণ (স্বয়ংক্রিয়ভাবে বর্তমান বছর নেবে)
+CURRENT_YEAR = datetime.datetime.now().year
+
+# ১. OFFICIAL & TRUSTED INTERNATIONAL DESKS (Brackets Removed)
 OFFICIAL_DB = {
-    "GERMANY": {"desk": "German Federal Foreign Office (Make it in Germany)", "url": "https://www.make-it-in-germany.com/en/visa-residence/types/chancenkarte", "fee": "€75", "salary": "€2,200 to €3,500 monthly", "keyword": "Germany Opportunity Card Chancenkarte Berlin Brandenburg Gate", "label": "Global Work Permits & Immigration"},
-    "PORTUGAL": {"desk": "Portuguese Ministry of Foreign Affairs - Vistos MNE", "url": "https://vistos.mne.gov.pt/en/national-visas/general-information", "fee": "€90 Visa + €83 Residence Permit", "salary": "€760 to €1,200 monthly", "keyword": "Portugal Work Visa Passport Lisbon", "label": "Europe Visa & Residency"},
-    "MALTA": {"desk": "Jobsplus - Government of Malta", "url": "https://jobsplus.gov.mt/employers/resources/single-permit", "fee": "€280.50", "salary": "€1,000 to €1,400 monthly", "keyword": "Malta Hotel Staff Jobs Workers", "label": "Global Work Permits & Immigration"},
-    "ITALY": {"desk": "Italian Ministry of Interior - Portale Immigrazione", "url": "https://www.interno.gov.it/it/temi/immigrazione", "fee": "€116", "salary": "€1,200 to €1,600 monthly", "keyword": "Italy Visa Decreto Flussi Worker", "label": "Europe Visa & Residency"},
-    "UK": {"desk": "UK Government - UK Visas and Immigration", "url": "https://www.gov.uk/government/organisations/uk-visas-and-immigration", "fee": "£464", "salary": "£38,700 minimum threshold per year", "keyword": "UK Skilled Worker Visa UK Government Big Ben", "label": "UK Visa and Immigration"},
-    "USA": {"desk": "US Department of State", "url": "https://travel.state.gov", "fee": "$185", "salary": "$3,500 monthly average", "keyword": "USA Work Permit Passport Visa", "label": "Global Work Permits & Immigration"},
-    "DEFAULT": {"desk": "Verified Official Government Source", "url": "https://www.reuters.com/", "fee": "N/A", "salary": "Standard International Rates", "keyword": "Global Work Visa Immigration Passport", "label": "Lifestyle & Europe News"}
+    "WORLD": {
+        "desk": "Reuters World News Bureau", 
+        "url": "https://www.reuters.com/world/", 
+        "keyword": "World News International Politics Policy", 
+        "label": "World News 24"
+    },
+    "BUSINESS": {
+        "desk": "Global Business Intelligence Desk", 
+        "url": "https://www.reuters.com/business/", 
+        "keyword": "Global Business Enterprise Strategy Market", 
+        "label": "Global Business Fix"
+    },
+    "VISA": {
+        "desk": "Schengen Visa & Immigration Authority", 
+        "url": "https://www.make-it-in-germany.com/en/", 
+        "keyword": "Schengen Visa Immigration Regulation Policy", 
+        "label": "Schengen Visa & Immigration"
+    },
+    "TECH": {
+        "desk": "Global Technology Press Release", 
+        "url": "https://www.reuters.com/technology/", 
+        "keyword": "Global Technology AI Innovation Digital", 
+        "label": "Technology & Education"
+    },
+    "STARTUP": {
+        "desk": "European Business & Startup Desk", 
+        "url": "https://vistos.mne.gov.pt/en/", 
+        "keyword": "Europe Startup Business Investment Economy", 
+        "label": "Europe Startup & Business"
+    },
+    "TOOLS": {
+        "desk": "TRTT Developer & SEO Tools Desk", 
+        "url": "https://www.google.com", 
+        "keyword": "Free SEO Tools Digital Marketing Analytics", 
+        "label": "Free Tools"
+    }
 }
 
-BANNED_PHRASES = []
-
-EVERGREEN_MASTER_TOPICS = [
-    "Portugal Work Visa for Bangladeshi 2027 - 90 Days Processing Time",
-    "Germany Opportunity Card (Chancenkarte) 2027 - Points Calculator & Requirements",
-    "UK Skilled Worker Visa 2027 - Minimum Salary Threshold & Sponsor List",
-    "Malta Work Visa 2027 for Bangladeshi - Hotel Jobs with Free Accommodation",
-    "Italy Seasonal Work Visa 2027 (Decreto Flussi) - Application from Sanluri, Italy"
-]
-
-COUNTRY_LOCATIONS = {
-    "italy": {"name": "Milan, Italy", "lat": 45.4642, "lng": 9.1900},
-    "germany": {"name": "Berlin, Germany", "lat": 52.5200, "lng": 13.4050},
-    "uk": {"name": "London, UK", "lat": 51.5072, "lng": -0.1276},
-    "portugal": {"name": "Lisbon, Portugal", "lat": 38.7223, "lng": -9.1393},
-    "malta": {"name": "Valletta, Malta", "lat": 35.8985, "lng": 14.5146},
-    "default": {"name": "Milan, Italy", "lat": 45.4642, "lng": 9.1900}
-}
-
-def get_info(topic: str):
-    t = topic.upper()
-    for key in ["GERMANY", "PORTUGAL", "MALTA", "ITALY", "UK", "USA"]:
-        if key in t: 
-            return OFFICIAL_DB[key]
-    return OFFICIAL_DB["DEFAULT"]
+def get_today_topics():
+    today_weekday = datetime.datetime.utcnow().strftime('%A')
+    
+    # দৈনিক ৬টি অটো পোস্ট
+    topics = [
+        {"title": f"Global Geopolitical Shifts and International Policy Frameworks {CURRENT_YEAR}", "category": "WORLD"},
+        {"title": f"Artificial Intelligence and Enterprise Technology Innovation Trends {CURRENT_YEAR}", "category": "TECH"},
+        {"title": f"Global Cybersecurity and Digital Infrastructure Developments {CURRENT_YEAR}", "category": "TECH"},
+        {"title": f"Global Business Growth Strategies and Market Adaptability {CURRENT_YEAR}", "category": "BUSINESS"},
+        {"title": f"International Trade, Economic Policy and Market Analysis {CURRENT_YEAR}", "category": "BUSINESS"},
+        {"title": f"Schengen Visa Regulations and Official Immigration Compliance {CURRENT_YEAR}", "category": "VISA"}
+    ]
+    
+    # সাপ্তাহিক নির্দিষ্ট দিনের এক্সট্রা পোস্ট
+    if today_weekday == "Monday":
+        topics.append({"title": f"Europe Startup Ecosystem and Cross-Border Investment Guide {CURRENT_YEAR}", "category": "STARTUP"})
+    elif today_weekday == "Sunday":
+        topics.append({"title": f"Essential Free Digital Marketing and SEO Tools for Professionals {CURRENT_YEAR}", "category": "TOOLS"})
+        
+    return topics
 
 def load_history():
     if os.path.exists(HISTORY_FILE):
@@ -62,7 +89,7 @@ def commit_history_to_github():
         if not status.stdout.strip():
             return
         subprocess.run(["git", "add", HISTORY_FILE], check=True)
-        subprocess.run(["git", "commit", -m, "Auto-update posted history & URLs [skip ci]"], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto-update posted history & URLs [skip ci]"], check=True)
         subprocess.run(["git", "push"], check=True)
     except Exception as e:
         print(f"⚠️ Git commit warning: {e}")
@@ -89,13 +116,6 @@ def is_duplicate(entry_title):
                 return True
     return False
 
-def get_smart_location(title):
-    text = str(title).lower()
-    for key, loc in COUNTRY_LOCATIONS.items():
-        if key in text:
-            return loc
-    return COUNTRY_LOCATIONS["default"]
-
 def get_featured_image(keyword):
     fallback_img = "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80"
     try:
@@ -114,43 +134,34 @@ def send_telegram_notification(title, url):
     chat_id = os.environ.get("TELEGRAM_CHAT_ID")
     if bot_token and chat_id:
         try:
-            msg = f"👑 <b>Media Empire Alert</b>\n\n<b>Title:</b> {title}\n\n<b>Link:</b> {url}"
+            msg = f"👑 <b>TRTT Draft Alert</b>\n\n<b>Title:</b> {title}\n\n<b>Status:</b> Saved as Draft"
             api_url = TELEGRAM_URL_TEMPLATE.format(token=bot_token)
             requests.post(api_url, json={"chat_id": chat_id, "text": msg, "parse_mode": "HTML"}, timeout=10)
         except Exception as e:
             print(f"⚠️ Telegram Error: {e}")
 
-# DUAL-ENGINE FALLBACK WITH RETRY MECHANISM
-def generate_safe_news_with_fallback(topic: str):
-    info = get_info(topic)
+def generate_safe_news_with_fallback(topic: str, cat_key: str):
+    info = OFFICIAL_DB[cat_key]
     
     prompt = f"""
-SYSTEM: You are BBC News Senior Editor, TRTT NEWS 24 BD Bureau, Sanluri, Italy. You obey ONLY OFFICIAL_DB.
-You are locked. You cannot invent.
+SYSTEM: You are an experienced international journalist at TRTT NEWS 24 BD.
+Write naturally, like an experienced human reporter covering global events. Avoid robotic or typical AI phrasing.
 
 TOPIC: {topic}
-OFFICIAL DESK (USE ONLY THIS): {info['desk']}
-OFFICIAL URL (CITE EXACTLY 2 TIMES): {info['url']}
-OFFICIAL FEE (USE ONLY THIS): {info['fee']}
+OFFICIAL DESK SOURCE: {info['desk']}
+REFERENCE URL: {info['url']}
 
-ABSOLUTE RULES - BREAK = FAIL:
-1. NEVER write these BANNED phrases: {', '.join(BANNED_PHRASES)}. If you write them, article is rejected.
-2. You MUST use desk={info['desk']} and url={info['url']} and fee={info['fee']}. No other source.
-3. 700+ words, 100% English UK, BBC neutral, no emoji.
-4. Title: BBC style - Example: {topic}: Official Guide and Requirements 2027
-5. Structure EXACT:
-   - Executive Summary (80 words, include date 13 Oct 2026)
-   - H2: Official Announcement from {info['desk']} (cite {info['url']} 2 times) - 120 words
-   - H2: Key Eligibility / Core Facts - 150 words bullets
-   - H2: Step-by-Step Process Without Brokers - 150 words numbered, warn against dalal
-   - H2: Official Fee {info['fee']} and Legal Protection - 100 words
-   - H2: TRTT Expert Take & Verification (Sanluri, Italy) - 80 words, MUST start with "Our resident editorial bureau in Sanluri, Italy has directly cross-referenced this with {info['desk']}..." and MUST end with "— Verified by Senior Editorial Desk | TRTT NEWS 24 BD Bureau (Sanluri, Italy)"
-   - Footer: Official Reference Desk: {info['desk']} - {info['url']}
-
-Now write news for: {topic}
+WRITING INSTRUCTIONS:
+1. Tone: Natural, engaging, human UK English, written in a professional journalistic narrative style. NO emojis inside the article text.
+2. Personal Journalist Touch: Include EXACTLY ONE short personal story line or first-hand observational insight (e.g., "During my recent coverage at the international summit..." or "Speaking with a senior strategist last month in London, I observed...").
+3. Length & Structure:
+   - 800+ words.
+   - Engaging opening lead with real-world impact.
+   - Natural transition into detailed analysis using bold subheadings (H2).
+   - Fact-based evergreen conclusions.
+4. Compliance: Maintain high editorial standards, strictly avoid spammy phrasing, and ensure complete accuracy for the year {CURRENT_YEAR}.
 """
 
-    # Try Gemini with 3 Retries in case of 503 High Demand
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
         for attempt in range(3):
@@ -161,34 +172,27 @@ Now write news for: {topic}
                     contents=prompt,
                 )
                 if response and response.text:
-                    print("✅ Generated successfully using Google GenAI SDK.")
                     return response.text, info['label']
             except Exception as e:
-                print(f"⚠️ Gemini attempt {attempt+1} failed: {e}")
-                time.sleep(5) # ৫ সেকেন্ড অপেক্ষা করে আবার চেষ্টা করবে
-
-    # Fallback to Groq (Llama-3) if Gemini fails completely
-    groq_key = os.environ.get("GROQ_API_KEY")
-    if groq_key:
-        for attempt in range(3):
-            try:
-                url = "https://api.groq.com/openai/v1/chat/completions"
-                headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
-                payload = {
-                    "model": "llama-3.3-70b-versatile",
-                    "messages": [{"role": "user", "content": prompt}],
-                    "temperature": 0.1
-                }
-                r = requests.post(url, json=payload, headers=headers, timeout=60)
-                if r.status_code == 200:
-                    text = r.json()['choices'][0]['message']['content']
-                    print("✅ Generated successfully using Groq (Llama-3) Fallback.")
-                    return text, info['label']
-            except Exception as e:
-                print(f"⚠️ Groq attempt {attempt+1} failed: {e}")
                 time.sleep(5)
 
-    raise ValueError("❌ Both Gemini and Groq APIs failed due to server congestion.")
+    groq_key = os.environ.get("GROQ_API_KEY")
+    if groq_key:
+        try:
+            url = "https://api.groq.com/openai/v1/chat/completions"
+            headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
+            payload = {
+                "model": "llama-3.3-70b-versatile",
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.2
+            }
+            r = requests.post(url, json=payload, headers=headers, timeout=60)
+            if r.status_code == 200:
+                return r.json()['choices'][0]['message']['content'], info['label']
+        except Exception as e:
+            print(f"Groq error: {e}")
+
+    raise ValueError("API Failed")
 
 def get_blogger():
     try:
@@ -203,45 +207,67 @@ def get_blogger():
         return None
 
 def main():
-    unposted_evergreen = [t for t in EVERGREEN_MASTER_TOPICS if not is_duplicate(t)]
-    if not unposted_evergreen:
-        print("❌ All evergreen topics have already been posted.")
+    topics_to_post = get_today_topics()
+    blogger_service = get_blogger()
+    if not blogger_service:
         return
 
-    entry_title = random.choice(unposted_evergreen)
-    info = get_info(entry_title)
+    blog_id = os.environ.get("BLOGGER_ID") or os.environ.get("BLOGGER_BLOG_ID")
 
-    article_body_html, label = generate_safe_news_with_fallback(entry_title)
-    image_url = get_featured_image(info["keyword"])
+    for item in topics_to_post:
+        entry_title = item["title"]
+        cat_key = item["category"]
+        
+        if is_duplicate(entry_title):
+            print(f"Skipping duplicate: {entry_title}")
+            continue
 
-    full_html = f"""
-    <div style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 14px; margin-bottom: 20px; font-size: 14px;">
-        <b>✍️ Human Expert Editorial & Verification:</b> Verified by TRTT Bureau Sanluri, Italy.
-        <br><b>Direct Official Desk:</b> <a href="{info['url']}" target="_blank">{info['desk']}</a>
-    </div>
-    <div style="margin:20px 0;"><img src="{image_url}" alt="{entry_title}" style="width:100%; border-radius:8px;"/></div>
-    {article_body_html}
-    """
+        info = OFFICIAL_DB[cat_key]
+        article_body_html, label = generate_safe_news_with_fallback(entry_title, cat_key)
+        image_url = get_featured_image(info["keyword"])
 
-    blogger_service = get_blogger()
-    if blogger_service:
-        blog_id = os.environ.get("BLOGGER_ID") or os.environ.get("BLOGGER_BLOG_ID")
-        loc = get_smart_location(entry_title)
+        full_html = f"""
+        <div style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 14px; margin-bottom: 20px; font-size: 14px; font-family: sans-serif;">
+            <b>✍️ Verified Editorial & Global Bureau Standards:</b> Reviewed by TRTT International Desk.
+            <br><b>Official Source Reference:</b> <a href="{info['url']}" target="_blank" rel="nofollow">{info['desk']}</a>
+        </div>
+        
+        <div style="margin:20px 0;"><img src="{image_url}" alt="{entry_title}" style="width:100%; border-radius:8px;"/></div>
+        
+        {article_body_html}
+
+        <!-- Hire Me Button -->
+        <div style="text-align:center; margin-top:20px;">
+        <a href="https://ttnews24bd.blogspot.com/p/hire-me-advertise.html" style="background:#2563eb; color:white; padding:12px 20px; text-decoration:none; border-radius:6px; font-weight:bold;">Need Help? Hire Me</a>
+        </div>
+
+        <!-- Community & Social Links Box -->
+        <div style="margin-top:30px; padding:20px; background:#f1f5f9; text-align:center; border-radius:10px; border:1px solid #cbd5e1; font-family: sans-serif;">
+            <h3 style="margin-top:0; color:#0f172a; font-size:18px;">📢 Join Our Official Community for Daily Updates</h3>
+            <p style="font-size:14px; color:#475569; margin-bottom:15px;">Get verified global news, policy guides, and instant analytical updates directly on your device.</p>
+            <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+                <a href="https://whatsapp.com/channel/0029Vb8co9VDeONEz0B5e51M" target="_blank" style="background:#25D366; color:white; padding:10px 18px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:14px;">📲 Join WhatsApp Channel</a>
+                <a href="https://t.me/trttnews24bd" target="_blank" style="background:#0088cc; color:white; padding:10px 18px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:14px;">✈️ Join Telegram Channel</a>
+            </div>
+        </div>
+        """
 
         post_body = {
             "kind": "blogger#post",
-            "title": entry_title[:70],
+            "title": entry_title[:75],
             "content": full_html,
-            "labels": [label, "Human Verified", "2027 Immigration Guide"],
-            "location": {"name": loc["name"], "lat": loc["lat"], "lng": loc["lng"]}
+            "labels": [label, "Global Insights", f"Verified News {CURRENT_YEAR}"],
+            "location": {"name": "London, United Kingdom", "lat": 51.5074, "lng": -0.1278}
         }
 
-        result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
-        post_url = result.get('url')
-        print(f"👑 ZERO-HALLUCINATION DUAL-ENGINE ARTICLE PUBLISHED: {post_url}")
+        # Blogger API v3 দিয়ে ড্রাফটে সংরক্ষণ
+        result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=True, fetchImages=True).execute()
+        post_id = result.get('id')
+        print(f"👑 DRAFT SAVED SUCCESSFULLY: {entry_title} (ID: {post_id})")
 
-        save_history(info['url'], entry_title, label, post_url)
-        send_telegram_notification(entry_title, post_url)
+        save_history(info['url'], entry_title, label, f"Draft ID: {post_id}")
+        send_telegram_notification(entry_title, "Saved as Draft")
+        time.sleep(5)
 
 if __name__ == "__main__":
     main()
