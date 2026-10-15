@@ -140,66 +140,61 @@ def send_telegram_notification(title, post_url):
         except Exception as e:
             print(f"⚠️ Telegram Error: {e}")
 
+def clean_ai_html(text):
+    if not text:
+        return ""
+    text = re.sub(r'^```html\s*', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'^```\s*', '', text)
+    text = re.sub(r'\s*```$', '', text)
+    if 'Would you like' in text or 'This article:' in text or "Here's your" in text:
+        parts = re.split(r'(?i)(This article:|Would you like|Here\'s your)', text)
+        if len(parts) > 1:
+            text = parts[0]
+    return text.strip()
+
 def generate_safe_news_with_fallback(topic: str, cat_key: str):
     info = OFFICIAL_DB[cat_key]
     prompt = f"""
-You are Engr Abu Taher, Founder of TRTT NEWS 24 BD, writing from Sanluri, Sardinia, Italy as {info['desk']}.
-TOPIC: {topic}
-REFERENCE: {info['url']} - YEAR: {CURRENT_YEAR}
-
-Write 900+ words in HTML format (using <h2>, <p>, <ul>, <li>, <b>) for trttnews24bd.blogspot.com:
-- Start with real current context in Sanluri, Sardinia, Italy
-- <h2>What is happening with {topic}?</h2>
-- <h2>Why it matters for Bangladesh & Europe readers</h2>
-- <h2>Key facts and insights - {CURRENT_YEAR}</h2> (use bullet points)
-- <h2>Practical guide and next steps</h2>
-End with: <p><i>Analysis by TRTT News 24 BD Desk, Sanluri, Sardinia, Italy. AI-assisted research with human editorial review.</i></p>
+You are Engr Abu Taher, Founder TRTT NEWS 24 BD, Sanluri, Sardinia, Italy as {info['desk']}.
+TOPIC: {topic} - YEAR: {CURRENT_YEAR}
+CRITICAL: Output ONLY pure HTML (<h2>, <p>, <ul>, <li>, <b>). No ```html, no intro.
+Write 900+ words: What is happening? / Why it matters / Key facts / Practical guide.
+End: <p><i>Analysis by TRTT News 24 BD Desk, Sanluri, Sardinia, Italy.</i></p>
 """
 
-    # 1. GEMINI
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
-        for model_name in ["gemini-1.5-flash", "gemini-1.5-pro"]:
+        for model_name in ["gemini-1.5-flash", "gemini-1.5-flash-8b"]:
             try:
                 client = genai.Client(api_key=gemini_key)
                 response = client.models.generate_content(model=model_name, contents=prompt)
                 if response and response.text and len(response.text) > 500:
-                    print(f"✅ Gemini Success ({model_name}): {len(response.text)} chars")
-                    return response.text, info['label']
+                    return clean_ai_html(response.text), info['label']
             except Exception as e:
-                print(f"⚠️ Gemini ({model_name}) fail: {e}")
+                print(f"Gemini {model_name} fail: {e}")
 
-    # 2. GROQ
     groq_key = os.environ.get("GROQ_API_KEY")
     if groq_key:
         try:
             r = requests.post("https://api.groq.com/openai/v1/chat/completions",
                 headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
-                json={"model": "llama-3.3-70b-versatile", "messages": [{"role": "user", "content": prompt}], "temperature": 0.7}, timeout=60)
+                json={"model": "llama-3.1-70b-versatile", "messages": [{"role": "user", "content": prompt}], "temperature": 0.7}, timeout=60)
             if r.status_code == 200:
-                text = r.json()['choices'][0]['message']['content']
-                if len(text) > 500:
-                    print(f"✅ Groq Success")
-                    return text, info['label']
+                return clean_ai_html(r.json()['choices'][0]['message']['content']), info['label']
         except Exception as e:
-            print(f"⚠️ Groq fail: {e}")
+            print(f"Groq fail: {e}")
 
-    # 3. OPENROUTER
     openrouter_key = os.environ.get("OPENROUTER_API_KEY")
     if openrouter_key:
         try:
             r = requests.post("https://openrouter.ai/api/v1/chat/completions",
                 headers={"Authorization": f"Bearer {openrouter_key}", "Content-Type": "application/json"},
-                json={"model": "deepseek/deepseek-chat", "messages": [{"role": "user", "content": prompt}]}, timeout=60)
+                json={"model": "google/gemini-flash-1.5", "messages": [{"role": "user", "content": prompt}]}, timeout=60)
             if r.status_code == 200:
-                text = r.json()['choices'][0]['message']['content']
-                if len(text) > 500:
-                    print(f"✅ OpenRouter Success")
-                    return text, info['label']
+                return clean_ai_html(r.json()['choices'][0]['message']['content']), info['label']
         except Exception as e:
-            print(f"⚠️ OpenRouter fail: {e}")
+            print(f"OpenRouter fail: {e}")
 
-    # 4. MISTRAL
     mistral_key = os.environ.get("MISTRAL_API_KEY")
     if mistral_key:
         try:
@@ -207,14 +202,10 @@ End with: <p><i>Analysis by TRTT News 24 BD Desk, Sanluri, Sardinia, Italy. AI-a
                 headers={"Authorization": f"Bearer {mistral_key}", "Content-Type": "application/json"},
                 json={"model": "mistral-small-latest", "messages": [{"role": "user", "content": prompt}]}, timeout=60)
             if r.status_code == 200:
-                text = r.json()['choices'][0]['message']['content']
-                if len(text) > 500:
-                    print(f"✅ Mistral Success")
-                    return text, info['label']
+                return clean_ai_html(r.json()['choices'][0]['message']['content']), info['label']
         except Exception as e:
-            print(f"⚠️ Mistral fail: {e}")
+            print(f"Mistral fail: {e}")
 
-    # 5. DEEPSEEK
     deepseek_key = os.environ.get("DEEP_SEEK_KEY")
     if deepseek_key:
         try:
@@ -222,14 +213,10 @@ End with: <p><i>Analysis by TRTT News 24 BD Desk, Sanluri, Sardinia, Italy. AI-a
                 headers={"Authorization": f"Bearer {deepseek_key}", "Content-Type": "application/json"},
                 json={"model": "deepseek-chat", "messages": [{"role": "user", "content": prompt}]}, timeout=60)
             if r.status_code == 200:
-                text = r.json()['choices'][0]['message']['content']
-                if len(text) > 500:
-                    print(f"✅ DeepSeek Success")
-                    return text, info['label']
+                return clean_ai_html(r.json()['choices'][0]['message']['content']), info['label']
         except Exception as e:
-            print(f"⚠️ DeepSeek fail: {e}")
+            print(f"DeepSeek fail: {e}")
 
-    # 6. COHERE
     cohere_key = os.environ.get("COHERE_API_KEY")
     if cohere_key:
         try:
@@ -237,14 +224,11 @@ End with: <p><i>Analysis by TRTT News 24 BD Desk, Sanluri, Sardinia, Italy. AI-a
                 headers={"Authorization": f"Bearer {cohere_key}", "Content-Type": "application/json"},
                 json={"model": "command-r-plus", "prompt": prompt, "max_tokens": 1200}, timeout=60)
             if r.status_code == 200:
-                text = r.json()['generations'][0]['text']
-                if len(text) > 500:
-                    print(f"✅ Cohere Success")
-                    return text, info['label']
+                return clean_ai_html(r.json()['generations'][0]['text']), info['label']
         except Exception as e:
-            print(f"⚠️ Cohere fail: {e}")
+            print(f"Cohere fail: {e}")
 
-    print("⚠️ All AI APIs failed - using expanded 800 words fallback.")
+    print("All APIs failed - expanded fallback")
     fallback_html = f"""
 <h2>What is happening with {topic}?</h2>
 <p>In {CURRENT_YEAR}, {topic} has become a central issue tracked by our desk in Sanluri, Sardinia, Italy. What started as policy discussions in Brussels is now directly affecting businesses, students and families connected to Europe and Bangladesh. From Milan to Sanluri, we are seeing more digital verification, stricter documentation checks, and faster processing for those who use correct {CURRENT_YEAR} formats.</p>
