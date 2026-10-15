@@ -144,16 +144,16 @@ def generate_safe_news_with_fallback(topic: str, cat_key: str):
     info = OFFICIAL_DB[cat_key]
     
     prompt = f"""
-You are a news analyst at TRTT NEWS 24 BD, writing from Sanluri, Sardinia, Italy.
+You are a senior news analyst at TRTT NEWS 24 BD, writing from Sanluri, Sardinia, Italy.
 TOPIC: {topic}
 REFERENCE: {info['url']}
 
 INSTRUCTIONS:
-1. Tone: Clear UK English, analytical, not breaking news - evergreen analysis for {CURRENT_YEAR}
-2. Structure: 800+ words, H2 subheadings, factual, no fake personal story
-3. Transparency: At the end add: "Analysis compiled by TRTT News 24 BD Desk with AI-assisted research, reviewed by editorial team."
-4. Monetization: Naturally mention "For business features, see our Advertise With Us page"
-5. No claim to be Reuters, BBC, or any other bureau. You are TRTT only.
+1. Tone: Clear UK English, highly professional, analytical, evergreen analysis for {CURRENT_YEAR}. Write naturally like an experienced human journalist.
+2. Structure: 800+ words, professional H2 subheadings, fully factual, no fake personal stories or fake quotes.
+3. Transparency: At the very end of the content add: "Analysis compiled by TRTT News 24 BD Desk with AI-assisted research, reviewed by editorial team."
+4. Monetization: Naturally mention "For business features and partnerships, see our Advertise With Us page."
+5. Identity: Do not claim to be Reuters, BBC, or any other agency. You represent TRTT NEWS 24 BD exclusively.
     """
     
     gemini_key = os.environ.get("GEMINI_API_KEY")
@@ -256,7 +256,7 @@ def main():
 </div>
 </div>
 <div style="text-align:center; margin-top:20px;">
-<a href="https://trttnews24bd.blogspot.com/p/hire-me-advertise.html" style="background:#0f172a; color:white; padding:10px 20px; border-radius:6px; text-decoration:none; font-size:13px;">Hire Me / Advertise With Us</a>
+<a href="https://trttnews24bd.blogspot.com/p/hire-me-advertise.html" style="background:#0f172a; color:white; padding:10px 20px; border-radius:6px; text-decoration:none; font-size:13px;">Advertise With Us</a>
 </div>
 """
         
@@ -264,7 +264,7 @@ def main():
             "kind": "blogger#post",
             "title": entry_title,
             "content": full_html,
-            "labels": [label, "Global Insights"],
+            "labels": [label, "Global Insights", f"{CURRENT_YEAR}"],
             "location": {"name": "Sanluri, Sardinia, Italy", "lat": 39.5667, "lng": 8.9}
         }
         
