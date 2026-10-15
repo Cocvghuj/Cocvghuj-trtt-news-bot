@@ -162,7 +162,7 @@ INSTRUCTIONS:
             try:
                 client = genai.Client(api_key=gemini_key)
                 response = client.models.generate_content(
-                    model="gemini-1.5-flash-latest",
+                    model="gemini-1.5-flash",
                     contents=prompt,
                 )
                 if response and response.text:
@@ -268,7 +268,7 @@ def main():
             "location": {"name": "Sanluri, Sardinia, Italy", "lat": 39.5667, "lng": 8.9}
         }
         
-        result = blogger_service.posts().insert(blog_id=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
+        result = blogger_service.posts().insert(blogId=blog_id, body=post_body, isDraft=False, fetchImages=True).execute()
         published_url = result.get('url', '')
         print(f"✅ SINGLE ARTICLE PUBLISHED SUCCESSFULLY: {entry_title} (URL: {published_url})")
         
