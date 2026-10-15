@@ -162,39 +162,46 @@ Write 900+ words: What is happening? / Why it matters / Key facts / Practical gu
 End: <p><i>Analysis by TRTT News 24 BD Desk, Sanluri, Sardinia, Italy.</i></p>
 """
 
+    # 1. GEMINI
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
-        for model_name in ["gemini-1.5-flash", "gemini-1.5-flash-8b"]:
+        for model_name in ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash-001"]:
             try:
                 client = genai.Client(api_key=gemini_key)
                 response = client.models.generate_content(model=model_name, contents=prompt)
                 if response and response.text and len(response.text) > 500:
+                    print(f"✅ Gemini Success ({model_name})")
                     return clean_ai_html(response.text), info['label']
             except Exception as e:
                 print(f"Gemini {model_name} fail: {e}")
 
+    # 2. GROQ
     groq_key = os.environ.get("GROQ_API_KEY")
     if groq_key:
         try:
             r = requests.post("https://api.groq.com/openai/v1/chat/completions",
                 headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
-                json={"model": "llama-3.1-70b-versatile", "messages": [{"role": "user", "content": prompt}], "temperature": 0.7}, timeout=60)
+                json={"model": "llama-3.3-70b-versatile", "messages": [{"role": "user", "content": prompt}], "temperature": 0.7}, timeout=60)
             if r.status_code == 200:
+                print("✅ Groq Success")
                 return clean_ai_html(r.json()['choices'][0]['message']['content']), info['label']
         except Exception as e:
             print(f"Groq fail: {e}")
 
+    # 3. OPENROUTER
     openrouter_key = os.environ.get("OPENROUTER_API_KEY")
     if openrouter_key:
         try:
             r = requests.post("https://openrouter.ai/api/v1/chat/completions",
                 headers={"Authorization": f"Bearer {openrouter_key}", "Content-Type": "application/json"},
-                json={"model": "google/gemini-flash-1.5", "messages": [{"role": "user", "content": prompt}]}, timeout=60)
+                json={"model": "google/gemini-2.0-flash-001", "messages": [{"role": "user", "content": prompt}]}, timeout=60)
             if r.status_code == 200:
+                print("✅ OpenRouter Success")
                 return clean_ai_html(r.json()['choices'][0]['message']['content']), info['label']
         except Exception as e:
             print(f"OpenRouter fail: {e}")
 
+    # 4. MISTRAL
     mistral_key = os.environ.get("MISTRAL_API_KEY")
     if mistral_key:
         try:
@@ -206,6 +213,7 @@ End: <p><i>Analysis by TRTT News 24 BD Desk, Sanluri, Sardinia, Italy.</i></p>
         except Exception as e:
             print(f"Mistral fail: {e}")
 
+    # 5. DEEPSEEK
     deepseek_key = os.environ.get("DEEP_SEEK_KEY")
     if deepseek_key:
         try:
@@ -217,6 +225,7 @@ End: <p><i>Analysis by TRTT News 24 BD Desk, Sanluri, Sardinia, Italy.</i></p>
         except Exception as e:
             print(f"DeepSeek fail: {e}")
 
+    # 6. COHERE
     cohere_key = os.environ.get("COHERE_API_KEY")
     if cohere_key:
         try:
@@ -232,11 +241,9 @@ End: <p><i>Analysis by TRTT News 24 BD Desk, Sanluri, Sardinia, Italy.</i></p>
     fallback_html = f"""
 <h2>What is happening with {topic}?</h2>
 <p>In {CURRENT_YEAR}, {topic} has become a central issue tracked by our desk in Sanluri, Sardinia, Italy. What started as policy discussions in Brussels is now directly affecting businesses, students and families connected to Europe and Bangladesh. From Milan to Sanluri, we are seeing more digital verification, stricter documentation checks, and faster processing for those who use correct {CURRENT_YEAR} formats.</p>
-<p>For TRTT NEWS 24 BD readers, this is not distant news. If you are in Italy or planning Europe-related work from Bangladesh, {topic} decides how long your file takes and how much extra cost you pay. Our bureau notes that files using updated templates are cleared in weeks, while old 2022-23 templates face months of delay.</p>
 
 <h2>Why it matters for Bangladesh & Europe readers</h2>
 <p>From Sardinia, we see two practical impacts. First, business compliance - companies dealing with {topic} must now show clearer linkage between purpose, funding and duration. Generic cover letters are rejected more often in {CURRENT_YEAR}. Second, personal documentation - for Schengen and business categories, portals now require readable PDFs, proper naming, and digital uploads. A small naming error can cause automatic rejection.</p>
-<p>For Bangladeshis in Italy, this means keeping one verified source. Random Facebook posts from 2022 are causing most rejections we review. We recommend following our {info['desk']} via {info['url']}.</p>
 
 <h2>Key facts and insights - {CURRENT_YEAR}</h2>
 <ul>
