@@ -142,63 +142,101 @@ def send_telegram_notification(title, post_url):
 
 def generate_safe_news_with_fallback(topic: str, cat_key: str):
     info = OFFICIAL_DB[cat_key]
-    
     prompt = f"""
-You are a senior news analyst at TRTT NEWS 24 BD, writing from Sanluri, Sardinia, Italy.
+You are Engr Abu Taher, Founder of TRTT NEWS 24 BD, writing from Sanluri, Sardinia, Italy as {info['desk']}.
 TOPIC: {topic}
-REFERENCE: {info['url']}
+REFERENCE: {info['url']} - YEAR: {CURRENT_YEAR}
 
-INSTRUCTIONS:
-1. Tone: Clear UK English, highly professional, analytical, evergreen analysis for {CURRENT_YEAR}. Write naturally like an experienced human journalist.
-2. Structure: 800+ words, professional H2 subheadings, fully factual, no fake personal stories or fake quotes.
-3. Transparency: At the very end of the content add: "Analysis compiled by TRTT News 24 BD Desk with AI-assisted research, reviewed by editorial team."
-4. Monetization: Naturally mention "For business features and partnerships, see our Advertise With Us page."
-5. Identity: Do not claim to be Reuters, BBC, or any other agency. You represent TRTT NEWS 24 BD exclusively.
-    """
-    
+Write 900 words, UK English, human journalist style for trttnews24bd.blogspot.com:
+- Start with real current context, not "As frameworks evolve"
+- H2: What is happening?
+- H2: Why it matters for Bangladesh & Europe
+- H2: Key facts (bullet points)
+- H2: What to do next
+End with: "Analysis by TRTT News 24 BD Desk, Sanluri, Italy."
+Never write "Comprehensive Overview and Strategic Analysis" or "Executive Summary".
+"""
+
+    # 1. GEMINI
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
-        for attempt in range(3):
-            try:
-                client = genai.Client(api_key=gemini_key)
-                response = client.models.generate_content(
-                    model="gemini-1.5-flash",
-                    contents=prompt,
-                )
-                if response and response.text:
-                    return response.text, info['label']
-            except Exception as e:
-                print(f"⚠️ Gemini API warning (Attempt {attempt+1}): {e}")
-                time.sleep(5)
-                
+        try:
+            client = genai.Client(api_key=gemini_key)
+            response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+            if response and response.text and len(response.text) > 600:
+                print(f"✅ Gemini Success: {len(response.text)} chars")
+                return response.text, info['label']
+        except Exception as e:
+            print(f"⚠️ Gemini fail: {e}")
+
+    # 2. GROQ
     groq_key = os.environ.get("GROQ_API_KEY")
     if groq_key:
         try:
-            url = "https://api.groq.com/openai/v1/chat/completions"
-            headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
-            payload = {
-                "model": "llama-3.3-70b-versatile",
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.2
-            }
-            r = requests.post(url, json=payload, headers=headers, timeout=60)
-            if r.status_code == 200:
+            r = requests.post("https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
+                json={"model": "llama-3.3-70b-versatile", "messages": [{"role": "user", "content": prompt}], "temperature": 0.7}, timeout=60)
+            if r.status_code == 200 and len(r.json()['choices'][0]['message']['content']) > 600:
+                print(f"✅ Groq Success")
                 return r.json()['choices'][0]['message']['content'], info['label']
         except Exception as e:
-            print(f"⚠️ Groq error: {e}")
-            
-    fallback_html = f"""
-<h2>Comprehensive Overview and Strategic Analysis of {topic}</h2>
-<p><b>Executive Summary:</b> In-depth analysis and global perspective regarding {topic} for the year {CURRENT_YEAR}.</p>
-<h2>Background and Core Context</h2>
-<p>As international frameworks continue to evolve, understanding the core dynamics of {topic} has become increasingly critical...</p>
-<h2>Global Impact and Cross-Border Policy Framework</h2>
-<p>The broader implications of these developments extend far beyond immediate regional boundaries, influencing international standards...</p>
-<h2>Market Dynamics and Strategic Implementation</h2>
-<p>Evaluating the practical applications reveals a strong correlation between strategic preparedness and long-term viability...</p>
-<h2>Conclusion and Future Outlook</h2>
-<p>In conclusion, the trajectory of {topic} in {CURRENT_YEAR} reflects a definitive move toward enhanced transparency and structural resilience.</p>
-    """
+            print(f"⚠️ Groq fail: {e}")
+
+    # 3. OPENROUTER
+    openrouter_key = os.environ.get("OPENROUTER_API_KEY")
+    if openrouter_key:
+        try:
+            r = requests.post("https://openrouter.ai/api/v1/chat/completions",
+                headers={"Authorization": f"Bearer {openrouter_key}", "Content-Type": "application/json"},
+                json={"model": "mistralai/mistral-7b-instruct", "messages": [{"role": "user", "content": prompt}]}, timeout=60)
+            if r.status_code == 200:
+                print(f"✅ OpenRouter Success")
+                return r.json()['choices'][0]['message']['content'], info['label']
+        except Exception as e:
+            print(f"⚠️ OpenRouter fail: {e}")
+
+    # 4. MISTRAL
+    mistral_key = os.environ.get("MISTRAL_API_KEY")
+    if mistral_key:
+        try:
+            r = requests.post("https://api.mistral.ai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {mistral_key}", "Content-Type": "application/json"},
+                json={"model": "mistral-large-latest", "messages": [{"role": "user", "content": prompt}]}, timeout=60)
+            if r.status_code == 200:
+                print(f"✅ Mistral Success")
+                return r.json()['choices'][0]['message']['content'], info['label']
+        except Exception as e:
+            print(f"⚠️ Mistral fail: {e}")
+
+    # 5. DEEPSEEK
+    deepseek_key = os.environ.get("DEEP_SEEK_KEY")
+    if deepseek_key:
+        try:
+            r = requests.post("https://api.deepseek.com/chat/completions",
+                headers={"Authorization": f"Bearer {deepseek_key}", "Content-Type": "application/json"},
+                json={"model": "deepseek-chat", "messages": [{"role": "user", "content": prompt}]}, timeout=60)
+            if r.status_code == 200:
+                print(f"✅ DeepSeek Success")
+                return r.json()['choices'][0]['message']['content'], info['label']
+        except Exception as e:
+            print(f"⚠️ DeepSeek fail: {e}")
+
+    # 6. COHERE
+    cohere_key = os.environ.get("COHERE_API_KEY")
+    if cohere_key:
+        try:
+            r = requests.post("https://api.cohere.ai/v1/generate",
+                headers={"Authorization": f"Bearer {cohere_key}", "Content-Type": "application/json"},
+                json={"model": "command-r-plus", "prompt": prompt, "max_tokens": 1200}, timeout=60)
+            if r.status_code == 200:
+                print(f"✅ Cohere Success")
+                return r.json()['generations'][0]['text'], info['label']
+        except Exception as e:
+            print(f"⚠️ Cohere fail: {e}")
+
+    # Fallback HTML
+    print("⚠️ All AI APIs failed. Using human-style fallback.")
+    fallback_html = f"""<h2>What is happening with {topic}?</h2><p>In {CURRENT_YEAR}, {topic} is shaping policy in Europe and beyond...</p><h2>Why it matters</h2><p>For readers in Italy and Bangladesh, understanding these practical shifts is vital...</p><p><i>Analysis by TRTT News 24 BD Desk, Sanluri, Italy.</i></p>"""
     return fallback_html, info['label']
 
 def get_blogger():
