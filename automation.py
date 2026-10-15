@@ -162,10 +162,9 @@ Write 900+ words: What is happening? / Why it matters / Key facts / Practical gu
 End: <p><i>Analysis by TRTT News 24 BD Desk, Sanluri, Sardinia, Italy.</i></p>
 """
 
-    # 1. GEMINI
     gemini_key = os.environ.get("GEMINI_API_KEY")
     if gemini_key:
-        for model_name in ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash-001"]:
+        for model_name in ["gemini-3-flash", "gemini-3.5-flash", "gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-3-flash-preview", "gemini-2.0-flash"]:
             try:
                 client = genai.Client(api_key=gemini_key)
                 response = client.models.generate_content(model=model_name, contents=prompt)
@@ -175,20 +174,19 @@ End: <p><i>Analysis by TRTT News 24 BD Desk, Sanluri, Sardinia, Italy.</i></p>
             except Exception as e:
                 print(f"Gemini {model_name} fail: {e}")
 
-    # 2. GROQ
     groq_key = os.environ.get("GROQ_API_KEY")
     if groq_key:
-        try:
-            r = requests.post("https://api.groq.com/openai/v1/chat/completions",
-                headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
-                json={"model": "llama-3.3-70b-versatile", "messages": [{"role": "user", "content": prompt}], "temperature": 0.7}, timeout=60)
-            if r.status_code == 200:
-                print("✅ Groq Success")
-                return clean_ai_html(r.json()['choices'][0]['message']['content']), info['label']
-        except Exception as e:
-            print(f"Groq fail: {e}")
+        for gmodel in ["llama-3.3-70b-versatile", "llama-3.1-70b-versatile", "mixtral-8x7b-32768"]:
+            try:
+                r = requests.post("https://api.groq.com/openai/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
+                    json={"model": gmodel, "messages": [{"role": "user", "content": prompt}]}, timeout=60)
+                if r.status_code == 200:
+                    print(f"✅ Groq Success ({gmodel})")
+                    return clean_ai_html(r.json()['choices'][0]['message']['content']), info['label']
+            except Exception as e:
+                print(f"Groq {gmodel} fail: {e}")
 
-    # 3. OPENROUTER
     openrouter_key = os.environ.get("OPENROUTER_API_KEY")
     if openrouter_key:
         try:
@@ -200,42 +198,6 @@ End: <p><i>Analysis by TRTT News 24 BD Desk, Sanluri, Sardinia, Italy.</i></p>
                 return clean_ai_html(r.json()['choices'][0]['message']['content']), info['label']
         except Exception as e:
             print(f"OpenRouter fail: {e}")
-
-    # 4. MISTRAL
-    mistral_key = os.environ.get("MISTRAL_API_KEY")
-    if mistral_key:
-        try:
-            r = requests.post("https://api.mistral.ai/v1/chat/completions",
-                headers={"Authorization": f"Bearer {mistral_key}", "Content-Type": "application/json"},
-                json={"model": "mistral-small-latest", "messages": [{"role": "user", "content": prompt}]}, timeout=60)
-            if r.status_code == 200:
-                return clean_ai_html(r.json()['choices'][0]['message']['content']), info['label']
-        except Exception as e:
-            print(f"Mistral fail: {e}")
-
-    # 5. DEEPSEEK
-    deepseek_key = os.environ.get("DEEP_SEEK_KEY")
-    if deepseek_key:
-        try:
-            r = requests.post("https://api.deepseek.com/chat/completions",
-                headers={"Authorization": f"Bearer {deepseek_key}", "Content-Type": "application/json"},
-                json={"model": "deepseek-chat", "messages": [{"role": "user", "content": prompt}]}, timeout=60)
-            if r.status_code == 200:
-                return clean_ai_html(r.json()['choices'][0]['message']['content']), info['label']
-        except Exception as e:
-            print(f"DeepSeek fail: {e}")
-
-    # 6. COHERE
-    cohere_key = os.environ.get("COHERE_API_KEY")
-    if cohere_key:
-        try:
-            r = requests.post("https://api.cohere.ai/v1/generate",
-                headers={"Authorization": f"Bearer {cohere_key}", "Content-Type": "application/json"},
-                json={"model": "command-r-plus", "prompt": prompt, "max_tokens": 1200}, timeout=60)
-            if r.status_code == 200:
-                return clean_ai_html(r.json()['generations'][0]['text']), info['label']
-        except Exception as e:
-            print(f"Cohere fail: {e}")
 
     print("All APIs failed - expanded fallback")
     fallback_html = f"""
