@@ -1,0 +1,55 @@
+<!-- PART-308 Voice Search -->
+<div class="voice-search-box" style="background: #ffffff; border: 2px solid #003580; padding: 14px; border-radius: 12px; margin: 10px 0; text-align: center;">
+  <button id="voiceBtn" onclick="startVoice()" style="background: #003580; color: #ffffff; border: 0; padding: 12px 20px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 8px;">
+    🎤 Hey TRTT, FCO to Rome cheapest?
+  </button>
+  <div id="voiceStatus" style="font-size: 12px; color: #64748b; margin-top: 8px;">
+    ভয়েস সার্চ চালু করতে বাটনে ক্লিক করুন...
+  </div>
+</div>
+
+<script>
+// PART-308 Voice Recognition Engine
+function startVoice() {
+  const statusEl = document.getElementById('voiceStatus');
+  const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!Rec) {
+    if (statusEl) statusEl.innerText = "❌ আপনার ব্রাউজারে ভয়েস সার্চ সাপোর্ট করে না। Chrome বা Edge ব্যবহার করুন।";
+    return;
+  }
+
+  try {
+    const r = new Rec();
+    r.lang = 'en-US';
+    r.interimResults = false;
+
+    if (statusEl) statusEl.innerText = "🎙️ শুনছি... বলুন (e.g. FCO to Rome cheapest)";
+
+    r.start();
+
+    r.onresult = function(e) {
+      const text = e.results[0][0].transcript;
+      if (statusEl) statusEl.innerText = "✅ শোনা গেছে: '" + text + "'";
+      
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.value = text;
+      }
+
+      // LocalStorage Anti-Data Loss Save
+      localStorage.setItem('trtt_last_voice_search', JSON.stringify({ query: text, time: new Date().toISOString() }));
+
+      if (typeof execSearch === 'function') {
+        execSearch();
+      }
+    };
+
+    r.onerror = function(e) {
+      if (statusEl) statusEl.innerText = "⚠️ ভয়েস বুঝতে সমস্যা হয়েছে, আবার চেষ্টা করুন।";
+    };
+  } catch (err) {
+    console.warn("Voice search error:", err);
+  }
+}
+</script>
