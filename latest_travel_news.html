@@ -1,0 +1,74 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Amazon Top Search Gadgets 2026 - Amazon & Travelpayouts Guide 2026</title>
+        <style>
+            body { background-color: #00070f; color: #fff; font-family: sans-serif; padding: 20px; margin: 0; }
+            h1 { color: #00ff88; font-size: 24px; }
+            img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; }
+        </style>
+    </head>
+    <body>
+        <h1>Amazon Top Search Gadgets 2026 - Amazon & Travelpayouts Guide 2026</h1>
+        <img src="https://images.unsplash.com/photo-1766270122947-519fa0413875?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDk2ODUzfDB8MXxyYW5kb218fHx8fHx8fHwxNzkyNjY4MzIyfA&ixlib=rb-4.1.0&q=80&w=1080" alt="Amazon Top Search Gadgets 2026 - Amazon & Travelpayouts Guide 2026">
+        <h2>TRTT Daily Travel Update</h2><p>Check live flight prices on Aviasales and top travel gear on Amazon.</p>
+        
+    <div style="background:#111827;border:2px solid #00ff88;padding:22px;border-radius:14px;margin-top:25px;color:#fff">
+     <h3 style="color:#00ff88;margin:0 0 8px 0;">🛂 Instant Visa & Flight Route Radar</h3>
+     <p style="color:#9ca3af;font-size:13px">Select destination - Visa + Price + Insurance auto update:</p>
+     
+     <select id="newsVisaCountry" onchange="updateFlightRoute()" style="width:100%;padding:12px;border-radius:8px;background:#000;color:#fff;border:1px solid #1f2937;margin:12px 0;font-weight:700">
+      <option value="italy">🇮🇹 Italy (Rome FCO) - $450</option>
+      <option value="france">🇫🇷 France (Paris CDG) - $480</option>
+      <option value="germany">🇩🇪 Germany (Frankfurt FRA) - $420</option>
+      <option value="uk">🇬🇧 UK (London LHR) - $510</option>
+      <option value="usa">🇺🇸 USA (New York JFK) - $650</option>
+      <option value="uae">🇦🇪 Dubai (DXB) - $280</option>
+     </select>
+
+     <p id="newsVisaResult" style="font-size:13px;font-weight:800;color:#00aaff;margin:0 0 14px 0">⚠️ Schengen Visa & Travel Insurance required. Fare: DAC to FCO $450.</p>
+     
+     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+      <a id="dynamicFlightBtn" href="https://aviasales.tpo.lv/Fb8U9yav?marker=787950" target="_blank" style="background:#00aaff;color:#000;padding:10px 15px;text-decoration:none;font-weight:800;border-radius:8px;font-size:13px">🛫 Book to Rome ↗</a>
+      <a href="https://airalo.tpo.lv/ZZoQC7Mz?marker=787950" target="_blank" style="background:#00ff88;color:#000;padding:10px 15px;text-decoration:none;font-weight:800;border-radius:8px;font-size:13px">📱 eSIM ↗</a>
+      <a href="https://amzn.to/4shg6Hn" target="_blank" style="background:#ff9900;color:#fff;padding:10px 15px;text-decoration:none;font-weight:800;border-radius:8px;font-size:13px">🎒 Anker MagSafe Power  ↗</a>
+     </div>
+
+     <hr style="border:0;border-top:1px solid #1f2937;margin:20px 0">
+
+     <h3 style="color:#ff3b3b;margin:0 0 8px 0;">🛡️ Schengen Insurance Calculator</h3>
+     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0">
+      <input id="insDays" type="number" value="7" min="1" style="width:70px;padding:9px;background:#000;color:#fff;border:1px solid #333;border-radius:6px;font-weight:bold"> <span style="color:#fff">Days</span>
+      <button onclick="calcIns()" style="background:#ff3b3b;color:#fff;padding:9px 16px;border:0;border-radius:6px;font-weight:800;cursor:pointer">Calculate</button>
+     </div>
+     <p id="insResult" style="color:#00ff88;font-weight:800;font-size:14px">7 Days - $17.50 (Schengen Approved €30k)</p>
+    </div>
+
+    <script>
+    function updateFlightRoute(){
+     const c=document.getElementById('newsVisaCountry').value;
+     const map={
+      italy:['⚠️ Schengen Visa + Insurance required. DAC→FCO $450','🛫 Book to Rome (FCO) ↗'],
+      france:['⚠️ Schengen Visa required. DAC→CDG $480','🛫 Book to Paris (CDG) ↗'],
+      germany:['⚠️ Schengen + €45/day proof. DAC→FRA $420','🛫 Book to Frankfurt ↗'],
+      uk:['Standard Visitor Visa. DAC→LHR $510','🛫 Book to London ↗'],
+      usa:['B1/B2 Visa. DAC→JFK $650','🛫 Book to New York ↗'],
+      uae:['Instant 30 Days Visa. DAC→DXB $280','🛫 Book to Dubai ↗']
+     };
+     if(map[c]){
+      document.getElementById('newsVisaResult').innerText=map[c][0];
+      document.getElementById('dynamicFlightBtn').innerText=map[c][1];
+     }
+    }
+
+    function calcIns(){
+     let d=document.getElementById('insDays').value||7;
+     document.getElementById('insResult').innerText=d+' Days Schengen Coverage - $'+(d*2.5).toFixed(2)+' (Approved)';
+    }
+    </script>
+    
+    </body>
+    </html>
+    
