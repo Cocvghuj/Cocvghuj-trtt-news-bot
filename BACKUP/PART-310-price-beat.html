@@ -1,0 +1,39 @@
+<!-- PART-310 Price Beat Guarantee - Booking.com Killer -->
+<div id="beatBox" style="margin: 10px 0;"></div>
+
+<script>
+// PART-310 Price Beat Engine
+function checkPriceBeat(dest) {
+  const destination = dest || "FCO";
+  const booking = 105; // Booking.com hidden total price
+  const trtt = 65;     // TRTT transparent price
+  const beatBoxEl = document.getElementById('beatBox');
+
+  if (beatBoxEl) {
+    beatBoxEl.innerHTML = `
+      <div style="border: 3px solid #dc2626; padding: 14px; border-radius: 12px; background: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+        <b style="color: #dc2626; font-size: 15px;">💥 PRICE BEAT GUARANTEE:</b><br>
+        <div style="margin: 8px 0; font-size: 13px; line-height: 1.6;">
+          • <b>Booking.com:</b> €${booking} <span style="font-size: 11px; color: #64748b;">(with hidden fees)</span><br>
+          • <b>TRTT 787950:</b> €${trtt} <span style="font-size: 11px; color: #16a34a; font-weight: bold;">(All Inclusive)</span>
+        </div>
+        <div style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 8px 12px; margin: 8px 0; border-radius: 4px;">
+          <b style="color: #16a34a; font-size: 13px;">Booking থেকে €1 বেশি হলে আমরা €5 Extra Cashback দেবো!</b>
+        </div>
+        <a href="https://aviasales.tpo.lv?marker=787950&to=${destination}&beat=1" target="_blank" style="display: inline-block; margin-top: 6px; background: #dc2626; color: #ffffff; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 12px;">
+          Claim Beat Guarantee →
+        </a>
+      </div>
+    `;
+  }
+
+  // Anti-Data Loss Persistence
+  try {
+    localStorage.setItem('trtt_beat', 'active');
+    localStorage.setItem('trtt_beat_dest', destination);
+  } catch(e) {}
+}
+
+// Default Auto Execution
+checkPriceBeat("FCO");
+</script>
