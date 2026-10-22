@@ -1,0 +1,41 @@
+<!-- PART-319 Europe & Global Euro Group Split -->
+<div style="background: #ffffff; padding: 16px; border-radius: 12px; border: 2px solid #006ce4; box-shadow: 0 4px 12px rgba(0, 108, 228, 0.08); margin: 10px 0;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+    <b style="color: #003580; font-size: 15px;">💶 Europe & Global Euro Group Split:</b>
+    <span style="background: #006ce4; color: #fff; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: bold;">EUR & BDT Multi-Pay</span>
+  </div>
+
+  <p style="font-size: 13px; color: #1e293b; line-height: 1.5; margin: 8px 0;">
+    👥 <b>4 Friends Rome Trip</b> - Total Hotel + Train €260<br>
+    💶 Your Share: <b>€65</b> / Person (Wise / Revolut / PayPal / bKash Split)
+  </p>
+
+  <div style="margin: 10px 0; display: flex; gap: 8px; flex-wrap: wrap;">
+    <button onclick="createEuropeSplit()" style="background: #006ce4; color: #ffffff; border: 0; padding: 10px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+      📲 Create Euro Split Link (€65 / person)
+    </button>
+  </div>
+
+  <div style="border-top: 1px dashed #cbd5e1; padding-top: 8px; margin-top: 8px; font-size: 11px; color: #64748b; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
+    <span>💳 Supports Revolut, Wise, PayPal & bKash</span>
+    <span style="font-weight: bold; color: #006ce4;">✅ TRTT Exclusive (Marker 787950)</span>
+  </div>
+</div>
+
+<script>
+// PART-319 Europe Group Split Engine
+function createEuropeSplit() {
+  alert('Euro Split Link Generated! Share with friends via WhatsApp/Wise - Marker 787950');
+  
+  // Anti-Data Loss Persistence
+  try {
+    localStorage.setItem('trtt_europe_split_active', 'true');
+    localStorage.setItem('trtt_euro_total', '260');
+    localStorage.setItem('trtt_euro_members', '4');
+    localStorage.setItem('trtt_euro_per_person', '65');
+    localStorage.setItem('trtt_split_timestamp', new Date().toISOString());
+  } catch(e) {
+    console.warn("Europe split storage notice:", e);
+  }
+}
+</script>
