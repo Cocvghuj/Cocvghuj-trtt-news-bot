@@ -1,0 +1,30 @@
+<!-- PART-306 Live Booking Ticker -->
+<div id="ticker" style="background:#003580; color:#fff; padding:10px 14px; border-radius:10px; font-size:12px; font-weight:bold; display:flex; align-items:center; justify-content:space-between; margin:10px 0;">
+  <span>Anjali just booked Milan - 2 min ago - €5 cashback</span>
+</div>
+
+<script>
+(function(){
+  try {
+    const tickerEl = document.getElementById('ticker');
+    const bookings = [
+      "🔥 Live: Anjali just booked Milan - 2 min ago - €5 cashback",
+      "⚡ Live: Rahim just booked Rome - 5 min ago - €7 cashback",
+      "🎉 Live: Priya just booked Venice - 1 min ago - €3 cashback",
+      "🚀 Live: Sujit just booked Naples - 8 min ago - €5 cashback"
+    ];
+    let index = 0;
+
+    setInterval(() => {
+      index = (index + 1) % bookings.length;
+      if (tickerEl) {
+        tickerEl.innerHTML = `<span>${bookings[index]}</span> <span style="font-size:10px; opacity:0.8;">[${new Date().toLocaleTimeString()} • Marker 787950]</span>`;
+      }
+    }, 4000);
+
+    localStorage.setItem('trtt_ticker_active', 'true');
+  } catch(e) {
+    console.warn("Ticker error:", e);
+  }
+})();
+</script>
