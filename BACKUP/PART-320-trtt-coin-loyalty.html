@@ -1,0 +1,59 @@
+<!-- PART-320 TRTT Coin Loyalty Killer (With Terms & Conditions) -->
+<div id="coinBox" style="margin: 10px 0;"></div>
+
+<script>
+// PART-320 TRTT Coin Loyalty Engine
+function updateCoin() {
+  const coinBoxEl = document.getElementById('coinBox');
+  
+  // LocalStorage Anti-Data Loss Coin Handling
+  let coin = parseInt(localStorage.getItem('trtt_coin') || '0');
+  if (isNaN(coin)) coin = 0;
+
+  if (coinBoxEl) {
+    const progressWidth = Math.min(coin * 10, 100);
+
+    coinBoxEl.innerHTML = `
+      <div style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #ffffff; padding: 14px; border-radius: 12px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <b style="font-size: 16px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">🪙 TRTT Coin: ${coin}/10</b>
+          <span style="background: rgba(255, 255, 255, 0.25); padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: bold; backdrop-filter: blur(4px);">Loyalty Reward</span>
+        </div>
+
+        <p style="margin: 4px 0 10px 0; font-size: 12px; line-height: 1.5; color: #fffbe0;">
+          প্রতি Booking এ 1 Coin — <b>10 Coin = 1 Free Night Stay!*</b><br>
+          <span style="font-size: 11px; opacity: 0.9;">Booking.com এ এই সুবিধা নাই | Marker 787950</span>
+        </p>
+
+        <!-- Progress Bar Container -->
+        <div style="background: rgba(255, 255, 255, 0.3); height: 12px; border-radius: 6px; overflow: hidden; padding: 2px;">
+          <div style="width: ${progressWidth}%; background: #22c55e; height: 100%; border-radius: 4px; transition: width 0.5s ease-in-out;"></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; font-size: 10px; margin-top: 4px; color: #fef3c7;">
+          <span>0 Coins</span>
+          <span>5 Coins</span>
+          <span>10 Coins (Free Night)</span>
+        </div>
+
+        <!-- Terms & Conditions Box -->
+        <div style="margin-top: 10px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; font-size: 10px; color: #fef2f2; line-height: 1.4;">
+          <b>* T&C / শর্তাবলী:</b><br>
+          1. প্রতি বুকিং সর্বনিম্ন €30 বা ৳3,000 হতে হবে।<br>
+          2. ১০টি Coin হলে সর্বোচ্চ €25 / ৳2,500 ভাউচার/ক্যাশব্যাক পাওয়া যাবে।<br>
+          3. শুধু Marker 787950 দিয়ে সম্পন্ন হওয়া ভেরিফাইড বুকিং প্রযোজ্য।
+        </div>
+      </div>
+    `;
+  }
+
+  // Save State
+  try {
+    localStorage.setItem('trtt_coin', coin.toString());
+    localStorage.setItem('trtt_coin_updated', new Date().toISOString());
+  } catch(e) {}
+}
+
+// Auto Execution
+updateCoin();
+</script>
