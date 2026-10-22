@@ -1,250 +1,247 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TRTTVoyageHub | Official - Flights, eSIM, Insurance & Travel Store</title>
-<meta name="description" content="TRTTVoyageHub - Official Sanluri based travel hub. Cheap flights, AirHelp compensation, eSIMs, Schengen insurance & Amazon travel gear.">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-:root { --main-blue: #003580; --accent-yellow: #febb02; --bright-green: #00ff88; --dark-bg: #0a1929; --card-bg: #111827; }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: system-ui, -apple-system, sans-serif; background: var(--dark-bg); color: #fff; line-height: 1.5; }
+import os
+import random
+import requests
+import smtplib
+from datetime import datetime
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
-/* Header */
-.header { background: var(--main-blue); padding: 12px 20px; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent-yellow); }
-.header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-.logo { font-size: 22px; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
-.logo span { color: var(--accent-yellow); }
-.nav-links { display: flex; gap: 10px; flex-wrap: wrap; }
-.nav-links a { color: #fff; text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 20px; background: rgba(255,255,255,0.1); }
-.nav-links a:hover { background: var(--accent-yellow); color: #000; }
+# ==================== ENVIRONMENT SECRETS ====================
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
+OPEN_AI_API_KEY = os.environ.get("OPEN_AI_API_KEY")
+MISTRAL_API_KEY = os.environ.get("MISTRAL_API_KEY")
+DEEP_SEEK_KEY = os.environ.get("DEEP_SEEK_KEY")
 
-/* Hero Banner */
-.hero { background: linear-gradient(135deg, #003580, #0a1929); text-align: center; padding: 35px 20px; border-bottom: আমি একদম বুঝতে পেরেছি তুমি কী চাইছ বন্ধু! তোমার গিটহাবের পেজটা শুধু দেখতে সুন্দর হলেই হবে না, সেখানে Travelpayouts-এর সব গুরুত্বপূর্ণ প্রোগ্রাম (ফ্লাইট, হোটেল, ই-সিম, কার রেন্টাল, বাস/ট্রেন) এবং অ্যামাজন একসাথে দারুণভাবে কাজ করতে হবে—যাতে ভিজিটর এক জায়গায় এসেই সব সেবা পায় (১ ঢিলে ৩ পাখি বা তার চেয়েও বেশি শিকার!)।
+UNSPLASH_ACCESS_KEY = os.environ.get("UNSPLASH_ACCESS_KEY")
+GMAIL_USER = os.environ.get("GMAIL_USER")
+GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD")
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 
-নিচে তোমার জন্য **Travelpayouts-এর সব সেরা সেরা সার্ভিস এবং অ্যামাজনসহ** একটি অল-ইন-ওয়ান কোড তৈরি করে দিলাম। 
+TRAVEL_PAYOUT_MARKER = os.environ.get("TRAVEL_PAYOUT_MARKER", "787950")
+AMAZON_AFFILIATE_LINK = "https://amzn.to/4shg6Hn"
 
-### 🛠️ এতে কী কী সার্ভিস এবং সিক্রেট মার্কারযুক্ত লিংক যোগ করা হয়েছে:
-১. **ফ্লাইট ও টিকেট:** Aviasales 
-২. **হোটেল ও থাকার জায়গা:** Booking.com / Agoda Search
-৩. **ই-সিম ও ডাটা:** Airalo, Saily, Yesim
-৪. **ভিসা ও ট্রাভেল ইন্স্যুরেন্স:** SafetyWing, Ekta Insurance
-৫. **কার রেন্ট ও ট্রান্সফার:** Localrent & GetTransfer
-৬. **বাস ও ট্রেন টিকিট:** 12Go / Trainline
-৭. **ট্যুর ও অ্যাক্টিভিটি:** Klook
-৮. **অ্যামাজন ট্রাভেল গিয়ার:** Amazon Top Gear (4shg6Hn)
+# ==================== DAILY 4 TOPICS ====================
+DAILY_TOPICS = [
+    {
+        "category": "Flight & Airport Deals",
+        "focus": "Aviasales Flight Price Drops & AirHelp Compensation",
+        "amazon_item": "Universal Travel Adapter & Noise Canceling Headphones",
+        "amazon_tag": "Electronics & Gadgets",
+        "image_keyword": "airplane,airport"
+    },
+    {
+        "category": "Amazon Top Search Gadgets 2026",
+        "focus": "AirPods 4, Smart Home Gadgets & Powerbanks",
+        "amazon_item": "Anker MagSafe Power Bank & AirPods Accessories",
+        "amazon_tag": "Amazon Deals 2026",
+        "image_keyword": "technology,gadgets"
+    },
+    {
+        "category": "eSIM & Destination Guide",
+        "focus": "Airalo eSIM Data & Localrent Car Hire",
+        "amazon_item": "Waterproof Travel Backpack & TSA Lock",
+        "amazon_tag": "Travel Gear",
+        "image_keyword": "travel,destination"
+    },
+    {
+        "category": "Lifestyle, Books & Skincare",
+        "focus": "Klook Tours & Organic Travel Essentials",
+        "amazon_item": "Premium Sunscreen SPF50 & Travel Novels",
+        "amazon_tag": "Skincare & Books",
+        "image_keyword": "lifestyle,book"
+    }
+]
 
----
+def get_current_topic():
+    hour = datetime.now().hour
+    if 5 <= hour < 11:
+        return DAILY_TOPICS[0]
+    elif 11 <= hour < 17:
+        return DAILY_TOPICS[1]
+    elif 17 <= hour < 23:
+        return DAILY_TOPICS[2]
+    else:
+        return DAILY_TOPICS[3]
 
-### 🚀 নতুন এবং সম্পূর্ণ অল-ইন-ওয়ান `index.html` কোড:
+# ==================== MULTI-AI FALLBACK ENGINE ====================
+def generate_ai_news(prompt):
+    # 1. Try Gemini API
+    if GEMINI_API_KEY:
+        try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+            res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=10)
+            if res.status_code == 200:
+                print("✅ Generated with Gemini API")
+                return res.json()['candidates'][0]['content']['parts'][0]['text']
+        except Exception as e:
+            print(f"Gemini error: {e}")
 
-গিটহাবের **`index.html`** ফাইলে আগের সবকিছু মুছে নিচের পুরো কোডটি কপি করে পেস্ট করে সেভ (Commit) করো:
+    # 2. Try Groq API
+    if GROQ_API_KEY:
+        try:
+            url = "https://api.groq.com/openai/v1/chat/completions"
+            headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+            res = requests.post(url, json={"model": "llama3-8b-8192", "messages": [{"role": "user", "content": prompt}]}, headers=headers, timeout=10)
+            if res.status_code == 200:
+                print("✅ Generated with Groq API")
+                return res.json()['choices'][0]['message']['content']
+        except Exception as e:
+            print(f"Groq error: {e}")
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TRTTVoyageHub | All-in-One Europe Travel & Booking Center</title>
-<meta name="description" content="TRTTVoyageHub - Instant Flight search, Hotel deals, eSIM, Schengen Insurance, Car Hire, and Travel Gear. Based in Sanluri, Sardinia, Italy.">
-<link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css)">
-<style>
-:root { --main-blue: #003580; --accent-yellow: #febb02; --bright-green: #00ff88; --dark-bg: #0a1929; --card-bg: #111827; }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: system-ui, -apple-system, sans-serif; background: var(--dark-bg); color: #fff; line-height: 1.5; }
+    # 3. Try OpenRouter API
+    if OPENROUTER_API_KEY:
+        try:
+            url = "https://openrouter.ai/api/v1/chat/completions"
+            headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json"}
+            res = requests.post(url, json={"model": "meta-llama/llama-3-8b-instruct:free", "messages": [{"role": "user", "content": prompt}]}, headers=headers, timeout=10)
+            if res.status_code == 200:
+                print("✅ Generated with OpenRouter API")
+                return res.json()['choices'][0]['message']['content']
+        except Exception as e:
+            print(f"OpenRouter error: {e}")
 
-/* Header */
-.header { background: var(--main-blue); padding: 12px 20px; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent-yellow); }
-.header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-.logo { font-size: 22px; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
-.logo span { color: var(--accent-yellow); }
-.nav-links { display: flex; gap: 10px; flex-wrap: wrap; }
-.nav-links a { color: #fff; text-decoration: none; font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 20px; background: rgba(255,255,255,0.1); }
-.nav-links a:hover { background: var(--accent-yellow); color: #000; }
+    return "<h2>TRTT Daily Travel Update</h2><p>Check live flight prices on Aviasales and top travel gear on Amazon.</p>"
 
-/* Hero */
-.hero { background: linear-gradient(135deg, #003580, #0a1929); text-align: center; padding: 35px 20px; border-bottom: 1px solid #1e293b; }
-.hero h1 { font-size: 26px; margin-bottom: 8px; color: #fff; }
-.hero p { color: #94a3b8; font-size: 14px; max-width: 650px; margin: 0 auto 15px; }
+# ==================== UNSPLASH IMAGE FETCH ENGINE ====================
+def get_unsplash_image(keyword):
+    if UNSPLASH_ACCESS_KEY:
+        try:
+            url = f"https://api.unsplash.com/photos/random?query={keyword}&client_id={UNSPLASH_ACCESS_KEY}"
+            res = requests.get(url, timeout=5)
+            if res.status_code == 200:
+                return res.json()['urls']['regular']
+        except Exception as e:
+            print(f"Unsplash error: {e}")
+    return f"https://source.unsplash.com/800x400/?{keyword}"
 
-/* Main Grid */
-.container { max-width: 1200px; margin: 20px auto; padding: 0 15px; display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-@media(max-width: 850px) { .container { grid-template-columns: 1fr; } }
+# ==================== EMAIL & TELEGRAM NOTIFICATION ====================
+def send_email_and_telegram(title, html_content):
+    # Gmail SMTP Dispatch
+    if GMAIL_USER and GMAIL_APP_PASSWORD:
+        try:
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = f"TRTT Travel Update: {title}"
+            msg["From"] = GMAIL_USER
+            msg["To"] = GMAIL_USER
+            msg.attach(MIMEText(html_content, "html"))
+            
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+                server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+                server.sendmail(GMAIL_USER, GMAIL_USER, msg.as_string())
+            print("✅ Email sent via Gmail SMTP")
+        except Exception as e:
+            print(f"Email failed: {e}")
 
-/* Cards & Sections */
-.card { background: var(--card-bg); border: 1px solid #1f2937; border-radius: 12px; padding: 18px; margin-bottom: 20px; }
-.card-title { font-size: 16px; font-weight: 700; color: var(--bright-green); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    # Telegram Bot Message Dispatch
+    if TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID:
+        try:
+            text = f"📢 *TRTT EuroVoyage Hub Update*\n\n*Title:* {title}\n\n👉 [Read Live Article](https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/)"
+            url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+            requests.post(url, json={"chat_id": TELEGRAM_CHAT_ID, "text": text, "parse_mode": "Markdown"}, timeout=5)
+            print("✅ Telegram notification sent")
+        except Exception as e:
+            print(f"Telegram failed: {e}")
 
-/* Button Grids */
-.btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 12px; }
-.btn { padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 12px; text-align: center; display: block; border: none; cursor: pointer; transition: 0.2s; }
-.btn:hover { opacity: 0.9; transform: translateY(-1px); }
-.btn-blue { background: #005eb8; color: #fff; }
-.btn-yellow { background: var(--accent-yellow); color: #000; }
-.btn-green { background: var(--bright-green); color: #000; }
-.btn-orange { background: #ff9900; color: #fff; }
-.btn-purple { background: #8b5cf6; color: #fff; }
-.btn-red { background: #ef4444; color: #fff; }
-
-/* Footer */
-.footer { text-align: center; padding: 25px; border-top: 1px solid #1e293b; font-size: 12px; color: #64748b; }
-</style>
-</head>
-<body>
-
-<!-- Header -->
-<div class="header">
-  <div class="header-container">
-    <a href="#" class="logo"><i class="fa-solid fa-plane-departure"></i> TRTT<span>VoyageHub</span></a>
-    <div class="nav-links">
-      <a href="#flights">Flights</a>
-      <a href="#hotels">Hotels</a>
-      <a href="#esim">eSIM</a>
-      <a href="#insurance">Insurance</a>
-      <a href="#cars">Car & Transfer</a>
-      <a href="#amazon">Travel Gear</a>
-    </div>
-  </div>
-</div>
-
-<!-- Hero Banner -->
-<div class="hero">
-  <h1>TRTTVoyageHub - Universal Travel Booking Center</h1>
-  <p>Search cheap flights, book verified hotels, activate instant eSIMs, calculate Schengen insurance, and rent cars across Europe & Worldwide.</p>
-</div>
-
-<!-- Main Content Grid -->
-<div class="container">
-  
-  <!-- Left Main Column -->
-  <div>
+# ==================== MAIN EXECUTION ====================
+if __name__ == "__main__":
+    topic = get_current_topic()
     
-    <!-- 1. Flight Search & Visa Radar (Travelpayouts: Aviasales) -->
-    <div class="card" id="flights">
-      <div class="card-title"><i class="fa-solid fa-plane"></i> 1. Flight Radar & Visa Calculator (Aviasales)</div>
-      <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">Select route for instant visa advice & real-time flight ticket price comparison:</p>
-      
-      <select id="routeSelect" onchange="updateRoute()" style="width:100%; padding:10px; background:#000; color:#fff; border:1px solid #333; border-radius:6px; font-weight:bold; margin-bottom:10px;">
-        <option value="italy">🇮🇹 Italy (Rome FCO) - Schengen Visa Req.</option>
-        <option value="france">🇫🇷 France (Paris CDG) - Schengen Visa Req.</option>
-        <option value="germany">🇩🇪 Germany (Frankfurt FRA) - Schengen Visa Req.</option>
-        <option value="uk">🇬🇧 UK (London LHR) - Visitor Visa Req.</option>
-        <option value="usa">🇺🇸 USA (New York JFK) - B1/B2 Visa Req.</option>
-      </select>
-      
-      <p id="routeResult" style="color:#00aaff; font-weight:bold; font-size:12px; margin-bottom:10px;">⚠️ Schengen Visa & Approved Medical Insurance required. Est. Fare: $450.</p>
+    prompt = f"""
+    Act as an expert SEO journalist for TRTT EuroVoyage Hub.
+    Write a 100% UNIQUE SEO Article in ENGLISH about:
+    Category: {topic['category']} featuring {topic['focus']}.
+    Must recommend Amazon product: {topic['amazon_item']}.
+    Include 'Travelpayouts' or 'Amazon' in the Title.
+    Format as HTML using <h2>, <h3>, <p>, <ul>, <li>.
+    """
+    
+    news_body = generate_ai_news(prompt)
+    title = f"{topic['category']} - Amazon & Travelpayouts Guide 2026"
+    image_url = get_unsplash_image(topic['image_keyword'])
+    amazon_label = topic['amazon_item'][:20]
+    
+    affiliate_widget = f"""
+    <div style="background:#111827;border:2px solid #00ff88;padding:22px;border-radius:14px;margin-top:25px;color:#fff">
+     <h3 style="color:#00ff88;margin:0 0 8px 0;">🛂 Instant Visa & Flight Route Radar</h3>
+     <p style="color:#9ca3af;font-size:13px">Select destination - Visa + Price + Insurance auto update:</p>
+     
+     <select id="newsVisaCountry" onchange="updateFlightRoute()" style="width:100%;padding:12px;border-radius:8px;background:#000;color:#fff;border:1px solid #1f2937;margin:12px 0;font-weight:700">
+      <option value="italy">🇮🇹 Italy (Rome FCO) - $450</option>
+      <option value="france">🇫🇷 France (Paris CDG) - $480</option>
+      <option value="germany">🇩🇪 Germany (Frankfurt FRA) - $420</option>
+      <option value="uk">🇬🇧 UK (London LHR) - $510</option>
+      <option value="usa">🇺🇸 USA (New York JFK) - $650</option>
+      <option value="uae">🇦🇪 Dubai (DXB) - $280</option>
+     </select>
 
-      <div class="btn-grid">
-        <a id="flightBtn" href="[https://aviasales.tpo.lv/Fb8U9yav?marker=787950](https://aviasales.tpo.lv/Fb8U9yav?marker=787950)" target="_blank" rel="noopener noreferrer sponsored" class="btn btn-blue">🛫 Search Flights on Aviasales ↗</a>
-      </div>
+     <p id="newsVisaResult" style="font-size:13px;font-weight:800;color:#00aaff;margin:0 0 14px 0">⚠️ Schengen Visa & Travel Insurance required. Fare: DAC to FCO $450.</p>
+     
+     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+      <a id="dynamicFlightBtn" href="https://aviasales.tpo.lv/Fb8U9yav?marker={TRAVEL_PAYOUT_MARKER}" target="_blank" style="background:#00aaff;color:#000;padding:10px 15px;text-decoration:none;font-weight:800;border-radius:8px;font-size:13px">🛫 Book to Rome ↗</a>
+      <a href="https://airalo.tpo.lv/ZZoQC7Mz?marker={TRAVEL_PAYOUT_MARKER}" target="_blank" style="background:#00ff88;color:#000;padding:10px 15px;text-decoration:none;font-weight:800;border-radius:8px;font-size:13px">📱 eSIM ↗</a>
+      <a href="{AMAZON_AFFILIATE_LINK}" target="_blank" style="background:#ff9900;color:#fff;padding:10px 15px;text-decoration:none;font-weight:800;border-radius:8px;font-size:13px">🎒 {amazon_label} ↗</a>
+     </div>
+
+     <hr style="border:0;border-top:1px solid #1f2937;margin:20px 0">
+
+     <h3 style="color:#ff3b3b;margin:0 0 8px 0;">🛡️ Schengen Insurance Calculator</h3>
+     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0">
+      <input id="insDays" type="number" value="7" min="1" style="width:70px;padding:9px;background:#000;color:#fff;border:1px solid #333;border-radius:6px;font-weight:bold"> <span style="color:#fff">Days</span>
+      <button onclick="calcIns()" style="background:#ff3b3b;color:#fff;padding:9px 16px;border:0;border-radius:6px;font-weight:800;cursor:pointer">Calculate</button>
+     </div>
+     <p id="insResult" style="color:#00ff88;font-weight:800;font-size:14px">7 Days - $17.50 (Schengen Approved €30k)</p>
     </div>
 
-    <!-- 2. Hotel & Accommodation Booking (Travelpayouts: Booking / Agoda) -->
-    <div class="card" id="hotels">
-      <div class="card-title"><i class="fa-solid fa-hotel"></i> 2. Worldwide Hotels & Hostels</div>
-      <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">Find verified stays with free cancellation options across Europe & Asia:</p>
-      
-      <div class="btn-grid">
-        <a href="[https://aviasales.tpo.lv/Fb8U9yav?marker=787950](https://aviasales.tpo.lv/Fb8U9yav?marker=787950)" target="_blank" rel="noopener noreferrer sponsored" class="btn btn-yellow">🏨 Book Hotels ↗</a>
-        <a href="[https://klook.tpo.lv/4L18Q2?marker=787950](https://klook.tpo.lv/4L18Q2?marker=787950)" target="_blank" rel="noopener noreferrer sponsored" class="btn btn-purple">🎟️ Tours & Klook Stay ↗</a>
-      </div>
-    </div>
+    <script>
+    function updateFlightRoute(){{
+     const c=document.getElementById('newsVisaCountry').value;
+     const map={{
+      italy:['⚠️ Schengen Visa + Insurance required. DAC→FCO $450','🛫 Book to Rome (FCO) ↗'],
+      france:['⚠️ Schengen Visa required. DAC→CDG $480','🛫 Book to Paris (CDG) ↗'],
+      germany:['⚠️ Schengen + €45/day proof. DAC→FRA $420','🛫 Book to Frankfurt ↗'],
+      uk:['Standard Visitor Visa. DAC→LHR $510','🛫 Book to London ↗'],
+      usa:['B1/B2 Visa. DAC→JFK $650','🛫 Book to New York ↗'],
+      uae:['Instant 30 Days Visa. DAC→DXB $280','🛫 Book to Dubai ↗']
+     }};
+     if(map[c]){{
+      document.getElementById('newsVisaResult').innerText=map[c][0];
+      document.getElementById('dynamicFlightBtn').innerText=map[c][1];
+     }}
+    }}
 
-    <!-- 3. Schengen Insurance Calculator (Travelpayouts: SafetyWing & Ekta) -->
-    <div class="card" id="insurance">
-      <div class="card-title"><i class="fa-solid fa-shield-halved"></i> 3. Schengen Approved Insurance (€30k)</div>
-      <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">Calculate official travel medical insurance required for Schengen Visas:</p>
-      
-      <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
-        <input id="daysInput" type="number" value="7" min="1" style="width:70px; padding:8px; background:#000; color:#fff; border:1px solid #333; border-radius:6px; font-weight:bold;">
-        <span style="font-size:12px;">Trip Days</span>
-        <button onclick="calcQuote()" class="btn btn-yellow" style="padding:8px 15px;">Calculate</button>
-      </div>
-      
-      <p id="quoteRes" style="color:var(--bright-green); font-weight:bold; font-size:12px; margin-bottom:10px;">7 Days Schengen Coverage - $17.50 (Approved €30k Policy)</p>
+    function calcIns(){{
+     let d=document.getElementById('insDays').value||7;
+     document.getElementById('insResult').innerText=d+' Days Schengen Coverage - $'+(d*2.5).toFixed(2)+' (Approved)';
+    }}
+    </script>
+    """
 
-      <div class="btn-grid">
-        <a href="[https://safetywing.tpo.lv/xvLq6y6e?marker=787950](https://safetywing.tpo.lv/xvLq6y6e?marker=787950)" target="_blank" rel="noopener noreferrer sponsored" class="btn btn-yellow">SafetyWing Nomad ↗</a>
-        <a href="[https://ekta.tpo.lv/9p3n5k?marker=787950](https://ekta.tpo.lv/9p3n5k?marker=787950)" target="_blank" rel="noopener noreferrer sponsored" class="btn btn-blue">Ekta Insurance ↗</a>
-      </div>
-    </div>
+    final_post_html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>{title}</title>
+        <style>
+            body {{ background-color: #00070f; color: #fff; font-family: sans-serif; padding: 20px; margin: 0; }}
+            h1 {{ color: #00ff88; font-size: 24px; }}
+            img {{ width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; }}
+        </style>
+    </head>
+    <body>
+        <h1>{title}</h1>
+        <img src="{image_url}" alt="{title}">
+        {news_body}
+        {affiliate_widget}
+    </body>
+    </html>
+    """
 
-    <!-- 4. Car Rental & Airport Transfers (Travelpayouts: Localrent / GetTransfer) -->
-    <div class="card" id="cars">
-      <div class="card-title"><i class="fa-solid fa-car"></i> 4. Car Hire & Airport Transfers</div>
-      <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">Rent local cars with low deposit or book private airport pickups:</p>
-      
-      <div class="btn-grid">
-        <a href="[https://localrent.tpo.lv/8Y3A1b?marker=787950](https://localrent.tpo.lv/8Y3A1b?marker=787950)" target="_blank" rel="noopener noreferrer sponsored" class="btn btn-green">🚗 Localrent Car Hire ↗</a>
-        <a href="[https://gettransfer.tpo.lv/9xQ1aX?marker=787950](https://gettransfer.tpo.lv/9xQ1aX?marker=787950)" target="_blank" rel="noopener noreferrer sponsored" class="btn btn-purple">🚖 GetTransfer Pickup ↗</a>
-      </div>
-    </div>
+    with open("latest_travel_news.html", "w", encoding="utf-8") as f:
+        f.write(final_post_html)
 
-  </div>
-
-  <!-- Right Sidebar Column -->
-  <div>
-
-    <!-- WhatsApp Share Widget -->
-    <div class="card" style="background:#25D366; border:none;">
-      <div class="card-title" style="color:#000;"><i class="fa-brands fa-whatsapp"></i> WhatsApp Direct Share</div>
-      <p style="font-size:11px; color:#000; margin-bottom:10px; font-weight:600;">Share this hub with friends/family on WhatsApp:</p>
-      <a id="waShare" href="#" class="btn" style="background:#000; color:#fff;">📲 Share Hub Link</a>
-    </div>
-
-    <!-- 5. All eSIM Networks (Airalo, Saily, Yesim) -->
-    <div class="card" id="esim">
-      <div class="card-title"><i class="fa-solid fa-sim-card"></i> 5. International eSIMs</div>
-      <p style="font-size: 11px; color: #94a3b8; margin-bottom: 10px;">Instant QR connection, no physical SIM swap needed:</p>
-      <a href="[https://airalo.tpo.lv/ZZoQC7Mz?marker=787950](https://airalo.tpo.lv/ZZoQC7Mz?marker=787950)" target="_blank" rel="noopener noreferrer sponsored" class="btn btn-green" style="margin-bottom:8px;">📱 Airalo eSIM ↗</a>
-      <a href="[https://saily.tpo.lv/ssekmS4X?marker=787950](https://saily.tpo.lv/ssekmS4X?marker=787950)" target="_blank" rel="noopener noreferrer sponsored" class="btn btn-blue" style="margin-bottom:8px;">📱 Saily eSIM (NordVPN) ↗</a>
-      <a href="[https://yesim.tpo.lv/krzFKLpg?marker=787950](https://yesim.tpo.lv/krzFKLpg?marker=787950)" target="_blank" rel="noopener noreferrer sponsored" class="btn btn-purple" style="margin-bottom:8px;">📱 Yesim Unlimited ↗</a>
-    </div>
-
-    <!-- 6. Amazon Travel Gear & Accessories -->
-    <div class="card" id="amazon">
-      <div class="card-title"><i class="fa-brands fa-amazon"></i> 6. Amazon Top Gear</div>
-      <p style="font-size: 11px; color: #94a3b8; margin-bottom: 10px;">Tested travel adapters, powerbanks & suitcases:</p>
-      <a href="[https://amzn.to/4shg6Hn](https://amzn.to/4shg6Hn)" target="_blank" rel="noopener noreferrer sponsored" class="btn btn-orange">🎒 Amazon Travel Store ↗</a>
-    </div>
-
-  </div>
-
-</div>
-
-<!-- Footer -->
-<div class="footer">
-  <p>© 2026 TRTTVoyageHub • Verified Travelpayouts & Amazon Associate Hub</p>
-  <p style="margin-top:5px;">Operated from Sanluri, Sardinia, Italy • Tracking Marker: 787950</p>
-</div>
-
-<script>
-// WhatsApp Share Script
-document.getElementById('waShare').onclick = function(e){
-  e.preventDefault();
-  let url = window.location.href;
-  let text = "Check TRTTVoyageHub for cheap flights, eSIMs, and Schengen insurance: " + url;
-  window.open("[https://wa.me/?text=](https://wa.me/?text=)"+encodeURIComponent(text), "_blank");
-}
-
-function updateRoute(){
-  const v = document.getElementById('routeSelect').value;
-  const res = document.getElementById('routeResult');
-  const btn = document.getElementById('flightBtn');
-  if(v==='italy'){ res.innerText='⚠️ Schengen Visa & Approved Insurance Required. Est. Fare: $450.'; btn.innerText='🛫 Search Rome Flights ↗'; }
-  else if(v==='france'){ res.innerText='⚠️ Schengen Visa Required. Est. Fare: $480.'; btn.innerText='🛫 Search Paris Flights ↗'; }
-  else if(v==='germany'){ res.innerText='⚠️ Schengen Visa Required. Est. Fare: $420.'; btn.innerText='🛫 Search Frankfurt Flights ↗'; }
-  else if(v==='uk'){ res.innerText='Standard Visitor Visa Required. Est. Fare: $510.'; btn.innerText='🛫 Search London Flights ↗'; }
-  else if(v==='usa'){ res.innerText='B1/B2 Tourist Visa Required. Est. Fare: $650.'; btn.innerText='🛫 Search New York Flights ↗'; }
-}
-
-function calcQuote(){
-  let d = document.getElementById('daysInput').value || 7;
-  let price = (d * 2.5).toFixed(2);
-  document.getElementById('quoteRes').innerText = d + ' Days Schengen Coverage - $' + price + ' (Approved €30k Policy)';
-}
-</script>
-</body>
-</html>
+    print(f"✅ Generated: {title}")
+    send_email_and_telegram(title, final_post_html)
