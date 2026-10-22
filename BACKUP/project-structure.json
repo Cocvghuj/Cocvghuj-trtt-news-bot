@@ -1,0 +1,31 @@
+{
+  "project": "TRTT Super App 2026 - Booking.com Killer",
+  "marker": "787950",
+  "total_parts": 16,
+  "system": "Name Advantage - Backup First, Main Later",
+  "steps": {
+    "step1_news": ["MEGA_PROMPT.md", "airports.json", "celebrity.json", "latest_travel_news.html"],
+    "step2_backup": [
+      "PART-305-referral-leaderboard",
+      "PART-306-live-ticker",
+      "PART-307-ai-itinerary",
+      "PART-308-voice-search",
+      "PART-309-pwa-push",
+      "PART-310-price-beat",
+      "PART-311-hidden-fees-detector",
+      "PART-312-direct-host-whatsapp",
+      "PART-313-bd-chain-travel",
+      "PART-314-ai-review-summarizer",
+      "PART-315-airport-panic-button",
+      "PART-316-celebrity-video-proof",
+      "PART-317-offline-mode",
+      "PART-318-bkash-group-split",
+      "PART-319-europe-group-split",
+      "PART-320-trtt-coin-loyalty"
+    ],
+    "step3_main": "index.html - Loads all by Name",
+    "step4_workflow": ".github/workflows/daily-4.yml - Daily Verification"
+  },
+  "status": "STEP 2 DONE - 16 Parts Backed Up - Ready for STEP 3 Main",
+  "next_action": "After this file, create Final index.html + daily-4.yml"
+}
