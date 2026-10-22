@@ -1,0 +1,43 @@
+<!-- PART-313 DAC to Cox to Saint Martin Full Chain -->
+<div id="bdChain" style="margin: 10px 0;"></div>
+
+<script>
+// PART-313 BD Travel Chain Engine
+(function renderBDChain() {
+  const chainBoxEl = document.getElementById('bdChain');
+
+  if (chainBoxEl) {
+    chainBoxEl.innerHTML = `
+      <div style="border: 2px solid #d81b60; padding: 14px; border-radius: 12px; background: #ffffff; box-shadow: 0 4px 10px rgba(216, 27, 96, 0.08);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <b style="color: #d81b60; font-size: 15px;">🇧🇩 BD CHAIN - Booking.com এ নাই:</b>
+          <span style="background: #e91e63; color: #fff; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: bold;">Full Route</span>
+        </div>
+
+        <div style="font-size: 13px; line-height: 1.6; color: #1e293b; margin: 8px 0; background: #fdf2f8; padding: 10px; border-radius: 8px;">
+          ✈️ <b>DAC Airport</b> ➔ 🚌 <b>Bus ৳1500</b> ➔ 🏨 <b>Cox Hotel ৳3500</b> ➔ 🚢 <b>Ship ৳1200</b> ➔ 🏖️ <b>Saint Martin Resort ৳4000</b>
+        </div>
+
+        <div style="margin: 8px 0; font-size: 13px; color: #0f172a;">
+          💰 <b>Total ৳10,200</b> — <span style="color: #d81b60; font-weight: bold;">bKash Cashback ৳500</span> + <span style="color: #16a34a; font-weight: bold;">TRTT Coin 10</span>
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
+          <a href="https://aviasales.tpo.lv?marker=787950&to=CXB_CHAIN" target="_blank" style="background: #d81b60; color: #ffffff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; font-size: 12px; display: inline-block;">
+            Book Full Chain + Earn →
+          </a>
+          <span style="background: #f1f5f9; color: #475569; padding: 8px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; border: 1px solid #cbd5e1;">
+            💳 bKash Split Available
+          </span>
+        </div>
+      </div>
+    `;
+  }
+
+  // Anti-Data Loss Persistence
+  try {
+    localStorage.setItem('trtt_bd_chain_route', 'DAC-CXB-STMARTIN');
+    localStorage.setItem('trtt_bd_chain_active', 'true');
+  } catch(e) {}
+})();
+</script>
