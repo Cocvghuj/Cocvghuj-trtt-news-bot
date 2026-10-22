@@ -1,0 +1,8 @@
+[
+  { "code":"FCO", "city":"Rome", "country":"IT", "train":"Leonardo Express 32m €14", "bus":"Terravision 55m €6", "esim":"Tim eSIM 5GB €5" },
+  { "code":"MXP", "city":"Milan", "country":"IT", "train":"Malpensa Express 50m €13", "bus":"Autostradale 60m €10", "esim":"Vodafone eSIM €5" },
+  { "code":"NAP", "city":"Naples", "country":"IT", "train":"Alibus Airport Shuttle €5", "bus":"Curreri Service €10", "esim":"Iliad eSIM €5" },
+  { "code":"DAC", "city":"Dhaka", "country":"BD", "train":"Airport Express Train 25m", "bus":"BRTC Shuttle €1", "esim":"Grameenphone 5GB eSIM €3" },
+  { "code":"DEL", "city":"Delhi", "country":"IN", "train":"Airport Express Metro €0.5", "bus":"DTC AC Bus €1", "esim":"Jio 5G eSIM €2" },
+  { "code":"CDG", "city":"Paris", "country":"FR", "train":"RER B Rail 35m €11", "bus":"Roissybus 60m €16", "esim":"Orange France eSIM €6" }
+]
