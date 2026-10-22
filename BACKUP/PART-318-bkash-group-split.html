@@ -1,0 +1,40 @@
+<!-- PART-318 bKash Group Split -->
+<div style="background: #ffffff; padding: 16px; border-radius: 12px; border: 2px solid #e2136e; box-shadow: 0 4px 12px rgba(226, 19, 110, 0.08); margin: 10px 0;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+    <b style="color: #e2136e; font-size: 15px;">💸 bKash Group Split:</b>
+    <span style="background: #e2136e; color: #fff; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: bold;">Local Pay</span>
+  </div>
+
+  <p style="font-size: 13px; color: #1e293b; line-height: 1.5; margin: 8px 0;">
+    👥 <b>৫ জন মিলে Cox's Bazar</b> - Total ৳10,200<br>
+    💰 প্রতি জনের অংশ: <b>৳2040</b> (তুই ৳2040, আমি ৳2040...)
+  </p>
+
+  <div style="margin: 10px 0;">
+    <button onclick="createBkashSplit()" style="background: #e2136e; color: #ffffff; border: 0; padding: 10px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+      📲 Create bKash Split Link
+    </button>
+  </div>
+
+  <div style="border-top: 1px dashed #fbcfe8; padding-top: 8px; margin-top: 8px; font-size: 11px; color: #9d174d; display: flex; justify-content: space-between; align-items: center; flex-wrap: gap;">
+    <span>❌ Booking.com এ bKash Split নাই</span>
+    <span style="font-weight: bold; color: #be185d;">✅ TRTT-তে আছে (Marker 787950)</span>
+  </div>
+</div>
+
+<script>
+// PART-318 bKash Group Split Engine
+function createBkashSplit() {
+  alert('bKash Split Link Generated & Sent! - Marker 787950');
+  
+  // Anti-Data Loss Persistence
+  try {
+    localStorage.setItem('trtt_bkash_split_active', 'true');
+    localStorage.setItem('trtt_split_total', '10200');
+    localStorage.setItem('trtt_split_members', '5');
+    localStorage.setItem('trtt_split_time', new Date().toISOString());
+  } catch(e) {
+    console.warn("bKash split storage notice:", e);
+  }
+}
+</script>
