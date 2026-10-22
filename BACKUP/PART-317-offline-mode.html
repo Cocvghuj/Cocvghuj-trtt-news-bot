@@ -1,0 +1,51 @@
+<!-- PART-317 Offline Mode - PWA -->
+<div id="offlineBox" style="margin: 10px 0;"></div>
+
+<script>
+// PART-317 Offline Mode & PWA Engine
+(function initOfflineMode() {
+  const offlineBoxEl = document.getElementById('offlineBox');
+
+  function updateOnlineStatus() {
+    if (!offlineBoxEl) return;
+    
+    if (!navigator.onLine) {
+      offlineBoxEl.innerHTML = `
+        <div style="background: #111111; color: #00ff00; padding: 14px; border-radius: 12px; border: 2px solid #00ff00; box-shadow: 0 4px 12px rgba(0,255,0,0.2); font-family: monospace;">
+          <b style="font-size: 14px;">📴 Offline Mode Active:</b><br>
+          <div style="margin: 6px 0; font-size: 13px; line-height: 1.5;">
+            • FCO Hotel + Train Time + Map Still Works<br>
+            • <span style="color: #ef4444; font-weight: bold;">Booking.com Dead in Offline</span>
+          </div>
+          <span style="font-size: 10px; color: #94a3b8;">Marker 787950 Secured</span>
+        </div>
+      `;
+    } else {
+      offlineBoxEl.innerHTML = `
+        <div style="background: #f0fdf4; color: #15803d; padding: 10px 14px; border-radius: 10px; border: 1px solid #16a34a; font-size: 12px; display: flex; align-items: center; justify-content: space-between;">
+          <span>🟢 Online Mode - PWA Service Worker Active</span>
+          <span style="font-size: 10px; opacity: 0.8;">Marker 787950</span>
+        </div>
+      `;
+    }
+  }
+
+  window.addEventListener('online', updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+  updateOnlineStatus();
+
+  // Service Worker Registration
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').then(() => {
+      console.log("PWA Service Worker registered successfully.");
+    }).catch((err) => {
+      console.warn("Service Worker registration notice:", err);
+    });
+  }
+
+  // Anti-Data Loss Persistence
+  try {
+    localStorage.setItem('trtt_pwa_offline_support', 'active');
+  } catch(e) {}
+})();
+</script>
