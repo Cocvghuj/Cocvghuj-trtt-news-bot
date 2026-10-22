@@ -1,0 +1,41 @@
+<!-- PART-312 Direct Host WhatsApp - 0% Commission -->
+<div id="hostBox" style="margin: 10px 0;"></div>
+
+<script>
+// PART-312 Direct Host Engine
+function showDirectHost() {
+  const hostBoxEl = document.getElementById('hostBox');
+
+  if (hostBoxEl) {
+    hostBoxEl.innerHTML = `
+      <div style="background: #f0fdf4; border: 2px solid #16a34a; padding: 14px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.04);">
+        <b style="color: #15803d; font-size: 15px;">🏠 Direct Host Chat (0% Commission):</b><br>
+        
+        <p style="margin: 8px 0; font-size: 13px; color: #1e293b; line-height: 1.5;">
+          ❌ Booking.com হোস্টের সাথে সরাসরি কথা বলতে দেয় না এবং ৩০% কমিশন কেটে নেয়।<br>
+          ✅ <b>TRTT:</b> সরাসরি হোস্টের সাথে WhatsApp-এ যোগাযোগ করুন এবং অতিরিক্ত খরচ বাঁচান!
+        </p>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
+          <a href="https://wa.me/393000000000?text=Hi,%20TRTT%20Marker%20787950%20from%20FCO%20booking" target="_blank" style="background: #25d366; color: #ffffff; text-decoration: none; padding: 10px 14px; border-radius: 8px; font-weight: bold; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+            💬 Chat Host on WhatsApp
+          </a>
+
+          <a href="https://whatsapp.com/channel/0029Vb8co9VDeONEz0B5e51M" target="_blank" style="background: #075e54; color: #ffffff; text-decoration: none; padding: 10px 14px; border-radius: 8px; font-weight: bold; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+            📢 Join TRTT WhatsApp Channel
+          </a>
+        </div>
+      </div>
+    `;
+  }
+
+  // Anti-Data Loss Persistence
+  try {
+    localStorage.setItem('trtt_whatsapp_host_active', 'true');
+    localStorage.setItem('trtt_wa_channel', '0029Vb8co9VDeONEz0B5e51M');
+  } catch(e) {}
+}
+
+// Default Auto Execution
+showDirectHost();
+</script>
