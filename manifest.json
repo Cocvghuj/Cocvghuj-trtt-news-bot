@@ -1,0 +1,16 @@
+{
+  "name": "TRTT Super App 2026 - All in One Travel",
+  "short_name": "TRTT Super",
+  "description": "Hotels with live photos, ratings, room availability + Flights, Trains, Bus, Airport Plan, Weekend & Summer AI Plan - Cheaper than Booking.com",
+  "start_url": "/Cocvghuj-trtt-news-bot/index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "https://picsum.photos/seed/trtticon/512/512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
