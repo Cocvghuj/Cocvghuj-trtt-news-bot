@@ -2,7 +2,7 @@ import os
 
 # --- API KEYS & SECRETS ---
 MARKER = os.environ.get("TRAVEL_PAYOUT_MARKER", "787950")
-AMAZON = os.environ.get("AMAZON_LINK", "[https://amzn.to/4shg6Hn](https://amzn.to/4shg6Hn)")
+AMAZON_LINK = os.environ.get("AMAZON_LINK", "https://amzn.to/4shg6Hn")
 
 BLOGGER_BLOG_ID = os.environ.get("BLOGGER_BLOG_ID")
 BLOGGER_CLIENT_ID = os.environ.get("BLOGGER_CLIENT_ID")
@@ -16,7 +16,7 @@ GMAIL_EMAIL = os.environ.get("GMAIL_EMAIL")
 GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD")
 CUSTOMER_EMAILS = os.environ.get("CUSTOMER_EMAILS", "")
 
-# --- Dynamic Dynamic Topics ---
+# --- Dynamic Topics ---
 TOPICS = [
     {
         "title": "Building a Remote Travel Consulting Business in Europe",
@@ -40,10 +40,11 @@ TOPICS = [
 
 # --- Affiliate Links Master Database ---
 AFFILIATE_SERVICES = [
-    {"name": "Aviasales", "url": f"[https://aviasales.tpo.lv/Fb8U9yav?marker=](https://aviasales.tpo.lv/Fb8U9yav?marker=){MARKER}", "type": "Flights", "tag": "Best Price"},
-    {"name": "Airalo eSIM", "url": f"[https://airalo.tpo.lv/ZZoQC7Mz?marker=](https://airalo.tpo.lv/ZZoQC7Mz?marker=){MARKER}", "type": "eSIM", "tag": "Top Pick"},
-    {"name": "AirHelp", "url": f"[https://airhelp.tpo.lv/3ItXS0E4?marker=](https://airhelp.tpo.lv/3ItXS0E4?marker=){MARKER}", "type": "Compensation", "tag": "Essential"},
-    {"name": "Klook", "url": f"[https://klook.tpo.lv/TWKnemhz?marker=](https://klook.tpo.lv/TWKnemhz?marker=){MARKER}", "type": "Tours", "tag": "Discounts"},
-    {"name": "GetTransfer", "url": f"[https://gettransfer.tpo.lv/1u8zRU5s?marker=](https://gettransfer.tpo.lv/1u8zRU5s?marker=){MARKER}", "type": "Taxi", "tag": "Fixed Rate"},
-    {"name": "Hotels", "url": f"[https://economybookings.tpo.lv/pyHqRiOo?marker=](https://economybookings.tpo.lv/pyHqRiOo?marker=){MARKER}", "type": "Stays", "tag": "Verified"}
+    {"name": "Aviasales", "url": f"https://aviasales.tpo.lv/Fb8U9ay?marker={MARKER}"},
+    {"name": "Airalo eSIM", "url": f"https://airalo.tpo.lv/ZZoQC7Mz?marker={MARKER}"},
+    {"name": "AirHelp", "url": f"https://airhelp.tpo.lv/3ItXSOE4?marker={MARKER}"},
+    {"name": "Klook", "url": f"https://klook.tpo.lv/TWKnenhz?marker={MARKER}"},
+    {"name": "GetTransfer", "url": f"https://gettransfer.tpo.lv/1u82RU5s?marker={MARKER}"},
+    {"name": "Hotels", "url": f"https://economybookings.tpo.lv/pyHqIOo?marker={MARKER}"},
+    {"name": "Amazon Travel Gear", "url": AMAZON_LINK},
 ]
