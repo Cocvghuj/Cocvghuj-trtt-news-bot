@@ -51,6 +51,6 @@ jobs:
         run: |
           git config --global user.name "TRTT Automation Bot"
           git config --global user.email "bot@trttnews24bd.com"
-          git add latest_travel_news.html index.html
+          git add latest_travel_news.html
           git commit -m "Auto Update: Travel News & All-in-One Hub [skip ci]" || exit 0
           git push
