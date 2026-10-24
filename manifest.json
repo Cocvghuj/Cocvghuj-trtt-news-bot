@@ -1,15 +1,25 @@
 {
-  "name": "TRTT Super App 2026 - All in One Travel",
-  "short_name": "TRTT Super",
-  "description": "Hotels with live photos, ratings, room availability + Flights, Trains, Bus, Airport Plan, Weekend & Summer AI Plan - Cheaper than Booking.com",
-  "start_url": "/Cocvghuj-trtt-news-bot/index.html",
+  "background_color": "#0f1419",
+  "description": "TRTT eSIM 4 Programs Airalo ZZoQC7Mz Saily ssekmS4X Yesim krzFKLpg Drimsim Ly7ywIY8 + Plane Fb8U9yav + Amazon 4shg6Hn - Marker 787950",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#2563eb",
+  "lang": "en",
+  "name": "TRTT VoyageHub Inc - Super App",
+  "orientation": "portrait",
+  "scope": "/",
+  "short_name": "TRTT Super",
+  "start_url": "/",
+  "theme_color": "#00A8E8",
   "icons": [
     {
-      "src": "https://picsum.photos/seed/trtticon/512/512",
+      "purpose": "any maskable",
+      "sizes": "192x192",
+      "src": "icon-192.png",
+      "type": "image/png"
+    },
+    {
+      "purpose": "any maskable",
       "sizes": "512x512",
+      "src": "icon-512.png",
       "type": "image/png"
     }
   ]
