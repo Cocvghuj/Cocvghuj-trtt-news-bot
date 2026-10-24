@@ -1,16 +1,17 @@
-name: TRTTVoyageHub Daily Automation Bot
+name: TRTT Daily 4x - 2000 Min Saver - All API Kept
 
 on:
   schedule:
-    - cron: '0 7 * * *'
-    - cron: '0 13 * * *'
-    - cron: '0 19 * * *'
-    - cron: '0 1 * * *'
+    - cron: '0 4 * * *'   # 6AM Italy
+    - cron: '0 10 * * *'  # 12PM Italy
+    - cron: '0 16 * * *'  # 6PM Italy
+    - cron: '0 20 * * *'  # 10PM Italy
   workflow_dispatch:
 
 jobs:
-  run-automation:
+  trtt-update:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -23,7 +24,7 @@ jobs:
       - name: Install Dependencies
         run: pip install requests
 
-      - name: Run News Bot
+      - name: Run News Bot - All API Kept
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -47,10 +48,11 @@ jobs:
           CUSTOMER_EMAILS: ${{ secrets.CUSTOMER_EMAILS }}
         run: python generate_travel_news.py
 
-      - name: Commit and Push Changes
+      - name: Commit and Push
         run: |
           git config --global user.name "TRTT Automation Bot"
           git config --global user.email "bot@trttnews24bd.com"
-          git add latest_travel_news.html
-          git commit -m "Auto Update: Travel News & All-in-One Hub [skip ci]" || exit 0
+          git add latest_travel_news.html || true
+          git add tracker.html sitemap.xml || true
+          git commit -m "Auto Update: Travel News [skip ci] - $(date) - Marker 787950 - 2000 Min Saver" || exit 0
           git push
