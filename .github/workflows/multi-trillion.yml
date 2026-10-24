@@ -1,27 +1,20 @@
-name: MULTI-TRILLION 100 Airport Scan
-
+name: MULTI-TRILLION BACKUP
 on:
-  schedule:
-    - cron: '0 4 * * *' # 06:00 Italy = 04:00 UTC
+  push:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
-  scan:
+  backup:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
         with:
-          python-version: '3.10'
-      - name: Scan 100 Airports
-        env:
-          TRAVEL_MARKER: ${{ secrets.TRAVEL_MARKER }}
-        run: |
-          python scan_100_airports.py
-      - name: Commit Multi-Trillion Data
+          fetch-depth: 0
+      - name: Push to Backup Repo
         run: |
           git config user.name "Multi-Trillion Bot 787950"
-          git config user.email "bot@cdn.fdbdx.com"
-          git add data/ index.html
-          git commit -m "Multi-Trillion Scan 100 Airports - $(date) - Direct No Booking.com - Marker 787950" || echo "No changes"
-          git push
+          git config user.email "bot@multi-trillion.com"
+          git remote remove backup 2>/dev/null || true
+          git remote add backup https://x-access-token:${{ secrets.GH_PAT }}@github.com/Cocvghuj/Cocvghuj-trtt-news-bot-BACKUP-787950.git
+          git push backup main --force
