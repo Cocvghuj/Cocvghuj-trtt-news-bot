@@ -1,0 +1,17 @@
+{
+  "project": "TRTT Exactly 50 Blogs Empire - 500 Commands",
+  "owner": "engrtaher2017@gmail.com",
+  "marker": "787950",
+  "blog_id": "6613996656611533868",
+  "amazon": "https://amzn.to/4shg6Hn",
+  "total_blogs": 50,
+  "total_commands": 500,
+  "commands_per_blog": 10,
+  "nodes": [
+    {"city": "Rome FCO", "lat": 41.8003, "lng": 12.2389, "link": "https://aviasales.tpo.lv/Fb8U9yav?marker=787950&subid=rome_2026-10-25"},
+    {"city": "Dhaka", "lat": 23.8103, "lng": 90.4125, "link": "https://airalo.tpo.lv/ZZoQC7Mz?marker=787950&subid=dhaka_2026-10-25"},
+    {"city": "Paris", "lat": 48.8566, "lng": 2.3522, "link": "https://amzn.to/4shg6Hn?tag=trtt-787950"},
+    {"city": "Venice", "lat": 45.4408, "lng": 12.3155, "link": "https://aviasales.tpo.lv/Fb8U9yav?marker=787950&subid=venice_2026-10-25"},
+    {"city": "London", "lat": 51.5074, "lng": -0.1278, "link": "https://aviasales.tpo.lv/Fb8U9yav?marker=787950&subid=london_2026-10-25"}
+  ]
+}
