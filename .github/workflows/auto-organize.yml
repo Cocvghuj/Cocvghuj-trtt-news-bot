@@ -1,0 +1,17 @@
+name: Auto Organize BACKUP
+on: [push]
+jobs:
+  organize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: python auto_organize.py
+      - run: |
+          git config user.name "bot"
+          git config user.email "bot@bot.com"
+          git add .
+          git commit -m "Auto: beautiful category rename" || echo "nothing"
+          git push
