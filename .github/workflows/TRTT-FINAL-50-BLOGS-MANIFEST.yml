@@ -1,0 +1,121 @@
+name: TRTT Final 50 Blogs 500 Commands Neon PWA Empire
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 3,9,15,21 * * *'  # দিনে ৪ বার - Exactly 50 Blogs Auto
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  final-empire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with: { fetch-depth: 0 }
+
+      - name: BUILD 50 BLOGS 500 COMMANDS + NEON MANIFEST 00f2fe
+        env:
+          MARKER_ID: ${{ secrets.TRAVEL_PAYOUT_MARKER }}
+          GMAIL_ID: ${{ secrets.GMAIL_EMAIL }}
+          BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          AMAZON_URL: ${{ secrets.AMAZON_LINK }}
+        run: |
+          MARKER="${MARKER_ID:-787950}"
+          GMAIL="${GMAIL_ID:-engrtaher2017@gmail.com}"
+          BLOG_ID="${BLOG_ID:-Trttnews24bd}"
+          AMAZON="${AMAZON_URL:-https://amzn.to/4shg6Hn}"
+          DATE=$(date +%Y-%m-%d)
+          echo "=== FINAL EMPIRE START - MARKER $MARKER - 50 BLOGS - MANIFEST 00f2fe ==="
+          mkdir -p exact-50-blogs travel-guides BACKUP/legacy
+
+          # 001-500: EXACTLY 50 BLOGS x 10 COMMANDS = 500 COMMANDS
+          for b in $(seq 1 50); do
+            START=$(( (b-1)*10 + 1 ))
+            END=$(( b*10 ))
+            mkdir -p exact-50-blogs/blog-$b
+            cat > exact-50-blogs/blog-$b/index.html << EOF
+          <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>TRTT Blog $b - Marker $MARKER</title></head><body>
+          <h1>🌍 TRTT Blog Node $b - Commands $START-$END</h1>
+          <p>Owner: $GMAIL | Marker: $MARKER | Blog ID: $BLOG_ID</p>
+          <p>✈️ <a href="https://aviasales.tpo.lv/Fb8U9yav?marker=$MARKER&subid=blog_${b}">Flight Deals Blog $b - Marker $MARKER</a></p>
+          <p>📱 <a href="https://airalo.tpo.lv/ZZoQC7Mz?marker=$MARKER&subid=blog_${b}">eSIM Blog $b</a></p>
+          <p>🛒 <a href="$AMAZON?tag=trtt-$MARKER&subid=blog_$b">Amazon Blog $b</a></p>
+          </body></html>
+          EOF
+            echo "Command $START-$END: Blog $b built with Marker $MARKER"
+          done
+
+          # SEO - robots + sitemap
+          cat > robots.txt << EOF
+          User-agent: *
+          Allow: /
+          Sitemap: https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/sitemap.xml
+          EOF
+          cat > sitemap.xml << EOF
+          <?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/</loc></url><url><loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/app.html</loc></url></urlset>
+          EOF
+
+          # partners.json with Marker 787950
+          cat > partners.json << EOF
+          {"owner":"$GMAIL","marker":"$MARKER","blog_id":"$BLOG_ID","total_blogs":50,"total_commands":500,"nodes":[{"city":"Rome","lat":41.8003,"lng":12.2389,"link":"https://aviasales.tpo.lv/Fb8U9yav?marker=$MARKER"},{"city":"Dhaka","lat":23.8103,"lng":90.4125,"link":"https://airalo.tpo.lv/ZZoQC7Mz?marker=$MARKER"},{"city":"Paris","lat":48.8566,"lng":2.3522,"link":"$AMAZON"}]}
+          EOF
+
+          # ====== তোমার দেওয়া MANIFEST - NEON BLUE #00f2fe - এখানে বসিয়ে দিলাম ======
+          cat > manifest.json << 'EOF'
+          {
+            "name": "TRTT Global Empire",
+            "short_name": "TRTT",
+            "start_url": "/Cocvghuj-trtt-news-bot/index.html",
+            "scope": "/Cocvghuj-trtt-news-bot/",
+            "display": "standalone",
+            "background_color": "#020617",
+            "theme_color": "#00f2fe",
+            "description": "TRTT Global Empire - Marker 787950 - 50 Blogs 500 Commands - Beat Booking.com - Trttnews24bd",
+            "icons": [
+              {
+                "src": "https://cdn-icons-png.flaticon.com/512/854/854878.png",
+                "sizes": "512x512",
+                "type": "image/png",
+                "purpose": "any maskable"
+              }
+            ]
+          }
+          EOF
+
+          echo "self.addEventListener('fetch',e=>e.respondWith(fetch(e.request)))" > sw.js
+
+          # app.html - Neon PWA with Manifest #00f2fe
+          cat > app.html << EOF
+          <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>TRTT Global Empire - Neon #00f2fe - Marker $MARKER</title><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#00f2fe"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>#map{height:70vh}body{margin:0;font-family:system-ui;background:#020617;color:#fff}header{background:linear-gradient(90deg,#020617,#00f2fe);padding:12px} .card{background:#fff;color:#000;padding:12px;border-radius:16px}</style></head><body>
+          <header><b>🌍 TRTT Global Empire</b> - Neon PWA #00f2fe - Marker $MARKER - 50 Blogs Empire<br><small>$GMAIL | $BLOG_ID | 500 Commands</small></header>
+          <div style="background:#00f2fe;color:#020617;text-align:center;padding:6px"><b>Beat Booking.com - Marker $MARKER Affiliate Live - Exactly 50 Blogs</b></div>
+          <div id="map"></div><div id="blogs" style="padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px"></div>
+          <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
+          fetch('partners.json').then(r=>r.json()).then(d=>{const m=L.map('map').setView([23.8,90.4],2);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);d.nodes.forEach(n=>L.marker([n.lat,n.lng]).addTo(m).bindPopup('<div class=card><b>'+n.city+'</b><br>Marker: '+d.marker+'<br><a href='+n.link+' target=_blank>Book Now - Marker '+d.marker+'</a></div>'));let h='';for(let i=1;i<=50;i++){h+='<div style=background:#fff;color:#000;padding:8px;border-radius:8px><b>Blog '+i+'</b><br>Commands '+((i-1)*10+1)+'-'+(i*10)+'<br><a href=exact-50-blogs/blog-'+i+'/ target=_blank>View - Marker '+d.marker+'</a></div>'}document.getElementById('blogs').innerHTML=h})
+          if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}
+          </script></body></html>
+          EOF
+          cp app.html index.html
+
+          cat > README.md << EOF
+          # 🌍 TRTT Global Empire — Neon PWA #00f2fe — Marker $MARKER
+
+          **Manifest:** background #020617, theme #00f2fe - Your given JSON integrated
+          **50 Blogs:** exact-50-blogs/blog-1 to blog-50 - 10 Commands Each = 500 Commands
+          **Marker:** $MARKER - Affiliate Monetization Active
+          **Owner:** $GMAIL - Blog ID: $BLOG_ID
+          **Live App:** https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/app.html
+          EOF
+
+          echo "=== FINAL 50 BLOGS 500 COMMANDS NEON MANIFEST DONE ==="
+
+      - name: Commit and Push Final Empire
+        env:
+          GMAIL_PUSH: ${{ secrets.GMAIL_EMAIL }}
+        run: |
+          git config user.name "TRTT-Neon-PWA-Bot"
+          if [ -n "$GMAIL_PUSH" ]; then git config user.email "$GMAIL_PUSH"; else git config user.email "engrtaher2017@gmail.com"; fi
+          git add .
+          git commit -m "FINAL Empire - Exactly 50 Blogs 500 Commands - Manifest Neon #00f2fe #020617 - Marker 787950 - Trttnews24bd - Monetization Active [skip ci]" || true
+          git push
