@@ -1,0 +1,4 @@
+archive/
+mkdir.
+*.pyc
+__pycache__/
