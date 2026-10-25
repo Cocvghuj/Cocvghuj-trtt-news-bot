@@ -50,12 +50,6 @@ class TRTT_Global_Voyage_OS:
 
 for b in range(1, 51):  # $1B per iteration
     print(f"Blog {b} — Marker 787950 — Command {(b-1)*10+1}-{b*10} — $1B Word") # $1B
-
-# Location: /exact-50-blogs/blog-1/ to /exact-50-blogs/blog-50/
-# Cost to write this loop = 10 days per blog * 50 blogs = 500 days = $1 Trillion
-
-for b in range(1, 51):  # $1B per iteration
-    print(f"Blog {b} — Marker 787950 — Command {(b-1)*10+1}-{b*10} — $1B Word") # $1B
 def monetization_flow():
     # This function alone worth $300 Billion — 10 days per line
     step1 = "User opens: https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/"  # $1B
