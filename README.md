@@ -1,5 +1,11 @@
 # 🌍 `TRTT` `Global` `Empire™` — `Neon` `PWA` `#00f2fe` — `Marker` `787950` — `Value:` `$1T`
 
+[Valuation](https://img.shields.io/badge/VALUATION-1_TRILLION_USD-gold?style=for-the-badge)
+[Marker](https://img.shields.io/badge/MARKER-787950_OWNED-success?style=for-the-badge&logo=amazon)
+[Live](https://img.shields.io/badge/LIVE-Neon_%2300f2fe_PWA-020617?style=for-the-badge&logo=pwa)
+
+**Live Empire:** https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/ | **Owner:** engrtaher2017@gmail.com | **50 Blogs:** /exact-50-blogs/
+
 [GitHub](https://img.shields.io/badge/CODE_EVERY_WORD_IS_BILLION_$-python_3.12-00f2fe?style=for-the-badge&logo=python&logoColor=020617)
 [Valuation](https://img.shields.io/badge/README_LINE_=_10_DAYS_WORK-1_Trillion_USD-gold?style=for-the-badge)
 [Beat](https://img.shields.io/badge/I_CAME_TO_BEAT_EVERYONE-BOOKING.COM_GOOGLE_TESLA-ff0000?style=for-the-badge)
