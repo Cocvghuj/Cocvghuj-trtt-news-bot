@@ -1,3 +1,1 @@
-User-agent: *
-Allow: /
-Sitemap: https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/sitemap.xml
+User-agent: *\nAllow: /\nSitemap: https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/sitemap.xml

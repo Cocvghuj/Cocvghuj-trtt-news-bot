@@ -6,13 +6,6 @@
   "display": "standalone",
   "background_color": "#020617",
   "theme_color": "#00f2fe",
-  "description": "TRTT Global Empire - Marker 787950 - 50 Blogs 500 Commands - Beat Booking.com - Trttnews24bd",
-  "icons": [
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+  "description": "TRTT Global Empire - Marker 787950 - 50 Blogs 500 Commands - Trttnews24bd",
+  "icons": [{"src": "https://cdn-icons-png.flaticon.com/512/854/854878.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}]
 }
