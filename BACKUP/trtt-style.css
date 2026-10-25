@@ -1,0 +1,97 @@
+// TRTT BACKUP FILE - সব Command এখানে Set করা - Marker 787950 - 【entity-Amazon¦canonical_name=Amazon】 4shg6Hn - Fb8U9yav ZZoQC7Mz
+// 【entity-GitHub¦canonical_name=GitHub】 Layout - ছবি গুলা দেখে আইডিয়া নিয়ে বানানো - Pinterest Grid Like Google Images - best app picture and layout for traveler and future technc
+
+const TRTT_CONFIG = {
+  marker: "787950",
+  【entity-amazon¦canonical_name=Amazon】: "https://amzn.to/4shg6Hn",
+  amazonTag: "trttmulti20-20",
+  amazonId: "4shg6Hn",
+  travelpayout: {
+    aviasales: "Fb8U9yav",
+    airalo: "ZZoQC7Mz",
+    saily: "ssekmS4X",
+    yesim: "krzFKLpg",
+    drimsim: "Ly7ywIY8",
+    airhelp: "3ItXS0E4",
+    kiwitaxi: "tiWzMOB",
+    compensair: "TWKnemhz"
+  },
+  【entity-github¦canonical_name=GitHub】: "https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot",
+  telegram: "@trttnews24bd",
+  gmail: "engrtaher2017@gmail.com"
+};
+
+// Layout Data - ছবি গুলা দেখে আইডিয়া - Google Images Grid Style
+const LAYOUTS = [
+  {
+    title: "Wanderlog Best - Your travel plans simplified",
+    desc: "Best Group Travel Apps - 4.7 Stars Editors Choice - Map Blue Pins - Timeline Sat 4/11 Day 2",
+    color: "#FF5A1F",
+    image: "https://via.placeholder.com/300x600/FF5A1F/FFFFFF?text=Wanderlog+Best",
+    badge: "BEST GROUP TRAVEL APPS",
+    category: "travel-planner-app"
+  },
+  {
+    title: "Planora - AI Travel Planner",
+    desc: "AI Travel Planner App - Future Tech - Dark Mode - Modern UI - Best app picture and layout for traveler",
+    color: "#00A8E8",
+    image: "https://via.placeholder.com/300x600/00A8E8/FFFFFF?text=Planora+AI",
+    badge: "AI Travel Planner",
+    category: "future-technc"
+  },
+  {
+    title: "TourAI - PLAN CONNECT EXPLORE",
+    desc: "All-in-One Integration - 20 Creative Travel App Designs - Best Travel App Designs of 2026",
+    color: "#7f5eff",
+    image: "https://via.placeholder.com/300x600/7F5EFF/FFFFFF?text=TourAI+PLAN",
+    badge: "PLAN CONNECT EXPLORE",
+    category: "future-technc"
+  },
+  {
+    title: "15 Apps That Every Traveler Needs",
+    desc: "Trip Planner App - Top 10 Travel Apps You Need in 2026 - Travel App UI Design Modern",
+    color: "#0f1419",
+    image: "https://via.placeholder.com/300x600/0F1419/FFFFFF?text=15+Apps+Traveler",
+    badge: "15 Apps Every Traveler",
+    category: "travel-planner-app"
+  },
+  {
+    title: "TRTT Ultimate - Travel Real Tech Together",
+    desc: "Dark Neon + Glassmorphism + AI + Travelpayout + 【entity-Amazon¦canonical_name=Amazon】 Double Income - Marker 787950",
+    color: "#e9d59a",
+    image: "https://via.placeholder.com/300x600/E9D59A/000000?text=TRTT+Ultimate+787950",
+    badge: "TRTT FINAL ULTIMATE",
+    category: "trtt"
+  }
+];
+
+// Auto Render - Pinterest Grid Like Google Images Search - ছবি গুলার মতো Layout
+function renderTRTT() {
+  let html = `<div style="max-width:1200px;margin:0 auto;padding:16px">
+  <h1 style="text-align:center;color:#e9d59a">🌍 TRTT - Travel. Real. Tech. Together. - Marker ${TRTT_CONFIG.marker}</h1>
+  <p style="text-align:center;color:#aaa">GitHub Layout - ছবি দেখে আইডিয়া - ${LAYOUTS.length} Layouts - ${TRTT_CONFIG.amazon} ${TRTT_CONFIG.amazonId} - Fb8U9yav ZZoQC7Mz</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:20px">`;
+
+  LAYOUTS.forEach(l=>{
+    html+=`<div style="background:#1e2a3a;border:1px solid #2a3a4a;border-radius:16px;padding:14px;text-align:center;transition:transform 0.2s">
+    <div style="background:${l.color};color:#fff;padding:6px 10px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block;margin-bottom:8px">${l.badge}</div>
+    <img src="${l.image}" style="width:100%;border-radius:12px;margin:8px 0" loading="lazy">
+    <h3 style="font-size:14px;margin:8px 0">${l.title}</h3>
+    <p style="font-size:11px;color:#aaa">${l.desc}</p>
+    <a href="https://aviasales.tpo.lv/${TRTT_CONFIG.travelpayout.aviasales}?marker=${TRTT_CONFIG.marker}&subid=trtt_${l.category}" style="display:block;background:${l.color};color:#fff;padding:10px;border-radius:10px;text-decoration:none;font-weight:700;margin:6px 0;font-size:12px">✈️ Flight ${TRTT_CONFIG.travelpayout.aviasales} - ${l.category}</a>
+    <a href="https://airalo.tpo.lv/${TRTT_CONFIG.travelpayout.airalo}?marker=${TRTT_CONFIG.marker}" style="display:block;background:#222;color:#fff;padding:8px;border-radius:8px;text-decoration:none;font-size:11px;margin:4px 0">📱 eSIM ${TRTT_CONFIG.travelpayout.airalo}</a>
+    <a href="${TRTT_CONFIG.amazon}?tag=${TRTT_CONFIG.amazonTag}&subid=${l.category}" style="display:block;background:#FF9900;color:#000;padding:8px;border-radius:8px;text-decoration:none;font-weight:700;font-size:11px;margin:4px 0">🎒 Amazon ${TRTT_CONFIG.amazonId} - ${l.category}</a>
+    <div style="font-size:10px;color:#666;margin-top:6px">Marker ${TRTT_CONFIG.marker} | ${TRTT_CONFIG.github} | ${TRTT_CONFIG.telegram}</div>
+    </div>`;
+  });
+
+  html+=`</div>
+  <div style="text-align:center;margin-top:30px;padding:20px;background:#111;border-radius:12px">
+  <p style="font-size:12px;color:#aaa">TRTT Backup System - Index এ শুধু Backup ফাইলের নাম বসালে Auto কাজ করে - সব Command Backup ফাইলে Set করা - 【entity-GitHub Pages¦canonical_name=GitHub】: https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/</p>
+  <p style="font-size:11px;color:#666">【entity-Amazon¦canonical_name=Amazon】 ${TRTT_CONFIG.【entity-amazon¦canonical_name=Amazon】} Tag ${TRTT_CONFIG.amazonTag} | Travelpayout Fb8U9yav ZZoQC7Mz ssekmS4X krzFKLpg Ly7ywIY8 3ItXS0E4 tiWzMOB TWKnemhz | Auto Marker github_businessname_date ?partner=NAME | Touch Engine | Gmail ${TRTT_CONFIG.gmail}</p>
+  </div></div>`;
+
+  document.getElementById('trtt-app').innerHTML = html;
+}
+
+renderTRTT();
