@@ -1,1 +1,18 @@
-{"name":"TRTT 50 Blogs Empire - Marker 787950","short_name":"TRTT","start_url":"/Cocvghuj-trtt-news-bot/app.html","display":"standalone","background_color":"#020617","theme_color":"#2563eb","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/854/854878.png","sizes":"512x512","type":"image/png"}]}
+{
+  "name": "TRTT Global Empire",
+  "short_name": "TRTT",
+  "start_url": "/Cocvghuj-trtt-news-bot/index.html",
+  "scope": "/Cocvghuj-trtt-news-bot/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#00f2fe",
+  "description": "TRTT Global Empire - Marker 787950 - 50 Blogs 500 Commands - Beat Booking.com - Trttnews24bd",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/854/854878.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
