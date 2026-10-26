@@ -1,57 +1,840 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TRTT Global Ecosystem | Blog & GitHub Sync OS - Marker 787950</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#00f2fe">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-:root{--neon:#00f2fe;--blue:#0072ff;--gold:#facc15;--bg:#020617;--card:rgba(15, 23, 42, 0.9);--border:rgba(56, 189, 248, 0.3)}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:#f8fafc;font-family:system-ui,-apple-system,sans-serif}
-.navbar{position:sticky;top:0;background:rgba(2,6,23,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 5%;display:flex;justify-content:space-between;align-items:center;z-index:1000}
-.logo{font-size:20px;font-weight:900;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px}
-.logo span{background:linear-gradient(90deg,var(--neon),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.container{max-width:1100px;margin:40px auto;padding:0 20px}
-.sync-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:30px;box-shadow:0 0 40px rgba(0,242,254,0.15);text-align:center;margin-bottom:30px}
-.sync-box h1{font-size:28px;margin-bottom:10px;color:#fff}
-.sync-box h1 span{background:linear-gradient(90deg,var(--neon),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.sync-box p{color:#94a3b8;font-size:14px;margin-bottom:20px}
-.btn-sync{background:linear-gradient(90deg,var(--neon),var(--blue));color:#020617;border:none;padding:12px 28px;border-radius:10px;font-weight:900;font-size:14px;cursor:pointer;text-decoration:none;display:inline-block;transition:.3s}
-.btn-sync:hover{box-shadow:0 0 25px rgba(0,242,254,0.5);transform:translateY(-2px)}
-.feed-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
-.feed-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;transition:.3s}
-.feed-card:hover{border-color:var(--neon);transform:translateY(-3px)}
-.feed-card h3{font-size:16px;margin-bottom:8px;color:#fff}
-.feed-card p{font-size:13px;color:#94a3b8;line-height:1.6}
-footer{background:#010409;border-top:1px solid var(--border);padding:30px 5%;text-align:center;color:#94a3b8;font-size:12px;margin-top:50px}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRTT Eurohubvoyage - Ultimate European Travel & Booking Portal</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #090d16;
+            --accent-blue: #0066ff;
+            --accent-gold: #ffb700;
+            --card-glass: rgba(255, 255, 255, 0.05);
+            --card-glass-hover: rgba(255, 255, 255, 0.09);
+            --border-glass: rgba(255, 255, 255, 0.12);
+            --text-white: #ffffff;
+            --text-sub: #a1a1aa;
+            --glow: 0 0 35px rgba(0, 102, 255, 0.25);
+        }
+
+        body.light-mode {
+            --primary-bg: #f4f6fc;
+            --accent-blue: #0052cc;
+            --accent-gold: #e6a100;
+            --card-glass: rgba(255, 255, 255, 0.85);
+            --card-glass-hover: rgba(255, 255, 255, 0.95);
+            --border-glass: rgba(0, 0, 0, 0.08);
+            --text-white: #0f172a;
+            --text-sub: #64748b;
+            --glow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .ambient-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0,102,255,0.18) 0%, rgba(0,0,0,0) 70%);
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Top Header */
+        header {
+            background: rgba(9, 13, 22, 0.75);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 1.2rem 8%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo span {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-btn, .wishlist-badge-btn {
+            background: var(--card-glass);
+            border: 1px solid var(--border-glass);
+            color: var(--text-white);
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-btn:hover {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 4rem 8% 5rem 8%;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 102, 255, 0.12);
+            border: 1px solid rgba(0, 102, 255, 0.3);
+            color: var(--accent-blue);
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-section h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            color: var(--text-sub);
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        /* Booking Hub */
+        .booking-hub {
+            max-width: 1200px;
+            margin: -3rem auto 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .hub-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+        }
+
+        .tab-btn {
+            background: var(--card-glass);
+            border: 1px solid var(--border-glass);
+            color: var(--text-sub);
+            padding: 14px 22px;
+            border-radius: 16px 16px 0 0;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            backdrop-filter: blur(12px);
+        }
+
+        .tab-btn.active {
+            background: var(--accent-blue);
+            color: white;
+            border-color: var(--accent-blue);
+            box-shadow: var(--glow);
+        }
+
+        .hub-box {
+            background: var(--card-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            padding: 25px;
+            border-radius: 0 20px 20px 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .input-box {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-box label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-sub);
+            font-weight: 700;
+        }
+
+        .input-box input, .input-box select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            color: var(--text-white);
+            padding: 12px 16px;
+            border-radius: 12px;
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        body.light-mode .input-box input, body.light-mode .input-box select {
+            background: #ffffff;
+        }
+
+        .search-trigger-btn {
+            background: linear-gradient(135deg, var(--accent-blue), #0044b3);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: auto;
+            box-shadow: var(--glow);
+        }
+
+        .search-trigger-btn:hover {
+            filter: brightness(1.1);
+        }
+
+        /* Container Layout */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+
+        .section-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-header p {
+            color: var(--text-sub);
+            font-size: 0.95rem;
+        }
+
+        /* Popular Destination Cards with Image */
+        .destinations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .dest-card {
+            background: var(--card-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .dest-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+
+        .dest-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .dest-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
+        }
+
+        .dest-body h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .dest-body p {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+        }
+
+        .dest-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        .wishlist-btn {
+            background: none;
+            border: none;
+            color: var(--accent-gold);
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .book-now-link {
+            background: var(--accent-blue);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 22px;
+        }
+
+        .service-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 24px;
+            text-decoration: none;
+            color: var(--text-white);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .service-card:hover {
+            background: var(--card-glass-hover);
+            transform: translateY(-5px);
+            border-color: rgba(0, 102, 255, 0.4);
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: rgba(0, 102, 255, 0.12);
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        /* Map Section */
+        .map-container {
+            width: 100%;
+            height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border-glass);
+            background: var(--card-glass);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            filter: contrast(1.1) saturate(1.2);
+        }
+
+        /* Tools & Blog Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .tool-panel {
+            background: var(--card-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 28px;
+            backdrop-filter: blur(16px);
+        }
+
+        .tool-panel h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent-gold);
+        }
+
+        .weather-card-display {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .converter-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .converter-box input, .converter-box select {
+            width: 50%;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-glass);
+            color: var(--text-white);
+        }
+
+        /* Blog Articles */
+        .blog-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .blog-card h4 {
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+        }
+
+        .blog-card p {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+        }
+
+        /* Amazon Banner */
+        .amazon-banner {
+            background: linear-gradient(135deg, rgba(255, 183, 0, 0.1) 0%, rgba(0, 102, 255, 0.1) 100%);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 25px;
+            backdrop-filter: blur(12px);
+        }
+
+        .amazon-btn {
+            background: var(--accent-gold);
+            color: #000;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 800;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(255, 183, 0, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-glass);
+            padding: 3rem 8%;
+            text-align: center;
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            margin-top: 5rem;
+        }
+    </style>
 </head>
 <body>
-<nav class="navbar">
-<a href="#" class="logo"><i class="fa-solid fa-globe" style="color:var(--neon)"></i> TRTT <span>Global Sync OS</span></a>
-<div style="background:rgba(250,204,21,0.1);color:var(--gold);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:bold;border:1px solid rgba(250,204,21,0.3)">Marker: 787950</div>
-</nav>
-<div class="container">
-<div class="sync-box">
-<h1>Trttnews24bd & GitHub <span>Autonomous Sync Hub</span></h1>
-<p>Bridging your official blog ecosystem with GitHub Pages and PWA architecture for maximum global reach. Owner: engrtaher2017@gmail.com | Marker: 787950 | Blog ID: 6613996656611533868</p>
-<a href="https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot" target="_blank" class="btn-sync"><i class="fa-brands fa-github"></i> Explore GitHub Empire</a>
-<a href="exact-50-blogs/" style="margin-left:10px;background:linear-gradient(90deg,var(--gold),var(--neon));color:#020617;border:none;padding:12px 28px;border-radius:10px;font-weight:900;font-size:14px;cursor:pointer;text-decoration:none;display:inline-block">View 50 Blogs Empire</a>
-</div>
-<h2 style="font-size:20px;margin-bottom:20px;color:#fff"><i class="fa-solid fa-rss" style="color:var(--neon)"></i> Live Blog & Partner Feed Stream - Marker 787950 - 500 Commands Active</h2>
-<div class="feed-grid" id="liveFeedContainer">
-<div class="feed-card"><h3><i class="fa-solid fa-plane" style="color:var(--neon)"></i> Rome FCO Flight Node - Marker 787950</h3><p>Beat Booking.com - FCO to Rome - Affiliate: <a href="https://aviasales.tpo.lv/Fb8U9yav?marker=787950&subid=rome_2026-10-25" target="_blank" style="color:var(--neon)">Book Now - Marker 787950</a> - Command 1-100</p></div>
-<div class="feed-card"><h3><i class="fa-solid fa-sim-card" style="color:var(--gold)"></i> Global eSIM Hub - Marker 787950</h3><p>Stay connected worldwide - <a href="https://airalo.tpo.lv/ZZoQC7Mz?marker=787950&subid=esim_2026-10-25" target="_blank" style="color:var(--neon)">Get eSIM - Marker 787950</a> - Command 101-200</p></div>
-<div class="feed-card"><h3><i class="fa-solid fa-bag-shopping" style="color:var(--blue)"></i> Amazon Nomad Store - Marker 787950</h3><p>Nomad essentials - <a href="https://amzn.to/4shg6Hn?tag=trtt-787950" target="_blank" style="color:var(--neon)">Shop Now - Marker 787950</a> - Command 201-300</p></div>
-<div class="feed-card"><h3><i class="fa-solid fa-globe" style="color:var(--neon)"></i> Trttnews24bd Official Integration - Blog ID 6613996656611533868</h3><p>Successfully synchronized with GitHub workflow actions, ensuring zero data loss and lightning-fast global delivery. 50 Blogs Empire - 500 Commands - Owner engrtaher2017@gmail.com</p></div>
-<div class="feed-card"><h3><i class="fa-solid fa-chart-line" style="color:var(--gold)"></i> Travelpayouts Marker Engine - Marker 787950</h3><p>Active tracking ID 787950 deployed across flight search nodes, eSIM deployment, and nomad gear stores. Exactly 50 Blogs x 10 Commands = 500 Commands Empire - Monetization Active.</p></div>
-<div class="feed-card"><h3><i class="fa-solid fa-map" style="color:var(--neon)"></i> Interactive Map - Partners with Gmail GitHub Marker</h3><p><a href="app.html" style="color:var(--neon)">Open Map App - Marker 787950 - engrtaher2017@gmail.com - View all partner markers</a> - Command 301-400 - PWA Neon #00f2fe</p></div>
-</div>
-</div>
-<footer><b>© 2026 TRTT Enterprise Ecosystem</b> • Owner: engrtaher2017@gmail.com | Marker: 787950 | Blog ID: 6613996656611533868<br>Connected via GitHub Pages & Trttnews24bd Blog Automation | 50 Blogs Empire | 500 Commands | Neon PWA #00f2fe | Monetization Active - 2 years effort fixed<br><a href="https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot" style="color:var(--neon)">GitHub Empire</a> | <a href="exact-50-blogs/" style="color:var(--gold)">50 Blogs</a> | <a href="app.html" style="color:var(--neon)">Map App</a></footer>
-<script>console.log("TRTT Autonomous Sync Initialized for Trttnews24bd & GitHub. Marker 787950, Blog 6613996656611533868, Owner engrtaher2017@gmail.com, 50 Blogs 500 Commands, Neon #00f2fe"); if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}</script>
+
+    <div class="ambient-glow"></div>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="nav-container">
+            <a href="#" class="brand-logo">
+                <i class="fa-solid fa-compass"></i>
+                TRTT <span>Eurohubvoyage</span>
+            </a>
+            <div class="header-controls">
+                <button class="wishlist-badge-btn" onclick="alert('Your Saved Wishlist items are stored locally!')">
+                    <i class="fa-solid fa-heart" style="color:var(--accent-gold);"></i> Wishlist (<span id="wish-count">0</span>)
+                </button>
+                <button class="theme-btn" onclick="toggleTheme()">
+                    <i class="fa-solid fa-circle-half-stroke"></i> Theme
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-badge">
+            <i class="fa-solid fa-bolt"></i> Ultimate European Travel Hub
+        </div>
+        <h1>Explore Europe Like Never Before</h1>
+        <p>Flights, Luxury Stays, Interactive Maps, Car Rentals, and Smart Travel Tools.</p>
+    </section>
+
+    <!-- Booking Hub -->
+    <div class="booking-hub">
+        <div class="hub-tabs">
+            <button class="tab-btn active" onclick="setTab('flights', 'https://aviasales.tpo.lv/Fb8U9yav')"><i class="fa-solid fa-plane"></i> Flights</button>
+            <button class="tab-btn" onclick="setTab('hotels', 'https://tpo.lv/h3LrTZcS')"><i class="fa-solid fa-hotel"></i> Hotels</button>
+            <button class="tab-btn" onclick="setTab('cars', 'https://getrentacar.tpo.lv/VZe2HcGc')"><i class="fa-solid fa-car"></i> Car Rental</button>
+            <button class="tab-btn" onclick="setTab('esim', 'https://airalo.tpo.lv/ZZoQC7Mz')"><i class="fa-solid fa-sim-card"></i> eSIM Data</button>
+            <button class="tab-btn" onclick="setTab('tours', 'https://klook.tpo.lv/TWKnemhz')"><i class="fa-solid fa-ticket"></i> Attractions</button>
+        </div>
+
+        <div class="hub-box">
+            <div class="input-box">
+                <label>Destination</label>
+                <input type="text" placeholder="e.g. Rome, Paris, London">
+            </div>
+            <div class="input-box">
+                <label>Travel Date</label>
+                <input type="date">
+            </div>
+            <div class="input-box">
+                <label>Provider Partner</label>
+                <select id="hub-provider">
+                    <option value="https://aviasales.tpo.lv/Fb8U9yav">Aviasales Flight Hub</option>
+                    <option value="https://klook.tpo.lv/TWKnemhz">Klook Experience</option>
+                    <option value="https://getrentacar.tpo.lv/VZe2HcGc">GetRentacar Drive</option>
+                    <option value="https://airalo.tpo.lv/ZZoQC7Mz">Airalo Global eSIM</option>
+                    <option value="https://tpo.lv/h3LrTZcS">Trip.com Stays</option>
+                </select>
+            </div>
+            <button class="search-trigger-btn" onclick="launchProvider()">
+                <i class="fa-solid fa-magnifying-glass"></i> Find Offers
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+
+        <!-- 1. Popular Destinations Showcase (with Images & Wishlist) -->
+        <section>
+            <div class="section-header">
+                <h2><i class="fa-solid fa-mountain-city"></i> Trending European Destinations</h2>
+                <p>Top-rated cities with handpicked deals and instant booking.</p>
+            </div>
+
+            <div class="destinations-grid">
+                <div class="dest-card">
+                    <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=600&q=80" alt="Paris">
+                    <div class="dest-body">
+                        <h4>Paris, France</h4>
+                        <p>Experience the city of lights, Eiffel Tower, and world-class culinary stays.</p>
+                        <div class="dest-footer">
+                            <button class="wishlist-btn" onclick="addToWishlist('Paris')"><i class="fa-regular fa-heart"></i> Save</button>
+                            <a href="https://tpo.lv/h3LrTZcS" target="_blank" class="book-now-link">Explore Stays</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dest-card">
+                    <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=600&q=80" alt="Rome">
+                    <div class="dest-body">
+                        <h4>Rome, Italy</h4>
+                        <p>Discover historic ruins, the Colosseum, and vibrant Italian culture.</p>
+                        <div class="dest-footer">
+                            <button class="wishlist-btn" onclick="addToWishlist('Rome')"><i class="fa-regular fa-heart"></i> Save</button>
+                            <a href="https://tpo.lv/h3LrTZcS" target="_blank" class="book-now-link">Explore Stays</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dest-card">
+                    <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=600&q=80" alt="London">
+                    <div class="dest-body">
+                        <h4>London, United Kingdom</h4>
+                        <p>Enjoy iconic landmarks, museums, and seamless city transit passes.</p>
+                        <div class="dest-footer">
+                            <button class="wishlist-btn" onclick="addToWishlist('London')"><i class="fa-regular fa-heart"></i> Save</button>
+                            <a href="https://tpo.lv/h3LrTZcS" target="_blank" class="book-now-link">Explore Stays</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dest-card">
+                    <img src="https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&w=600&q=80" alt="Barcelona">
+                    <div class="dest-body">
+                        <h4>Barcelona, Spain</h4>
+                        <p>Soak up the Mediterranean sun, stunning architecture, and beaches.</p>
+                        <div class="dest-footer">
+                            <button class="wishlist-btn" onclick="addToWishlist('Barcelona')"><i class="fa-regular fa-heart"></i> Save</button>
+                            <a href="https://tpo.lv/h3LrTZcS" target="_blank" class="book-now-link">Explore Stays</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Interactive Google Map Embed -->
+        <section>
+            <div class="section-header">
+                <h2><i class="fa-solid fa-map-location-dot"></i> Interactive European Travel Map</h2>
+                <p>Locate key hubs, explore regional routing, and plan your itinerary visually.</p>
+            </div>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.9916256937605!2d2.292292676892031!3d48.85837000078869!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e2964e34e2d%3A0x8ddca2ee380ef720!2sEiffel%20Tower!5e0!3m2!1sen!2sbd!4v1710000000000!5m2!1sen!2sbd" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </section>
+
+        <!-- 3. All Affiliate Services Hub -->
+        <section>
+            <div class="section-header">
+                <h2><i class="fa-solid fa-layer-group"></i> Exclusive Booking Channels</h2>
+                <p>Direct access to world-class travel providers with verified marker status.</p>
+            </div>
+
+            <div class="services-grid">
+                <a href="https://aviasales.tpo.lv/Fb8U9yav" target="_blank" class="service-card">
+                    <div class="card-top">
+                        <div class="card-icon"><i class="fa-solid fa-plane-up"></i></div>
+                        <div><h4>Aviasales</h4><p>Global Flights Deal</p></div>
+                    </div>
+                </a>
+                <a href="https://klook.tpo.lv/TWKnemhz" target="_blank" class="service-card">
+                    <div class="card-top">
+                        <div class="card-icon"><i class="fa-solid fa-ticket"></i></div>
+                        <div><h4>Klook</h4><p>Tours & Activities</p></div>
+                    </div>
+                </a>
+                <a href="https://airalo.tpo.lv/ZZoQC7Mz" target="_blank" class="service-card">
+                    <div class="card-top">
+                        <div class="card-icon"><i class="fa-solid fa-wifi"></i></div>
+                        <div><h4>Airalo</h4><p>eSIM Internet Data</p></div>
+                    </div>
+                </a>
+                <a href="https://gettransfer.tpo.lv/1u8zRU5s" target="_blank" class="service-card">
+                    <div class="card-top">
+                        <div class="card-icon"><i class="fa-solid fa-taxi"></i></div>
+                        <div><h4>GetTransfer</h4><p>VIP Airport Transfers</p></div>
+                    </div>
+                </a>
+                <a href="https://getrentacar.tpo.lv/VZe2HcGc" target="_blank" class="service-card">
+                    <div class="card-top">
+                        <div class="card-icon"><i class="fa-solid fa-car-rear"></i></div>
+                        <div><h4>GetRentacar</h4><p>Europe Car Rentals</p></div>
+                    </div>
+                </a>
+                <a href="https://airhelp.tpo.lv/3ltXS0E4" target="_blank" class="service-card">
+                    <div class="card-top">
+                        <div class="card-icon"><i class="fa-solid fa-shield-cat"></i></div>
+                        <div><h4>AirHelp</h4><p>Flight Delay Claim</p></div>
+                    </div>
+                </a>
+                <a href="https://gocity.tpo.lv/QSQw8FwU" target="_blank" class="service-card">
+                    <div class="card-top">
+                        <div class="card-icon"><i class="fa-solid fa-city"></i></div>
+                        <div><h4>GoCity</h4><p>Sightseeing Passes</p></div>
+                    </div>
+                </a>
+                <a href="https://radicalstorage.tpo.lv/WkGqxlsD" target="_blank" class="service-card">
+                    <div class="card-top">
+                        <div class="card-icon"><i class="fa-solid fa-suitcase-rolling"></i></div>
+                        <div><h4>Radical Storage</h4><p>Luggage Drop Network</p></div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 4, 5, 6, 7. Travel Tools & Blog Section -->
+        <section>
+            <div class="section-header">
+                <h2><i class="fa-solid fa-wand-magic-sparkles"></i> Travel Intelligence & Guides</h2>
+                <p>Smart tools and expert tips to optimize your European journey.</p>
+            </div>
+
+            <div class="tools-grid">
+                <!-- Weather Tool -->
+                <div class="tool-panel">
+                    <h3><i class="fa-solid fa-sun"></i> Live Weather Radar</h3>
+                    <div class="input-box">
+                        <label>Select Destination</label>
+                        <select onchange="fetchWeather(this.value)">
+                            <option value="Paris">Paris, France</option>
+                            <option value="Rome">Rome, Italy</option>
+                            <option value="London">London, UK</option>
+                            <option value="Barcelona">Barcelona, Spain</option>
+                        </select>
+                    </div>
+                    <div class="weather-card-display" id="weather-box">
+                        <div>
+                            <h4 id="city-name" style="font-size: 1.2rem;">Paris</h4>
+                            <p id="weather-desc" style="color: var(--text-sub); font-size: 0.85rem;">Sunny Sky</p>
+                        </div>
+                        <div id="temp-display" style="font-size: 2rem; font-weight: 800; color: var(--accent-gold);">22°C</div>
+                    </div>
+                </div>
+
+                <!-- Currency Converter Tool -->
+                <div class="tool-panel">
+                    <h3><i class="fa-solid fa-calculator"></i> Currency Converter</h3>
+                    <div class="converter-box">
+                        <input type="number" id="calc-amount" value="100">
+                        <select id="calc-from">
+                            <option value="EUR">EUR (€)</option>
+                            <option value="USD">USD ($)</option>
+                            <option value="GBP">GBP (£)</option>
+                        </select>
+                    </div>
+                    <button class="search-trigger-btn" style="width: 100%;" onclick="runConversion()">Calculate Rate</button>
+                    <div id="calc-output" style="margin-top: 15px; text-align: center; font-weight: 700; color: var(--accent-gold);">100 EUR ≈ 108.50 USD</div>
+                </div>
+
+                <!-- Travel Blog / Tips Section -->
+                <div class="tool-panel" style="grid-column: span 1;">
+                    <h3><i class="fa-solid fa-book-open"></i> Expert Travel Guides</h3>
+                    <div class="blog-card">
+                        <h4>Top 10 Tips for Cheap European Flights in 2026</h4>
+                        <p>Learn how to save up to 40% on cross-border travel using smart tools.</p>
+                    </div>
+                    <div class="blog-card" style="margin-bottom: 0;">
+                        <h4>Why eSIM Data is Essential for Europe Trips</h4>
+                        <p>Stay connected instantly across borders without expensive roaming fees.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Amazon Affiliate Luxury Gear Showcase -->
+        <section class="amazon-banner">
+            <div>
+                <h2><i class="fa-brands fa-amazon"></i> Official Amazon Travel Store</h2>
+                <p style="color: var(--text-sub); margin-top: 5px;">Discover luxury travel bags, power banks, and adapters.</p>
+            </div>
+            <a href="https://amzn.to/4shg6Hn" target="_blank" class="amazon-btn">Explore Travel Shop</a>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 <strong>TRTT Eurohubvoyage</strong>. All rights reserved. Direct affiliate integration portal hosted on GitHub Pages.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        let wishlistCount = 0;
+        function addToWishlist(city) {
+            wishlistCount++;
+            document.getElementById('wish-count').innerText = wishlistCount;
+            alert(`${city} added to your wishlist!`);
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+        }
+
+        function setTab(tabName, url) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('hub-provider').value = url;
+        }
+
+        function launchProvider() {
+            const targetUrl = document.getElementById('hub-provider').value;
+            window.open(targetUrl, '_blank');
+        }
+
+        function fetchWeather(city) {
+            const data = {
+                'Paris': { temp: '22°C', desc: 'Sunny Sky' },
+                'Rome': { temp: '26°C', desc: 'Clear Sun' },
+                'London': { temp: '16°C', desc: 'Light Showers' },
+                'Barcelona': { temp: '25°C', desc: 'Warm Breeze' }
+            };
+            document.getElementById('city-name').innerText = city;
+            document.getElementById('temp-display').innerText = data[city].temp;
+            document.getElementById('weather-desc').innerText = data[city].desc;
+        }
+
+        function runConversion() {
+            const amt = document.getElementById('calc-amount').value;
+            const cur = document.getElementById('calc-from').value;
+            let rate = cur === 'EUR' ? 1.085 : (cur === 'USD' ? 0.92 : 1.26);
+            let res = (amt * rate).toFixed(2);
+            document.getElementById('calc-output').innerText = `${amt} ${cur} ≈ ${res} USD/EUR`;
+        }
+    </script>
 </body>
 </html>
