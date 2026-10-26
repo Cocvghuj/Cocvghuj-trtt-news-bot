@@ -2,7 +2,7 @@ name: TRTT FINAL BOSS INTERLINKED - 1 DAY 1 TOPIC - 787950
 
 on:
   schedule:
-    - cron: '17 6 * * *'
+    - cron: '17 6 * * *'  # প্রতিদিন সকাল ০৮:১৭ মিনিট (সার্ডিনিয়া লোকাল টাইম)
   workflow_dispatch:
     inputs:
       persona:
@@ -20,12 +20,12 @@ jobs:
           token: ${{ secrets.GH_PAT }}
           fetch-depth: 0
 
-      - name: Build 1 PER DAY - INTERLINKED - ALL ROUTES - 【entity-AMAZON¦canonical_name=AMAZON】 - WHATSAPP - 787950
+      - name: Build 1 PER DAY - INTERLINKED - ALL ROUTES - AMAZON - WHATSAPP
         env:
-          TRAVEL_MARKER: ${{ secrets.TRAVEL_PAYOUT_MARKER }}
+          TRAVEL_MARKER: "787950"  # আপনার নির্দিষ্ট মার্কার আইডি সরাসরি লক করা হলো
           GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_KEY: ${{ secrets.GROQ_API_KEY }}
-          INPUT_PERSONA: ${{ 【entity-github¦canonical_name=GitHub】.event.inputs.persona }}
+          INPUT_PERSONA: ${{ github.event.inputs.persona }}
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
           BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
@@ -37,7 +37,7 @@ jobs:
           python3 << 'PY'
           import os, datetime, pathlib, glob, requests
 
-          marker = os.getenv('TRAVEL_MARKER','787950')
+          marker = "787950"  # পাইথন স্ক্রিপ্টের ভেতরেও মার্কার ফিক্সড করা হলো
           input_p = os.getenv('INPUT_PERSONA','').strip()
           personas = ["neighbor_maria","customer_rahim","friend_giovanni","local_expert"]
           if input_p in personas:
@@ -51,7 +51,7 @@ jobs:
               2: {"id":"planning","title":"6 Steps for Planning Your Trip from Sardinia - Sanluri to Rome Bus 5 Euro"},
               3: {"id":"accom","title":"How to Find Cheap Accommodation in Rome - 7 Ways Near Termini 50 Euro"},
               4: {"id":"gear","title":"Getting the Right Gear - Backpack 40L Amazon Test Sardinia to Rome"},
-              5: {"id":"life","title":"Life On The Road - ARST Bus plus Aviasales plus 【entity-Airalo¦canonical_name=Airalo】 eSIM 5 Euro Guide"},
+              5: {"id":"life","title":"Life On The Road - ARST Bus plus Aviasales plus Airalo eSIM 5 Euro Guide"},
               6: {"id":"family","title":"Solo Female and Family Travel in Italy - Safe Guide from Sanluri to Venice"}
           }
 
@@ -63,9 +63,9 @@ jobs:
               "Cagliari Elmas to Rome Fiumicino - 19 Euro Aviasales Fb8U9yav - 787950 LOCKED",
               "Rome Fiumicino to Rome Termini - Leonardo Express 14 Euro - ATAC Bus 7 Euro",
               "Rome Termini to Trastevere - Bus 3 Euro - Family Hotel 50 Euro - Booking Safe",
-              "Sanluri to Milan Bergamo - 24 Euro Aviasales - 【entity-Klook¦canonical_name=Klook】 TWKnemhz Tour",
-              "Sanluri to Venice - 29 Euro - 【entity-Amazon¦canonical_name=AMAZON】 Backpack 40L 4shg6Hn Gear Tested",
-              "Cagliari to Olbia - Ferry 19 Euro - 【entity-Airalo¦canonical_name=Airalo】 eSIM 5 Euro ZZoQC7Mz"
+              "Sanluri to Milan Bergamo - 24 Euro Aviasales - Klook TWKnemhz Tour",
+              "Sanluri to Venice - 29 Euro - Amazon Backpack 40L 4shg6Hn Gear Tested",
+              "Cagliari to Olbia - Ferry 19 Euro - Airalo eSIM 5 Euro ZZoQC7Mz"
           ]
 
           posts_dir = pathlib.Path("posts")
@@ -74,7 +74,7 @@ jobs:
           interlinks_html = ""
           for pp in prev_posts:
               name = pathlib.Path(pp).stem.replace('-',' ')[:55]
-              url = f"https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/{pp}"
+              url = f"https://github.io{pp}"
               interlinks_html += f'<li><a href="{url}">{name} - Interlinked</a></li>'
 
           base_date = datetime.datetime.now().strftime("%Y%m%d")
@@ -83,27 +83,27 @@ jobs:
           content_html = f"""
           <div style="font-family:Arial,sans-serif;line-height:1.7;color:#111;max-width:720px;margin:0 auto">
           <div style="background:#003580;color:#fff;padding:14px;border-radius:10px;text-align:center;font-weight:800">
-          TRTT Eurovoyage Hub - 787950 LOCKED - {topic['id'].upper()} - {persona.upper()} - INTERLINKED
+          TRTT Eurovoyage Hub - {marker} LOCKED - {topic['id'].upper()} - {persona.upper()} - INTERLINKED
           </div>
           <p style="font-size:12px;color:#64748b">Disclosure: Affiliate links Aviasales Fb8U9yav, Airalo ZZoQC7Mz, Amazon 4shg6Hn. Real test Via Carlo Felice 08:17 ARST. Marker {marker}.</p>
-          <h1>{topic['title']} - 787950 LOCKED</h1>
+          <h1>{topic['title']} - {marker} LOCKED</h1>
           <p><b>Quick Summary:</b> Real test Sanluri Via Carlo Felice 08:17 ARST 5 Euro to Cagliari Elmas. Flight Rome 19 Euro via Aviasales {marker}. Interlinked with previous 6 posts, all routes plus Amazon gear. Community persona {persona}.</p>
           <h2>All Routes Plus Amazon</h2>
           <ul><li>{'</li><li>'.join(all_routes)}</li></ul>
           <h2>Aviasales 19 Euro - sub_id correct</h2>
-          <p>Shop: <a href="https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/plane/?sub_id={sub_id_base}_plane_avia">Plane Shop 19 Euro - Interlinked</a> - sub_id not subid plus lock_it_{marker}</p>
+          <p>Shop: <a href="https://github.ioplane/?sub_id={sub_id_base}_plane_avia">Plane Shop 19 Euro - Interlinked</a> - sub_id not subid plus lock_it_{marker}</p>
           <h2>eSIM 5 Euro - 4 Programs</h2>
-          <p>Shop: <a href="https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/esim/?sub_id={sub_id_base}_esim_airalo">eSIM Shop 4 Programs sub_id locked</a></p>
+          <p>Shop: <a href="https://github.ioesim/?sub_id={sub_id_base}_esim_airalo">eSIM Shop 4 Programs sub_id locked</a></p>
           <h2>Amazon Gear</h2>
-          <p><a href="https://amazon.tpo.lv/4shg6Hn?sub_id={sub_id_base}_amazon_gear">Amazon 4shg6Hn - sub_id tracked</a></p>
+          <p><a href="https://tpo.lv{sub_id_base}_amazon_gear">Amazon 4shg6Hn - sub_id tracked</a></p>
           <h2>WhatsApp Booking</h2>
           <p>WhatsApp button in shop - Deal to your WhatsApp - Buy later but commission tracked via sub_id {sub_id_base}_wa</p>
           <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;margin:16px 0">
-          <b>Interlinked Previous 6 Posts:</b><br><ul>{interlinks_html if interlinks_html else '<li>First interlinked post 787950 LOCKED</li>'}</ul>
+          <b>Interlinked Previous 6 Posts:</b><br><ul>{interlinks_html if interlinks_html else '<li>First interlinked post '+marker+' LOCKED</li>'}</ul>
           </div>
           <div style="text-align:center;margin:20px 0">
-          <a href="https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/plane/?sub_id={sub_id_base}_plane_avia" style="background:#003580;color:#fff;padding:14px 22px;border-radius:10px;text-decoration:none;font-weight:800;display:inline-block;margin:6px">Search Flights 19 Euro - 787950 LOCKED</a>
-          <a href="https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/esim/?sub_id={sub_id_base}_esim_airalo" style="background:#fff;color:#003580;border:2px solid #003580;padding:14px 22px;border-radius:10px;text-decoration:none;font-weight:800;display:inline-block;margin:6px">eSIM 5 Euro - 4 Programs</a>
+          <a href="https://github.ioplane/?sub_id={sub_id_base}_plane_avia" style="background:#003580;color:#fff;padding:14px 22px;border-radius:10px;text-decoration:none;font-weight:800;display:inline-block;margin:6px">Search Flights 19 Euro - {marker} LOCKED</a>
+          <a href="https://github.ioesim/?sub_id={sub_id_base}_esim_airalo" style="background:#fff;color:#003580;border:2px solid #003580;padding:14px 22px;border-radius:10px;text-decoration:none;font-weight:800;display:inline-block;margin:6px">eSIM 5 Euro - 4 Programs</a>
           </div>
           <p style="font-size:11px;color:#64748b">Persona {persona}: Real test Sanluri Via Carlo Felice 08:17 ARST - 1 Day 1 Topic {topic['id']} - Marker {marker} LOCKED - sub_id correct - All Routes plus Amazon - WhatsApp funnel.</p>
           </div>
@@ -115,7 +115,6 @@ jobs:
           pathlib.Path("latest_travel_news.html").write_text(content_html, encoding='utf-8')
           pathlib.Path("index.html").write_text(content_html, encoding='utf-8')
 
-          # Blogger Post - FIXED URL
           blog_id = os.getenv('BLOGGER_BLOG_ID')
           client_id = os.getenv('BLOGGER_CLIENT_ID')
           client_secret = os.getenv('BLOGGER_CLIENT_SECRET')
@@ -123,54 +122,45 @@ jobs:
 
           if blog_id and client_id and client_secret and refresh_token:
               try:
-                  token_url = "https://oauth2.googleapis.com/token"
+                  token_url = "https://googleapis.com"
                   data = {"client_id": client_id, "client_secret": client_secret, "refresh_token": refresh_token, "grant_type": "refresh_token"}
                   tr = requests.post(token_url, data=data, timeout=20)
                   tr.raise_for_status()
                   access_token = tr.json().get("access_token")
+                  
                   if access_token:
-                      blogger_url = f"https://www.googleapis.com/blogger/v3/blogs/{blog_id}/posts/"
-                      headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+                      blogger_url = f"https://googleapis.com{blog_id}/posts"
+                      headers = {
+                          "Authorization": f"Bearer {access_token}",
+                          "Content-Type": "application/json"
+                      }
                       post_data = {
                           "kind": "blogger#post",
                           "blog": {"id": blog_id},
-                          "title": f"{topic['title']} - 787950 LOCKED - {base_date} - {persona}",
-                          "content": content_html,
-                          "labels": [topic['id'], persona, "sanluri", "787950", "interlinked", "all-routes", "amazon"]
+                          "title": f"{topic['title']} - {marker} LOCKED",
+                          "content": content_html
                       }
                       br = requests.post(blogger_url, headers=headers, json=post_data, timeout=20)
-                      print(f"Blogger Response: {br.status_code} - {br.text[:400]}")
                       br.raise_for_status()
                       print(f"Successfully posted to Blogger! Post ID: {br.json().get('id')}")
-                  else:
-                      print("No access token")
               except Exception as e:
                   print(f"Error posting to Blogger: {e}")
-          else:
-              print("Blogger secrets missing - saved locally only")
 
-          # Telegram - FIXED URL
           tg_token = os.getenv('TELEGRAM_BOT_TOKEN')
           tg_chat_id = os.getenv('TELEGRAM_CHAT_ID')
-
           if tg_token and tg_chat_id:
               try:
-                  tg_url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
+                  tg_url = f"https://telegram.com{tg_token}/sendMessage"
                   tg_text = (
-                      f"TRTT News Bot Alert\n\n"
-                      f"Topic: {topic['title']}\n"
-                      f"Author: {persona}\n"
-                      f"Marker: {marker} LOCKED\n"
-                      f"Date: {base_date}\n\n"
-                      f"GitHub Pages and Blogger deployed! sub_id {sub_id_base}"
+                      f"🚀 *TRTT News Bot Alert* 🚀\n\n"
+                      f"📝 *Topic:* {topic['title']}\n"
+                      f"👤 *Author:* {persona}\n"
+                      f"🔑 *Marker:* {marker} LOCKED\n"
+                      f"📅 *Date:* {base_date}\n\n"
+                      f"✅ GitHub Pages and Blogger deployed successfully!"
                   )
-                  tg_data = {"chat_id": tg_chat_id, "text": tg_text}
+                  tg_data = {"chat_id": tg_chat_id, "text": tg_text, "parse_mode": "Markdown"}
                   tgr = requests.post(tg_url, data=tg_data, timeout=15)
-                  print(f"Telegram Response: {tgr.status_code}")
                   tgr.raise_for_status()
                   print("Telegram notification sent successfully!")
               except Exception as e:
-                  print(f"Error sending Telegram notification: {e}")
-
-          print("Workflow execution completed successfully - 787950 LOCKED")
-          PY
