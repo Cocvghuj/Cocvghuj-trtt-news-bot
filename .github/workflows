@@ -1,0 +1,84 @@
+name: TRTT FINAL BOSS 787950
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+    inputs:
+      persona:
+        description: 'Author'
+        default: 'neighbor_maria'
+        type: choice
+        options: [neighbor_maria, customer_rahim, friend_giovanni, local_expert]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+          fetch-depth: 0
+      - name: Build
+        env:
+          TRAVEL_MARKER: ${{ secrets.TRAVEL_PAYOUT_MARKER }}
+          INPUT_PERSONA: ${{ 【entity-github¦canonical_name=GitHub】.event.inputs.persona }}
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
+          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
+          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          pip install requests -q
+          python3 << 'PY'
+          import os, datetime, pathlib, glob, requests
+          marker=os.getenv('TRAVEL_MARKER','787950')
+          input_p=os.getenv('INPUT_PERSONA','').strip()
+          personas=["neighbor_maria","customer_rahim","friend_giovanni","local_expert"]
+          persona=input_p if input_p in personas else personas[datetime.datetime.now().weekday()%4]
+          topic_id=["saving","flights","planning","accom","gear","life","family"][datetime.datetime.now().weekday()]
+          posts_dir=pathlib.Path("posts")
+          posts_dir.mkdir(exist_ok=True)
+          prev=sorted(glob.glob("posts/*.html"),reverse=True)[:6]
+          links=""
+          for pp in prev:
+              name=pathlib.Path(pp).stem.replace('-',' ')[:50]
+              url=f"https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/{pp}"
+              links+=f'<li><a href="{url}">{name}</a></li>'
+          base_date=datetime.datetime.now().strftime("%Y%m%d")
+          sub_id=f"interlinked_{topic_id}_{persona}_lock_it_{marker}_{base_date}"
+          html=f"<h1>{topic_id} {persona} 787950 LOCKED FAST MONEY</h1><p>Real test Sanluri Via Carlo Felice 08:17 ARST 5 Euro. Flight 19 Euro sub_id {sub_id}.</p><p><a href='https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/plane/?sub_id={sub_id}_plane_avia'>Plane 19 Euro</a></p><p><a href='https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/esim/?sub_id={sub_id}_esim_airalo'>eSIM 5 Euro</a></p><p><a href='https://amazon.tpo.lv/4shg6Hn?sub_id={sub_id}_amazon_gear'>Amazon Gear</a></p><ul>{links}</ul>"
+          (posts_dir/f"{base_date}-{topic_id}-{persona}-{marker}.html").write_text(html,encoding='utf-8')
+          pathlib.Path("index.html").write_text(html,encoding='utf-8')
+          pathlib.Path("latest_travel_news.html").write_text(html,encoding='utf-8')
+          blog_id=os.getenv('BLOGGER_BLOG_ID')
+          client_id=os.getenv('BLOGGER_CLIENT_ID')
+          client_secret=os.getenv('BLOGGER_CLIENT_SECRET')
+          refresh_token=os.getenv('BLOGGER_REFRESH_TOKEN')
+          if blog_id and client_id and client_secret and refresh_token:
+              try:
+                  r=requests.post("https://oauth2.googleapis.com/token",data={"client_id":client_id,"client_secret":client_secret,"refresh_token":refresh_token,"grant_type":"refresh_token"},timeout=20)
+                  r.raise_for_status()
+                  token=r.json().get("access_token")
+                  if token:
+                      br=requests.post(f"https://www.googleapis.com/blogger/v3/blogs/{blog_id}/posts/",headers={"Authorization":f"Bearer {token}","Content-Type":"application/json"},json={"kind":"blogger#post","blog":{"id":blog_id},"title":f"{topic_id} {persona} 787950 LOCKED {base_date}","content":html,"labels":[topic_id,persona,"sanluri","787950","fast-money"]},timeout=20)
+                      print(f"Blogger {br.status_code}")
+              except Exception as e:
+                  print(f"Blogger error {e}")
+          tg_token=os.getenv('TELEGRAM_BOT_TOKEN')
+          tg_chat=os.getenv('TELEGRAM_CHAT_ID')
+          if tg_token and tg_chat:
+              try:
+                  tg_url=f"https://api.telegram.org/bot{tg_token}/sendMessage"
+                  requests.post(tg_url,data={"chat_id":tg_chat,"text":f"TRTT 787950 {topic_id} {persona} {sub_id} FAST MONEY"},timeout=15)
+                  print("Telegram OK")
+              except Exception as e:
+                  print(f"TG error {e}")
+          print(f"DONE {sub_id} 787950 LOCKED")
+          PY
+      - name: Commit
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html latest_travel_news.html posts/ || true
+          git commit -m "TRTT 787950 LOCKED FAST MONEY [skip ci]" || exit 0
+          git push
