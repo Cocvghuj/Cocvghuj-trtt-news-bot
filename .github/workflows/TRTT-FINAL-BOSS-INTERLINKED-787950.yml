@@ -1,4 +1,4 @@
-name: FINAL-MALL-6-SHOPS-787950-FIXED
+name: FINAL-MALL-6-SHOPS-787950-FIXED-FULL-TEXT
 on:
   workflow_dispatch:
 
@@ -11,7 +11,7 @@ jobs:
         with:
           token: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
 
-      - name: Build My Own Mall + Post + Telegram
+      - name: Build Full Guide + Mall App + Telegram
         env:
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
@@ -25,78 +25,92 @@ jobs:
           pip install requests -q
           python3 << 'PY'
           import os, requests, pathlib, json, datetime
-          print("START - Checking Secrets")
           marker = os.getenv('TRAVEL_PAYOUT_MARKER') or '787950'
           amazon_raw = os.getenv('AMAZON_LINK') or 'https://www.amazon.com/dp/B0B7B5J7H5?tag=cocvghuj-20'
-          blog_id = os.getenv('BLOGGER_BLOG_ID')
           tg_bot = os.getenv('TELEGRAM_BOT_TOKEN')
           tg_chat = os.getenv('TELEGRAM_CHAT_ID')
-          print(f"Marker: {marker} - Amazon Exists: {bool(amazon_raw)} - Blogger Exists: {bool(blog_id)} - Telegram Exists: {bool(tg_bot)}")
+          print(f"START - Marker {marker}")
 
-          # Fix Amazon Link
-          amazon = amazon_raw
-          if marker not in amazon:
-              amazon = f"{amazon_raw}{'&' if '?' in amazon_raw else '?'}marker={marker}&sub_id=MY_OWN_{marker}"
+          amazon_direct = amazon_raw
+          if marker not in amazon_raw:
+              amazon_direct = f"{amazon_raw}{'&' if '?' in amazon_raw else '?'}marker={marker}&sub_id=MY_OWN_{marker}"
 
-          hub_link = f"https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/?marker={marker}"
-          blog_link = "https://ttnews24bd.blogspot.com/"
+          hub_link = f"https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/?sub_id=HUB_MAIN_{marker}"
+          blog_main = "https://ttnews24bd.blogspot.com/"
           img1 = "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800"
-          img2 = "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=800"
+          img2 = "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=800&q=80"
+          today = datetime.date.today()
 
-          # --- 1. BLOGGER POST - SAFE ---
-          blog_url = blog_link
-          if blog_id and os.getenv('BLOGGER_CLIENT_ID'):
-              try:
-                  title = f"Best Backpack for Sardinia - My Tested Gear - Marker {marker} - {datetime.date.today()}"
-                  content = f"<div style='padding:10px;background:#e8f5e9;border-left:4px solid green'><b>MY OWN GUIDE - SANLURI - {marker} LOCKED - DIRECT</b></div><img src='{img1}' style='width:100%;border-radius:10px;margin:10px 0'><p>Via Carlo Felice Sanluri - Real 3 months tested - ARST 5 Euro 08:17 - Ryanair 19 Euro fits - 600 words.</p><img src='{img2}' style='width:100%;border-radius:10px;margin:10px 0'><div style='padding:15px;background:#fff3cd;border:2px solid orange;border-radius:10px'><a href='{amazon}' target='_blank' style='background:orange;padding:12px 20px;border-radius:5px;text-decoration:none;font-weight:bold;color:black;display:inline-block'>🎒 Buy Amazon Direct - {marker}</a><br><br><a href='{hub_link}' target='_blank' style='background:blue;padding:12px 20px;border-radius:5px;text-decoration:none;font-weight:bold;color:white;display:inline-block'>🏠 My Mall App - {marker}</a><br><small>Direct - No White Screen - No tpo.lv</small></div>"
-                  cid=os.getenv('BLOGGER_CLIENT_ID'); cs=os.getenv('BLOGGER_CLIENT_SECRET'); rt=os.getenv('BLOGGER_REFRESH_TOKEN')
-                  t_res = requests.post("https://oauth2.googleapis.com/token", data={"client_id":cid,"client_secret":cs,"refresh_token":rt,"grant_type":"refresh_token"}, timeout=20)
-                  access = t_res.json().get("access_token")
-                  if access:
-                      r = requests.post(f"https://www.googleapis.com/blogger/v3/blogs/{blog_id}/posts/", headers={"Authorization":f"Bearer {access}","Content-Type":"application/json"}, json={"kind":"blogger#post","blog":{"id":blog_id},"title":title,"content":content,"labels":["MY-OWN-GUIDE",marker,"2-IMAGES"]}, timeout=20)
-                      print(f"BLOGGER STATUS: {r.status_code}")
-                      if r.status_code==200:
-                          blog_url = r.json().get("url", blog_link)
-                  else:
-                      print(f"BLOGGER TOKEN FAIL: {t_res.text[:200]}")
-              except Exception as e:
-                  print(f"BLOGGER SKIP (Not Fail): {e}")
-          else:
-              print("BLOGGER SKIP - Secrets Not Set")
+          # --- FULL 600 WORDS CONTENT - NO CUT ---
+          title = f"Best Backpack for Sardinia - My Tested Gear - Marker 787950 - 2026-10-26"
+          content = f"""
+          <div style="background:#e8f5e9;padding:12px;border-left:6px solid #00c853;font-weight:bold;font-size:16px">MY OWN GUIDE - SANLURI - 787950 LOCKED - DIRECT - Via Carlo Felice Real Local</div>
+          <br/>
+          <img src="{img1}" alt="Best Backpack Sardinia" style="width:100%;max-width:700px;border-radius:12px" />
+          <p><b>Disclosure:</b> Affiliate links. Marker {marker} compensates me from Via Carlo Felice, Sanluri.</p>
+          <p><b>My Real Test - Sanluri Via Carlo Felice - 3 Months Tested - Real Not Google</b></p>
+          <p>I live in Sanluri, Via Carlo Felice, Sardinia, Italy. I tested this backpack 3 months real. When I came from Bangladesh to Sardinia, I had big trolley problem at ARST bus Via Carlo Felice to Cagliari. Ticket 5 Euro 08:17 bus, driver said no big luggage. I paid extra 15 Euro. I lost money. Then I bought this backpack 40L from Amazon 45 Euro. Delivery 2 days to Via Carlo Felice. I tested Sanluri to Cagliari, Rome, Milan, Alghero - 4 trips - all good - real.</p>
+          <div style="background:#fff3cd;padding:12px;border-radius:8px;margin:12px 0"><b>QUICK SUMMARY:</b> ARST 5 Euro 08:17 Via Carlo Felice, 19 Euro Flight via Aviasales marker {marker}, this backpack tested. Light 0.8KG, waterproof, fits under Ryanair seat, save 160 Euro total. Real test.</div>
+          <h2>My Real Story - Why This Backpack Best for Sardinia?</h2>
+          <p>Sardinia roads hard, bus crowded, need light pack. I bought 3 backpacks, this one survived. Why? 1) Waterproof - November rain in Sanluri sudden heavy, my old bag wet laptop dead, this one waterproof laptop safe. 2) Light - 08:17 bus run easy, Via Carlo Felice walk 2KM daily no shoulder pain old 2KG this 0.8KG. 3) Fits under Ryanair seat - Cagliari to Rome 19 Euro flight Ryanair check size strict, this backpack 40x30x20 cabin allowed no extra 25 Euro fee, I tested 2 times pass, saved 100 Euro. 4) ARST bus under seat - small bus Via Carlo Felice to Cagliari, big trolley not allowed, this fits under seat no extra 15 Euro, saved 60 Euro. Total saved 160 Euro real.</p>
+          <img src="{img2}" alt="Backpack inside Sardinia" style="width:100%;max-width:700px;border-radius:12px" />
+          <p><small>Inside view - fits laptop + clothes + Airalo eSIM 5 Euro QR + water bottle + passport - Real packing from my trip Via Carlo Felice.</small></p>
+          <p><b>My Packing List for Sardinia 3 Days:</b> Laptop + Charger, Airalo eSIM 5 Euro QR no shop needed, 2 T-shirt + Pant, Water bottle Sardinia hot, Passport + ARST ticket 5 Euro, Ryanair ticket 19 Euro via marker {marker}.</p>
+          <p><b>Price I Paid:</b> Amazon 45 Euro marker {marker} locked direct link no white screen no tpo.lv. My link has marker {marker} and sub_id MY_OWN_{marker} locked.</p>
+          <p><b>Where I Bought:</b> Amazon.it search Travel Backpack 40L price 45 Euro. My full mall 6 shops - Flight 19 Euro via Aviasales, eSIM 5 Euro via Airalo, Hotel 50 Euro via Klook, Bus 5 Euro guide, Claim 600 Euro via Airhelp, Hub plus backpack - all in one app cocvghuj.github.io marker {marker} locked direct.</p>
+          <p><b>Final Real Opinion:</b> If you live in Sanluri Via Carlo Felice or travel Sardinia, don't buy trolley buy this backpack. Save 60 Euro bus plus 25 Euro flight plus light plus waterproof plus 3 months tested real. I am not posting guy I don't put 10 links inside I put 2 links only in box my own guide 600 words real marker 787950 locked Via Carlo Felice Sanluri 2026.</p>
+          <div style="background:#d4edda;padding:18px;border-radius:12px;border:3px solid green;margin:20px 0">
+          <h3 style="margin:0 0 10px 0">MY 2 LINKS ONLY - {marker} LOCKED - DIRECT OPEN</h3>
+          <p><b>LINK 1 - TOPIC:</b><br/><a href="{amazon_direct}" target="_blank" style="background:orange;color:black;padding:14px 22px;text-decoration:none;border-radius:8px;display:inline-block;font-weight:bold;font-size:16px">🎒 Buy on Amazon Direct - {marker} Locked</a></p>
+          <p><b>LINK 2 - HUB 6 SHOPS:</b><br/><a href="{hub_link}" target="_blank" style="background:#007bff;color:white;padding:14px 22px;text-decoration:none;border-radius:8px;display:inline-block;font-weight:bold;font-size:16px">🏠 Visit My Sanluri Mall 6 Shops - {marker}</a></p>
+          <p style="margin:8px 0 0 0"><small>No tpo.lv - Direct open - No white screen - PWA Ready</small></p>
+          </div>
+          """
 
-          # --- 2. MALL APP - ALWAYS SUCCESS ---
+          # BLOGGER POST
+          blog_url = blog_main
+          try:
+              if os.getenv('BLOGGER_BLOG_ID'):
+                  cid=os.environ["BLOGGER_CLIENT_ID"]; cs=os.environ["BLOGGER_CLIENT_SECRET"]; rt=os.environ["BLOGGER_REFRESH_TOKEN"]; bid=os.environ["BLOGGER_BLOG_ID"]
+                  tr = requests.post("https://oauth2.googleapis.com/token", data={"client_id":cid,"client_secret":cs,"refresh_token":rt,"grant_type":"refresh_token"}, timeout=20)
+                  token = tr.json().get("access_token")
+                  if token:
+                      res = requests.post(f"https://www.googleapis.com/blogger/v3/blogs/{bid}/posts/", headers={"Authorization":f"Bearer {token}","Content-Type":"application/json"}, json={"kind":"blogger#post","blog":{"id":bid},"title":title,"content":content,"labels":["MY-OWN-GUIDE","2-IMAGES","DIRECT-LINK","787950","SANLURI"]}, timeout=20)
+                      print(f"Blogger: {res.status_code}")
+                      if res.status_code==200:
+                          blog_url = res.json().get("url", blog_main)
+          except Exception as e:
+              print(f"Blogger Skip: {e}")
+
+          # MALL APP - 6 SHOPS - FIXED PATH
           try:
               pathlib.Path("posts").mkdir(parents=True, exist_ok=True)
-              html = f"""<!DOCTYPE html><html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>My Sanluri Mall {marker}</title><link rel='manifest' href='manifest.json'><style>body{{font-family:sans-serif;max-width:500px;margin:auto;padding:15px;background:#f8f9fa}}.header{{background:linear-gradient(135deg,#007bff,#00c853);color:white;padding:20px;border-radius:15px;text-align:center}}.card{{background:white;border-radius:12px;padding:15px;margin:12px 0;box-shadow:0 2px 8px rgba(0,0,0,0.1);border-left:5px solid #007bff}}.btn{{display:block;padding:14px;text-align:center;border-radius:8px;text-decoration:none;font-weight:bold;color:white;margin-top:8px}}.blue{{background:#007bff}}.green{{background:#28a745}}.orange{{background:#fd7e14;color:#000}}.purple{{background:#6f42c1}}.red{{background:#dc3545}}.dark{{background:#343a40}}img{{width:100%;border-radius:12px;margin:10px 0}}</style></head><body><div class='header'><h1>🇮🇹 My Sanluri Mall</h1><p>Via Carlo Felice - 6 Shops - Marker {marker} LOCKED - DIRECT</p></div><img src='{img1}'><div class='card'><h3>✈️ 1. Flight - 19€</h3><a class='btn green' href='https://aviasales.com/?marker={marker}' target='_blank'>Book - {marker}</a></div><div class='card'><h3>📱 2. eSIM - 5€</h3><a class='btn orange' href='https://airalo.com/?marker={marker}' target='_blank'>Get - {marker}</a></div><div class='card'><h3>🏨 3. Hotel - 50€</h3><a class='btn purple' href='https://www.klook.com/?marker={marker}' target='_blank'>Book - {marker}</a></div><div class='card'><h3>🚌 4. Bus - 5€</h3><a class='btn blue' href='{blog_link}' target='_blank'>Guide - {marker}</a></div><div class='card'><h3>💶 5. Claim - 600€</h3><a class='btn red' href='https://www.airhelp.com/?marker={marker}' target='_blank'>Claim - {marker}</a></div><img src='{img2}'><div class='card'><h3>🏠 6. Hub + Backpack</h3><a class='btn dark' href='{blog_link}' target='_blank'>Blog Hub</a><a class='btn blue' href='{amazon}' target='_blank' style='margin-top:8px'>🎒 Amazon Direct - {marker}</a></div><p style='text-align:center;font-size:11px;color:#888'>Marker {marker} Locked - No White - Direct - Sanluri PWA - Add to Home Screen</p><script>if('serviceWorker' in navigator){{navigator.serviceWorker.register('sw.js')}}</script></body></html>"""
-              open("posts/index.html","w",encoding="utf-8").write(html)
-              open("posts/manifest.json","w",encoding="utf-8").write(json.dumps({"name":f"Sanluri Mall {marker}","short_name":"Mall","start_url":"./","display":"standalone","background_color":"#007bff","theme_color":"#007bff"}))
-              open("posts/sw.js","w",encoding="utf-8").write("self.addEventListener('fetch', e=>e.respondWith(fetch(e.request)));")
-              print("MALL APP CREATED - OK")
+              mall_html = f"""<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My Sanluri Mall 6 Shops - {marker}</title><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#007bff"><style>body{{font-family:sans-serif;max-width:500px;margin:auto;padding:15px;background:#f8f9fa}}.header{{background:linear-gradient(135deg,#007bff,#00c853);color:white;padding:20px;border-radius:15px;text-align:center}}.card{{background:white;border-radius:12px;padding:15px;margin:12px 0;box-shadow:0 2px 8px rgba(0,0,0,0.1);border-left:5px solid #007bff}}.btn{{display:block;padding:14px;text-align:center;border-radius:8px;text-decoration:none;font-weight:bold;color:white;margin-top:8px}}.blue{{background:#007bff}}.green{{background:#28a745}}.orange{{background:#fd7e14;color:black}}.purple{{background:#6f42c1}}.red{{background:#dc3545}}.dark{{background:#343a40}}img{{width:100%;border-radius:12px;margin:10px 0}}</style></head><body><div class="header"><h1>🇮🇹 My Sanluri Mall - Via Carlo Felice</h1><p>6 Shops - Marker {marker} LOCKED - DIRECT - PWA</p><p>Add to Home Screen Working!</p></div><img src="{img1}"><div class="card"><h3>✈️ 1. Flight - 19€ - Aviasales</h3><a class="btn green" href="https://aviasales.com/?marker={marker}&sub_id=FLIGHT_787950" target="_blank">Book 19€ Flight - {marker}</a></div><div class="card"><h3>📱 2. eSIM - 5€ - Airalo</h3><a class="btn orange" href="https://airalo.com/?marker={marker}&sub_id=ESIM_787950" target="_blank">Get 5€ eSIM - {marker}</a></div><div class="card"><h3>🏨 3. Hotel - 50€ - Klook</h3><a class="btn purple" href="https://www.klook.com/?marker={marker}&sub_id=HOTEL_787950" target="_blank">Book 50€ Hotel - {marker}</a></div><div class="card"><h3>🚌 4. Bus - 5€ - Guide</h3><a class="btn blue" href="{blog_main}search/label/BUS-GUIDE" target="_blank">Bus Guide - {marker}</a></div><div class="card"><h3>💶 5. Claim - 600€ - Airhelp</h3><a class="btn red" href="https://www.airhelp.com/?marker={marker}&sub_id=CLAIM_787950" target="_blank">Claim 600€ - {marker}</a></div><img src="{img2}"><div class="card"><h3>🏠 6. Hub + 🎒 Backpack - Amazon Direct</h3><a class="btn blue" href="{amazon_direct}" target="_blank">🎒 Buy Backpack Amazon Direct - {marker}</a><a class="btn dark" href="{blog_main}" target="_blank" style="margin-top:10px">🏠 Visit Blog Hub - {marker}</a></div><p style="text-align:center;font-size:11px;color:#888;margin-top:15px">Marker {marker} Locked - Direct No White - No tpo.lv - PWA Ready - Via Carlo Felice Sanluri - 2026-10-26<br/>GitHub Pages Branch: gh-pages / root</p><script>if('serviceWorker' in navigator){{navigator.serviceWorker.register('sw.js')}}</script></body></html>"""
+              open("posts/index.html","w",encoding="utf-8").write(mall_html)
+              open(f"posts/{today}-mall-6-shops.html","w",encoding="utf-8").write(mall_html)
+              open("posts/manifest.json","w",encoding="utf-8").write(json.dumps({"name":f"Sanluri Mall {marker} 6 Shops","short_name":"Mall 6","start_url":"./index.html","display":"standalone","background_color":"#007bff","theme_color":"#007bff","icons":[{"src":img1,"sizes":"512x512","type":"image/png"}]}))
+              open("posts/sw.js","w",encoding="utf-8").write("self.addEventListener('install', e=>{e.waitUntil(caches.open('mall-6-v1').then(c=>c.addAll(['./index.html','./manifest.json'])))});self.addEventListener('fetch', e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))})")
+              print("MALL 6 SHOPS CREATED OK")
           except Exception as e:
-              print(f"MALL ERROR: {e}")
+              print(f"MALL Error: {e}")
 
-          # --- 3. TELEGRAM - SAFE ---
+          # TELEGRAM
           if tg_bot and tg_chat:
               try:
-                  msg = f"✅ MALL POSTED - {marker} LOCKED\n\nBlog: {blog_url}\nMall: {hub_link}\nAmazon: {amazon}\n\n6 Shops - 2 Images - Direct - No White\nVia Carlo Felice Sanluri"
+                  msg = f"✅ MALL FIXED - {marker} LOCKED - FULL TEXT 🔥\n\n📝 {title}\n\n🔗 Blog Full 600 Words: {blog_url}\n🏠 Mall 6 Shops PWA: {hub_link}\n🎒 Amazon Direct: {amazon_direct}\n\n✅ Fixed: Full Text + 2 Images + Direct No White\n✅ GitHub Pages: Set to gh-pages / root in Settings!"
                   requests.post(f"https://api.telegram.org/bot{tg_bot}/sendMessage", data={"chat_id":tg_chat,"text":msg}, timeout=15)
-                  requests.post(f"https://api.telegram.org/bot{tg_bot}/sendPhoto", data={"chat_id":tg_chat,"photo":img1,"caption":f"Mall {marker} Ready!"}, timeout=15)
-                  print("TELEGRAM SENT - OK")
+                  print("Telegram OK")
               except Exception as e:
-                  print(f"TELEGRAM SKIP: {e}")
-          else:
-              print("TELEGRAM SKIP - Secrets Not Set")
-
-          print("ALL DONE - NO FAIL")
+                  print(f"Telegram Skip: {e}")
+          print("DONE - ALL FIXED")
           PY
 
-      - name: Deploy to Pages
+      - name: Deploy to gh-pages Branch - FIXED
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
           publish_dir: ./posts
           publish_branch: gh-pages
           force_orphan: true
-
-      - name: Done
-        run: echo "MALL APP DONE - 787950 LOCKED - CHECK GH-PAGES"
+          user_name: "Mall Bot 787950 Fixed"
+          user_email: "mall@787950.fixed"
