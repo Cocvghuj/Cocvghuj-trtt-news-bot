@@ -1,0 +1,70 @@
+name: TRTT COMMUNITY FINAL - Perfect 400 Words + Below Button
+on:
+  schedule:
+    - cron: '17 6 * * *'   # 08:17 Maria - Sanluri time
+    - cron: '42 11 * * *'  # 13:42 Rahim
+    - cron: '5 16 * * *'   # 18:05 Giovanni
+    - cron: '30 21 * * *'  # 23:30 Silent Lock - SEO Rest
+  workflow_dispatch:
+
+jobs:
+  trtt-final:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Decide Persona
+        id: p
+        run: |
+          H=$(date -u +%H)
+          if [ "$H" -eq "06" ]; then
+            echo "persona=neighbor_maria" >> $GITHUB_OUTPUT
+            echo "type=guide" >> $GITHUB_OUTPUT
+          elif [ "$H" -eq "11" ]; then
+            echo "persona=customer_rahim" >> $GITHUB_OUTPUT
+            echo "type=esim" >> $GITHUB_OUTPUT
+          elif [ "$H" -eq "16" ]; then
+            echo "persona=friend_giovanni" >> $GITHUB_OUTPUT
+            echo "type=hotel" >> $GITHUB_OUTPUT
+          else
+            echo "persona=silent" >> $GITHUB_OUTPUT
+            echo "type=seo" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build 400 Words Post - Inside Link + Below Button
+        if: steps.p.outputs.type != 'seo'
+        run: |
+          mkdir -p posts
+          FILE="posts/$(date +%F)-${{ steps.p.outputs.persona }}.html"
+          
+          if [ "${{ steps.p.outputs.type }}" = "guide" ]; then
+          cat > $FILE <<'EOF'
+          <div style="font-family:Arial;padding:20px;max-width:800px;margin:auto;line-height:1.8;background:#fff;color:#222">
+            <h1>Sanluri to Cagliari Airport: What Locals Really Use - Evergreen Guide 2026</h1>
+            <p><em>By neighbor_maria - Sanluri Community - 08:17 AM Story - Base: Sanluri, Sardinia</em></p>
+            <p>Sanluri থেকে Cagliari Elmas Airport যেতে আমি সবসময় ARST বাস ব্যবহার করি। আমি Sanluri তে Via Carlo Felice এর কাছে থাকি, এখান থেকে বাস স্টপ 2 মিনিট। সকাল 08:17 এর বাসটা সবচেয়ে ভালো, ভিড় কম, ভাড়া মাত্র 5 ইউরো। আমি গতকালও এই বাস ধরেছি, 45 মিনিটে Airport পৌঁছে গেছি।</p>
+            <p>অনেকেই ভাবে Sanluri থেকে Airport যেতে ট্যাক্সি লাগবে, 50 ইউরো লাগবে। কিন্তু না, বাস আছে। আমি প্রথমে বুঝতে পারিনি, পরে আমাদের কমিউনিটির Giovanni শিখিয়েছে। এখন আমি সবাইকে বলি - বাস ধরো, টাকা বাঁচাও। আর টিকেটের জন্য আমি সবসময় আমাদের <a href="https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/dashboard/?sub_id=trtt_final_inside_maria" target="_blank" style="color:#0066ff;font-weight:bold">ফাস্ট কমিউনিটি হাবে লাইভ চেক করি</a>, ওখানে Aviasales এর দাম 2x ফাস্ট লোড হয়।</p>
+            <p>গত সপ্তাহে আমার কাজিন Rome থেকে এসেছে, ও বলল Rome থেকে Cagliari Flight 19 ইউরো ছিল যদি 2 সপ্তাহ আগে বুক করো। আমি ওকে আমাদের হাব দেখিয়েছি। ও এখন Sanluri তে আছে, বলেছে Sanluri অনেক শান্ত, ভালো লাগে। আমাদের কমিউনিটিতে আমরা সবাই একে অপরকে হেল্প করি, এটাই আমাদের শক্তি।</p>
+            <p>যদি তোমার Flight সকালে হয়, তাহলে আগের দিন Cagliari তে থাকতে পারো, অথবা ভোরের বাস ধরতে পারো। আমি সবসময় আগের দিন Airport এর কাছে থাকি না, আমি Sanluri থেকে ভোরে যাই।</p>
+            <div style="margin-top:30px;padding:20px;background:#f0f8ff;border:2px solid #0066ff;border-radius:12px;text-align:center">
+              <p style="margin:0 0 15px 0;font-weight:bold;font-size:17px;color:#000">👇 Maria's Pick: Check Live Price from Cagliari</p>
+              <a href="https://aviasales.tpo.lv/Fb8U9yav?marker=787950&sub_id=trtt_final_below_maria" target="_blank" style="display:inline-block;padding:14px 28px;background:#0066ff;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;font-size:16px">✈️ Check Flights - Marker 787950 Locked</a>
+              <p style="margin:10px 0 0 0;font-size:11px;color:gray">TRTT Community - trtt_final_below_button - Fast Loading - Affiliate - We earn commission</p>
+            </div>
+          </div>
+          EOF
+          elif [ "${{ steps.p.outputs.type }}" = "esim" ]; then
+          cat > $FILE <<'EOF'
+          <div style="font-family:Arial;padding:20px;max-width:800px;margin:auto;line-height:1.8;background:#fff;color:#222">
+            <h1>Best eSIM for Sardinia: Tested by Customer Rahim - Real Review 2026</h1>
+            <p><em>By customer_rahim - 13:42 Story - Real Customer from Rome - Tested in Sanluri</em></p>
+            <p>আমি Rahim, আমি Rome থেকে Sardinia এসেছি। আমি প্রথমে ভেবেছিলাম Airport থেকে eSIM কিনব। Cagliari Airport এ গিয়ে দেখি eSIM এর দোকানে লাইন, আর দাম 20 ইউরো। আমার Flight Delay ছিল, আমি বিরক্ত।</p>
+            <p>তখন Sanluri Community থেকে Abu Taher ভাই আমাকে <a href="https://airalo.tpo.lv/ZZoQC7Mz?marker=787950&sub_id=trtt_final_inside_rahim" target="_blank" style="color:#0066ff;font-weight:bold">Airalo eSIM এর এই লিংকটা দিল</a>। আমি হোটেলে বসে 5 মিনিটে কিনলাম, দাম মাত্র 5 ইউরো। QR Code Scan করলাম, সাথে সাথে Internet চালু। আমি Sanluri তে, Villacidro তে, সব জায়গায় Test করেছি, Network ভালো।</p>
+            <p>আমি Backup হিসেবে Saily eSIM ও নিয়েছি, ওটাও ভালো। কিন্তু Airalo Best। আমি এখন সবাইকে বলি - Airport থেকে কিনো না, আগে থেকে Online কিনো। আমার 15 ইউরো বেঁচেছে। আমি এখন Sanluri থেকে আমার Family কে Video Call করি, সব Clear।</p>
+            <p>আমি এই Review নিজে লিখেছি, কেউ লিখে দেয়নি। Sanluri Community Real, Fake না।</p>
+            <div style="margin-top:30px;padding:20px;background:#e8f5e9;border:2px solid #00b894;border-radius:12px;text-align:center">
+              <p style="margin:0 0 15px 0;font-weight:bold;font-size:17px;color:#000">👇 Rahim's Pick: eSIM I Use in Sardinia</p>
+              <a href="https://airalo.tpo.lv/ZZoQC7Mz?marker=787950&sub_id=trtt_final_below_rahim" target="_blank" style="display:inline-block;padding:14px 28px;background:#00b894;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;font-size:16px">📱 Get Airalo eSIM - Marker 787950</a>
+              <p style="margin:10px
