@@ -1,4 +1,4 @@
-name: TRTT ULTIMATE LOCKED - 31 SECRETS FINAL FIXED
+name: TRTT ENGLISH BIG HUB DAILY ROTATE FIXED
 on:
   schedule:
     - cron: '17 6 * * *'
@@ -16,210 +16,131 @@ on:
           - neighbor_maria
           - customer_rahim
           - friend_giovanni
-          - silent
 
 jobs:
-  trtt-ultimate:
+  trtt-daily:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GH_PAT }}
 
-      - name: Decide Persona
+      - name: Decide Persona Daily Topic
         id: p
         run: |
           H=$(date -u +%H)
+          DOW=$(date -u +%A)
           INPUT="${{ github.event.inputs.persona }}"
-          if [ -n "$INPUT" ]; then
-            echo "persona=$INPUT" >> $GITHUB_OUTPUT
-            if [ "$INPUT" = "neighbor_maria" ]; then echo "type=guide" >> $GITHUB_OUTPUT
-            elif [ "$INPUT" = "customer_rahim" ]; then echo "type=esim" >> $GITHUB_OUTPUT
-            elif [ "$INPUT" = "friend_giovanni" ]; then echo "type=hotel" >> $GITHUB_OUTPUT
-            else echo "type=seo" >> $GITHUB_OUTPUT; fi
-          else
-            if [ "$H" -eq "06" ]; then echo "persona=neighbor_maria" >> $GITHUB_OUTPUT; echo "type=guide" >> $GITHUB_OUTPUT
-            elif [ "$H" -eq "11" ]; then echo "persona=customer_rahim" >> $GITHUB_OUTPUT; echo "type=esim" >> $GITHUB_OUTPUT
-            elif [ "$H" -eq "16" ]; then echo "persona=friend_giovanni" >> $GITHUB_OUTPUT; echo "type=hotel" >> $GITHUB_OUTPUT
-            else echo "persona=silent" >> $GITHUB_OUTPUT; echo "type=seo" >> $GITHUB_OUTPUT; fi
-          fi
+          if [ -n "$INPUT" ]; then echo "persona=$INPUT" >> $GITHUB_OUTPUT; else if [ "$H" -eq "06" ]; then echo "persona=neighbor_maria" >> $GITHUB_OUTPUT; elif [ "$H" -eq "11" ]; then echo "persona=customer_rahim" >> $GITHUB_OUTPUT; elif [ "$H" -eq "16" ]; then echo "persona=friend_giovanni" >> $GITHUB_OUTPUT; else echo "persona=silent" >> $GITHUB_OUTPUT; fi; fi
+          case $DOW in
+            Monday) echo "topic=Sanluri to Cagliari Airport Bus 5 Euro" >> $GITHUB_OUTPUT ;;
+            Tuesday) echo "topic=Best eSIM Sardinia Coverage 【entity-Airalo¦canonical_name=Airalo】 Test" >> $GITHUB_OUTPUT ;;
+            Wednesday) echo "topic=Where Families Stay Rome 50 Euro Termini" >> $GITHUB_OUTPUT ;;
+            Thursday) echo "topic=Flight Delay Compensation 600 Euro Claim" >> $GITHUB_OUTPUT ;;
+            Friday) echo "topic=【entity-Klook¦canonical_name=Klook】 Rome Colosseum Vatican Combo" >> $GITHUB_OUTPUT ;;
+            Saturday) echo "topic=GetTransfer Airport Taxi Cagliari Cheap" >> $GITHUB_OUTPUT ;;
+            Sunday) echo "topic=Travel Gear Power Bank Adapter AMZ" >> $GITHUB_OUTPUT ;;
+          esac
+          if [ "$H" -eq "06" ]; then echo "type=guide" >> $GITHUB_OUTPUT; elif [ "$H" -eq "11" ]; then echo "type=esim" >> $GITHUB_OUTPUT; elif [ "$H" -eq "16" ]; then echo "type=hotel" >> $GITHUB_OUTPUT; else echo "type=seo" >> $GITHUB_OUTPUT; fi
 
-      - name: Setup Python + Use All 31 Secrets CLEAN
-        if: steps.p.outputs.type != 'seo'
+      - name: Generate ENGLISH BIG HUB SMALL TOPIC
+        if: steps.p.outputs.persona != 'silent'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           OPEN_AI_API_KEY: ${{ secrets.OPEN_AI_API_KEY }}
-          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
-          COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
-          DEEP_SEEK_KEY: ${{ secrets.DEEP_SEEK_KEY }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
-          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
           TRAVEL_PAYOUT_MARKER: ${{ secrets.TRAVEL_PAYOUT_MARKER }}
-          TRAVEL_PAYOUT_API_TOKEN: ${{ secrets.TRAVEL_PAYOUT_API_TOKEN }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
           AMAZON_LINK: ${{ secrets.AMAZON_LINK }}
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
           BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
-          GH_PAT: ${{ secrets.GH_PAT }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          GMAIL_EMAIL: ${{ secrets.GMAIL_EMAIL }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-          BRAVO_API_KEY: ${{ secrets.BRAVO_API_KEY }}
-          CONSOLE_API_KEY: ${{ secrets.CONSOLE_API_KEY }}
-          EMAIL_OPTIMAS_API_KEY: ${{ secrets.EMAIL_OPTIMAS_API_KEY }}
-          HUBSPOT_API_KEY: ${{ secrets.HUBSPOT_API_KEY }}
-          MAILJET_API_KEY: ${{ secrets.MAILJET_API_KEY }}
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-          TWILIO_API_KEY: ${{ secrets.TWILIO_API_KEY }}
-          ZOHO_API_TOKEN: ${{ secrets.ZOHO_API_TOKEN }}
-          ZOHO_CLINT_ID: ${{ secrets.ZOHO_CLINT_ID }}
-          ZOHO_CLINT_SECREAT: ${{ secrets.ZOHO_CLINT_SECREAT }}
         run: |
-          pip install requests --quiet
+          pip install requests -q
           python3 << 'PY'
           import os, requests, datetime, pathlib
-          persona = '${{ steps.p.outputs.persona }}'
-          ptype = '${{ steps.p.outputs.type }}'
-          marker = os.getenv('TRAVEL_PAYOUT_MARKER','787950')
-          amz_code = os.getenv('AMAZON_LINK','4shg6Hn')
-          
-          GEMINI=os.getenv('GEMINI_API_KEY'); GROQ=os.getenv('GROQ_API_KEY'); OPENAI=os.getenv('OPEN_AI_API_KEY')
-          MISTRAL=os.getenv('MISTRAL_API_KEY'); COHERE=os.getenv('COHERE_API_KEY'); DEEPSEEK=os.getenv('DEEP_SEEK_KEY')
-          OPENROUTER=os.getenv('OPENROUTER_API_KEY'); HF=os.getenv('HUGGINGFACE_API_KEY'); UNSPLASH=os.getenv('UNSPLASH_ACCESS_KEY')
-          
-          prompt = f"Write 400 words evergreen human story as {persona} from Sanluri Sardinia. Topic {ptype}. Real local tips SEO friendly no spam Human voice neighbor style Include Sanluri Cagliari Rome flights eSIM hotel tips Natural"
-          
-          def try_gemini():
+          persona=os.getenv('PERSONA','neighbor_maria')
+          marker=os.getenv('TRAVEL_PAYOUT_MARKER','787950')
+          topic=os.getenv('TOPIC','Sanluri Travel')
+          amz_code=os.getenv('AMAZON_LINK','4shg6Hn')
+          # PURE ENGLISH PROMPT
+          pr=f"Write 400 words perfect English only as {persona} from Sanluri Sardinia. Daily topic {topic}. Evergreen guide. Professional English for EU partner. Include big hub https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/ as main hero, then small topic. No Bengali."
+          def gen():
             try:
-              r=requests.post(f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI}", json={"contents":[{"parts":[{"text":prompt}]}]}, timeout=20)
+              r=requests.post(f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={os.getenv('GEMINI_API_KEY')}", json={"contents":[{"parts":[{"text":pr}]}]}, timeout=25)
               return r.json()['candidates'][0]['content']['parts'][0]['text']
-            except: return None
-          def try_groq():
-            try:
-              r=requests.post("https://api.groq.com/openai/v1/chat/completions", headers={"Authorization":f"Bearer {GROQ}"}, json={"model":"llama3-8b-8192","messages":[{"role":"user","content":prompt}]}, timeout=20)
-              return r.json()['choices'][0]['message']['content']
-            except: return None
-          def try_openai():
-            try:
-              r=requests.post("https://api.openai.com/v1/chat/completions", headers={"Authorization":f"Bearer {OPENAI}"}, json={"model":"gpt-4o-mini","messages":[{"role":"user","content":prompt}]}, timeout=20)
-              return r.json()['choices'][0]['message']['content']
-            except: return None
-          
-          content=None
-          for fn in [try_gemini, try_groq, try_openai]:
-            content=fn()
-            if content and len(content)>200:
-              print(f"AI OK {fn.__name__}")
-              break
-          
-          if not content:
-            content = f"Sanluri theke Cagliari Airport jete ami {persona} hisebe bolchi. ARST bus Via Carlo Felice theke 5 Euro. 08:17 bus Best. Rome Flight 19 Euro Aviasales theke. eSIM 【entity-Airalo¦canonical_name=Airalo】 5 Euro. Hotel 50 Euro Termini. Community Hub e Fast Check kori. Local Tips Evergreen."
-          
-          img_url="https://images.unsplash.com/photo-1523906834658-6e24ef2386f9"
-          if UNSPLASH:
-            try:
-              r=requests.get("https://api.unsplash.com/search/photos?query=Sardinia%20travel&per_page=1", headers={"Authorization":f"Client-ID {UNSPLASH}"}, timeout=10)
-              img_url=r.json()['results'][0]['urls']['regular']
-            except: pass
-          
-          # Domains without triggering entity tag - split
-          avia_dom = "aviasales.tpo.lv"
-          airalo_dom = "【entity-airalo¦canonical_name=Airalo】.tpo.lv"
-          saily_dom = "saily.tpo.lv"
-          klook_dom = "klook.tpo.lv"
-          amz_dom = "am" + "azon.tpo.lv"
-          help_dom = "air" + "help.tpo.lv"
-          
-          if ptype=="guide":
-            title="Sanluri to Cagliari Airport What Locals Use 2026 - Maria"
-            inner = f"https://{avia_dom}/Fb8U9yav?marker={marker}&sub_id=trtt_lock_inside_maria"
-            below = f"https://{avia_dom}/Fb8U9yav?marker={marker}&sub_id=trtt_lock_below_maria"
-            btn="Check Flights 787950"
-            color="#0066ff"
-          elif ptype=="esim":
-            title="Best eSIM for Sardinia Tested by Rahim 2026"
-            inner = f"https://{airalo_dom}/ZZoQC7Mz?marker={marker}&sub_id=trtt_lock_inside_rahim"
-            below = f"https://{airalo_dom}/ZZoQC7Mz?marker={marker}&sub_id=trtt_lock_below_rahim"
-            btn="Get eSIM 787950"
-            color="#00b894"
-          else:
-            title="Where Families Stay in Rome for 50 Euro - Giovanni"
-            inner = f"https://{klook_dom}/TWKnemhz?marker={marker}&sub_id=trtt_lock_inside_giovanni"
-            below = f"https://{saily_dom}/ssekmS4X?marker={marker}&sub_id=trtt_lock_below_giovanni"
-            btn="Check Rome Deals 787950"
-            color="#ff9800"
-          
-          help_link = f"https://{help_dom}/3ItXS0E4?marker={marker}&sub_id=trtt_lock_airhelp_{persona}"
-          amz_link = f"https://{amz_dom}/{amz_code}?marker={marker}"
-          
-          html = f"""
-          <div style="font-family:Arial;max-width:800px;margin:auto;padding:20px;line-height:1.8;background:#fff;color:#222">
-            <img src="{img_url}" style="width:100%;border-radius:12px" />
-            <h1>{title}</h1>
-            <p><em>By {persona} - Sanluri Community - {datetime.date.today()}</em></p>
-            <p>{content[:1200]}</p>
-            <p>Fast Check ami <a href="https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/dashboard/?sub_id=trtt_lock_inside_{persona}" target="_blank" style="color:{color};font-weight:bold">Community Hub e kori</a>, <a href="{inner}" target="_blank" style="color:{color};font-weight:bold">Live Link {marker}</a></p>
-            <p>Flight Delay hole <a href="{help_link}" target="_blank">600 Euro Claim</a>. Gear <a href="{amz_link}" target="_blank">Here</a></p>
-            <div style="text-align:center;margin-top:30px;padding:20px;background:#f0f8ff;border:2px solid {color};border-radius:12px">
-              <p style="font-weight:bold">{persona} Pick - Locked {marker}</p>
-              <a href="{below}" target="_blank" style="display:inline-block;padding:14px 28px;background:{color};color:#fff;text-decoration:none;border-radius:8px;font-weight:bold">{btn}</a>
-              <p style="font-size:11px;color:gray;margin-top:10px">TRTT {marker} - {persona} - trtt_lock_below</p>
+            except:
+              try:
+                r=requests.post("https://api.groq.com/openai/v1/chat/completions", headers={"Authorization":f"Bearer {os.getenv('GROQ_API_KEY')}"}, json={"model":"llama3-8b-8192","messages":[{"role":"user","content":pr}]}, timeout=20)
+                return r.json()['choices'][0]['message']['content']
+              except: return f"Sanluri Community Report {topic}. ARST bus Via Carlo Felice 5 Euro 08:17 to Cagliari Airport. Flights to Rome from 19 Euro via Aviasales. Airalo eSIM 5 Euro best. GH hub is big priority."
+          cont=gen().replace("[","").replace("]","")
+          img="https://images.unsplash.com/photo-1523906834658-6e24ef2386f9"
+          # split domains to avoid auto-tag
+          d1="".join(["a","v","i","a","s","a","l","e","s",".","t","p","o",".","l","v"])
+          d2="".join(["a","i","r","a","l","o",".","t","p","o",".","l","v"])
+          d3="".join(["s","a","i","l","y",".","t","p","o",".","l","v"])
+          d4="".join(["k","l","o","o","k",".","t","p","o",".","l","v"])
+          d5="".join(["a","m","a","z","o","n",".","t","p","o",".","l","v"])
+          html=f"""
+          <div style="font-family:Arial;max-width:850px;margin:auto;padding:20px;background:#fff;color:#222;line-height:1.8">
+            <div style="background:#003580;color:#fff;padding:20px;border-radius:12px;text-align:center">
+              <h1 style="margin:0">TRTT Eurovoyage Hub - {marker} LOCKED - BIG</h1>
+              <p>Sanluri Community - Everyone Platform</p>
+              <a href="https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/?sub_id=big_gh_{persona}" target="_blank" style="display:inline-block;margin-top:12px;padding:12px 24px;background:#febb02;color:#003580;text-decoration:none;border-radius:8px;font-weight:bold">Open Big GH Hub</a>
             </div>
+            <img src="{img}" style="width:100%;border-radius:12px;height:350px;object-fit:cover;margin-top:20px"/>
+            <div style="margin-top:20px;padding:15px;background:#f8f9ff;border-left:4px solid #003580">
+              <h2 style="color:#003580;margin:0 0 10px 0">Today Small Topic: {topic}</h2>
+              <p>{cont[:1200]}</p>
+            </div>
+            <div style="text-align:center;margin-top:25px;padding:20px;background:#f0f8ff;border:2px solid #003580;border-radius:12px">
+              <a href="https://{d1}/Fb8U9yav?marker={marker}&sub_id=below_{persona}" target="_blank" style="display:inline-block;padding:14px 28px;background:#003580;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold">Check Live - {marker}</a>
+              <p style="font-size:11px;color:gray">Inside + Below - big GH + small topic - {persona}</p>
+            </div>
+            <p style="font-size:11px;color:gray;margin-top:20px"><a href="https://{d2}/ZZoQC7Mz?marker={marker}&sub_id=esim_{persona}" target="_blank">eSIM</a> | <a href="https://{d5}/{amz_code}?marker={marker}" target="_blank">Gear</a> | Big Hub Priority</p>
           </div>
           """
           pathlib.Path("posts").mkdir(exist_ok=True)
-          fname=f"posts/{datetime.date.today()}-{persona}-{datetime.datetime.now().strftime('%H%M')}.html"
+          fname=f"posts/{datetime.date.today()}-{persona}-EN-BIG.html"
           open(fname,'w',encoding='utf-8').write(html)
-          open("/tmp/post_title.txt",'w').write(title)
-          open("/tmp/post_file.txt",'w').write(fname)
-          print(f"File {fname} created")
+          open("/tmp/title.txt",'w').write(f"{topic} - Big GH Hub + Small Topic - {persona}")
+          open("/tmp/file.txt",'w').write(fname)
           PY
 
-      - name: Push to Blogger OAuth
-        if: steps.p.outputs.type != 'seo'
+      - name: Blogger Push
+        if: steps.p.outputs.persona != 'silent'
         env:
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
           BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
         run: |
-          TITLE=$(cat /tmp/post_title.txt)
-          FILE=$(cat /tmp/post_file.txt)
-          echo "Pushing $TITLE to $BLOGGER_BLOG_ID"
+          TITLE=$(cat /tmp/title.txt)
+          FILE=$(cat /tmp/file.txt)
           ACCESS=$(curl -s --data "client_id=$BLOGGER_CLIENT_ID&client_secret=$BLOGGER_CLIENT_SECRET&refresh_token=$BLOGGER_REFRESH_TOKEN&grant_type=refresh_token" https://oauth2.googleapis.com/token | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))")
-          if [ -z "$ACCESS" ]; then echo "No Access Token"; exit 0; fi
           CONTENT=$(cat $FILE | python3 -c "import sys,json; print(json.dumps(sys.stdin.read()))")
           TITLE_JSON=$(echo "$TITLE" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))")
-          curl -s -X POST "https://www.googleapis.com/blogger/v3/blogs/$BLOGGER_BLOG_ID/posts/" -H "Authorization: Bearer $ACCESS" -H "Content-Type: application/json" -d "{\"kind\":\"blogger#post\",\"blog\":{\"id\":\"$BLOGGER_BLOG_ID\"},\"title\":$TITLE_JSON,\"content\":$CONTENT,\"labels\":[\"TRTT\",\"${{ steps.p.outputs.persona }}\"]}" | tee /tmp/resp.json
+          curl -s -X POST "https://www.googleapis.com/blogger/v3/blogs/$BLOGGER_BLOG_ID/posts/" -H "Authorization: Bearer $ACCESS" -H "Content-Type: application/json" -d "{\"kind\":\"blogger#post\",\"title\":$TITLE_JSON,\"content\":$CONTENT,\"labels\":[\"TRTT\",\"BIG-HUB\",\"${{ steps.p.outputs.persona }}\"]}" | tee /tmp/resp.json
 
-      - name: Telegram Notify
-        if: steps.p.outputs.type != 'seo'
+      - name: Telegram Channel Post - 787950
+        if: steps.p.outputs.persona != 'silent'
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          TITLE=$(cat /tmp/post_title.txt)
-          curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage?chat_id=$TELEGRAM_CHAT_ID&text=TRTT NEW POST $TITLE - ${{ steps.p.outputs.persona }} - 787950 LOCKED" || true
+          TITLE=$(cat /tmp/title.txt)
+          MSG="NEW POST BIG GH HUB%0A$TITLE%0AMarker 787950%0ALink https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/%0ATopic ${{ steps.p.outputs.persona }}"
+          curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage?chat_id=$TELEGRAM_CHAT_ID&text=$MSG" | tee /tmp/tg.json
+          echo "Telegram sent to $TELEGRAM_CHAT_ID"
 
-      - name: Final Commit
+      - name: Commit
         run: |
-          git config user.name "TRTT Locked Bot"
-          git config user.email "trtt@787950.locked"
+          git config user.name "TRTT BIG HUB"
+          git config user.email "big@trtt.787950"
           git add .
-          git commit -m "ULTIMATE FIXED CLEAN: ${{ steps.p.outputs.persona }} - ${{ secrets.TRAVEL_PAYOUT_MARKER }}" || true
-          git push || true
-
-      - name: SEO Silent
-        if: steps.p.outputs.type == 'seo'
-        run: |
-          mkdir -p posts
-          date -u > posts/.seo-lock.txt
-          git config user.name "TRTT SEO"
-          git config user.email "seo@trtt.local"
-          git add .
-          git commit -m "SEO LOCK 23:30" || true
+          git commit -m "BIG GHUB SMALL TOPIC DAILY ${{ steps.p.outputs.persona }} ${{ secrets.TRAVEL_PAYOUT_MARKER }}" || true
           git push || true
