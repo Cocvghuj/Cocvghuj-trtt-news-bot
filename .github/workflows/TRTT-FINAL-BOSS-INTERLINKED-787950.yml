@@ -20,7 +20,7 @@ jobs:
           token: ${{ secrets.GH_PAT }}
           fetch-depth: 0
 
-      - name: Build 1 PER DAY - INTERLINKED - ALL ROUTES - 【entity-AMAZON¦canonical_name=AMAZON】 - WHATSAPP
+      - name: Build 1 PER DAY - INTERLINKED - ALL ROUTES - 【entity-AMAZON¦canonical_name=AMAZON】 - WHATSAPP - 787950
         env:
           TRAVEL_MARKER: ${{ secrets.TRAVEL_PAYOUT_MARKER }}
           GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -50,7 +50,7 @@ jobs:
               1: {"id":"flights","title":"How to Find Cheap Flights from Cagliari Elmas - 19 Euro Aviasales Test 787950"},
               2: {"id":"planning","title":"6 Steps for Planning Your Trip from Sardinia - Sanluri to Rome Bus 5 Euro"},
               3: {"id":"accom","title":"How to Find Cheap Accommodation in Rome - 7 Ways Near Termini 50 Euro"},
-              4: {"id":"gear","title":"Getting the Right Gear - Backpack 40L 【entity-Amazon¦canonical_name=AMAZON】 Test Sardinia to Rome"},
+              4: {"id":"gear","title":"Getting the Right Gear - Backpack 40L Amazon Test Sardinia to Rome"},
               5: {"id":"life","title":"Life On The Road - ARST Bus plus Aviasales plus 【entity-Airalo¦canonical_name=Airalo】 eSIM 5 Euro Guide"},
               6: {"id":"family","title":"Solo Female and Family Travel in Italy - Safe Guide from Sanluri to Venice"}
           }
@@ -63,7 +63,7 @@ jobs:
               "Cagliari Elmas to Rome Fiumicino - 19 Euro Aviasales Fb8U9yav - 787950 LOCKED",
               "Rome Fiumicino to Rome Termini - Leonardo Express 14 Euro - ATAC Bus 7 Euro",
               "Rome Termini to Trastevere - Bus 3 Euro - Family Hotel 50 Euro - Booking Safe",
-              "Sanluri to Milan Bergamo - 24 Euro Aviasales - Klook TWKnemhz Tour",
+              "Sanluri to Milan Bergamo - 24 Euro Aviasales - 【entity-Klook¦canonical_name=Klook】 TWKnemhz Tour",
               "Sanluri to Venice - 29 Euro - 【entity-Amazon¦canonical_name=AMAZON】 Backpack 40L 4shg6Hn Gear Tested",
               "Cagliari to Olbia - Ferry 19 Euro - 【entity-Airalo¦canonical_name=Airalo】 eSIM 5 Euro ZZoQC7Mz"
           ]
@@ -115,6 +115,7 @@ jobs:
           pathlib.Path("latest_travel_news.html").write_text(content_html, encoding='utf-8')
           pathlib.Path("index.html").write_text(content_html, encoding='utf-8')
 
+          # Blogger Post - FIXED URL
           blog_id = os.getenv('BLOGGER_BLOG_ID')
           client_id = os.getenv('BLOGGER_CLIENT_ID')
           client_secret = os.getenv('BLOGGER_CLIENT_SECRET')
@@ -128,24 +129,48 @@ jobs:
                   tr.raise_for_status()
                   access_token = tr.json().get("access_token")
                   if access_token:
-                      post_url = f"https://www.googleapis.com/blogger/v3/blogs/{blog_id}/posts/"
+                      blogger_url = f"https://www.googleapis.com/blogger/v3/blogs/{blog_id}/posts/"
                       headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
-                      body = {"kind": "blogger#post", "blog": {"id": blog_id}, "title": f"{topic['title']} - {persona} - 787950 LOCKED - {base_date}", "content": content_html, "labels": [topic['id'], persona, "sanluri", "cagliari", "rome", "787950", "interlinked", "all-routes", "amazon"]}
-                      pr = requests.post(post_url, headers=headers, json=body, timeout=30)
-                      print(f"Blogger status: {pr.status_code}")
+                      post_data = {
+                          "kind": "blogger#post",
+                          "blog": {"id": blog_id},
+                          "title": f"{topic['title']} - 787950 LOCKED - {base_date} - {persona}",
+                          "content": content_html,
+                          "labels": [topic['id'], persona, "sanluri", "787950", "interlinked", "all-routes", "amazon"]
+                      }
+                      br = requests.post(blogger_url, headers=headers, json=post_data, timeout=20)
+                      print(f"Blogger Response: {br.status_code} - {br.text[:400]}")
+                      br.raise_for_status()
+                      print(f"Successfully posted to Blogger! Post ID: {br.json().get('id')}")
+                  else:
+                      print("No access token")
               except Exception as e:
-                  print(f"Blogger error: {e}")
+                  print(f"Error posting to Blogger: {e}")
+          else:
+              print("Blogger secrets missing - saved locally only")
 
-          bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
-          chat_id = os.getenv('TELEGRAM_CHAT_ID')
-          if bot_token and chat_id:
+          # Telegram - FIXED URL
+          tg_token = os.getenv('TELEGRAM_BOT_TOKEN')
+          tg_chat_id = os.getenv('TELEGRAM_CHAT_ID')
+
+          if tg_token and tg_chat_id:
               try:
-                  msg = f"TRTT 787950 LOCKED - New Post: {topic['title']} - Persona {persona} - sub_id {sub_id_base} - Interlinked {len(prev_posts)} posts"
-                  url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-                  requests.post(url, data={"chat_id": chat_id, "text": msg}, timeout=15)
-                  print("Telegram sent")
+                  tg_url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
+                  tg_text = (
+                      f"TRTT News Bot Alert\n\n"
+                      f"Topic: {topic['title']}\n"
+                      f"Author: {persona}\n"
+                      f"Marker: {marker} LOCKED\n"
+                      f"Date: {base_date}\n\n"
+                      f"GitHub Pages and Blogger deployed! sub_id {sub_id_base}"
+                  )
+                  tg_data = {"chat_id": tg_chat_id, "text": tg_text}
+                  tgr = requests.post(tg_url, data=tg_data, timeout=15)
+                  print(f"Telegram Response: {tgr.status_code}")
+                  tgr.raise_for_status()
+                  print("Telegram notification sent successfully!")
               except Exception as e:
-                  print(f"Telegram error: {e}")
+                  print(f"Error sending Telegram notification: {e}")
 
-          print(f"DONE - {filename} - persona {persona} - topic {topic['id']} - sub_id {sub_id_base} - 787950 LOCKED")
+          print("Workflow execution completed successfully - 787950 LOCKED")
           PY
