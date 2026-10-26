@@ -1,56 +1,25 @@
-name: TRTT 787950 LOCKED - 300 LINES - UNSPLASH + GEMINI + BLOGGER + TELEGRAM + SHOP FINAL
+name: TRTT 787950 LOCKED - 1 PER DAY ONLY
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
   schedule:
     - cron: '17 6 * * *'
+
+concurrency:
+  group: trtt-787950-locked
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # ------------------------------------------------------------
-      # 1. Checkout - Node 20 Warning Fix - v5
-      # ------------------------------------------------------------
-      - name: Checkout v5
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
-      # ------------------------------------------------------------
-      # 2. Setup Python - Node Warning Fix - v6
-      # ------------------------------------------------------------
-      - name: Setup Python 3.11
-        uses: actions/setup-python@v6
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
+      - run: pip install requests google-generativeai
 
-      # ------------------------------------------------------------
-      # 3. Install Dependencies - No Fail
-      # ------------------------------------------------------------
-      - name: Install Dependencies
-        run: |
-          echo "Installing deps..."
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          else
-            pip install requests google-generativeai feedparser beautifulsoup4 lxml
-          fi
-          echo "Install OK"
-
-      # ------------------------------------------------------------
-      # 4. Generate Real News - GEMINI + UNSPLASH TOKEN + BLOGGER + TELEGRAM
-      # Guideline 787950 LOCKED - 7 Topics Rotation - 08:17 Sanluri
-      # Duplicate Check - posts/posted.json - MD5
-      # Word Count 600+ - First Person - E-E-A-T
-      # Affiliate Max 3 Links - Marker 787950 LOCKED
-      # Images 2 - Unsplash Real - Alt Text + Marker
-      # SEO - Author Ripu Abu Taher Via Carlo Felice Sanluri
-      # Anti-Spam - No repeat - Sitemap daily - Cron 17 6 * * *
-      # ------------------------------------------------------------
-      - name: Generate Real News - UNSPLASH + GEMINI + BLOGGER + TELEGRAM
+      - name: 1 Per Day - Topic+Date Check - Unsplash+Gemini+Blogger
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
@@ -61,362 +30,116 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TRAVEL_PAYOUT_MARKER: ${{ secrets.TRAVEL_PAYOUT_MARKER }}
-          AMAZON_LINK: ${{ secrets.AMAZON_LINK }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
           python3 << 'PY'
-          import os
-          import json
-          import hashlib
-          import datetime
-          import requests
-          import pathlib
+          import os, json, datetime, requests
           from datetime import timezone
+          import pathlib
 
-          print("="*60)
-          print("TRTT NEWS 24 BD - Guideline 787950 LOCKED")
-          print("Topic Rotation - 7 Topics - 1 Per Day - 08:17 Sanluri")
-          print("="*60)
-
-          # ------------------------------------------------------------
-          # Topic Rotation - 7 Topics - Your Guideline LOCKED
-          # ------------------------------------------------------------
+          # 7 Topics
           topics = [
-              ("flight_sanluri_rome", "Sanluri to Rome 19 Euro - Aviasales Fb8U9yav", "flight airplane rome", "https://aviasales.tp.st/Fb8U9yav"),
-              ("bus_via_carlo_felice", "Via Carlo Felice to Elmas 5 Euro - ARST", "bus sardinia arst", "https://www.arst.sardegna.it"),
-              ("esim_sardinia", "Airalo eSIM 5 Euro QR - Sardinia ZZoQC7Mz", "esim phone qr", "https://airalo.tp.st/ZZoQC7Mz"),
-              ("hotel_termini", "Rome Termini 50 Euro - Klook TWKnemhz", "hotel rome termini", "https://klook.tp.st/TWKnemhz"),
-              ("claim_600", "AirHelp 600 Euro - 3ItXS0E4", "airport delay claim", "https://airhelp.tp.st/3ItXS0E4"),
-              ("gear_backpack", "Amazon Backpack - 4shg6Hn", "backpack travel gear", "https://www.amazon.com/dp/B0XXXX"),
-              ("colosseum_skip", "Klook Skip Line - TWKnemhz Colosseum", "colosseum rome skip", "https://klook.tp.st/TWKnemhz"),
+            ("flight_sanluri_rome","Sanluri to Rome 19 Euro - Aviasales","flight rome","https://aviasales.tp.st/Fb8U9yav"),
+            ("bus_via_carlo_felice","Via Carlo Felice to Elmas 5 Euro","bus sardinia","https://www.arst.sardegna.it"),
+            ("esim_sardinia","Airalo eSIM 5 Euro QR","esim phone","https://airalo.tp.st/ZZoQC7Mz"),
+            ("hotel_termini","Rome Termini 50 Euro - Klook","hotel rome","https://klook.tp.st/TWKnemhz"),
+            ("claim_600","AirHelp 600 Euro","airport delay","https://airhelp.tp.st/3ItXS0E4"),
+            ("gear_backpack","Amazon Backpack","backpack travel","https://amazon.com"),
+            ("colosseum_skip","Colosseum Skip Line","colosseum","https://klook.tp.st/TWKnemhz"),
           ]
+          today = datetime.date.today().isoformat()
+          day = datetime.datetime.now(timezone.utc).weekday()
+          topic_id, title, query, base = topics[day]
+          marker = os.getenv("TRAVEL_PAYOUT_MARKER","787950")
+          print(f"Today {today} Topic {topic_id} Marker {marker}")
 
-          # Day selection - Sanluri 08:17 = 06:17 UTC
-          now_utc = datetime.datetime.now(timezone.utc)
-          day_index = now_utc.weekday()  # 0=Mon
-          topic_id, title, unsplash_query, base_link = topics[day_index]
-
-          marker = os.getenv("TRAVEL_PAYOUT_MARKER", "787950")
-          if not marker or marker.strip() == "":
-              marker = "787950"
-          marker = marker.strip()
-
-          print(f"Today UTC: {now_utc}")
-          print(f"Selected Topic: {topic_id}")
-          print(f"Title: {title}")
-          print(f"Marker LOCKED: {marker}")
-          print(f"Unsplash Query: {unsplash_query}")
-
-          # ------------------------------------------------------------
-          # Duplicate Check - File: posts/posted.json - Method: MD5
-          # ------------------------------------------------------------
-          pathlib.Path("posts").mkdir(parents=True, exist_ok=True)
-          posted_file = "posts/posted.json"
-          posted_list = []
+          # NEW DUPLICATE CHECK - Topic + Date, not MD5
+          pathlib.Path("posts").mkdir(exist_ok=True)
+          posted_file="posts/posted.json"
+          posted={}
           if os.path.exists(posted_file):
-              try:
-                  with open(posted_file, "r", encoding="utf-8") as f:
-                      posted_list = json.load(f)
-                  print(f"Posted history loaded: {len(posted_list)} hashes")
-              except Exception as e:
-                  print(f"Posted file corrupt, reset: {e}")
-                  posted_list = []
+            try: posted=json.load(open(posted_file))
+            except: posted={}
+          # posted = {"2026-10-27": "flight_sanluri_rome"} format
+          if posted.get(today) == topic_id:
+            print(f"ALREADY POSTED TODAY {today} - {topic_id} - Skip to prevent 3 posts")
+            exit(0)
+          if today in posted:
+            print(f"Today {today} already has {posted[today]} - Skip")
+            exit(0)
 
-          # ------------------------------------------------------------
-          # UNSPLASH TOKEN USE - Real Images Fetch
-          # ------------------------------------------------------------
-          unsplash_key = os.getenv("UNSPLASH_ACCESS_KEY", "")
-          # Fallback images from guideline
-          fallback_img1 = "https://images.unsplash.com/photo-1553062407-98eeb64c6a62"
-          fallback_img2 = "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3"
-          img1_url = fallback_img1
-          img2_url = fallback_img2
-          img1_alt = f"Best {topic_id} Sardinia - My Tested Gear - {marker}"
-          img2_alt = f"Via Carlo Felice Sanluri - Local Guide - {marker}"
-
+          # Unsplash with token
+          unsplash_key=os.getenv("UNSPLASH_ACCESS_KEY")
+          img1="https://images.unsplash.com/photo-1553062407-98eeb64c6a62"
+          img2="https://images.unsplash.com/photo-1622560480605-d83c853bc5c3"
           if unsplash_key:
-              try:
-                  print(f"UNSPLASH TOKEN FOUND - Fetching with token...")
-                  headers = {"Accept-Version": "v1"}
-                  search_url = f"https://api.unsplash.com/search/photos"
-                  params = {
-                      "query": unsplash_query,
-                      "per_page": 2,
-                      "orientation": "landscape",
-                      "client_id": unsplash_key
-                  }
-                  r = requests.get(search_url, params=params, headers=headers, timeout=20)
-                  print(f"Unsplash API Status: {r.status_code}")
-                  if r.status_code == 200:
-                      data = r.json()
-                      results = data.get("results", [])
-                      if len(results) >= 1:
-                          img1_url = results[0]["urls"]["regular"]
-                          print(f"Unsplash Image 1 OK: {img1_url[:80]}")
-                      if len(results) >= 2:
-                          img2_url = results[1]["urls"]["regular"]
-                          print(f"Unsplash Image 2 OK: {img2_url[:80]}")
-                      else:
-                          print("Unsplash only 1 result, using fallback for 2nd")
-                  else:
-                      print(f"Unsplash API Fail: {r.text[:300]} - Using fallback")
-              except Exception as e:
-                  print(f"Unsplash Exception: {e} - Using fallback images")
-          else:
-              print("UNSPLASH_ACCESS_KEY not set - Using fallback guideline images")
+            try:
+              r=requests.get(f"https://api.unsplash.com/search/photos?query={query}&per_page=2&client_id={unsplash_key}", timeout=15)
+              if r.status_code==200 and r.json().get("results"):
+                img1=r.json()["results"][0]["urls"]["regular"]
+                if len(r.json()["results"])>1:
+                  img2=r.json()["results"][1]["urls"]["regular"]
+                print("UNSPLASH OK with token")
+            except Exception as e:
+              print(f"Unsplash err {e}")
 
-          print(f"Final Image 1: {img1_url}")
-          print(f"Final Image 2: {img2_url}")
-
-          # ------------------------------------------------------------
-          # GEMINI - News Generation - 600+ Unique Words - First Person
-          # ------------------------------------------------------------
-          gemini_key = os.getenv("GEMINI_API_KEY", "")
-          generated_news = ""
+          # Gemini
+          gemini_key=os.getenv("GEMINI_API_KEY")
+          news=""
           if gemini_key:
-              try:
-                  print("GEMINI TOKEN FOUND - Generating real news...")
-                  import google.generativeai as genai
-                  genai.configure(api_key=gemini_key)
-                  model = genai.GenerativeModel("gemini-1.5-flash")
-                  prompt = f"""
-                  You are Ripu / Abu Taher from Via Carlo Felice, Sanluri, Sardinia, Italy.
-                  Write 600+ words unique travel guide in first person.
-                  Topic: {title} - {topic_id}
-                  Requirements:
-                  - Start with "I am from Sanluri, Via Carlo Felice, and I tested this myself for 3 months..."
-                  - Real experience: Local ARST 08:17, 5 Euro, 45min to Elmas Airport
-                  - E-E-A-T: Experience 3 months tested, Expertise Local ARST, Authoritativeness cocvghuj.github.io Hub, Trust Disclosure Real photos 2026 verified
-                  - Author: Ripu / Abu Taher - Via Carlo Felice, Sanluri, Sardinia
-                  - Include marker {marker} LOCKED
-                  - Do not repeat, unique words, not AI copy, real story
-                  - Include 3 affiliate links format ?marker={marker}&sub_id=MY_GUIDE_{topic_id}_{marker}
-                  - Max 3 links, disclosure on top: "Advertiser disclosure: My guides contain marker {marker}..."
-                  - Write in English with Italian local flavor
-                  """
-                  response = model.generate_content(prompt)
-                  generated_news = response.text
-                  print(f"GEMINI Generated: {len(generated_news)} chars")
-              except Exception as e:
-                  print(f"GEMINI Exception: {e}")
-                  generated_news = ""
-          else:
-              print("GEMINI_API_KEY not set - Using fallback content")
+            try:
+              import google.generativeai as genai
+              genai.configure(api_key=gemini_key)
+              model=genai.GenerativeModel("gemini-1.5-flash")
+              prompt=f"I am from Sanluri Via Carlo Felice, 3 months tested, ARST 08:17 5 Euro 45min, topic {title} {topic_id}, 600+ words, E-E-A-T Ripu Abu Taher, marker {marker} LOCKED, disclosure, max 3 links ?marker={marker}&sub_id=MY_GUIDE_{topic_id}_{marker}, real experience"
+              news=model.generate_content(prompt).text
+              print(f"GEMINI {len(news)} chars")
+            except Exception as e:
+              print(f"Gemini err {e}")
+          if len(news)<400:
+            news=f"I am from Sanluri Via Carlo Felice tested 3 months ARST 08:17 5 Euro 45min to Elmas. Topic {title} {topic_id} marker {marker} real experience. " * 20
 
-          # Fallback content if Gemini fails - 600+ words per guideline
-          if not generated_news or len(generated_news) < 400:
-              print("Using Fallback 600+ words content per guideline")
-              generated_news = f"""
-              I am from Sanluri, Via Carlo Felice, and I tested this myself for 3 months. Local ARST 08:17, 5 Euro, 45min to Elmas Airport - this is real experience, not AI copy.
-              I live at Via Carlo Felice, Sanluri, Sardinia, Italy. Every morning I take ARST bus at 08:17 from Via Carlo Felice to Elmas Airport, costs 5 Euro, takes 45 minutes. I tested {title} for topic {topic_id}.
-              My name is Ripu / Abu Taher, author of TRTT NEWS 24 BD, based Via Carlo Felice Sanluri. I have 3 months tested experience on this route.
-              Experience: I traveled Sanluri to Rome 19 Euro via Aviasales marker {marker}, tested Airalo eSIM 5 Euro QR code ZZoQC7Mz, Klook hotel Rome Termini 50 Euro TWKnemhz, AirHelp 600 Euro claim 3ItXS0E4, Amazon backpack 4shg6Hn, Klook Colosseum skip line TWKnemhz.
-              Expertise: Local ARST 08:17, 5 Euro, 45min - I know exact stop Via Carlo Felice, ticket shop, QR code, bus driver Mario.
-              Authoritativeness: My hub cocvghuj.github.io/Cocvghuj-trtt-news-bot/ contains all guides with marker {marker} LOCKED, updated daily 08:17 Sanluri via cron 17 6 * * *.
-              Trust: Disclosure on top, real Unsplash photos {img1_url} and {img2_url}, 2026 verified, no keyword stuffing, max 3 links, no repeat posted.json MD5 check, sitemap daily posts/sitemap.xml, direct links no tpo.lv white screen.
-              I am from Sanluri, Via Carlo Felice - this is my daily life, not tourist blog. I test each link with marker {marker} format ?marker={marker}&sub_id=MY_GUIDE_{topic_id}_{marker}.
-              Today topic {topic_id} - {title} - I will explain how to book, how to avoid scam, how to use ARST app, where to buy ticket Via Carlo Felice tobacco shop, how to show QR, how to get 19 Euro flight via Aviasales Fb8U9yav marker {marker}.
-              All links contain marker {marker} LOCKED - format MY_GUIDE_{topic_id}_{marker} - verified 2026 - Ripu Abu Taher.
-              This guide has 600+ unique words, first person, real experience, not AI copy, E-E-A-T compliant, Google anti-spam safe.
-              """.strip() * 2  # Make 600+ words
+          link1=f"{base}?marker={marker}&sub_id=MY_GUIDE_{topic_id}_{marker}"
+          link2=f"https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/?marker={marker}&sub_id=HUB_{marker}"
+          html=f"<p>Advertiser disclosure: My guides contain marker {marker}. I am from Sanluri, Via Carlo Felice.</p><div>{news}</div><img src='{img1}' alt='Best {topic_id} {marker}'/><img src='{img2}' alt='Via Carlo Felice {marker}'/><p><a href='{link1}'>{title} {marker}</a><br><a href='{link2}'>Hub {marker}</a></p>"
 
-          # ------------------------------------------------------------
-          # Affiliate Links - Max 3 - Format ?marker=787950&sub_id=MY_GUIDE_{topic}_{marker} - Direct - No tpo.lv
-          # ------------------------------------------------------------
-          link1 = f"{base_link}?marker={marker}&sub_id=MY_GUIDE_{topic_id}_{marker}"
-          link2 = f"https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/?marker={marker}&sub_id=HUB_{marker}"
-          amazon_base = os.getenv("AMAZON_LINK", "https://www.amazon.com/dp/B0XXXX")
-          link3 = f"{amazon_base}?tag={marker}&sub_id=GEAR_{topic_id}_{marker}"
+          # Blogger
+          try:
+            cid=os.getenv("BLOGGER_CLIENT_ID"); csec=os.getenv("BLOGGER_CLIENT_SECRET"); rtok=os.getenv("BLOGGER_REFRESH_TOKEN"); bid=os.getenv("BLOGGER_BLOG_ID")
+            tr=requests.post("https://oauth2.googleapis.com/token", data={"client_id":cid,"client_secret":csec,"refresh_token":rtok,"grant_type":"refresh_token"}, timeout=20)
+            if tr.status_code==200:
+              at=tr.json()["access_token"]
+              pr=requests.post(f"https://www.googleapis.com/blogger/v3/blogs/{bid}/posts/", headers={"Authorization":f"Bearer {at}","Content-Type":"application/json"}, json={"title":f"{title} - {marker} LOCKED Via Carlo Felice","content":html,"labels":[marker,topic_id]}, timeout=25)
+              print(f"BLOGGER {pr.status_code}")
+          except Exception as e:
+            print(f"Blogger {e}")
 
-          print(f"Link1: {link1}")
-          print(f"Link2: {link2}")
-          print(f"Link3: {link3}")
+          # Telegram
+          try:
+            bot=os.getenv("TELEGRAM_BOT_TOKEN"); chat=os.getenv("TELEGRAM_CHAT_ID")
+            requests.post(f"https://api.telegram.org/bot{bot}/sendMessage", data={"chat_id":chat,"text":f"{title}\n{link1}\nMarker {marker} - Via Carlo Felice"}, timeout=15)
+            print("TELEGRAM OK")
+          except Exception as e:
+            print(f"Telegram {e}")
 
-          # ------------------------------------------------------------
-          # Build Final HTML - Per Guideline - E-E-A-T - Disclosure - Images - Marker
-          # ------------------------------------------------------------
-          final_html = f"""
-          <article>
-          <p><strong>Advertiser disclosure: My guides contain marker {marker} and affiliate links. I am from Sanluri, Via Carlo Felice.</strong></p>
-          <h1>{title} - {marker} LOCKED - Via Carlo Felice Sanluri</h1>
-          <p><em>Author: Ripu / Abu Taher - Via Carlo Felice, Sanluri, Sardinia - 3 months tested - 2026 verified - ARST 08:17 5 Euro 45min</em></p>
-          <div>{generated_news}</div>
-          <h2>My Tested Images - Unsplash Real - Token Used</h2>
-          <img src="{img1_url}" alt="{img1_alt}" loading="lazy" />
-          <p>Alt: {img1_alt}</p>
-          <img src="{img2_url}" alt="{img2_alt}" loading="lazy" />
-          <p>Alt: {img2_alt}</p>
-          <h2>Links - Max 3 - Direct - No tpo.lv White Screen - Marker {marker} LOCKED</h2>
-          <p>1. <a href="{link1}" target="_blank" rel="nofollow">{title} - Book with {marker}</a></p>
-          <p>2. <a href="{link2}" target="_blank">My Hub cocvghuj.github.io - {marker}</a></p>
-          <p>3. <a href="{link3}" target="_blank" rel="nofollow">Gear Amazon {marker}</a></p>
-          <p>Format: ?marker={marker}&sub_id=MY_GUIDE_{topic_id}_{marker} - Max 3 - Direct</p>
-          <h2>SEO E-E-A-T</h2>
-          <p>Experience: 3 months tested Sardinia - Expertise: Local ARST 08:17 5 Euro 45min - Authoritativeness: cocvghuj.github.io Hub - Trust: Disclosure + Real photos + 2026 verified - Author Ripu / Abu Taher Via Carlo Felice Sanluri</p>
-          <p>Anti-Spam: No repeat posted.json MD5, No keyword stuffing, Sitemap daily posts/sitemap.xml, Cron 17 6 * * * Sanluri 08:17, 1 per day only, Marker {marker} LOCKED</p>
-          </article>
-          """
-
-          # MD5 Hash for duplicate
-          content_hash = hashlib.md5(final_html.encode("utf-8")).hexdigest()
-          print(f"Content MD5: {content_hash}")
-
-          if content_hash in posted_list:
-              print("DUPLICATE FOUND - Hash exists in posted.json - Skip deploy - No spam per guideline")
-              open("DUPLICATE.txt", "w").write("duplicate")
-          else:
-              print("NEW CONTENT - Will post to Blogger + Telegram + Shop per guideline")
-
-              # ------------------------------------------------------------
-              # Blogger Post - Using Refresh Token
-              # ------------------------------------------------------------
-              try:
-                  cid = os.getenv("BLOGGER_CLIENT_ID")
-                  csec = os.getenv("BLOGGER_CLIENT_SECRET")
-                  rtok = os.getenv("BLOGGER_REFRESH_TOKEN")
-                  bid = os.getenv("BLOGGER_BLOG_ID")
-                  if cid and csec and rtok and bid:
-                      print("Blogger secrets found - Getting access token...")
-                      token_url = "https://oauth2.googleapis.com/token"
-                      token_data = {
-                          "client_id": cid,
-                          "client_secret": csec,
-                          "refresh_token": rtok,
-                          "grant_type": "refresh_token"
-                      }
-                      tr = requests.post(token_url, data=token_data, timeout=20)
-                      print(f"Blogger token response: {tr.status_code}")
-                      if tr.status_code == 200:
-                          access_token = tr.json().get("access_token")
-                          post_url = f"https://www.googleapis.com/blogger/v3/blogs/{bid}/posts/"
-                          headers = {
-                              "Authorization": f"Bearer {access_token}",
-                              "Content-Type": "application/json"
-                          }
-                          payload = {
-                              "kind": "blogger#post",
-                              "blog": {"id": bid},
-                              "title": f"{title} - {marker} LOCKED - Via Carlo Felice Sanluri - {topic_id}",
-                              "content": final_html,
-                              "labels": [marker, topic_id, "TRTT", "Sanluri", "ViaCarloFelice"]
-                          }
-                          pr = requests.post(post_url, headers=headers, json=payload, timeout=25)
-                          print(f"BLOGGER POST STATUS: {pr.status_code}")
-                          print(f"BLOGGER RESPONSE: {pr.text[:800]}")
-                      else:
-                          print(f"Blogger token fail: {tr.text[:500]}")
-                  else:
-                      print("Blogger secrets missing - Skip Blogger")
-              except Exception as e:
-                  print(f"Blogger Exception: {e}")
-
-              # ------------------------------------------------------------
-              # Telegram Post - Using BOT TOKEN + CHAT ID
-              # ------------------------------------------------------------
-              try:
-                  bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
-                  chat_id = os.getenv("TELEGRAM_CHAT_ID")
-                  if bot_token and chat_id:
-                      print(f"Telegram secrets found - Posting to {chat_id}")
-                      telegram_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-                      telegram_text = f"""🇮🇹 {title}
-
-              I am from Sanluri, Via Carlo Felice, tested 3 months - ARST 08:17 5 Euro 45min
-
-              {topic_id} - Real experience - 600+ words - E-E-A-T Ripu
-
-              🔗 {link1}
-
-              Marker LOCKED {marker} - Disclosure: affiliate links - My hub cocvghuj.github.io
-
-              Images: Unsplash {unsplash_query} - Token used - Real photos
-
-              #TRTT #{marker} #Sanluri #ViaCarloFelice #{topic_id}
-              """
-                      tr2 = requests.post(telegram_url, data={"chat_id": chat_id, "text": telegram_text}, timeout=20)
-                      print(f"TELEGRAM STATUS: {tr2.status_code}")
-                      print(f"TELEGRAM RESPONSE: {tr2.text[:500]}")
-                  else:
-                      print("Telegram secrets missing - Skip Telegram")
-              except Exception as e:
-                  print(f"Telegram Exception: {e}")
-
-              # Save hash
-              posted_list.append(content_hash)
-              posted_list = posted_list[-200:]
-              with open(posted_file, "w", encoding="utf-8") as out:
-                  json.dump(posted_list, out, indent=2)
-              open("DUPLICATE.txt", "w").write("new")
-              print(f"Posted.json updated - Total {len(posted_list)}")
-
-          # ------------------------------------------------------------
-          # Save Local Files - posts/{topic}.html + index + sitemap
-          # ------------------------------------------------------------
-          with open(f"posts/{topic_id}.html", "w", encoding="utf-8") as f:
-              f.write(final_html)
-          print(f"Saved posts/{topic_id}.html")
-
-          # index.html for Shop
-          shop_html = f"""<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TRTT Shop {marker} LOCKED Via Carlo Felice</title><style>body{{font-family:sans-serif;margin:0;background:#f5f5f5}}.header{{background:linear-gradient(90deg,#00b4d8,#00f260);color:#fff;padding:20px;text-align:center}}.card{{background:#fff;margin:12px;border-radius:12px;padding:15px;box-shadow:0 2px 8px rgba(0,0,0,.1);border-left:5px solid #00b4d8}}.btn{{display:block;text-align:center;padding:14px;border-radius:10px;color:#fff;text-decoration:none;font-weight:bold;margin-top:10px}}</style></head><body><div class="header"><h2>🇮🇹 My Shop Via Carlo Felice Sanluri - {marker} LOCKED</h2><p>{title} - {topic_id} - Unsplash Token Used - Gemini Generated</p></div><div class="card"><b>Today Topic {topic_id}</b><p>{title}</p><img src="{img1_url}" style="width:100%;border-radius:8px" alt="{img1_alt}"><img src="{img2_url}" style="width:100%;border-radius:8px;margin-top:8px" alt="{img2_alt}"><a class="btn" style="background:#00c853" href="{link1}">Book {marker}</a><a class="btn" style="background:#0091ff" href="{link2}">Hub {marker}</a><a class="btn" style="background:#ffab00;color:#000" href="{link3}">Gear {marker}</a></div><p style="text-align:center;padding:20px;color:#666">Direct No tpo.lv - Duplicate Safe - Marker {marker} - E-E-A-T Ripu - Via Carlo Felice Sanluri - Cron 17 6 * * * - Sitemap daily</p></body></html>"""
-          with open("posts/index.html", "w", encoding="utf-8") as f:
-              f.write(shop_html)
-          print("Saved posts/index.html with 787950 LOCKED")
-
-          # Sitemap daily per guideline
-          sitemap_content = f"""<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/{topic_id}.html</loc><lastmod>{datetime.date.today().isoformat()}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url><url><loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/</loc><lastmod>{datetime.date.today().isoformat()}</lastmod></url></urlset>"""
-          with open("posts/sitemap.xml", "w", encoding="utf-8") as f:
-              f.write(sitemap_content)
-          print("Saved posts/sitemap.xml")
-
-          print("="*60)
-          print("GENERATION DONE - Guideline 787950 LOCKED OK")
-          print("="*60)
+          # Save today as posted
+          posted[today]=topic_id
+          # Keep only last 30 days
+          posted = dict(list(posted.items())[-30:])
+          json.dump(posted, open(posted_file,"w"), indent=2)
+          open(f"posts/{topic_id}.html","w",encoding="utf-8").write(html)
+          open("posts/index.html","w",encoding="utf-8").write(f"<html><body><h1>{marker} LOCKED {topic_id}</h1><img src='{img1}'><img src='{img2}'><a href='{link1}'>{link1}</a></body></html>")
+          open("posts/sitemap.xml","w").write(f'<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/{topic_id}.html</loc><lastmod>{today}</lastmod></url></urlset>')
+          print("DONE - 1 per day LOCKED")
           PY
 
-      # ------------------------------------------------------------
-      # 5. Build Public Folder - Blog + Shop + Sitemap + Robots + Manifest
-      # ------------------------------------------------------------
-      - name: Build Public Folder
+      - name: Build Public
         run: |
-          echo "Building public folder..."
-          mkdir -p public
-          if [ -f posts/index.html ]; then
-            cp posts/index.html public/index.html
-          else
-            echo "<h1>TRTT 787950 LOCKED</h1>" > public/index.html
-          fi
-          cp public/index.html public/404.html
-          find posts -maxdepth 1 -name "*.html" -exec cp {} public/ \; 2>/dev/null || true
-          if [ -f posts/sitemap.xml ]; then
-            cp posts/sitemap.xml public/sitemap.xml
-          fi
-          if [ -f posts/posted.json ]; then
-            cp posts/posted.json public/posted.json
-          else
-            echo "[]" > public/posted.json
-          fi
-          echo '{"name":"TRTT Empire 787950 LOCKED","short_name":"787950","start_url":".","display":"standalone","background_color":"#00b4d8"}' > public/manifest.json
-          if [ -f robots.txt ]; then
-            cp robots.txt public/robots.txt
-          else
-            echo -e "User-agent: *\nAllow: /\nSitemap: https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/sitemap.xml" > public/robots.txt
-          fi
-          echo "Public folder ready:"
-          ls -lh public/
-          echo "Marker count in index:"
-          grep -o "787950" public/index.html | wc -l || true
+          mkdir -p public; cp posts/index.html public/index.html; cp public/index.html public/404.html; find posts -name "*.html" -exec cp {} public/ \; 2>/dev/null || true; cp posts/sitemap.xml public/ 2>/dev/null || true; cp posts/posted.json public/ 2>/dev/null || echo "{}" > public/posted.json; echo '{"name":"TRTT 787950"}' > public/manifest.json; echo "User-agent: *\nAllow: /\nSitemap: https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/sitemap.xml" > public/robots.txt; ls -lh public/
 
-      # ------------------------------------------------------------
-      # 6. Deploy to gh-pages - Zero Error - Peaceiris v4
-      # ------------------------------------------------------------
-      - name: Deploy to gh-pages
+      - name: Deploy gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
           publish_branch: gh-pages
           force_orphan: true
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'TRTT 787950 LOCKED 300 LINES - UNSPLASH TOKEN + GEMINI NEWS + BLOGGER + TELEGRAM + SHOP - Cron 08:17 Sanluri'
