@@ -1,84 +1,110 @@
-name: TRTT FINAL BOSS 787950
+name: FINAL-BOSS-2-LINKS-600-WORDS-787950-LOCKED-1-PER-DAY
 on:
   schedule:
     - cron: '17 6 * * *'
   workflow_dispatch:
-    inputs:
-      persona:
-        description: 'Author'
-        default: 'neighbor_maria'
-        type: choice
-        options: [neighbor_maria, customer_rahim, friend_giovanni, local_expert]
+
 jobs:
-  build:
+  my-own-guide-2-links:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GH_PAT }}
-          fetch-depth: 0
-      - name: Build
+
+      - name: Build My Own 600 Words Guide - 2 Links - 787950
         env:
-          TRAVEL_MARKER: "787950"  # মার্কার আইডি সরাসরি হার্ডকোড করে লক করা হলো
-          INPUT_PERSONA: ${{ github.event.inputs.persona }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          TRAVEL_PAYOUT_MARKER: ${{ secrets.TRAVEL_PAYOUT_MARKER }}
+          TRAVEL_MARKER: ${{ secrets.TRAVEL_MARKER }}
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
           BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           pip install requests -q
           python3 << 'PY'
-          import os, datetime, pathlib, glob, requests
-          marker = '787950'
-          input_p = os.getenv('INPUT_PERSONA','').strip()
-          personas = ["neighbor_maria","customer_rahim","friend_giovanni","local_expert"]
-          persona = input_p if input_p in personas else personas[datetime.datetime.now().weekday()%4]
-          topic_id = ["saving","flights","planning","accom","gear","life","family"][datetime.datetime.now().weekday()]
-          posts_dir = pathlib.Path("posts")
-          posts_dir.mkdir(exist_ok=True)
-          prev = sorted(glob.glob("posts/*.html"),reverse=True)[:6]
-          links = ""
-          for pp in prev:
-              name = pathlib.Path(pp).stem.replace('-',' ')[:50]
-              url = f"https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/{pp}"
-              links += f'<li><a href="{url}">{name}</a></li>'
-          base_date = datetime.datetime.now().strftime("%Y%m%d")
-          sub_id = f"interlinked_{topic_id}_{persona}_lock_it_{marker}_{base_date}"
-          html = f"<h1>{topic_id} {persona} 787950 LOCKED FAST MONEY</h1><p>Real test Sanluri Via Carlo Felice 08:17 ARST 5 Euro. Flight 19 Euro sub_id {sub_id}.</p><p><a href='https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/plane/?sub_id={sub_id}_plane_avia'>Plane 19 Euro</a></p><p><a href='https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/esim/?sub_id={sub_id}_esim_airalo'>eSIM 5 Euro</a></p><p><a href='https://amazon.tpo.lv/4shg6Hn?sub_id={sub_id}_amazon_gear'>Amazon Gear</a></p><ul>{links}</ul>"
-          (posts_dir/f"{base_date}-{topic_id}-{persona}-{marker}.html").write_text(html,encoding='utf-8')
-          pathlib.Path("index.html").write_text(html,encoding='utf-8')
-          pathlib.Path("latest_travel_news.html").write_text(html,encoding='utf-8')
-          blog_id = os.getenv('BLOGGER_BLOG_ID')
-          client_id = os.getenv('BLOGGER_CLIENT_ID')
-          client_secret = os.getenv('BLOGGER_CLIENT_SECRET')
-          refresh_token = os.getenv('BLOGGER_REFRESH_TOKEN')
-          if blog_id and client_id and client_secret and refresh_token:
-              try:
-                  r = requests.post("https://oauth2.googleapis.com/token",data={"client_id":client_id,"client_secret":client_secret,"refresh_token":refresh_token,"grant_type":"refresh_token"},timeout=20)
-                  r.raise_for_status()
-                  token = r.json().get("access_token")
-                  if token:
-                      br = requests.post(f"https://www.googleapis.com/blogger/v3/blogs/{blog_id}/posts/",headers={"Authorization":f"Bearer {token}","Content-Type":"application/json"},json={"kind":"blogger#post","blog":{"id":blog_id},"title":f"{topic_id} {persona} 787950 LOCKED {base_date}","content":html,"labels":[topic_id,persona,"sanluri","787950","fast-money"]},timeout=20)
-                      print(f"Blogger {br.status_code}")
-              except Exception as e:
-                  print(f"Blogger error {e}")
-          tg_token = os.getenv('TELEGRAM_BOT_TOKEN')
-          tg_chat = os.getenv('TELEGRAM_CHAT_ID')
-          if tg_token and tg_chat:
-              try:
-                  tg_url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
-                  requests.post(tg_url,data={"chat_id":tg_chat,"text":f"TRTT 787950 {topic_id} {persona} {sub_id} FAST MONEY"},timeout=15)
-                  print("Telegram OK")
-              except Exception as e:
-                  print(f"TG error {e}")
-          print(f"DONE {sub_id} 787950 LOCKED")
+          import os, requests, datetime, pathlib, json
+          marker = os.getenv('TRAVEL_PAYOUT_MARKER') or os.getenv('TRAVEL_MARKER') or '787950'
+          print(f"MARKER LOCKED: {marker}")
+
+          topics = [
+            {"id":"flight_sanluri_rome","title":"Sanluri to Rome for 19 Euro - My Real Flight Guide","aff":"aviasales"},
+            {"id":"bus_via_carlo_felice","title":"Via Carlo Felice to Cagliari Airport - My 5 Euro Bus Secret","aff":"hub_bus"},
+            {"id":"esim_sardinia","title":"Airalo eSIM Sardinia - My 5 Euro QR vs Shop 20 Euro","aff":"airalo"},
+            {"id":"hotel_termini","title":"Rome Termini Hotel 50 Euro - My Family Guide","aff":"klook"},
+            {"id":"claim_600","title":"How I Claimed 600 Euro for Delayed Flight - My AirHelp Guide","aff":"airhelp"},
+            {"id":"gear_backpack","title":"Best Backpack for Sardinia - My Tested Gear","aff":"amazon"},
+            {"id":"colosseum_skip","title":"Colosseum Skip Line - My Klook Secret 2026","aff":"klook"},
+          ]
+          topic = topics[datetime.date.today().day % len(topics)]
+          print(f"TODAY: {topic}")
+
+          hub_main = f"https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/?sub_id=HUB_MAIN_{marker}_{topic['id']}"
+          hub_bus = f"https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/dashboard/bus.html?sub_id=HUB_BUS_{marker}"
+
+          links = {
+            "aviasales": f"https://aviasales.tpo.lv/Fb8U9yav?marker={marker}&sub_id=MY_GUIDE_{topic['id']}_{marker}",
+            "airalo": f"https://airalo.tpo.lv/ZZoQC7Mz?marker={marker}&sub_id=MY_GUIDE_{topic['id']}_{marker}",
+            "klook": f"https://klook.tpo.lv/TWKnemhz?marker={marker}&sub_id=MY_GUIDE_{topic['id']}_{marker}",
+            "airhelp": f"https://airhelp.tpo.lv/3ItXS0E4?marker={marker}&sub_id=MY_GUIDE_{topic['id']}_{marker}",
+            "amazon": f"https://amazon.tpo.lv/4shg6Hn?marker={marker}&sub_id=MY_GUIDE_{topic['id']}_{marker}",
+            "hub_bus": hub_bus
+          }
+          link_topic = links[topic['aff']]
+          link_hub = hub_main
+
+          prompt = f"Write 600-word English travel guide, first person, I am local from Sanluri, Via Carlo Felice, Sardinia. Real voice. Topic: {topic['title']}. Must include ARST bus 5 Euro 08:17 from Via Carlo Felice to Cagliari Elmas 45min, taxi 50 Euro, Aviasales 19 Euro flight via marker {marker}, Airalo eSIM 5 Euro QR, Klook hotel 50 Euro Termini, AirHelp 600 Euro claim. Start with 'I am from Sanluri...' end with 'This is my real guide tested in 2026.' 600 words."
+
+          article = ""
+          try:
+            r = requests.post(f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={os.getenv('GEMINI_API_KEY')}", json={"contents":[{"parts":[{"text":prompt}]}]}, timeout=50)
+            article = r.json()['candidates'][0]['content']['parts'][0]['text']
+          except Exception as e:
+            print(f"Gemini fail {e}")
+          if len(article) < 500:
+            try:
+              r = requests.post("https://api.groq.com/openai/v1/chat/completions", headers={"Authorization": f"Bearer {os.getenv('GROQ_API_KEY')}"}, json={"model":"llama3-8b-8192","messages":[{"role":"user","content":prompt}],"max_tokens":900}, timeout=40)
+              article = r.json()['choices'][0]['message']['content']
+            except Exception as e:
+              print(f"Groq fail {e}")
+          if len(article) < 500:
+            article = f"I am from Sanluri, Via Carlo Felice. This is my real guide about {topic['title']}. Every day I take ARST bus at 08:17 from Via Carlo Felice to Cagliari Elmas Airport. It costs 5 Euro and takes 45 minutes. Taxi costs 50 Euro, so locals use bus. At Cagliari Elmas I fly to Rome for 19 Euro via Aviasales using marker {marker} which I tested. My hub at cocvghuj.github.io loads 2x faster with live prices. I use Airalo eSIM 5 Euro QR code, works in Sanluri and Villacidro, shops charge 20 Euro scam. In Rome I stay near Termini station for 50 Euro, booked via Klook. If flight delayed, AirHelp gives 600 Euro compensation. I tested all this in 2026. I walk from Sanluri center to Via Carlo Felice, wait for ARST, buy ticket on board. At airport I use eSIM QR. In Rome I take bus 40 to Termini. At night I book Colosseum via Klook skip line. For gear I use backpack from Amazon tested. This is my real guide tested in 2026. Real local secrets Posting Guy does not know. " * 3
+
+          title = f"{topic['title']} (2026) - My Real 600-Word Guide - Marker {marker}"
+          today = datetime.date.today()
+          paras = [p.strip() for p in article.split("\n") if p.strip()]
+          paras_html = "".join([f'<p style="margin:0 0 16px 0">{p}</p>' for p in paras])
+
+          html = f"""<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial;max-width:880px;margin:auto;background:#fff;color:#111827;line-height:1.8"><div style="background:#0b1f4b;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;border-radius:12px"><div style="font-weight:900;letter-spacing:1px;font-size:13px">MY GUIDES • SANLURI • REAL LOCAL • {marker}</div><div style="font-size:10px;background:#ffcc00;color:#000;padding:4px 10px;border-radius:20px;font-weight:900">1 PER DAY • 600 WORDS • 2 LINKS</div></div><div style="padding:22px"><div style="font-weight:800;font-size:13px;margin-bottom:12px">≡ JUMP TO SECTION | My Guide | {topic['id']}</div><div style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:8px;padding:10px 14px;font-size:12px">Advertiser disclosure: My guides contain marker <b>{marker}</b> that compensates me. My honest opinion from Via Carlo Felice.</div><p style="font-size:12px;margin:14px 0;color:#374151"><b>EDITOR'S NOTE:</b> By local from Via Carlo Felice, Verified {today} • 8 min read • Marker {marker} Locked</p><div style="border:1px solid #a7f3d0;border-left:6px solid #10b981;border-radius:12px;padding:16px;background:#f0fdf4;margin:18px 0"><h3 style="margin:0 0 6px 0;font-size:14px;color:#065f46">Quick summary - My Real Guide</h3><p style="margin:0;font-size:13px;color:#065f46">{topic['title']} - My tested 600-word guide. ARST 5 Euro 08:17, flight 19 Euro via {marker}, eSIM 5 Euro QR, hotel 50 Euro, 600 Euro claim. Real local.</p></div><h1 style="font-size:27px;line-height:1.25;margin:18px 0">{title}</h1><div style="font-size:15.5px;color:#1f2937">{paras_html}</div><div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin:28px 0"><h3 style="margin:0 0 14px 0;font-size:16px;text-align:center">My 2 Links - Topic + Hub - Marker {marker} Locked</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px"><a href="{link_topic}" style="display:block;background:#ffcc00;color:#000;padding:16px;border-radius:10px;text-align:center;font-weight:900;text-decoration:none"><div style="font-size:12px">LINK 1 - TOPIC</div><div style="font-size:14px;margin-top:4px">✈️ {topic['aff'].upper()} - My Link</div><div style="font-size:10px;margin-top:6px">Marker {marker} Locked</div></a><a href="{link_hub}" style="display:block;background:#0b1f4b;color:#fff;padding:16px;border-radius:10px;text-align:center;font-weight:900;text-decoration:none"><div style="font-size:12px;color:#bfdbfe">LINK 2 - HUB</div><div style="font-size:14px;margin-top:4px">🏠 My GitHub Hub</div><div style="font-size:10px;margin-top:6px;color:#fde68a">cocvghuj.github.io - {marker}</div></a></div><p style="text-align:center;font-size:11px;color:#64748b;margin:12px 0 0 0">2 Links Only - Clean - Professional - {marker}</p></div><div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:18px;margin-top:22px"><h3 style="margin:0 0 10px 0;font-size:16px">My Top Guides - All 600 Words</h3><ul style="margin:0;padding-left:18px;line-height:2.4;font-size:14px;list-style:none"><li>✈️ <a href="{links['aviasales']}" style="color:#1e40af;font-weight:700;text-decoration:none">My Flight Guide - 19 Euro - {marker}</a></li><li>📱 <a href="{links['airalo']}" style="color:#1e40af;text-decoration:none">My eSIM Guide - 5 Euro QR</a></li><li>🏨 <a href="{links['klook']}" style="color:#1e40af;text-decoration:none">My Hotel Guide - 50 Euro</a></li><li>🚌 <a href="{hub_bus}" style="color:#1e40af;text-decoration:none">My Bus Guide - 5 Euro</a></li><li>💶 <a href="{links['airhelp']}" style="color:#1e40af;text-decoration:none">My Claim Guide - 600 Euro</a></li><li>🏠 <a href="{hub_main}" style="color:#0b1f4b;font-weight:800;text-decoration:none">🏠 My Full Hub - GitHub Page</a></li></ul><div style="text-align:center;margin-top:16px;padding-top:14px;border-top:1px solid #e2e8f0;font-size:11px;font-weight:800;color:#475569">AS FEATURED IN • MY OWN GUIDES • SANLURI LOCAL • 600 WORDS • MARKER {marker} LOCKED</div></div></div><div style="background:#f1f5f9;text-align:center;padding:12px;font-size:10px;color:#64748b">MY OWN GUIDES • 1 Per Day • 600 Words • 2 Links Only • GitHub Hub • {marker}</div></div>"""
+
+          pathlib.Path("posts").mkdir(exist_ok=True)
+          open(f"posts/{today}-MY-GUIDE-{topic['id']}.html","w",encoding="utf-8").write(html)
+          open("/tmp/ptitle.txt","w",encoding="utf-8").write(title)
+          open("/tmp/pfile.txt","w",encoding="utf-8").write(f"posts/{today}-MY-GUIDE-{topic['id']}.html")
+          open("/tmp/topic_id.txt","w",encoding="utf-8").write(topic['id'])
+          print("MY GUIDE DONE")
           PY
+
+      - name: Push to Blogger - 2 Links
+        env:
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
+          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
+          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
+        run: |
+          TITLE=$(cat /tmp/ptitle.txt); FILE=$(cat /tmp/pfile.txt); TOPIC=$(cat /tmp/topic_id.txt)
+          ACCESS=$(curl -s --data "client_id=$BLOGGER_CLIENT_ID&client_secret=$BLOGGER_CLIENT_SECRET&refresh_token=$BLOGGER_REFRESH_TOKEN&grant_type=refresh_token" https://oauth2.googleapis.com/token | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))")
+          CONTENT=$(cat $FILE | python3 -c "import sys,json; print(json.dumps(sys.stdin.read()))")
+          TITLE_JSON=$(echo "$TITLE" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))")
+          curl -s -X POST "https://www.googleapis.com/blogger/v3/blogs/$BLOGGER_BLOG_ID/posts/?isDraft=false" -H "Authorization: Bearer $ACCESS" -H "Content-Type: application/json" -d "{\"kind\":\"blogger#post\",\"blog\":{\"id\":\"$BLOGGER_BLOG_ID\"},\"title\":$TITLE_JSON,\"content\":$CONTENT,\"labels\":[\"MY-OWN-GUIDE\",\"600-WORDS\",\"2-LINKS\",\"787950\",\"$TOPIC\",\"SANLURI\",\"PRETTIER-THAN-TPG\"]}" | tee resp.json
+
       - name: Commit
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html latest_travel_news.html posts/ || true
-          git commit -m "TRTT 787950 LOCKED FAST MONEY [skip ci]" || exit 0
-          git push origin HEAD:${{ github.ref }}
+          git config user.name "My Own Guide Bot 787950"
+          git config user.email "my-guide@787950.locked"
+          git add .; git commit -m "MY GUIDE 600 WORDS 2 LINKS 787950 LOCKED" || true; git push || true
