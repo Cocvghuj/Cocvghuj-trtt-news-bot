@@ -65,8 +65,8 @@ def main():
     স্ট্রাকচার: ভূমিকা (কেন অটোমেশন বড় কোম্পানির চেয়ে ভালো), H2/H3 সহ ধাপে ধাপে সমাধান, ব্যক্তিগত টিপস, এবং শেষে কেন এই প্রজেক্ট বানাচ্ছো তার ভিশন।
     """
 
-    # Gemini Pro মডেল ব্যবহার করা হচ্ছে যা অত্যন্ত নির্ভরযোগ্য
-    model = genai.GenerativeModel('gemini-1.5-pro')
+    # এখানে gemini-pro মডেল ব্যবহার করা হলো যা সব এপিআই ভার্সনে সাপোর্ট করে
+    model = genai.GenerativeModel('gemini-pro')
     response = model.generate_content(prompt)
     article_text = response.text
 
