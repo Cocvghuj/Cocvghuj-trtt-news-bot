@@ -3,7 +3,7 @@ import requests
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
-# ১. গিটহাব সিক্রেটস থেকে এনভায়রনমেন্ট ভেরিয়েবল ফেচ করা
+# গিটহাব সিক্রেটস থেকে এনভায়রনমেন্ট ভেরিয়েবল ফেচ করা
 MARKER = os.environ.get('TRAVEL_PAYOUT_MARKER', '787950')
 AMAZON_URL = os.environ.get('AMAZON_LINK', 'https://amzn.to/4shg6Hn')
 GITHUB_HUB = "https://Cocvghuj.github.io/Cocvghuj-trtt-news-bot/"
