@@ -4,7 +4,7 @@
 [Marker](https://img.shields.io/badge/MARKER-787950_OWNED-success?style=for-the-badge&logo=amazon)
 [Live](https://img.shields.io/badge/LIVE-Neon_%2300f2fe_PWA-020617?style=for-the-badge&logo=pwa)
 
-**Live Empire:** https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/ | owner = {
+**Live Empire:** https://cocvghuj-trtt-news-bot.vercel.app/ | owner = {
   "gmail": "engrtaher2017@gmail.com",
   ...
 }
