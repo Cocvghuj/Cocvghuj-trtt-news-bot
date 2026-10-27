@@ -1,26 +1,42 @@
-name: Sync to Base44 Auto
-on: [push, workflow_dispatch]
+name: Next Gen Engine
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then
             pip install -r requirements.txt
           else
             pip install google-generativeai requests
           fi
-      - name: Run app
+
+      - name: Run social engine
+        run: python bot_social_engine.py
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TRAVEL_PAYOUT_MARKER: "787950"
+
+      - name: Run main generator
         run: python main.py
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          BASE44_API_KEY: ${{ secrets.BASE44_API_KEY }}
-      - uses: stefanzweifel/git-auto-commit-action@v5
+          TRAVEL_PAYOUT_MARKER: "787950"
+
+      - name: Auto commit generated content
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "auto: sync news"
+          commit_message: "auto: sync travel content with marker 787950"
