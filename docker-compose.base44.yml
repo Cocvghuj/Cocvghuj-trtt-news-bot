@@ -1,0 +1,38 @@
+# Base44 development environment for TRTT VoyageHub.
+#
+# The repository is a static PWA (index.html, app.html, manifest.json, sw.js,
+# partners.json) plus Python content-generation scripts that run in GitHub
+# Actions. There is no application server, so the preview is served by nginx
+# straight from the bind-mounted checkout: edits show up on the next refresh,
+# no rebuild needed.
+#
+#   docker compose -f docker-compose.base44.yml up -d --build
+#
+# The Python scripts (main.py, auto_organize.py, scripts/next_gen_engine.py) are
+# scheduled content jobs that publish to Blogger/Telegram with the owner's
+# credentials. They are not part of serving the site and are not started here.
+
+services:
+  web:
+    image: nginx:1.27-alpine
+    labels:
+      base44.project: "TRTT VoyageHub"
+      base44.kind: "web"
+      base44.port: "3000"
+    ports:
+      - "3000:80"
+    volumes:
+      - ./:/usr/share/nginx/html:ro
+      - ./docker/nginx.base44.conf:/etc/nginx/nginx.conf:ro
+    environment:
+      - BASE44_PREVIEW_MODE
+    restart: on-failure
+    healthcheck:
+      # Serves the real index.html from the mounted source, not just a port probe.
+      test:
+        - CMD-SHELL
+        - "wget -q -O /dev/null http://127.0.0.1/index.html && grep -q '<!DOCTYPE html>' /usr/share/nginx/html/index.html"
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
