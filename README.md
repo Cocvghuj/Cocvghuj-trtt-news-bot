@@ -1,7 +1,9 @@
 # TRTT Travel Guide
 
 <div align="center">
-  <img src="https://images.unsplash.com/photo-1491557345352-11dabc8e1a31?w=1200&auto=format&fit=crop&q=80" alt="Europe Travel" width="100%" />
+  <a href="https://cocvghuj-trtt-news-bot.vercel.app">
+    <img src="https://images.unsplash.com/photo-1491557345352-11dabc8e1a31?auto=format&fit=crop&w=1200&q=80" alt="Europe travel hero" width="100%" />
+  </a>
 </div>
 
 <div align="center">
@@ -26,7 +28,7 @@
   <strong>Live Demo:</strong>
   <a href="https://cocvghuj-trtt-news-bot.vercel.app">Vercel</a> |
   <a href="https://trtt-news-pulse.base44.app">Base44</a> |
-  <a href="https://trttvoyagehub.blogspot.com">Blogger</a>
+  <a href="https://trttnews24bd.blogspot.com">Blogger</a>
 </p>
 
 A practical, SEO-driven travel publishing system focused on Europe destination guides, trip planning, budget travel, local experiences, and affiliate monetization.
@@ -271,6 +273,16 @@ Use locked `tp.st` affiliate URLs with `marker=787950` only.
 - add destination-specific route planning and local guides
 - improve partner integrations and affiliate targeting
 - scale publishing cadence across travel categories
+
+## Map Magic
+
+<div style="background:white; padding:20px; border-radius:12px; border:1px solid #e5e7eb; color:#111827;">
+  <p><strong>Interactive travel map preview</strong></p>
+  <a href="https://cocvghuj-trtt-news-bot.vercel.app/app.html">
+    <img src="https://images.unsplash.com/photo-1467269204594-9665f6e1d4d4?auto=format&fit=crop&w=1200&q=80" alt="Europe travel map preview" width="100%" />
+  </a>
+  <p>View the live map: <a href="https://cocvghuj-trtt-news-bot.vercel.app/app.html">🗺️ View Interactive Map</a> — Via Carlo Felice ARST 08:17 marker.</p>
+</div>
 
 ## Screenshots
 
