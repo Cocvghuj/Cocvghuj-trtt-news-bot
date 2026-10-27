@@ -1,0 +1,17 @@
+name: Blogger to 【entity-GitHub¦canonical_name=GitHub】 Base44
+on:
+  schedule:
+    - cron: '0 */3 * * *'
+  workflow_dispatch:
+jobs:
+  blog-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          curl -s "https://trttvoyagehub.blogspot.com/feeds/posts/default?alt=json&max-results=5" > blog.json
+          echo "Blog fetched for Base44"
+          git config user.name "TRTT Bot"
+          git config user.email "trtt@voyagehub.com"
+          git add .
+          git diff --cached --quiet || (git commit -m "Auto Blog Sync for Base44 787950" && git push)
