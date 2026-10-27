@@ -66,16 +66,32 @@ def main():
     স্ট্রাকচার: ভূমিকা (কেন অটোমেশন বড় কোম্পানির চেয়ে ভালো), H2/H3 সহ ধাপে ধাপে সমাধান, ব্যক্তিগত টিপস, এবং শেষে কেন এই প্রজেক্ট বানাচ্ছো তার ভিশন।
     """
 
-    # নিরাপদ এবং কাজ করে এমন মডেল (gemini-1.5-flash) ব্যবহার করা হলো
+    # সরাসরি জেমিনির যেকোনো কার্যকরী মডেল খুঁজে নেওয়ার নিরাপদ কোড
+    article_text = ""
     try:
+        # প্রথমে লেটেস্ট ফ্ল্যাশ মডেল ট্রাই করবে
         model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(prompt)
         article_text = response.text
-    except Exception as e:
-        # ফলব্যাক হিসেবে স্ট্যান্ডার্ড জেমিনি প্রোপ ব্যবহার করা হবে
-        model = genai.GenerativeModel('gemini-pro')
-        response = model.generate_content(prompt)
-        article_text = response.text
+    except Exception:
+        try:
+            # কাজ না করলে প্রো মডেল ট্রাই করবে
+            model = genai.GenerativeModel('gemini-1.5-pro')
+            response = model.generate_content(prompt)
+            article_text = response.text
+        except Exception as e:
+            # শেষ বিকল্প হিসেবে জেমিনির লিস্ট থেকে যেকোনো একটি মডেল অটো পিক করবে
+            for m in genai.list_models():
+                if 'generateContent' in m.supported_generation_methods:
+                    try:
+                        model = genai.GenerativeModel(m.name)
+                        response = model.generate_content(prompt)
+                        article_text = response.text
+                        break
+                    except:
+                        continue
+            if not article_text:
+                article_text = f"<h1>{selected['title']}</h1><p>অটোমেশন ও অভিজ্ঞতার ভিত্তিতে তৈরি ট্রাভেল গাইড। প্রযুক্তি ও ওপেন সোর্স সলিউশনের মাধ্যমে ভ্রমণকে সহজ করার প্রচেষ্টা।</p>"
 
     full_html = f"""
     <div style="max-width:800px;margin:auto;font-family:Arial">
