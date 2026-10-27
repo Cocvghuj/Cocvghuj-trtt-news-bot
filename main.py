@@ -4,6 +4,7 @@ from slugify import slugify
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
+# Environment Variables
 MARKER_ID = os.environ.get("TRAVEL_PAYOUT_MARKER", "787950")
 AMAZON_LINK = os.environ.get("AMAZON_LINK", "https://amzn.to/4shg6Hn")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
@@ -19,7 +20,7 @@ BLOGGER_REFRESH_TOKEN = os.environ.get("BLOGGER_REFRESH_TOKEN")
 
 genai.configure(api_key=GEMINI_API_KEY)
 
-# প্রতিদিন একেকটি ভিন্ন টপিক রোটেট করবে (ইংরেজিতে)
+# Topic List (English Guides)
 GUIDE_TOPICS = [
     {
         "id": "guide_001",
@@ -50,7 +51,7 @@ HISTORY_FILE = "published_history.txt"
 def load_history():
     if not os.path.exists(HISTORY_FILE): return []
     with open(HISTORY_FILE, "r", encoding="utf-8") as f:
-        return [line.strip() for line in f]
+        return [line.strip() for line in f if line.strip()]
 
 def save_history(tid):
     with open(HISTORY_FILE, "a", encoding="utf-8") as f:
@@ -92,33 +93,36 @@ def post_to_blogger(title, content, labels):
 def main():
     history = load_history()
     available = [t for t in GUIDE_TOPICS if t["id"] not in history]
+    
+    # সব টপিক শেষ হলে হিস্ট্রি রিসেট হবে
     if not available:
         open(HISTORY_FILE, "w", encoding="utf-8").close()
         available = GUIDE_TOPICS
+        
+    # প্রতি রানে ঠিক ১টি মাত্র টপিক সিলেক্ট হবে
     selected = random.choice(available)
 
-    # জেমিনিকে মানুষের মতো করে ১৫০০ শব্দের বিস্তারিত লেখার প্রম্পট
     prompt = f"""
-    You are an expert human travel developer and seasoned writer. Write an extensive, deeply detailed, human-like evergreen travel guide in English, aiming for approximately 1200 to 1500 words.
+    You are an expert human travel developer and professional blog writer. 
+    Write an extensive, highly detailed, natural, human-like travel guide in ENGLISH.
+    Target word count: strictly between 1200 and 1500 words. Do not make it short or summarized.
     Title: '{selected['title']}'
-    
-    Structure your guide naturally with engaging HTML formatting (using <h2>, <h3>, <p>, <ul>, <li> tags):
-    1. Introduction: Hook the reader with a personal perspective on why smart independent planning beats traditional corporate travel agencies.
-    2. Deep-Dive Core Sections: Break down the topic step-by-step with practical insights, real-world examples, and actionable advice.
-    3. Pro Tips & Common Pitfalls: Share insider tips, hidden challenges, and how to avoid mistakes based on actual traveler experiences.
-    4. Vision & Conclusion: Conclude with why building automated, transparent digital tools and independent platforms transforms the modern travel landscape.
-    
-    Ensure the tone is warm, authoritative, engaging, and flows naturally like a human blog writer. Do not summarize; write out full, detailed paragraphs.
+
+    Structure requirements using proper HTML formatting tags (<h2>, <h3>, <p>, <ul>, <li>):
+    1. Introduction: Engaging opening about independent travel and why automated tools beat corporate booking.
+    2. Deep Dive Sections: Multiple detailed subheadings (H2, H3) covering step-by-step strategies, technical nuances, and practical advice.
+    3. Practical Tips & Common Pitfalls: Real-world suggestions, hidden traps, and solutions.
+    4. Conclusion & Project Vision: Final thoughts on modern digital travel tools and independent platforms.
     """
 
-    article_text = ""
-    try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(prompt)
-        article_text = response.text
-    except Exception as e:
-        print(f"Gemini error: {e}")
-        article_text = f"<h2>{selected['title']}</h2><p>Comprehensive travel guide and technical insights by TRTT Empire.</p>"
+    # Gemini Content Generation
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    response = model.generate_content(prompt)
+    article_text = response.text
+
+    # যদি জেনারেট করা টেক্সট ছোট হয়, তাহলে প্রসেস বন্ধ করবে
+    if not article_text or len(article_text) < 500:
+        raise Exception("Gemini generated invalid or short content. Stopping execution to prevent low quality post.")
 
     full_html = f"""
     <div style="max-width:850px;margin:auto;font-family:Arial,sans-serif;line-height:1.7;color:#333;">
@@ -143,19 +147,20 @@ def main():
     </div>
     """
     
-    # লোকাল ব্যাকআপ সেভ
+    # Save local file backup
     os.makedirs("public/guides", exist_ok=True)
     filename = f"public/guides/{slugify(selected['title'])}.html"
     with open(filename, "w", encoding="utf-8") as f:
         f.write(full_html)
     
-    # সরাসরি আপনার ব্লগারে ইংরেজিতে পোস্ট হবে
+    # Post to Blogger
     blog_post_url = post_to_blogger(selected['title'], full_html, selected['labels'])
     
+    # Update History File
     save_history(selected["id"])
     
     target_link = blog_post_url if blog_post_url else VERCEL_APP_URL
-    tg_msg = f"<b>📖 New English Guide Published:</b> {selected['title']}\n\n👉 {target_link}"
+    tg_msg = f"<b>📖 New Detailed English Guide Published:</b> {selected['title']}\n\n👉 {target_link}"
     send_telegram(tg_msg)
 
 if __name__ == "__main__":
