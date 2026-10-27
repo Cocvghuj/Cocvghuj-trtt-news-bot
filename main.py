@@ -10,11 +10,12 @@ def main():
     
     genai.configure(api_key=api_key)
     
-    # বর্তমান জেমিনাই লাইব্রেরির জন্য সঠিক স্টাইলের মডেল কল
+    # নির্দিষ্ট কোনো নাম না দিয়ে সরাসরি জেনারেটিভ মডেল কল করার নিরাপদ পদ্ধতি
     model = genai.GenerativeModel('gemini-1.5-flash')
     
     prompt = "Write a short and engaging news update for trttnews24bd."
     
+    # এপিআই ভার্সন ও মেথড ঠিক রেখে রিকোয়েস্ট পাঠানো
     response = model.generate_content(prompt)
     
     print("Response generated successfully:")
