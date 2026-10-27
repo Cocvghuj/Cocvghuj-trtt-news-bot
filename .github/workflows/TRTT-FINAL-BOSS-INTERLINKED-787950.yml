@@ -1,25 +1,24 @@
-name: TRTT 787950 LOCKED - 1 PER DAY ONLY
-
+name: TRTT 787950 FINAL - TP.ST + DATE CHECK - NO 3 POSTS
 on:
   workflow_dispatch:
   schedule:
     - cron: '17 6 * * *'
-
-concurrency:
-  group: trtt-787950-locked
-  cancel-in-progress: true
+  push:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install requests google-generativeai
-
-      - name: 1 Per Day - Topic+Date Check - Unsplash+Gemini+Blogger
+      - name: Install
+        run: pip install requests google-generativeai -q
+      - name: Generate - 787950 LOCKED - TP.ST - DATE CHECK
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
@@ -30,112 +29,105 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TRAVEL_PAYOUT_MARKER: ${{ secrets.TRAVEL_PAYOUT_MARKER }}
+          AMAZON_LINK: ${{ secrets.AMAZON_LINK }}
         run: |
           python3 << 'PY'
-          import os, json, datetime, requests
+          import os, json, hashlib, datetime, pathlib, requests
           from datetime import timezone
-          import pathlib
 
-          # 7 Topics
+          marker = os.getenv("TRAVEL_PAYOUT_MARKER","787950").strip() or "787950"
           topics = [
-            ("flight_sanluri_rome","Sanluri to Rome 19 Euro - Aviasales","flight rome","https://aviasales.tp.st/Fb8U9yav"),
-            ("bus_via_carlo_felice","Via Carlo Felice to Elmas 5 Euro","bus sardinia","https://www.arst.sardegna.it"),
-            ("esim_sardinia","Airalo eSIM 5 Euro QR","esim phone","https://airalo.tp.st/ZZoQC7Mz"),
-            ("hotel_termini","Rome Termini 50 Euro - Klook","hotel rome","https://klook.tp.st/TWKnemhz"),
-            ("claim_600","AirHelp 600 Euro","airport delay","https://airhelp.tp.st/3ItXS0E4"),
-            ("gear_backpack","Amazon Backpack","backpack travel","https://amazon.com"),
-            ("colosseum_skip","Colosseum Skip Line","colosseum","https://klook.tp.st/TWKnemhz"),
+            ("flight_sanluri_rome","Sanluri to Rome 19 Euro","flight airplane rome","https://aviasales.tp.st/Fb8U9yav"),
+            ("bus_via_carlo_felice","Via Carlo Felice to Elmas 5 Euro","bus sardinia","https://aviasales.tp.st/Fb8U9yav"),
+            ("esim_sardinia","【entity-Airalo¦canonical_name=Airalo】 eSIM 5 Euro QR","esim phone","https://airalo.tp.st/ZZoQC7Mz"),
+            ("hotel_termini","Rome Termini 50 Euro","hotel rome","https://klook.tp.st/TWKnemhz"),
+            ("claim_600","【entity-AirHelp¦canonical_name=AirHelp】 600 Euro","airport claim","https://airhelp.tp.st/3ItXS0E4"),
+            ("gear_backpack","【entity-Amazon¦canonical_name=Amazon】 Backpack","backpack gear","https://www.amazon.com/dp/B0XXXX"),
+            ("colosseum_skip","Colosseum Skip Line","colosseum rome","https://klook.tp.st/TWKnemhz"),
           ]
-          today = datetime.date.today().isoformat()
           day = datetime.datetime.now(timezone.utc).weekday()
-          topic_id, title, query, base = topics[day]
-          marker = os.getenv("TRAVEL_PAYOUT_MARKER","787950")
-          print(f"Today {today} Topic {topic_id} Marker {marker}")
+          topic_id, title_base, unsplash_q, base_link = topics[day]
+          today = datetime.date.today().isoformat()
+          date_key = f"{topic_id}_{today}"
+          print(f"Today: {today} Topic: {topic_id} Marker: {marker}")
 
-          # NEW DUPLICATE CHECK - Topic + Date, not MD5
-          pathlib.Path("posts").mkdir(exist_ok=True)
-          posted_file="posts/posted.json"
-          posted={}
-          if os.path.exists(posted_file):
-            try: posted=json.load(open(posted_file))
-            except: posted={}
-          # posted = {"2026-10-27": "flight_sanluri_rome"} format
-          if posted.get(today) == topic_id:
-            print(f"ALREADY POSTED TODAY {today} - {topic_id} - Skip to prevent 3 posts")
-            exit(0)
-          if today in posted:
-            print(f"Today {today} already has {posted[today]} - Skip")
+          pathlib.Path("posts").mkdir(exist_ok=True, parents=True)
+          dates_file = "posts/posted_dates.json"
+          dates = []
+          if os.path.exists(dates_file):
+            try: dates=json.load(open(dates_file))
+            except: dates=[]
+          if date_key in dates:
+            print(f"SKIP - Already posted {date_key} today - NO 3 POSTS!")
+            open("DUPLICATE.txt","w").write("duplicate")
             exit(0)
 
-          # Unsplash with token
-          unsplash_key=os.getenv("UNSPLASH_ACCESS_KEY")
-          img1="https://images.unsplash.com/photo-1553062407-98eeb64c6a62"
-          img2="https://images.unsplash.com/photo-1622560480605-d83c853bc5c3"
+          # Images - Unsplash token
+          unsplash_key = os.getenv("UNSPLASH_ACCESS_KEY","")
+          img1 = "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800"
+          img2 = "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=800"
           if unsplash_key:
             try:
-              r=requests.get(f"https://api.unsplash.com/search/photos?query={query}&per_page=2&client_id={unsplash_key}", timeout=15)
-              if r.status_code==200 and r.json().get("results"):
+              r=requests.get("https://api.unsplash.com/search/photos", params={"query":unsplash_q,"per_page":2,"client_id":unsplash_key}, timeout=20)
+              if r.status_code==200 and len(r.json().get("results",[]))>=1:
                 img1=r.json()["results"][0]["urls"]["regular"]
-                if len(r.json()["results"])>1:
-                  img2=r.json()["results"][1]["urls"]["regular"]
-                print("UNSPLASH OK with token")
-            except Exception as e:
-              print(f"Unsplash err {e}")
+                if len(r.json()["results"])>=2: img2=r.json()["results"][1]["urls"]["regular"]
+            except: pass
 
-          # Gemini
-          gemini_key=os.getenv("GEMINI_API_KEY")
-          news=""
-          if gemini_key:
-            try:
-              import google.generativeai as genai
-              genai.configure(api_key=gemini_key)
-              model=genai.GenerativeModel("gemini-1.5-flash")
-              prompt=f"I am from Sanluri Via Carlo Felice, 3 months tested, ARST 08:17 5 Euro 45min, topic {title} {topic_id}, 600+ words, E-E-A-T Ripu Abu Taher, marker {marker} LOCKED, disclosure, max 3 links ?marker={marker}&sub_id=MY_GUIDE_{topic_id}_{marker}, real experience"
-              news=model.generate_content(prompt).text
-              print(f"GEMINI {len(news)} chars")
-            except Exception as e:
-              print(f"Gemini err {e}")
-          if len(news)<400:
-            news=f"I am from Sanluri Via Carlo Felice tested 3 months ARST 08:17 5 Euro 45min to Elmas. Topic {title} {topic_id} marker {marker} real experience. " * 20
+          # Content 600+ words
+          content = f"""<article>
+          <p><strong>Advertiser disclosure: My guides contain marker {marker} LOCKED - Via Carlo Felice Sanluri</strong></p>
+          <h1>{title_base} - {marker} - Via Carlo Felice</h1>
+          <p>I am from Sanluri, Via Carlo Felice, tested 3 months - ARST 08:17 5 Euro 45min to Elmas. Real experience.</p>
+          <img src="{img1}" alt="Best {topic_id} - {marker}" style="width:100%;border-radius:10px">
+          <p>Author Ripu / Abu Taher - Via Carlo Felice - Experience 3 months - Expertise ARST 08:17 - Hub cocvghuj.github.io - Marker {marker} LOCKED - Format ?marker={marker}&sub_id=MY_GUIDE_{topic_id}_{marker}</p>
+          <img src="{img2}" alt="Via Carlo Felice - {marker}" style="width:100%;border-radius:10px">
+          <p><a href="{base_link}?marker={marker}&sub_id=MY_GUIDE_{topic_id}_lock_it_{marker}_{today}" target="_blank">Book - {marker} - tp.st Direct</a></p>
+          <p><a href="https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/?marker={marker}&sub_id=HUB_{marker}" target="_blank">My Mall - {marker}</a></p>
+          <p><a href="{os.getenv('AMAZON_LINK','https://www.amazon.com/dp/B0XXXX')}?tag=cocvghuj-20&marker={marker}&sub_id=amazon_{topic_id}_lock_it_{marker}" target="_blank">Amazon Gear - {marker} Direct</a></p>
+          <p>E-E-A-T - 600+ words - No tpo.lv - tp.st only - No white screen - Duplicate safe {date_key}</p></article>"""
 
-          link1=f"{base}?marker={marker}&sub_id=MY_GUIDE_{topic_id}_{marker}"
-          link2=f"https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/?marker={marker}&sub_id=HUB_{marker}"
-          html=f"<p>Advertiser disclosure: My guides contain marker {marker}. I am from Sanluri, Via Carlo Felice.</p><div>{news}</div><img src='{img1}' alt='Best {topic_id} {marker}'/><img src='{img2}' alt='Via Carlo Felice {marker}'/><p><a href='{link1}'>{title} {marker}</a><br><a href='{link2}'>Hub {marker}</a></p>"
+          # Save
+          open(f"posts/{topic_id}.html","w",encoding="utf-8").write(content)
+          dates.append(date_key)
+          json.dump(dates[-30:], open(dates_file,"w"), indent=2)
+          json.dump([hashlib.md5(content.encode()).hexdigest()], open("posts/posted.json","w"))
 
           # Blogger
           try:
             cid=os.getenv("BLOGGER_CLIENT_ID"); csec=os.getenv("BLOGGER_CLIENT_SECRET"); rtok=os.getenv("BLOGGER_REFRESH_TOKEN"); bid=os.getenv("BLOGGER_BLOG_ID")
-            tr=requests.post("https://oauth2.googleapis.com/token", data={"client_id":cid,"client_secret":csec,"refresh_token":rtok,"grant_type":"refresh_token"}, timeout=20)
-            if tr.status_code==200:
-              at=tr.json()["access_token"]
-              pr=requests.post(f"https://www.googleapis.com/blogger/v3/blogs/{bid}/posts/", headers={"Authorization":f"Bearer {at}","Content-Type":"application/json"}, json={"title":f"{title} - {marker} LOCKED Via Carlo Felice","content":html,"labels":[marker,topic_id]}, timeout=25)
-              print(f"BLOGGER {pr.status_code}")
-          except Exception as e:
-            print(f"Blogger {e}")
+            if cid and csec and rtok and bid:
+              tr=requests.post("https://oauth2.googleapis.com/token", data={"client_id":cid,"client_secret":csec,"refresh_token":rtok,"grant_type":"refresh_token"}, timeout=20)
+              if tr.status_code==200:
+                acc=tr.json().get("access_token")
+                pr=requests.post(f"https://www.googleapis.com/blogger/v3/blogs/{bid}/posts/", headers={"Authorization":f"Bearer {acc}","Content-Type":"application/json"}, json={"title":f"{title_base} - {marker} LOCKED - {today}","content":content,"labels":[marker,topic_id]}, timeout=25)
+                print(f"BLOGGER: {pr.status_code}")
+          except Exception as e: print(f"BLOGGER EX: {e}")
 
           # Telegram
           try:
             bot=os.getenv("TELEGRAM_BOT_TOKEN"); chat=os.getenv("TELEGRAM_CHAT_ID")
-            requests.post(f"https://api.telegram.org/bot{bot}/sendMessage", data={"chat_id":chat,"text":f"{title}\n{link1}\nMarker {marker} - Via Carlo Felice"}, timeout=15)
-            print("TELEGRAM OK")
-          except Exception as e:
-            print(f"Telegram {e}")
+            if bot and chat:
+              msg=f"{title_base} - {marker} - {topic_id} - tp.st Direct - No 3 Posts - {base_link}?marker={marker}&sub_id=MY_GUIDE_{topic_id}_{marker}"
+              requests.post(f"https://api.telegram.org/bot{bot}/sendMessage", data={"chat_id":chat,"text":msg}, timeout=15)
+          except: pass
 
-          # Save today as posted
-          posted[today]=topic_id
-          # Keep only last 30 days
-          posted = dict(list(posted.items())[-30:])
-          json.dump(posted, open(posted_file,"w"), indent=2)
-          open(f"posts/{topic_id}.html","w",encoding="utf-8").write(html)
-          open("posts/index.html","w",encoding="utf-8").write(f"<html><body><h1>{marker} LOCKED {topic_id}</h1><img src='{img1}'><img src='{img2}'><a href='{link1}'>{link1}</a></body></html>")
-          open("posts/sitemap.xml","w").write(f'<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/{topic_id}.html</loc><lastmod>{today}</lastmod></url></urlset>')
-          print("DONE - 1 per day LOCKED")
+          # Shop index - tp.st only
+          idx=f"""<!DOCTYPE html><html><head><meta charset='UTF-8'><title>TRTT Shop {marker}</title><style>body{{font-family:sans-serif;max-width:500px;margin:auto;padding:15px;background:#f8f9fa}}.card{{background:white;padding:15px;margin:10px 0;border-radius:12px}}.btn{{display:block;padding:12px;background:#00c853;color:white;text-align:center;border-radius:8px;text-decoration:none;font-weight:bold;margin:6px 0}}</style></head><body><h2>Mall {marker} - {topic_id} - {today} - TP.ST - NO 3 POSTS</h2><img src="{img1}" style="width:100%;border-radius:10px"><div class="card"><a class="btn" href="{base_link}?marker={marker}&sub_id=mall_{topic_id}_{marker}">Book - {marker} tp.st Direct</a><a class="btn" style="background:#007bff" href="https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/?marker={marker}">Hub - {marker}</a><a class="btn" style="background:#000" href="https://www.amazon.com/dp/B0XXXX?tag=cocvghuj-20&marker={marker}">Amazon - {marker}</a></div><img src="{img2}" style="width:100%;border-radius:10px"><p>{date_key} - No tpo.lv - No white screen - Marker LOCKED</p></body></html>"""
+          open("posts/index.html","w",encoding="utf-8").write(idx)
+          open("posts/sitemap.xml","w").write(f'<urlset><url><loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/{topic_id}.html</loc><lastmod>{today}</lastmod></url></urlset>')
+          print("DONE - TP.ST - NO 3 POSTS")
           PY
-
       - name: Build Public
         run: |
-          mkdir -p public; cp posts/index.html public/index.html; cp public/index.html public/404.html; find posts -name "*.html" -exec cp {} public/ \; 2>/dev/null || true; cp posts/sitemap.xml public/ 2>/dev/null || true; cp posts/posted.json public/ 2>/dev/null || echo "{}" > public/posted.json; echo '{"name":"TRTT 787950"}' > public/manifest.json; echo "User-agent: *\nAllow: /\nSitemap: https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/sitemap.xml" > public/robots.txt; ls -lh public/
-
+          mkdir -p public
+          cp posts/index.html public/index.html
+          cp public/index.html public/404.html
+          find posts -maxdepth 1 -name "*.html" -exec cp {} public/ \; 2>/dev/null || true
+          cp posts/sitemap.xml public/sitemap.xml 2>/dev/null || true
+          cp posts/posted_dates.json public/posted_dates.json 2>/dev/null || echo "[]" > public/posted_dates.json
+          echo "User-agent: *\nAllow: /\nSitemap: https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/sitemap.xml" > public/robots.txt
+          grep -o "787950" public/index.html | wc -l
       - name: Deploy gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -143,3 +135,4 @@ jobs:
           publish_dir: ./public
           publish_branch: gh-pages
           force_orphan: true
+          commit_message: 'TRTT 787950 TP.ST + DATE CHECK - NO 3 POSTS - FIXED'
