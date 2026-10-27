@@ -1,22 +1,14 @@
-import os
-import random
-import requests
-from openai import OpenAI  # Grok API-এর জন্য OpenAI compatible লাইব্রেরি ব্যবহার করা হয়
+import os, random, requests, google.generativeai as genai
 from slugify import slugify
 
 MARKER_ID = os.environ.get("TRAVEL_PAYOUT_MARKER", "787950")
 AMAZON_LINK = os.environ.get("AMAZON_LINK", "https://amzn.to/4shg6Hn")
-# এখানে Grok API Key বা OpenRouter এর মাধ্যমে Grok ব্যবহার করতে পারেন
-GROKS_API_KEY = os.environ.get("GROQ_API_KEY") or os.environ.get("GROK_API_KEY")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 VERCEL_APP_URL = "https://cocvghuj-trtt-news-bot.vercel.app/"
 
-# Grok / xAI Client Setup (OpenAI compatible endpoint ব্যবহার করে)
-client = OpenAI(
-    api_key=GROKS_API_KEY,
-    base_url="https://api.x.ai/v1"  # xAI Grok অফিসিয়াল এন্ডপয়েন্ট
-)
+genai.configure(api_key=GEMINI_API_KEY)
 
 GUIDE_TOPICS = [
     {
@@ -73,17 +65,11 @@ def main():
     স্ট্রাকচার: ভূমিকা (কেন অটোমেশন বড় কোম্পানির চেয়ে ভালো), H2/H3 সহ ধাপে ধাপে সমাধান, ব্যক্তিগত টিপস, এবং শেষে কেন এই প্রজেক্ট বানাচ্ছো তার ভিশন।
     """
 
-    # Grok (xAI) মডেল কল করা
-    response = client.chat.completions.create(
-        model="grok-beta",  # xAI-এর বর্তমান মডেল নাম
-        messages=[
-            {"role": "system", "content": "You are a professional practical travel guide writer in Bengali."},
-            {"role": "user", "content": prompt}
-        ]
-    )
-    article_text = response.choices[0].message.content
+    # Gemini Pro মডেল ব্যবহার করা হচ্ছে যা অত্যন্ত নির্ভরযোগ্য
+    model = genai.GenerativeModel('gemini-1.5-pro')
+    response = model.generate_content(prompt)
+    article_text = response.text
 
-    # ফাইনাল HTML - SEO + তোমার ব্র্যান্ড + Amazon + Travelpayouts + PWA Link
     full_html = f"""
     <div style="max-width:800px;margin:auto;font-family:Arial">
       <img src="{selected['img_url']}" style="width:100%;border-radius:12px"/>
@@ -102,16 +88,15 @@ def main():
     </div>
     """
     
-    # ফাইল সেভ - Vercel সাইটে শো করবে
     os.makedirs("public/guides", exist_ok=True)
     filename = f"public/guides/{slugify(selected['title'])}.html"
     with open(filename, "w", encoding="utf-8") as f:
         f.write(full_html)
     
-    print(f"Generated via Grok: {filename}")
+    print(f"Generated: {filename}")
     save_history(selected["id"])
     
-    tg_msg = f"<b>📖 নতুন গাইড (Grok AI): {selected['title']}</b>\n\n{selected['img_caption']}\n\n👉 {VERCEL_APP_URL}"
+    tg_msg = f"<b>📖 নতুন গাইড: {selected['title']}</b>\n\n{selected['img_caption']}\n\n👉 {VERCEL_APP_URL}"
     send_telegram(tg_msg)
 
 if __name__ == "__main__":
