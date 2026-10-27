@@ -1,4 +1,4 @@
-আname: Next Gen Engine
+name: Next Gen Engine
 
 on:
   push:
@@ -28,9 +28,13 @@ jobs:
           AMAZON_LINK: ${{ secrets.AMAZON_LINK }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
+          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
+          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
         run: python main.py
 
       - name: Auto Commit Generated Content
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "auto: sync travel content with marker 787950"
+          commit_message: "auto: sync travel content and publish to blogger"
