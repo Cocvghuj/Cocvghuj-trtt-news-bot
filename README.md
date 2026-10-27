@@ -1,24 +1,33 @@
 # TRTT Travel Guide
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/Cocvghuj/Cocvghuj-trtt-news-bot/main/README.md" alt="TRTT Travel Guide" width="120" style="border-radius: 18px;" />
-  <h1>TRTT Travel Guide</h1>
-  <p><strong>Europe Travel Guide &amp; Smart Trip Planner</strong></p>
-  <p>
-    <a href="https://cocvghuj-trtt-news-bot.vercel.app"><img alt="Vercel Deploy" src="https://img.shields.io/badge/Vercel-Deploy-000000?logo=vercel&logoColor=white" /></a>
-    <a href="https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot"><img alt="GitHub Pages" src="https://img.shields.io/badge/GitHub-Pages-181717?logo=github&logoColor=white" /></a>
-    <a href="https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot/blob/main/LICENSE"><img alt="License MIT" src="https://img.shields.io/badge/License-MIT-green.svg" /></a>
-    <a href="https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/badge/Stars-★-yellow.svg" /></a>
-    <a href="https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot/commits/main"><img alt="Last Commit" src="https://img.shields.io/badge/Last%20Commit-Updated-2ea44f.svg" /></a>
-    <a href="#affiliate-disclosure"><img alt="Marker 787950" src="https://img.shields.io/badge/marker-787950-blue.svg" /></a>
-  </p>
-  <p>
-    <strong>Live Demo:</strong>
-    <a href="https://cocvghuj-trtt-news-bot.vercel.app">Vercel</a> |
-    <a href="https://trtt-news-pulse.base44.app">Base44</a> |
-    <a href="https://trttvoyagehub.blogspot.com">Blogger</a>
-  </p>
+  <img src="https://images.unsplash.com/photo-1491557345352-11dabc8e1a31?w=1200&auto=format&fit=crop&q=80" alt="Europe Travel" width="100%" />
 </div>
+
+<div align="center">
+  <a href="https://cocvghuj-trtt-news-bot.vercel.app"><img alt="Vercel Deploy" src="https://img.shields.io/badge/Vercel-Deploy-000000?logo=vercel&logoColor=white" /></a>
+  <a href="https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot"><img alt="GitHub Repo" src="https://img.shields.io/badge/GitHub-Repo-181717?logo=github&logoColor=white" /></a>
+  <a href="https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot/blob/main/LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-green.svg" /></a>
+  <a href="https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/Cocvghuj/Cocvghuj-trtt-news-bot?style=social" /></a>
+  <a href="https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot/commits/main"><img alt="Last Commit" src="https://img.shields.io/badge/Last%20Commit-Up%20to%20date-2ea44f.svg" /></a>
+  <a href="#affiliate-disclosure"><img alt="Marker 787950" src="https://img.shields.io/badge/marker-787950-blue.svg" /></a>
+</div>
+
+<h1 align="center">TRTT Travel Guide</h1>
+<h3 align="center"><strong>Europe Travel Guide &amp; Smart Trip Planner</strong></h3>
+
+<p align="center">
+  <strong>Blog:</strong> <a href="https://trttnews24bd.blogspot.com">trttnews24bd.blogspot.com</a> |
+  <strong>Telegram:</strong> <a href="https://t.me/trttnews24bd">t.me/trttnews24bd</a> |
+  <strong>Email:</strong> <a href="mailto:engrtaher2017@gmail.com">engrtaher2017@gmail.com</a>
+</p>
+
+<p align="center">
+  <strong>Live Demo:</strong>
+  <a href="https://cocvghuj-trtt-news-bot.vercel.app">Vercel</a> |
+  <a href="https://trtt-news-pulse.base44.app">Base44</a> |
+  <a href="https://trttvoyagehub.blogspot.com">Blogger</a>
+</p>
 
 A practical, SEO-driven travel publishing system focused on Europe destination guides, trip planning, budget travel, local experiences, and affiliate monetization.
 
@@ -94,8 +103,6 @@ This project is designed around a monetization funnel with four layers:
 3. Affiliate conversion through booking, gear, and travel service recommendations
 4. Retention through newsletters, travel email flows, and repeat blog engagement
 
-This model respects the original content strategy while giving the project a cleaner path to monetization and long-term growth.
-
 ## Core Content Pillars
 
 ### 1. Destination Guides
@@ -151,25 +158,16 @@ The site should focus on search intent such as:
 - budget travel Europe
 - Europe itinerary
 - Europe packing list
-- city guides in Europe
-- cheap flights to Europe
-- Europe travel planner
-- beaches in Europe
-- European rail travel
-
-### Publishing System Goals
-
-- create useful, evergreen content
-- optimize for search intent and long-tail keywords
-- build topical authority around Europe trip planning
-- attract high-intent travelers looking to book
-- monetize through practical travel offers and bookings
+- travel tips for Europe
+- best countries in Europe
+- cheap travel in Europe
+- weekend trips in Europe
 
 ## Features
 
 - ✈️ Flights: Aviasales — `Fb8U9yav`
-- 🏨 Hotels: Budget and destination stay recommendations
-- 📱 eSIM: Airalo — `ZZoQC7Mz` | Saily — `ssekmS4X`
+- 🏨 Hotels: destination and budget stay recommendations
+- 📱 eSIM: Airalo — `ZZoQC7Mz` and Saily — `ssekmS4X`
 - 🚕 Transfers: Kiwitaxi — `tIZcbMOB` (fixed from typo `tlZcbMOB`)
 - 🧳 Travel gear and packing guides
 - 📍 Europe destination hubs and city recommendations
@@ -208,7 +206,7 @@ The site should focus on search intent such as:
 │   ├── .github/
 │   ├── scripts/
 │   └── docker-compose.yml
-├── content/
+├── pages/
 │   ├── travel-guide.html
 │   ├── contact.html
 │   ├── disclaimer.html
@@ -226,27 +224,27 @@ The site should focus on search intent such as:
 │   ├── latest_travel_news.html
 │   ├── resp.json
 │   └── assets/
-└── LICENSE
+├── LICENSE
+└── .gitignore
 ```
 
 ## Live Pages & Links
 
-These are the key destinations for the project and should remain aligned with the live publishing flow.
-
-- [Travel Guide](./content/travel-guide.html)
-- [eSIM Shop](./content/trtt-shop/esim/)
-- [Plane](./content/trtt-shop/plane/)
-- [Travel News](./content/latest_travel_news.html)
-- [Contact](./content/contact.html)
-- [Disclaimer](./content/disclaimer.html)
-- [Privacy Policy](./content/privacy.html)
-- [About Us](./content/about.html)
+- [Travel Guide](./pages/travel-guide.html)
+- [eSIM Shop](./trtt-shop/esim/)
+- [Plane](./trtt-shop/plane/)
+- [Travel News](./pages/latest_travel_news.html)
+- [Contact](./pages/contact.html)
+- [Disclaimer](./pages/disclaimer.html)
+- [Privacy Policy](./pages/privacy.html)
+- [About Us](./pages/about.html)
 
 ### Live Demo Links
 
 - Vercel: https://cocvghuj-trtt-news-bot.vercel.app
 - Base44: https://trtt-news-pulse.base44.app
-- Blogger: https://trttvoyagehub.blogspot.com
+- Blogger: https://trttnews24bd.blogspot.com
+- Telegram: https://t.me/trttnews24bd
 
 ## Affiliate Links
 
@@ -256,7 +254,6 @@ Use locked `tp.st` affiliate URLs with `marker=787950` only.
 - Saily: https://saily.tp.st/ssekmS4X?marker=787950&sub_id=readme_saily_787950
 - Kiwitaxi: https://kiwitaxi.tp.st/tIZcbMOB?marker=787950&sub_id=readme_kiwitaxi_787950
 - Aviasales: https://aviasales.tp.st/Fb8U9yav?marker=787950&sub_id=readme_aviasales_787950
-- Booking / travel partner links must follow the same lock pattern: `?marker=787950&sub_id=..._787950`
 
 > Important: keep the fixed slug `tIZcbMOB`, not `tlZcbMOB`.
 
@@ -267,10 +264,10 @@ Use locked `tp.st` affiliate URLs with `marker=787950` only.
 - publish practical Europe destination pages
 - improve affiliate conversion pages
 - grow SEO coverage for major city and country guides
-- activate travel newsletters and repeat traffic loops
+- activate newsletters and repeat traffic loops
 
 ### Phase 2 — RU
-- expand deep content coverage for Russia and regional travel stories
+- expand deep coverage for Russia and regional travel stories
 - add destination-specific route planning and local guides
 - improve partner integrations and affiliate targeting
 - scale publishing cadence across travel categories
@@ -287,7 +284,7 @@ Use locked `tp.st` affiliate URLs with `marker=787950` only.
 
 ## Affiliate Disclosure
 
-This website may contain affiliate links for travel services, booking tools, data plans, and related products. If a visitor clicks an affiliate link and completes a booking or purchase, the site may earn a commission at no extra cost to the visitor.
+This website may contain affiliate links for travel services, booking tools, data plans, and related products. If a visitor clicks an affiliate link and completes a booking or purchase, the site may earn a commission at no additional cost to the visitor.
 
 All tracking is locked to the same marker value throughout the system:
 
@@ -301,7 +298,6 @@ This content is intended for travel planning and informational use. Always verif
 Contributions are welcome.
 
 Please:
-
 1. keep the project SEO-friendly and traveler-focused
 2. preserve the affiliate disclosure and tracking logic
 3. avoid low-quality or spammy content
