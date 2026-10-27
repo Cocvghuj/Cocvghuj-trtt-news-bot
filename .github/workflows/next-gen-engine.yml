@@ -1,4 +1,4 @@
-name: Next Gen Engine
+ণname: Next Gen Engine
 on:
   push:
     branches: [main]
@@ -24,8 +24,8 @@ jobs:
             pip install google-generativeai requests
           fi
 
-      - name: Run social engine
-        run: python bot_social_engine.py
+      - name: Install Dependencies
+        run: pip install google-generativeai requests python-slugify
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           TRAVEL_PAYOUT_MARKER: "787950"
