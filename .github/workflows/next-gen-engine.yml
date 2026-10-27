@@ -34,7 +34,7 @@ jobs:
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
         run: python main.py
 
-      - name: Auto Commit Generated Content
+      - name: Auto Commit History and Content
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "auto: sync travel content and publish to blogger"
+          commit_message: "auto: sync history and published guides"
