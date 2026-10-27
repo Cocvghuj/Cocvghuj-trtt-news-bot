@@ -4,7 +4,7 @@ import requests
 import google.generativeai as genai
 
 def main():
-    # এনভায়রনমেন্ট ভেরিয়েবল থেকে API কী (API Key) সংগ্রহ করা
+    # এনভায়রনমেন্ট ভेरিয়েবল থেকে API কী (API Key) সংগ্রহ করা
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         raise ValueError("GEMINI_API_KEY environment variable not set.")
@@ -12,10 +12,10 @@ def main():
     # জেমিনাই কনফিগার করা
     genai.configure(api_key=api_key)
     
-    # সঠিক ও সচল মডেলের নাম ব্যবহার করা
+    # বর্তমান সচল মডেল ব্যবহার করা (কোনো পুরোনো বা ভুল নাম রাখা হয়নি)
     model = genai.GenerativeModel("gemini-1.5-flash")
     
-    # আপনার নিউজের জন্য প্রয়োজনীয় প্রম্পট এখানে দিন
+    # আপনার নিউজের জন্য প্রয়োজনীয় প্রম্পট
     prompt = "Write a short and engaging news update for trttnews24bd."
     
     # কন্টেন্ট জেনারেট করা
