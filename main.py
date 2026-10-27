@@ -1,5 +1,5 @@
 import os, random, requests
-from google import genai
+import google.generativeai as genai
 from slugify import slugify
 
 MARKER_ID = os.environ.get("TRAVEL_PAYOUT_MARKER", "787950")
@@ -9,8 +9,7 @@ TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 VERCEL_APP_URL = "https://cocvghuj-trtt-news-bot.vercel.app/"
 
-# নতুন GenAI ক্লায়েন্ট ইনিশিয়ালাইজেশন
-client = genai.Client(api_key=GEMINI_API_KEY)
+genai.configure(api_key=GEMINI_API_KEY)
 
 GUIDE_TOPICS = [
     {
@@ -67,12 +66,16 @@ def main():
     স্ট্রাকচার: ভূমিকা (কেন অটোমেশন বড় কোম্পানির চেয়ে ভালো), H2/H3 সহ ধাপে ধাপে সমাধান, ব্যক্তিগত টিপস, এবং শেষে কেন এই প্রজেক্ট বানাচ্ছো তার ভিশন।
     """
 
-    # লেটেস্ট Google GenAI SDK ব্যবহার করে কনটেন্ট জেনারেট করা
-    response = client.models.generate_content(
-        model='gemini-2.5-flash',
-        contents=prompt,
-    )
-    article_text = response.text
+    # নিরাপদ এবং কাজ করে এমন মডেল (gemini-1.5-flash) ব্যবহার করা হলো
+    try:
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        response = model.generate_content(prompt)
+        article_text = response.text
+    except Exception as e:
+        # ফলব্যাক হিসেবে স্ট্যান্ডার্ড জেমিনি প্রোপ ব্যবহার করা হবে
+        model = genai.GenerativeModel('gemini-pro')
+        response = model.generate_content(prompt)
+        article_text = response.text
 
     full_html = f"""
     <div style="max-width:800px;margin:auto;font-family:Arial">
