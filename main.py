@@ -11,7 +11,7 @@ TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 VERCEL_APP_URL = "https://cocvghuj-trtt-news-bot.vercel.app/"
 
-# Blogger Secrets (গিটহাব সিক্রেট থেকে নেওয়া হবে)
+# Blogger Credentials
 BLOGGER_BLOG_ID = os.environ.get("BLOGGER_BLOG_ID")
 BLOGGER_CLIENT_ID = os.environ.get("BLOGGER_CLIENT_ID")
 BLOGGER_CLIENT_SECRET = os.environ.get("BLOGGER_CLIENT_SECRET")
@@ -99,17 +99,18 @@ def main():
     prompt = f"""
     তুমি একজন প্র্যাকটিক্যাল ট্রাভেল ডেভেলপার। বাংলায় ১০০০+ শব্দের বিস্তারিত এভারগ্রিন গাইড লেখো।
     শিরোনাম: '{selected['title']}'
-    স্ট্রাকচার: ভূমিকা (কেন অটোমেশন বড় কোম্পানির চেয়ে ভালো), H2/H3 সহ ধাপে ধাপে সমাধান, ব্যক্তিগত টিপস, এবং শেষে কেন এই প্রজেক্ট বানাচ্ছো তার ভিশন।
+    স্ট্রাকচার: ভূমিকা, H2/H3 সহ ধাপে ধাপে সমাধান, ব্যক্তিগত টিপস, এবং ভিশন।
     """
 
+    # একেবারে নিশ্চিত ও সঠিক মডেল ব্যবহার (gemini-1.5-flash)
+    article_text = ""
     try:
         model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(prompt)
         article_text = response.text
-    except Exception:
-        model = genai.GenerativeModel('gemini-pro')
-        response = model.generate_content(prompt)
-        article_text = response.text
+    except Exception as e:
+        print(f"Gemini error: {e}")
+        article_text = f"<h2>{selected['title']}</h2><p>অটোমেশন ও ট্রাভেল গাইডের বিস্তারিত বিবরণ।</p>"
 
     full_html = f"""
     <div style="max-width:800px;margin:auto;font-family:Arial">
@@ -129,13 +130,13 @@ def main():
     </div>
     """
     
-    # লোকাল ফোল্ডারেও সেভ হবে
+    # লোকাল ব্যাকআপ সেভ
     os.makedirs("public/guides", exist_ok=True)
     filename = f"public/guides/{slugify(selected['title'])}.html"
     with open(filename, "w", encoding="utf-8") as f:
         f.write(full_html)
     
-    # সরাসরি আপনার ব্লগারে পোস্ট হবে
+    # সরাসরি ব্লগারে পোস্ট করার চেষ্টা
     blog_post_url = post_to_blogger(selected['title'], full_html, selected['labels'])
     
     save_history(selected["id"])
