@@ -1,6 +1,8 @@
 import os, random, requests
 import google.generativeai as genai
 from slugify import slugify
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 
 MARKER_ID = os.environ.get("TRAVEL_PAYOUT_MARKER", "787950")
 AMAZON_LINK = os.environ.get("AMAZON_LINK", "https://amzn.to/4shg6Hn")
@@ -9,13 +11,19 @@ TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 VERCEL_APP_URL = "https://cocvghuj-trtt-news-bot.vercel.app/"
 
+# Blogger Secrets (গিটহাব সিক্রেট থেকে নেওয়া হবে)
+BLOGGER_BLOG_ID = os.environ.get("BLOGGER_BLOG_ID")
+BLOGGER_CLIENT_ID = os.environ.get("BLOGGER_CLIENT_ID")
+BLOGGER_CLIENT_SECRET = os.environ.get("BLOGGER_CLIENT_SECRET")
+BLOGGER_REFRESH_TOKEN = os.environ.get("BLOGGER_REFRESH_TOKEN")
+
 genai.configure(api_key=GEMINI_API_KEY)
 
 GUIDE_TOPICS = [
     {
         "id": "guide_001",
         "title": "ইউরোপ ভ্রমণের সময় সস্তায় সেরা e-SIM নেওয়ার সহজ নির্দেশিকা",
-        "labels": "Europe eSIM, Travel Tips",
+        "labels": ["Europe eSIM", "Travel Tips"],
         "location": "Rome, Italy",
         "service_link": f"https://airalo.tpo.lv/ZZoQC7Mz?marker={MARKER_ID}",
         "service_name": "Airalo e-SIM",
@@ -26,7 +34,7 @@ GUIDE_TOPICS = [
     {
         "id": "guide_002",
         "title": "ফ্লাইট বিলম্ব বা ক্যানসেল হলে ৬০০ ইউরো পর্যন্ত ক্ষতিপূরণ",
-        "labels": "Flight Delay, AirHelp",
+        "labels": ["Flight Delay", "AirHelp"],
         "location": "European Airports",
         "service_link": f"https://airhelp.tpo.lv/3ItXS0E4?marker={MARKER_ID}",
         "service_name": "AirHelp",
@@ -52,6 +60,34 @@ def send_telegram(msg):
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
     requests.post(url, json={"chat_id": TELEGRAM_CHAT_ID, "text": msg, "parse_mode": "HTML"})
 
+def post_to_blogger(title, content, labels):
+    if not all([BLOGGER_BLOG_ID, BLOGGER_CLIENT_ID, BLOGGER_CLIENT_SECRET, BLOGGER_REFRESH_TOKEN]):
+        print("Blogger credentials missing. Skipping Blogger post.")
+        return None
+
+    try:
+        creds = Credentials(
+            None,
+            refresh_token=BLOGGER_REFRESH_TOKEN,
+            client_id=BLOGGER_CLIENT_ID,
+            client_secret=BLOGGER_CLIENT_SECRET,
+            token_uri="https://oauth2.googleapis.com/token"
+        )
+        service = build('blogger', 'v3', credentials=creds)
+        
+        body = {
+            "title": title,
+            "content": content,
+            "labels": labels
+        }
+        
+        post = service.posts().insert(blogId=BLOGGER_BLOG_ID, body=body).execute()
+        print(f"Posted to Blogger successfully! URL: {post.get('url')}")
+        return post.get('url')
+    except Exception as e:
+        print(f"Error posting to Blogger: {e}")
+        return None
+
 def main():
     history = load_history()
     available = [t for t in GUIDE_TOPICS if t["id"] not in history]
@@ -66,32 +102,14 @@ def main():
     স্ট্রাকচার: ভূমিকা (কেন অটোমেশন বড় কোম্পানির চেয়ে ভালো), H2/H3 সহ ধাপে ধাপে সমাধান, ব্যক্তিগত টিপস, এবং শেষে কেন এই প্রজেক্ট বানাচ্ছো তার ভিশন।
     """
 
-    # সরাসরি জেমিনির যেকোনো কার্যকরী মডেল খুঁজে নেওয়ার নিরাপদ কোড
-    article_text = ""
     try:
-        # প্রথমে লেটেস্ট ফ্ল্যাশ মডেল ট্রাই করবে
         model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(prompt)
         article_text = response.text
     except Exception:
-        try:
-            # কাজ না করলে প্রো মডেল ট্রাই করবে
-            model = genai.GenerativeModel('gemini-1.5-pro')
-            response = model.generate_content(prompt)
-            article_text = response.text
-        except Exception as e:
-            # শেষ বিকল্প হিসেবে জেমিনির লিস্ট থেকে যেকোনো একটি মডেল অটো পিক করবে
-            for m in genai.list_models():
-                if 'generateContent' in m.supported_generation_methods:
-                    try:
-                        model = genai.GenerativeModel(m.name)
-                        response = model.generate_content(prompt)
-                        article_text = response.text
-                        break
-                    except:
-                        continue
-            if not article_text:
-                article_text = f"<h1>{selected['title']}</h1><p>অটোমেশন ও অভিজ্ঞতার ভিত্তিতে তৈরি ট্রাভেল গাইড। প্রযুক্তি ও ওপেন সোর্স সলিউশনের মাধ্যমে ভ্রমণকে সহজ করার প্রচেষ্টা।</p>"
+        model = genai.GenerativeModel('gemini-pro')
+        response = model.generate_content(prompt)
+        article_text = response.text
 
     full_html = f"""
     <div style="max-width:800px;margin:auto;font-family:Arial">
@@ -111,15 +129,19 @@ def main():
     </div>
     """
     
+    # লোকাল ফোল্ডারেও সেভ হবে
     os.makedirs("public/guides", exist_ok=True)
     filename = f"public/guides/{slugify(selected['title'])}.html"
     with open(filename, "w", encoding="utf-8") as f:
         f.write(full_html)
     
-    print(f"Generated: {filename}")
+    # সরাসরি আপনার ব্লগারে পোস্ট হবে
+    blog_post_url = post_to_blogger(selected['title'], full_html, selected['labels'])
+    
     save_history(selected["id"])
     
-    tg_msg = f"<b>📖 নতুন গাইড: {selected['title']}</b>\n\n{selected['img_caption']}\n\n👉 {VERCEL_APP_URL}"
+    target_link = blog_post_url if blog_post_url else VERCEL_APP_URL
+    tg_msg = f"<b>📖 নতুন ব্লগ পোস্ট: {selected['title']}</b>\n\n{selected['img_caption']}\n\n👉 {target_link}"
     send_telegram(tg_msg)
 
 if __name__ == "__main__":
