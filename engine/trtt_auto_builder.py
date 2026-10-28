@@ -32,7 +32,7 @@ blog_data = {
         "aviasales": f"Fb8U9yav?marker={MARKER}",
         "airhelp": f"3ItXS0E4?marker={MARKER}",
         "airalo": f"ZZoQC7Mz?marker={MARKER}",
-        "kiwitaxi": f"tIZcbMOB?marker={MARKER} Fixed from tlZcbMOB",
+        "kiwitaxi": f"tIZcbMOB?marker={MARKER} Fixed from tIZcbMOB",
         "【entity-amazon¦canonical_name=Amazon】": "4shg6Hn"
     }
 }
@@ -57,7 +57,7 @@ js_content = f"""
       box.innerHTML = `<div style="background:linear-gradient(135deg,#FF6B35,#F7931E);border:2px solid #FF6B35;border-radius:12px;padding:15px;margin:20px 0;font-family:system-ui;box-shadow:0 4px 15px rgba(255,107,53,0.3);"><div style="background:rgba(0,0,0,0.15);color:white;padding:5px 10px;border-radius:20px;font-size:10px;display:inline-block;margin-bottom:8px;font-weight:bold;">💰 টাকার উৎস - Marker ${{MARKER}} Locked</div><div style="color:white;font-weight:bold;font-size:14px;margin-bottom:8px;">🚀 Explore Your Life - Full Super App - Flights + Hotels + eSIM + Claim</div><a href="${{VERCEL_URL}}" style="display:block;background:white;color:#FF6B35;padding:14px;border-radius:10px;text-decoration:none;font-weight:bold;text-align:center;font-size:14px;">🚀 Explore Your Life - {VERCEL_URL} - Click Here →</a><div style="color:rgba(255,255,255,0.7);font-size:8px;text-align:center;margin-top:8px;">Real &lt;a href&gt; - Touch Fixed - tp.st?marker={MARKER} - tIZcbMOB Fixed - Amazon 4shg6Hn</div></div>`;
       post.appendChild(box);
     }});
-    document.querySelectorAll('a[href*="tp.st"], a[href*="tpo.lv"]').forEach(a=>{{ try{{ let h=a.href.replace('tpo.lv','tp.st'); const u=new URL(h); if(!u.searchParams.has('marker')) u.searchParams.set('marker',MARKER); a.href=u.toString().replace(/tlZcbMOB/g,'tIZcbMOB'); }}catch(e){{}} }});
+    document.querySelectorAll('a[href*="tp.st"], a[href*="tp.st"]').forEach(a=>{{ try{{ let h=a.href.replace('tp.st','tp.st'); const u=new URL(h); if(!u.searchParams.has('marker')) u.searchParams.set('marker',MARKER); a.href=u.toString().replace(/tIZcbMOB/g,'tIZcbMOB'); }}catch(e){{}} }});
   }}
   injectMoney(); setInterval(injectMoney, 3000);
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', injectMoney);
