@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Using AI to organize travel notes and recommendations | TRTT News 24 BD</title>
-    <meta name="description" content="How AI can help travelers organize destination notes, itinerary ideas, and recommendations into a usable travel plan." />
+    <title>Lisbon Travel Guide | TRTT News 24 BD</title>
+    <meta name="description" content="Discover Lisbon with smart travel planning tips, scenic city advice, budget ideas, and a practical view of how to enjoy Portugal without stress." />
     <link rel="stylesheet" href="../assets/css/site.css" />
   </head>
   <body>
@@ -13,37 +13,56 @@
         <div class="brand"><span class="brand-badge">T</span><span>TRTT News 24 BD</span></div>
         <nav class="main-nav" aria-label="Main navigation">
           <a href="../index.html">Home</a>
-          <a href="index.html">News</a>
+          <a href="../blog/index.html">News</a>
           <a href="../travel-guide.html">Travel Guide</a>
-          <a href="../trtt-shop/esim/index.html">eSIM Deals</a>
+          <a href="index.html">Destinations</a>
         </nav>
       </div>
     </header>
 
     <main class="container">
       <section class="page-head">
-        <div class="kicker">AI</div>
-        <h1>Using AI to organize travel notes and recommendations</h1>
-        <div class="meta">
-          <span>May 2026</span>
-          <span>•</span>
-          <span>By TRTT Editorial</span>
-        </div>
+        <div class="kicker">Destination</div>
+        <h1>Lisbon, Portugal</h1>
+        <p>Lisbon stands out for affordability, scenic neighborhoods, and a comfortable pace that makes city exploring easy.</p>
       </section>
 
       <section class="section">
-        <article class="feature-box">
-          <p>AI tools are most useful when they turn scattered ideas into a structured plan. Instead of collecting destination notes in random lists, travelers can sort notes into categories like budget, logistics, attractions, food, and timing.</p>
-          <p>That is where AI becomes genuinely helpful: it can summarize large quantities of research, highlight contradictions, and suggest a clearer route based on preferences and travel constraints.</p>
-          <p>Still, travelers should validate recommendations using official sources, local guidance, and recent reviews before making bookings or setting strict itineraries.</p>
-        </article>
+        <div class="feature-list">
+          <article class="feature-box">
+            <h2>Best for</h2>
+            <ul>
+              <li>Affordable city breaks</li>
+              <li>Scenic viewpoints</li>
+              <li>Coastal and historic culture</li>
+            </ul>
+          </article>
+
+          <article class="feature-box">
+            <h2>Budget guide</h2>
+            <ul>
+              <li>Choose central but not premium neighborhoods</li>
+              <li>Use transit cards for city movement</li>
+              <li>Keep a buffer for evening food and local transport</li>
+            </ul>
+          </article>
+
+          <article class="feature-box">
+            <h2>Must-see</h2>
+            <ul>
+              <li>Alfama</li>
+              <li>Belém</li>
+              <li>Miradouro viewpoints</li>
+            </ul>
+          </article>
+        </div>
       </section>
     </main>
 
     <footer class="site-footer">
       <div class="container footer-inner">
         <div>© TRTT News 24 BD</div>
-        <div>Travel stories and practical inspiration.</div>
+        <div>Practical city guidance and trip planning.</div>
       </div>
     </footer>
   </body>
