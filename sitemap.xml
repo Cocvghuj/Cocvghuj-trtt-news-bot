@@ -1,1 +1,4 @@
-<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/</loc></url><url><loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/app.html</loc></url></urlset>
+User-agent: *
+Allow: /
+
+Sitemap: https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/sitemap.xml

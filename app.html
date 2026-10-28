@@ -1,1 +1,28 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Map - Marker 787950</title><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>#map{height:80vh}body{margin:0;font-family:system-ui;background:#020617;color:#fff}</style></head><body><div style="padding:10px;background:linear-gradient(90deg,#020617,#00f2fe)">TRTT Map - Marker 787950 - <a href="index.html" style="color:#fff">Back to Sync OS</a></div><div id="map"></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>fetch('partners.json').then(r=>r.json()).then(d=>{const m=L.map('map').setView([23.8,90.4],2);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);d.nodes.forEach(n=>L.marker([n.lat,n.lng]).addTo(m).bindPopup(n.city+'<br>Marker: '+d.marker+'<br><a href='+n.link+' target=_blank>Book - Marker '+d.marker+'</a>'))})</script></body></html>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/</loc>
+  </url>
+  <url>
+    <loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/travel-guide.html</loc>
+  </url>
+  <url>
+    <loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/blog/index.html</loc>
+  </url>
+  <url>
+    <loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/trtt-shop/esim/index.html</loc>
+  </url>
+  <url>
+    <loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/about.html</loc>
+  </url>
+  <url>
+    <loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/contact.html</loc>
+  </url>
+  <url>
+    <loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/privacy.html</loc>
+  </url>
+  <url>
+    <loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/disclaimer.html</loc>
+  </url>
+</urlset>
+
