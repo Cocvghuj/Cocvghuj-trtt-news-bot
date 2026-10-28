@@ -32,7 +32,7 @@ MENU_PYTHONIC = [
         "url": f"{CONFIG['VERCEL']}/?marker={CONFIG['MARKER']}&sub_id=python_explore_{CONFIG['MARKER']}",
         "description": "Super App - Map Via Carlo Felice ARST 08:17 + Buy What You Need - Flights + eSIM + Taxi + 【entity-Amazon¦canonical_name=Amazon】",
         "icon": "🚀",
-        "python_code": "def explore_your_life():\n    return {\n        'flights': 'aviasales.tp.st/Fb8U9yav?marker=787950',\n        '【entity-airhelp¦canonical_name=AirHelp】': '【entity-airhelp¦canonical_name=AirHelp】.tp.st/3ItXS0E4?marker=787950 600€',\n        'esim': '【entity-airalo¦canonical_name=Airalo】.tp.st/ZZoQC7Mz?marker=787950',\n        'taxi': 'kiwitaxi.tp.st/tIZcbMOB?marker=787950 # Fixed tlZcbMOB',\n        '【entity-amazon¦canonical_name=Amazon】': 'amzn.to/4shg6Hn'\n    }",
+        "python_code": "def explore_your_life():\n    return {\n        'flights': 'aviasales.tp.st/Fb8U9yav?marker=787950',\n        '【entity-airhelp¦canonical_name=AirHelp】': '【entity-airhelp¦canonical_name=AirHelp】.tp.st/3ItXS0E4?marker=787950 600€',\n        'esim': '【entity-airalo¦canonical_name=Airalo】.tp.st/ZZoQC7Mz?marker=787950',\n        'taxi': 'kiwitaxi.tp.st/tIZcbMOB?marker=787950 # Fixed tIZcbMOB',\n        '【entity-amazon¦canonical_name=Amazon】': 'amzn.to/4shg6Hn'\n    }",
         "marker_locked": True,
         "sub_links": [
             {"name": "✈️ Aviasales Fb8U9yav", "url": f"https://aviasales.tp.st/Fb8U9yav?marker={CONFIG['MARKER']}&sub_id=python_aviasales_{CONFIG['MARKER']}"},
@@ -119,7 +119,7 @@ def generate_trtt_auto_sync_js():
 </div>`;
         document.body.prepend(div);
       }}
-      document.querySelectorAll('a[href*="tpo.lv"]').forEach(a=>{{try{{let h=a.href.replace('tpo.lv','tp.st');const u=new URL(h);if(!u.searchParams.has('marker'))u.searchParams.set('marker',MARKER);a.href=u.toString().replace(/tlZcbMOB/g,'tIZcbMOB');}}catch(e){{}}}});
+      document.querySelectorAll('a[href*="tp.st"]').forEach(a=>{{try{{let h=a.href.replace('tp.st','tp.st');const u=new URL(h);if(!u.searchParams.has('marker'))u.searchParams.set('marker',MARKER);a.href=u.toString().replace(/tIZcbMOB/g,'tIZcbMOB');}}catch(e){{}}}});
     }}catch(e){{}}
   }}
   injectPythonicMenus(); setInterval(injectPythonicMenus, 3000);
