@@ -1,64 +1,49 @@
-# TRTT News 24 BD
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Disclaimer | TRTT News 24 BD</title>
+    <meta name="description" content="Disclaimer for TRTT News 24 BD, covering editorial intent, affiliate disclosure, and travel information guidance." />
+    <link rel="stylesheet" href="assets/css/site.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container topbar">
+        <div class="brand"><span class="brand-badge">T</span><span>TRTT News 24 BD</span></div>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="index.html">Home</a>
+          <a href="blog/index.html">News</a>
+          <a href="travel-guide.html">Travel Guide</a>
+          <a href="destinations/index.html">Destinations</a>
+          <a href="app.html">Map</a>
+          <a href="trtt-shop/esim/index.html">eSIM Deals</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+      </div>
+    </header>
 
-TRTT News 24 BD is a static travel and publishing website focused on Europe travel tips, smart trip planning, and AI-assisted content automation. The site is designed for GitHub Pages or static hosting and includes a travel guide, blog/news section, and affiliate comparison pages.
+    <main class="container">
+      <section class="page-head">
+        <div class="kicker">Disclaimer</div>
+        <h1>Travel content, advice, and affiliate notice.</h1>
+      </section>
 
-## Project overview
+      <section class="section">
+        <div class="feature-box">
+          <p>TRTT News 24 BD provides travel information for educational and planning purposes. While we aim for useful and relevant guidance, travel conditions, costs, and local regulations can change quickly.</p>
+          <p>Always verify official information from airlines, train operators, embassies, local authorities, and accommodation providers before booking or traveling.</p>
+          <p>Some website links may be affiliate links, and we may receive compensation when purchases are made through them. This does not affect the price you pay.</p>
+        </div>
+      </section>
+    </main>
 
-This repository contains:
-- a marketing and travel landing page
-- a blog/news section
-- travel guide and disclosure pages
-- eSIM / affiliate comparison pages
-- automation scripts for content generation
-- Docker preview configuration for local static serving
-
-## Repository structure
-
-- `index.html` — main landing page
-- `app.html` — map/marker page
-- `blog/index.html` — blog/news landing page
-- `trtt-shop/esim/index.html` — eSIM comparison page
-- `assets/css/site.css` — shared site styling
-- `scripts/` — Python automation helpers
-- `main.py` — content generation entry point
-- `auto_organize.py` — content organization utility
-- `docker-compose.base44.yml` — local preview via nginx
-
-## Local preview
-
-### Option 1: Docker preview
-
-```bash
-docker compose -f docker-compose.base44.yml up -d
-```
-
-Then visit:
-
-```text
-http://localhost:3000/
-```
-
-### Option 2: open static files directly
-
-You can also open the HTML files locally in a browser, though some relative links work best when served from a static web host.
-
-## Deployment
-
-This project is suitable for:
-- GitHub Pages
-- static hosting providers
-- any nginx or CDN static host
-
-## Notes
-
-- The site is static and does not require a backend server.
-- Python scripts are automation content tools and are not required for serving the site.
-- For content and automation workflows, review the Python scripts before running them in production.
-
-## Recommended next improvements
-
-- unify branding across all pages
-- add article cards and categories to the news section
-- create dedicated travel destination pages
-- add SEO files such as `robots.txt` and `sitemap.xml`
-- add a stronger README for automation and publishing workflows
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div>© TRTT News 24 BD</div>
+        <div>Use official sources before booking decisions.</div>
+      </div>
+    </footer>
+  </body>
+</html>

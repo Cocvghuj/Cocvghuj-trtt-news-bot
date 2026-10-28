@@ -1,34 +1,335 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About Us | TRTT Travel Guide</title>
-    <meta name="description" content="Learn about the TRTT Travel Guide mission, travel editorial focus, and affiliate disclosure for Europe trip planning and travel recommendations." />
-    <meta name="robots" content="index,follow" />
-    <link rel="canonical" href="https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/about.html" />
-    <style>
-      body{margin:0; font-family:Arial, Helvetica, sans-serif; background:#0b1020; color:#edf6ff; line-height:1.7;} a{color:#7dd3fc; text-decoration:none;} a:hover{text-decoration:underline;} .wrap{max-width:900px; margin:0 auto; padding:30px 18px 80px;} .nav{display:flex; flex-wrap:wrap; gap:12px; margin-bottom:24px;} .card{background:#111b2e; border:1px solid #263655; border-radius:16px; padding:24px;} h1{font-size:2.4rem; margin-top:0;} p,li{color:#dfeaf9;} .muted{color:#b7c8dc;}
-    </style>
-  </head>
-  <body>
-    <div class="wrap">
-      <div class="nav">
-        <a href="index.html">Home</a>
-        <a href="travel-guide.html">Travel Guide</a>
-        <a href="about.html">About Us</a>
-        <a href="contact.html">Contact</a>
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="disclaimer.html">Disclaimer</a>
-      </div>
+:root {
+  --bg: #07131d;
+  --bg-2: #0d1d2c;
+  --panel: rgba(15, 23, 42, 0.8);
+  --panel-strong: #10233a;
+  --line: rgba(125, 211, 252, 0.2);
+  --text: #edf7ff;
+  --muted: #afd2e7;
+  --accent: #7dd3fc;
+  --accent-2: #38bdf8;
+  --green: #34d399;
+  --gold: #fbbf24;
+  --shadow: 0 18px 40px rgba(2, 6, 23, 0.45);
+}
 
-      <main class="card">
-        <h1>About Us</h1>
-        <p>TRTT Travel Guide is a travel-planning resource focused on helping travelers make smarter, more affordable decisions for European trips.</p>
-        <p>Our goal is simple: deliver practical information on destinations, routes, travel gear, travel tools, and trip planning without overwhelming readers with sales language.</p>
-        <p>We cover useful subjects such as Europe budget travel, city guides, packing tips, flight and transfer strategy, and digital travel tools like eSIM and route planning apps.</p>
-        <p>We may earn commissions from partner links and booking recommendations. That helps support the site and allows us to keep producing useful travel content. The price you pay is not increased by using our links.</p>
-      </main>
-    </div>
-  </body>
-</html>
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(180deg, var(--bg) 0%, #0f172a 100%);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+img { max-width: 100%; display: block; }
+
+.container {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+  background: rgba(7, 19, 29, 0.8);
+  border-bottom: 1px solid var(--line);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 0;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  color: #04131d;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.main-nav a {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.main-nav a:hover { color: var(--text); }
+
+.hero {
+  padding: 64px 0 28px;
+}
+
+.hero-panel {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(7, 89, 133, 0.82));
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  padding: clamp(24px, 4vw, 48px);
+  box-shadow: var(--shadow);
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(125, 211, 252, 0.38);
+  background: rgba(56, 189, 248, 0.08);
+  color: var(--accent);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.hero h1 {
+  margin: 0 0 18px;
+  font-size: clamp(2.3rem, 4vw, 4.2rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+
+.hero p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.08rem;
+}
+
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  border: 1px solid transparent;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn:hover { text-decoration: none; transform: translateY(-1px); }
+.btn.primary {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  color: #04131d;
+}
+.btn.secondary {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--line);
+  color: var(--text);
+}
+
+.notice {
+  margin: 30px auto 10px;
+  padding: 14px 18px;
+  background: rgba(52, 211, 153, 0.08);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  border-radius: 12px;
+  color: var(--muted);
+}
+
+.notice strong { color: var(--text); }
+
+.section {
+  padding: 28px 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 22px;
+}
+
+.card,
+.article-card,
+.feature-box {
+  background: rgba(15, 23, 42, 0.74);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+}
+
+.card h2,
+.feature-box h2,
+.article-card h3,
+.page-head h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.card ul,
+.feature-box ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.card li,
+.feature-box li {
+  margin: 8px 0;
+}
+
+.feature-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(125, 211, 252, 0.08);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.tag {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(125, 211, 252, 0.2);
+  background: rgba(125, 211, 252, 0.06);
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.article-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
+}
+
+.article-card p {
+  color: var(--muted);
+}
+
+.read-more {
+  margin-top: 18px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.page-head {
+  padding-top: 42px;
+}
+
+.page-head h1 {
+  margin: 0 0 10px;
+  font-size: clamp(2.2rem, 3vw, 3.2rem);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.page-head p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 760px;
+}
+
+.compact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.price-badge {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(52, 211, 153, 0.12);
+  color: var(--green);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+footer.site-footer {
+  padding: 28px 0 40px;
+  border-top: 1px solid var(--line);
+  margin-top: 32px;
+  color: var(--muted);
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .main-nav {
+    row-gap: 8px;
+  }
+
+  .hero {
+    padding-top: 42px;
+  }
+}

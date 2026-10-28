@@ -1,72 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Travel Guide | TRTT News 24 BD</title>
-    <meta name="description" content="Travel guide for Europe trip planning, budget advice, city inspiration, and practical trip preparation." />
-    <link rel="stylesheet" href="assets/css/site.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="container topbar">
-        <div class="brand"><span class="brand-badge">T</span><span>TRTT News 24 BD</span></div>
-        <nav class="main-nav" aria-label="Main navigation">
-          <a href="index.html">Home</a>
-          <a href="blog/index.html">News</a>
-          <a href="travel-guide.html">Travel Guide</a>
-          <a href="app.html">Map</a>
-          <a href="trtt-shop/esim/index.html">eSIM Deals</a>
-          <a href="about.html">About</a>
-          <a href="contact.html">Contact</a>
-        </nav>
-      </div>
-    </header>
+# TRTT News 24 BD
 
-    <main class="container">
-      <section class="page-head">
-        <div class="kicker">Travel guide</div>
-        <h1>Plan smarter trips across Europe.</h1>
-        <p>These guides help you balance cost, timing, local transport, and destination choices so your trip feels organized and rewarding.</p>
-      </section>
+TRTT News 24 BD is a static travel and publishing website focused on Europe travel tips, smart trip planning, and AI-assisted editorial workflows. The site is designed for GitHub Pages, static hosting, or local serving through nginx.
 
-      <section class="section">
-        <div class="feature-list">
-          <article class="feature-box">
-            <h2>Choose a city strategically</h2>
-            <ul>
-              <li>Pick places with easy rail connections.</li>
-              <li>Match your itinerary to your pace.</li>
-              <li>Keep neighborhoods central and walkable.</li>
-            </ul>
-          </article>
+## Project overview
 
-          <article class="feature-box">
-            <h2>Travel on a budget</h2>
-            <ul>
-              <li>Book trains or flights early.</li>
-              <li>Use local transit and avoid long taxi rides.</li>
-              <li>Prioritize one major city and one nearby day trip.</li>
-            </ul>
-          </article>
+This repository contains:
+- a travel/news landing page
+- a blog/news section with article pages
+- destination guides for major European cities
+- a travel guide and disclosure pages
+- eSIM and affiliate comparison pages
+- automation scripts for content generation
+- Docker preview configuration for local static serving
 
-          <article class="feature-box">
-            <h2>Prepare before you go</h2>
-            <ul>
-              <li>Download maps and offline transit information.</li>
-              <li>Check visa, health, and travel insurance needs.</li>
-              <li>Install eSIM or mobile data backup before departure.</li>
-            </ul>
-          </article>
-        </div>
-      </section>
-    </main>
+## Repository structure
 
-    <footer class="site-footer">
-      <div class="container footer-inner">
-        <div>© TRTT News 24 BD</div>
-        <div>Europe travel guide and planning support.</div>
-      </div>
-    </footer>
-  </body>
-</html>
+- `index.html` — main landing page
+- `blog/index.html` — blog/news landing page
+- `blog/article-1.html` — example article page
+- `travel-guide.html` — travel planning page
+- `destinations/index.html` — destination directory
+- `destinations/rome.html` — Rome guide
+- `destinations/paris.html` — Paris guide
+- `destinations/barcelona.html` — Barcelona guide
+- `destinations/lisbon.html` — Lisbon guide
+- `trtt-shop/esim/index.html` — eSIM comparison page
+- `assets/css/site.css` — shared site styling
+- `robots.txt` — crawler guidance
+- `sitemap.xml` — sitemap for static pages
+- `main.py` — content generation script
+- `auto_organize.py` — utility for content organization
+- `docker-compose.base44.yml` — local docker preview
+
+## Local preview
+
+### Option 1: Docker preview
+
+```bash
+docker compose -f docker-compose.base44.yml up -d
+```
+
+Then visit:
+
+```text
+http://localhost:3000/
+```
+
+### Option 2: open static files directly
+
+Open the HTML files in a browser or serve the repo with a static server.
+
+## Deployment
+
+This project is suitable for:
+- GitHub Pages
+- static hosting providers
+- any nginx or CDN static host
+
+## Notes
+
+- The site is static and does not require a backend server.
+- Python automation scripts are content tools and are not required for site serving.
+- For automation workflows, review the scripts before running them in production.
+
+## Recommended next improvements
+
+- add more article pages and destination guides
+- organize content into a deeper editorial index
+- add richer metadata and schema for articles
+- add analytics and conversion tracking
+- continue expanding destination guides by region
