@@ -1,62 +1,46 @@
-// TRTT Zero Theme Touch - Gadget Injection Only - Blog = AI Store Same Page - No Theme Change - Marker 787950
+// FINAL - 2 Menus Only - Read The Blog + Explore Your Life - Vercel - Delete Old All - Marker 787950
 (function(){
-  const BLOG_JSON = 'https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/blog.json';
-  const MARKER = '787950';
-  
-  async function injectAISamePageWithoutThemeChange(){
+  const MARKER='787950';
+  const VERCEL='https://cocvghuj-trtt-news-bot.vercel.app/?marker='+MARKER+'&sub_id=explore_life_'+MARKER;
+  const BLOG='https://ttnews24bd.blogspot.com';
+  function killOldAndKeep2(){
     try{
-      // Keep Eurovoyage Hub theme - Don't touch
-      const euroHub = document.querySelector('.header, .top-bar, .logo, [class*="Eurovoyage"]');
-      // If theme exists, keep it - Don't destroy
-      
-      // Create Super App Cards Container - Inject BEFORE posts, not replace theme
-      if(!document.getElementById('trtt-ai-store-injection')){
-        const container = document.createElement('div');
-        container.id = 'trtt-ai-store-injection';
-        container.innerHTML = `
-<div style="background:white; border:2px solid #00A8E8; border-radius:12px; padding:12px; margin:10px; font-family:system-ui; box-shadow:0 4px 15px rgba(0,0,0,0.08);">
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap;">
-    <div style="font-weight:bold; font-size:14px;">🔴 Latest Posts (20) - TRTT NEWS 24 BD - TRTT - AI Store Same</div>
-    <div style="background:#00A8E8; color:white; padding:3px 8px; border-radius:10px; font-size:9px;">Zero Theme Touch - Gadget Only ✅</div>
-  </div>
-  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:8px;">
-    <div style="background:linear-gradient(135deg,#e0f8ff,#f0f0ff); padding:10px; border-radius:8px; text-align:center; border:1px solid #cceeff;">
-      <div style="font-size:18px;">🗺️</div>
-      <div style="font-size:11px; font-weight:bold; margin:3px 0;">Via Carlo Felice ARST 08:17</div>
-      <a href="https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/app.html?marker=${MARKER}" style="background:#00A8E8; color:white; padding:4px 8px; border-radius:12px; text-decoration:none; font-size:10px;">Map</a>
-    </div>
-    <div style="background:linear-gradient(135deg,#ffe0e0,#fff0f0); padding:10px; border-radius:8px; text-align:center; border:1px solid #ffcccc;">
-      <div style="font-size:18px;">✈️</div>
-      <div style="font-size:11px; font-weight:bold; margin:3px 0;">【entity-AirHelp¦canonical_name=AirHelp】 600€ + Aviasales</div>
-      <a href="https://airhelp.tp.st/3ItXS0E4?marker=${MARKER}&sub_id=gadget_airhelp_${MARKER}" style="background:#ff6b6b; color:white; padding:4px 8px; border-radius:12px; text-decoration:none; font-size:10px; margin:2px;">3ItXS0E4</a>
-      <a href="https://aviasales.tp.st/Fb8U9yav?marker=${MARKER}&sub_id=gadget_aviasales_${MARKER}" style="background:#7f5eff; color:white; padding:4px 8px; border-radius:12px; text-decoration:none; font-size:10px; margin:2px;">Fb8U9yav</a>
-    </div>
-    <div style="background:linear-gradient(135deg,#e0ffe0,#f0fff0); padding:10px; border-radius:8px; text-align:center; border:1px solid #ccffcc;">
-      <div style="font-size:18px;">📱</div>
-      <div style="font-size:11px; font-weight:bold; margin:3px 0;">eSIM 4 Programs</div>
-      <a href="https://airalo.tp.st/ZZoQC7Mz?marker=${MARKER}&sub_id=gadget_airalo_${MARKER}" style="background:#00d4aa; color:white; padding:4px 8px; border-radius:12px; text-decoration:none; font-size:10px;">ZZoQC7Mz</a>
-      <a href="https://saily.tp.st/ssekmS4X?marker=${MARKER}&sub_id=gadget_saily_${MARKER}" style="background:#00A8E8; color:white; padding:4px 8px; border-radius:12px; text-decoration:none; font-size:10px;">ssekmS4X</a>
-    </div>
-  </div>
-  <div style="margin-top:8px; text-align:center; font-size:9px; color:#888;">Blog = AI Store - Same Page - No Theme Change - Marker ${MARKER} Locked - tIZcbMOB Fixed - PIN 7879 Safe - Eurovoyage Hub Safe</div>
-</div>`;
-        
-        // Inject before blog posts - Keep theme safe
-        const postList = document.querySelector('.blog-posts, .post-feed, .main, #main, .content');
-        if(postList) postList.insertBefore(container, postList.firstChild);
-        else document.body.insertBefore(container, document.body.firstChild);
-      }
-      
-      // Fix all tp.st links - marker locked + tIZcbMOB fixed
-      document.querySelectorAll('a[href*="tp.st"], a[href*="tpo.lv"]').forEach(a=>{
-        try{ let h = a.href.replace('tpo.lv','tp.st'); const u = new URL(h); if(!u.searchParams.has('marker')) u.searchParams.set('marker', MARKER); a.href = u.toString().replace(/tlZcbMOB/g,'tIZcbMOB'); }catch(e){}
+      // Aggressive hide old menus
+      document.querySelectorAll('nav li, .menu li, .navbar li, .main-menu li, ul li').forEach(li=>{
+        const txt=(li.innerText||'').trim();
+        if(['Global Insights','Europe & Schengen','Business','Tech & Tools','Advertise With Us','Guest Post','Free Tools','TRAVELPAYOUTS HUB','Insubuy','Insubuy USA Insurance'].some(o=>txt.includes(o))){
+          li.style.display='none'; li.remove();
+        }
       });
       
-      console.log('✅ Blog = AI Store - Same Page - Zero Theme Touch - Eurovoyage Hub Safe - Marker ' + MARKER);
-    }catch(e){ console.log('Gadget injection waiting - ' + e); }
+      // Hide any remaining old menu items that are not our 2
+      const menuContainer = document.querySelector('nav ul, .menu ul, .navbar ul, #main-menu, .primary-menu');
+      if(menuContainer && !document.getElementById('trtt-2-only-menus')){
+        // Clear and inject 2 only
+        menuContainer.innerHTML = `
+          <li style="list-style:none; margin:5px 0;"><a href="${BLOG}" style="display:block; background:#00A8E8; color:white; padding:12px 15px; border-radius:8px; text-decoration:none; font-weight:bold; font-family:system-ui;">📖 Read The Blog - ttnews24bd</a></li>
+          <li style="list-style:none; margin:5px 0;"><a href="${VERCEL}" style="display:block; background:linear-gradient(135deg,#00A8E8,#7f5eff); color:white; padding:12px 15px; border-radius:8px; text-decoration:none; font-weight:bold; font-family:system-ui;">🚀 Explore Your Life - Vercel Super App - Marker ${MARKER}</a></li>
+        `;
+        menuContainer.id='trtt-2-only-menus';
+      }
+      
+      // If no menu container found, inject top bar with 2 menus
+      if(!document.getElementById('trtt-2-menus-topbar')){
+        const topbar=document.createElement('div');
+        topbar.id='trtt-2-menus-topbar';
+        topbar.innerHTML=`
+<div style="position:fixed; top:0; left:0; right:0; z-index:99999; background:linear-gradient(135deg,#00A8E8,#7f5eff); padding:10px; display:flex; gap:8px; justify-content:center; font-family:system-ui;">
+  <a href="${BLOG}" style="background:white; color:#00A8E8; padding:8px 15px; border-radius:20px; text-decoration:none; font-weight:bold; font-size:12px;">📖 Read The Blog</a>
+  <a href="${VERCEL}" style="background:#FF9900; color:black; padding:8px 15px; border-radius:20px; text-decoration:none; font-weight:bold; font-size:12px;">🚀 Explore Your Life - Vercel</a>
+</div>
+<div style="height:50px;"></div>`;
+        document.body.prepend(topbar);
+      }
+      
+      // Fix all tp.st links
+      document.querySelectorAll('a[href*="tpo.lv"]').forEach(a=>{try{let h=a.href.replace('tpo.lv','tp.st');const u=new URL(h);if(!u.searchParams.has('marker'))u.searchParams.set('marker',MARKER);a.href=u.toString().replace(/tlZcbMOB/g,'tIZcbMOB');}catch(e){}});
+    }catch(e){}
   }
-  
-  injectAISamePageWithoutThemeChange();
-  setInterval(injectAISamePageWithoutThemeChange, 30000);
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', injectAISamePageWithoutThemeChange);
+  killOldAndKeep2(); setInterval(killOldAndKeep2, 2000);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', killOldAndKeep2);
 })();
