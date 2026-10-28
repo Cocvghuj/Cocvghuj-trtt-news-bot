@@ -1,6 +1,9 @@
 {
-  "status": "offline",
-  "source": "blogger",
-  "message": "Blogger feed is not available yet for this site.",
-  "posts": []
+  "posts": [{"title": "Travel Is Not Touring: I Built 21 Tools in 1 App After Qatar Carriage Job", "marker": "787950"}],
+  "apps": {
+    "superApp": "super-app.html?marker=787950",
+    "esim": "trtt-shop/esim/?marker=787950",
+    "plane": "trtt-shop/plane/?marker=787950"
+  },
+  "updated": "2026-10-28"
 }
