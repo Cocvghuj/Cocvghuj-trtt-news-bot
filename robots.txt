@@ -1,1 +1,72 @@
-User-agent: *\nAllow: /\nSitemap: https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/sitemap.xml
+# TRTT News 24 BD
+
+TRTT News 24 BD is a static travel and publishing website focused on Europe travel tips, smart trip planning, and AI-assisted editorial workflows. The site is designed for GitHub Pages, static hosting, or local serving through nginx.
+
+## Project overview
+
+This repository contains:
+- a travel/news landing page
+- a blog/news section with article pages
+- destination guides for major European cities
+- a travel guide and disclosure pages
+- eSIM and affiliate comparison pages
+- automation scripts for content generation
+- Docker preview configuration for local static serving
+
+## Repository structure
+
+- `index.html` — main landing page
+- `blog/index.html` — blog/news landing page
+- `blog/article-1.html` — example article page
+- `travel-guide.html` — travel planning page
+- `destinations/index.html` — destination directory
+- `destinations/rome.html` — Rome guide
+- `destinations/paris.html` — Paris guide
+- `destinations/barcelona.html` — Barcelona guide
+- `destinations/lisbon.html` — Lisbon guide
+- `trtt-shop/esim/index.html` — eSIM comparison page
+- `assets/css/site.css` — shared site styling
+- `robots.txt` — crawler guidance
+- `sitemap.xml` — sitemap for static pages
+- `main.py` — content generation script
+- `auto_organize.py` — utility for content organization
+- `docker-compose.base44.yml` — local docker preview
+
+## Local preview
+
+### Option 1: Docker preview
+
+```bash
+docker compose -f docker-compose.base44.yml up -d
+```
+
+Then visit:
+
+```text
+http://localhost:3000/
+```
+
+### Option 2: open static files directly
+
+Open the HTML files in a browser or serve the repo with a static server.
+
+## Deployment
+
+This project is suitable for:
+- GitHub Pages
+- static hosting providers
+- any nginx or CDN static host
+
+## Notes
+
+- The site is static and does not require a backend server.
+- Python automation scripts are content tools and are not required for site serving.
+- For automation workflows, review the scripts before running them in production.
+
+## Recommended next improvements
+
+- add more article pages and destination guides
+- organize content into a deeper editorial index
+- add richer metadata and schema for articles
+- add analytics and conversion tracking
+- continue expanding destination guides by region

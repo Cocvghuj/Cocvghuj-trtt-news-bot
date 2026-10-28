@@ -1,1 +1,4 @@
-<urlset><url><loc>https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/bus_via_carlo_felice.html</loc><lastmod>2026-10-27</lastmod></url></urlset>
+User-agent: *
+Allow: /
+
+Sitemap: https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/sitemap.xml
