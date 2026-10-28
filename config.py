@@ -40,11 +40,11 @@ TOPICS = [
 
 # --- Affiliate Links Master Database ---
 AFFILIATE_SERVICES = [
-    {"name": "Aviasales", "url": f"https://aviasales.tpo.lv/Fb8U9ay?marker={MARKER}"},
-    {"name": "Airalo eSIM", "url": f"https://airalo.tpo.lv/ZZoQC7Mz?marker={MARKER}"},
-    {"name": "AirHelp", "url": f"https://airhelp.tpo.lv/3ItXSOE4?marker={MARKER}"},
-    {"name": "Klook", "url": f"https://klook.tpo.lv/TWKnenhz?marker={MARKER}"},
-    {"name": "GetTransfer", "url": f"https://gettransfer.tpo.lv/1u82RU5s?marker={MARKER}"},
-    {"name": "Hotels", "url": f"https://economybookings.tpo.lv/pyHqIOo?marker={MARKER}"},
+    {"name": "Aviasales", "url": f"https://aviasales.tp.st/Fb8U9ay?marker={MARKER}"},
+    {"name": "Airalo eSIM", "url": f"https://airalo.tp.st/ZZoQC7Mz?marker={MARKER}"},
+    {"name": "AirHelp", "url": f"https://airhelp.tp.st/3ItXSOE4?marker={MARKER}"},
+    {"name": "Klook", "url": f"https://klook.tp.st/TWKnenhz?marker={MARKER}"},
+    {"name": "GetTransfer", "url": f"https://gettransfer.tp.st/1u82RU5s?marker={MARKER}"},
+    {"name": "Hotels", "url": f"https://economybookings.tp.st/pyHqIOo?marker={MARKER}"},
     {"name": "Amazon Travel Gear", "url": AMAZON_LINK},
 ]

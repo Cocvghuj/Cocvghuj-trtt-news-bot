@@ -110,9 +110,9 @@ def post_to_blogger(title: str, content: str, labels: List[str]):
 
 
 def create_prompt(topic: str, affiliate_links: List[str]) -> str:
-    first_link = affiliate_links[0] if affiliate_links else "https://airhelp.tpo.lv/3ItXS0E4"
-    second_link = affiliate_links[1] if len(affiliate_links) > 1 else "https://gettransfer.tpo.lv/1u8zRU5s"
-    third_link = affiliate_links[2] if len(affiliate_links) > 2 else "https://airalo.tpo.lv/ZZoQC7Mz"
+    first_link = affiliate_links[0] if affiliate_links else "https://airhelp.tp.st/3ItXS0E4"
+    second_link = affiliate_links[1] if len(affiliate_links) > 1 else "https://gettransfer.tp.st/1u8zRU5s"
+    third_link = affiliate_links[2] if len(affiliate_links) > 2 else "https://airalo.tp.st/ZZoQC7Mz"
     pwa_link = f"{PWA_URL}?source=blogger_post"
     blog_link = f"{BLOGGER_URL}?source=trtt_blog"
     return f"""
@@ -171,7 +171,7 @@ def build_html_article(article_markdown: str, topic: str) -> str:
     article_html = article_html.replace("Internal Link 1", "<a href='travel-guide.html'>Travel Guide</a>")
     article_html = article_html.replace("Internal Link 2", "<a href='about.html'>About</a>")
     article_html = article_html.replace("Internal Link 3", "<a href='contact.html'>Contact</a>")
-    article_html = article_html.replace("Check out AirHelp.", "Check out AirHelp. <a href='https://airhelp.tpo.lv/3ItXS0E4?via=trtt-blog' target='_blank' rel='sponsored nofollow'>AirHelp</a>")
+    article_html = article_html.replace("Check out AirHelp.", "Check out AirHelp. <a href='https://airhelp.tp.st/3ItXS0E4?via=trtt-blog' target='_blank' rel='sponsored nofollow'>AirHelp</a>")
     article_html = article_html.replace("This post contains affiliate links", "<strong>This post contains affiliate links</strong>")
     article_html = article_html.replace("TRTT VoyageHub PWA", "<a href='https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/?source=blogger_post' target='_blank' rel='dofollow'>TRTT VoyageHub PWA</a>")
     return article_html
