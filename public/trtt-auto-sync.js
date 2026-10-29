@@ -1,189 +1,127 @@
 /**
- * TRTT Auto-Sync Engine (AGGRESSIVE 2 SECTIONS ENFORCER)
- * EXACT 2 MENUS ONLY:
- * 1. Read The Blog (https://trttnews24bd.blogspot.com)
- * 2. Explore Your Life (https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950&sub_id=explore_life_787950)
- *
- * COMPLETELY DELETES & HIDES ALL OLD MENUS (Global Insights, Europe & Schengen,
- * Business, Tech & Tools, Advertise, Guest Post, Free Tools, TRAVELPAYOUTS HUB, Insubuy)
- *
- * ALL LINKS: tp.st?marker=787950 | tlZcbMOB -> tIZcbMOB (Capital I) | Amazon: 4shg6Hn
+ * TRTT Auto-Sync Engine v5.0 (LIVE DIRECT INJECTOR)
+ * Auto-injects the Ultimate Travel Guide directly on top of the blog posts list
+ * Marker: 787950 Locked | Typo: tIZcbMOB Fixed (Capital I) | Amazon: 4shg6Hn
+ * FlightScoutPro + TRTT News 24 BD + GitHub Ecosystem
  */
 (function() {
   const CONFIG = {
     MARKER: '787950',
-    PIN: '7879',
-    BLOG_NAME: 'trttnews24bd',
-    BLOG_SECRET_EMAIL: 'engrtaher2017.trttnews24bd@blogger.com',
-    LOCATION: 'Sanluri',
     AMAZON: 'https://amzn.to/4shg6Hn',
-    URL_READ_BLOG: 'https://trttnews24bd.blogspot.com',
-    URL_EXPLORE_LIFE: 'https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950&sub_id=explore_life_787950'
+    GITHUB_REPO: 'https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot',
+    GUIDE_URL: 'https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/blog/ultimate-europe-travel-guide-2026.html',
+    FLIGHTSCOUT: 'https://flightscoutpro.blogspot.com/',
+    BLOG_URL: 'https://trttnews24bd.blogspot.com',
+    VERCEL_URL: 'https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950&sub_id=explore_life_787950'
   };
 
-  // =========================================================================
-  // 1. AGGRESSIVE CSS OVERRIDE (Immediately Hides Old Menus via Stylesheet)
-  // =========================================================================
-  const styleId = 'trtt-strict-2-sections-style';
-  if (!document.getElementById(styleId)) {
-    const style = document.createElement('style');
-    style.id = styleId;
-    style.textContent = `
-      /* Hide all old menu items by default */
-      #main-menu-nav > li:not(.trtt-keep-2),
-      .main-menu ul > li:not(.trtt-keep-2),
-      #mobile-menu-list > li:not(.trtt-keep-2),
-      .mobile-menu ul > li:not(.trtt-keep-2) {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-      }
+  // 1. Enforce 2 Menus (Read The Blog + Explore Your Life)
+  function enforce2Menus() {
+    const navs = document.querySelectorAll('#main-menu-nav, .main-menu ul, #navigation ul, .nav-menu');
+    if (!navs.length) return;
 
-      /* Clean modern styling for the 2 allowed sections */
-      .trtt-keep-2 {
-        display: inline-block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-      }
-      .trtt-keep-2 a {
-        display: inline-flex !important;
-        align-items: center !important;
-        gap: 6px !important;
-        font-family: system-ui, -apple-system, sans-serif !important;
-        font-weight: 800 !important;
-        font-size: 14.5px !important;
-        letter-spacing: -0.2px !important;
-        padding: 10px 18px !important;
-        border-radius: 10px !important;
-        text-decoration: none !important;
-        transition: all 0.2s ease-in-out !important;
-      }
-      .trtt-btn-read a {
-        background: #f1f5f9 !important;
-        color: #052962 !important;
-        border: 1px solid #cbd5e1 !important;
-      }
-      .trtt-btn-read a:hover {
-        background: #e2e8f0 !important;
-        color: #0284c7 !important;
-      }
-      .trtt-btn-explore a {
-        background: #052962 !important;
-        color: #ffffff !important;
-        box-shadow: 0 4px 12px rgba(5,41,98,0.25) !important;
-        border: 1px solid #052962 !important;
-      }
-      .trtt-btn-explore a:hover {
-        background: #00A8E8 !important;
-        border-color: #00A8E8 !important;
-        transform: translateY(-1px) !important;
-      }
+    const twoMenusHtml = `
+      <li class="menu-item trtt-keep-2" style="display:inline-block !important; margin-right:8px !important;">
+        <a href="${CONFIG.BLOG_URL}" role="menuitem" 
+           style="display:inline-flex !important; align-items:center !important; gap:6px !important; font-weight:800 !important; font-size:14px !important; color:#052962 !important; padding:10px 18px !important; border-radius:8px !important; text-decoration:none !important; background:#f1f5f9 !important; border:1px solid #cbd5e1 !important;">
+          <span>📖</span> <span>Read The Blog</span>
+        </a>
+      </li>
+      <li class="menu-item trtt-keep-2" style="display:inline-block !important;">
+        <a href="${CONFIG.VERCEL_URL}" role="menuitem" target="_blank" rel="noopener"
+           style="display:inline-flex !important; align-items:center !important; gap:6px !important; font-weight:800 !important; font-size:14px !important; color:#ffffff !important; padding:10px 18px !important; border-radius:8px !important; text-decoration:none !important; background:#052962 !important; box-shadow:0 2px 6px rgba(5,41,98,0.25) !important;">
+          <span>🚀</span> <span>Explore Your Life</span>
+        </a>
+      </li>
     `;
-    (document.head || document.documentElement).appendChild(style);
-  }
 
-  // =========================================================================
-  // 2. AGGRESSIVE DOM ENFORCEMENT (Clears Old Menus & Injects Only 2 Sections)
-  // =========================================================================
-  function enforceExact2Sections() {
-    const prohibitedWords = [
-      'global insights',
-      'europe & schengen',
-      'schengen',
-      'business',
-      'tech & tools',
-      'technology',
-      'advertise with us',
-      'guest post',
-      'free tools',
-      'travel cost',
-      'calculator',
-      'calcolo',
-      'reisekosten',
-      'travelpayouts',
-      'hotels only',
-      'flights only',
-      'transport only',
-      'car & bike',
-      'tours & tickets',
-      'insurance & compensation',
-      'extras only',
-      'insubuy',
-      'booking.com',
-      'agoda',
-      'expedia',
-      'hostelworld',
-      'vrbo',
-      'rakuten',
-      'omio',
-      '12go',
-      'discovercars',
-      'viator',
-      'getyourguide',
-      'ekta',
-      'visitorscoverage',
-      'airhelp',
-      'compensair',
-      'radical storage',
-      'drimsim',
-      'saily',
-      'ticketmaster'
-    ];
-
-    // Find all menu list containers
-    const menuContainers = document.querySelectorAll('#main-menu-nav, .main-menu ul, #navigation ul, .nav-menu, #mobile-menu-list, .mobile-menu ul');
-
-    menuContainers.forEach(ul => {
-      // 1. Hide/remove any old LI containing prohibited words
-      const items = Array.from(ul.children);
-      items.forEach(li => {
-        const text = (li.innerText || li.textContent || '').toLowerCase().trim();
-        const isRead = text.includes('read the blog') || text === 'read blog';
-        const isExplore = text.includes('explore your life');
-
-        if (!isRead && !isExplore) {
-          li.style.setProperty('display', 'none', 'important');
-          li.style.setProperty('visibility', 'hidden', 'important');
-          // If prohibited, remove from DOM completely
-          if (prohibitedWords.some(w => text.includes(w)) || text.startsWith('_')) {
-            try { li.remove(); } catch (e) {}
-          }
-        }
-      });
-
-      // 2. Check if our 2 sections exist
-      let hasRead = false;
-      let hasExplore = false;
-      Array.from(ul.children).forEach(li => {
-        const txt = (li.innerText || li.textContent || '').trim();
-        if (txt.includes('Read The Blog')) hasRead = true;
-        if (txt.includes('Explore Your Life')) hasExplore = true;
-      });
-
-      // 3. Inject only the 2 sections if missing
-      if (!hasRead || !hasExplore) {
-        ul.innerHTML = `
-          <li class="menu-item trtt-keep-2 trtt-btn-read" role="none" style="margin-right:8px;">
-            <a href="${CONFIG.URL_READ_BLOG}" role="menuitem">
-              <span>📝</span> <span>Read The Blog</span>
-            </a>
-          </li>
-          <li class="menu-item trtt-keep-2 trtt-btn-explore" role="none">
-            <a href="${CONFIG.URL_EXPLORE_LIFE}" role="menuitem" target="_blank" rel="noopener">
-              <span>🚀</span> <span>Explore Your Life</span>
-            </a>
-          </li>
-        `;
-      }
+    navs.forEach(nav => {
+      if (nav.getAttribute('data-trtt-locked') === 'v5') return;
+      nav.setAttribute('data-trtt-locked', 'v5');
+      nav.innerHTML = twoMenusHtml;
     });
   }
 
-  // =========================================================================
-  // 3. STRICT AFFILIATE HYGIENE & TYPO FIXER
-  // =========================================================================
+  // 2. Directly Inject the Masterguide Card on top of posts
+  function injectUltimateMasterguide() {
+    if (document.getElementById('trtt-direct-masterguide-post')) return;
+
+    const grid = document.querySelector('.grid-posts, .blog-posts, #Blog1');
+    if (!grid) return;
+
+    const postCard = document.createElement('div');
+    postCard.id = 'trtt-direct-masterguide-post';
+    postCard.className = 'blog-post hentry index-post';
+    postCard.style.cssText = 'background:#ffffff !important; border:2px solid #00A8E8 !important; border-radius:16px !important; padding:20px !important; margin-bottom:28px !important; box-shadow:0 8px 25px rgba(0,168,232,0.12) !important; width:100% !important; box-sizing:border-box !important;';
+
+    postCard.innerHTML = `
+      <div style="font-family:system-ui,-apple-system,sans-serif;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+          <span style="background:#f59e0b; color:#0f172a; font-size:11px; font-weight:900; padding:4px 10px; border-radius:9999px; text-transform:uppercase;">
+            🌟 Featured Authority Masterguide • FlightScoutPro × TRTT
+          </span>
+          <span style="font-size:11px; color:#0369a1; font-weight:bold; background:#e0f2fe; padding:3px 8px; border-radius:6px;">
+            🔒 Marker ${CONFIG.MARKER} Locked
+          </span>
+        </div>
+
+        <h2 style="font-size:22px; font-weight:900; color:#052962; margin:0 0 10px 0; line-height:1.35;">
+          <a href="${CONFIG.GUIDE_URL}" style="color:#052962; text-decoration:none;" hover="text-decoration:underline;">
+            The Ultimate 2026-2027 Europe Travel Masterguide: Cheap Flights, 600€ AirHelp Claims, 5G eSIMs &amp; Ground Transits
+          </a>
+        </h2>
+
+        <p style="font-size:13.5px; line-height:1.7; color:#475569; margin:0 0 16px 0;">
+          Jointly published with <strong><a href="${CONFIG.FLIGHTSCOUT}" target="_blank" style="color:#0284c7; font-weight:bold;">FlightScoutPro</a></strong>. Real-world insights from Qatar carriage operations into 21 smart travel tools: save 50% on airfares via Aviasales, claim up to 600€ for delayed European flights under EC 261, deploy instant 5G eSIMs with Airalo &amp; Saily, and book fixed-price Kiwitaxi airport rides.
+        </p>
+
+        <!-- Tool Highlights Grid -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-bottom:16px;">
+          <a href="https://aviasales.tp.st/Fb8U9yav?marker=${CONFIG.MARKER}&sub_id=direct_aviasales_787950" target="_blank" rel="noopener"
+             style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; padding:10px 14px; text-decoration:none; color:#0369a1; font-weight:bold; font-size:12.5px; display:flex; align-items:center; justify-content:space-between;">
+            <span>✈️ Aviasales Flights</span>
+            <span style="font-size:10px; background:#0284c7; color:#fff; padding:2px 6px; border-radius:4px;">Low Fares</span>
+          </a>
+
+          <a href="https://airhelp.tp.st/3ItXS0E4?marker=${CONFIG.MARKER}&sub_id=direct_airhelp_787950" target="_blank" rel="noopener"
+             style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px; padding:10px 14px; text-decoration:none; color:#1d4ed8; font-weight:bold; font-size:12.5px; display:flex; align-items:center; justify-content:space-between;">
+            <span>🛡️ AirHelp 600€ Claim</span>
+            <span style="font-size:10px; background:#2563eb; color:#fff; padding:2px 6px; border-radius:4px;">EC 261</span>
+          </a>
+
+          <a href="https://airalo.tp.st/ZZoQC7Mz?marker=${CONFIG.MARKER}&sub_id=direct_airalo_787950" target="_blank" rel="noopener"
+             style="background:#faf5ff; border:1px solid #e9d5ff; border-radius:10px; padding:10px 14px; text-decoration:none; color:#7e22ce; font-weight:bold; font-size:12.5px; display:flex; align-items:center; justify-content:space-between;">
+            <span>📱 Airalo 5G eSIM</span>
+            <span style="font-size:10px; background:#9333ea; color:#fff; padding:2px 6px; border-radius:4px;">Instant QR</span>
+          </a>
+
+          <a href="https://kiwitaxi.tp.st/tIZcbMOB?marker=${CONFIG.MARKER}&sub_id=direct_kiwitaxi_787950" target="_blank" rel="noopener"
+             style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:10px; padding:10px 14px; text-decoration:none; color:#047857; font-weight:bold; font-size:12.5px; display:flex; align-items:center; justify-content:space-between;">
+            <span>🚖 Kiwitaxi Fixed Ride</span>
+            <span style="font-size:10px; background:#059669; color:#fff; padding:2px 6px; border-radius:4px;">tIZcbMOB</span>
+          </a>
+        </div>
+
+        <!-- Action Links & GitHub details -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-top:1px solid #f1f5f9; pt-3; padding-top:12px;">
+          <div style="font-size:12px; color:#64748b;">
+            <span>🐙 GitHub: <a href="${CONFIG.GITHUB_REPO}" target="_blank" style="color:#0284c7; font-weight:bold; text-decoration:underline;">Cocvghuj-trtt-news-bot</a></span>
+            <span style="margin:0 6px;">•</span>
+            <a href="${CONFIG.AMAZON}" target="_blank" style="color:#92400e; font-weight:bold;">🎒 Amazon 4shg6Hn</a>
+          </div>
+          <a href="${CONFIG.GUIDE_URL}" 
+             style="background:#052962; color:#ffffff; font-weight:800; font-size:13px; padding:8px 18px; border-radius:8px; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+            <span>Read Full Masterguide &rarr;</span>
+          </a>
+        </div>
+      </div>
+    `;
+
+    grid.insertBefore(postCard, grid.firstChild);
+  }
+
+  // 3. Strict Link Hygiene
   function enforceLinks() {
-    // Enforce marker 787950 & fix typo tlZcbMOB to tIZcbMOB
     document.querySelectorAll('a[href*="tp.st"], a[href*="tpo.lv"]').forEach(a => {
       try {
         let href = a.href.replace(/tpo\.lv/g, 'tp.st');
@@ -196,7 +134,6 @@
       } catch (e) {}
     });
 
-    // Enforce Amazon 4shg6Hn
     document.querySelectorAll('a[href*="amzn.to"]').forEach(a => {
       if (!a.href.includes('4shg6Hn')) {
         a.href = CONFIG.AMAZON;
@@ -204,86 +141,9 @@
     });
   }
 
-  // =========================================================================
-  // 4. TOP SUPER BAR INJECTION (Read The Blog + Explore Your Life)
-  // =========================================================================
-  function injectTopSuperBar() {
-    if (document.getElementById('trtt-super-2sections-banner')) return;
-    const target = document.querySelector('.main-wrapper, #main-wrapper, #Blog1, .blog-posts, main, #main');
-    if (target) {
-      const banner = document.createElement('div');
-      banner.id = 'trtt-super-2sections-banner';
-      banner.innerHTML = `
-        <div style="background:#ffffff; border:2px solid #00A8E8; border-radius:16px; padding:18px 22px; margin:16px 0 24px 0; box-shadow:0 6px 20px rgba(0,168,232,0.1); font-family:system-ui,-apple-system,sans-serif;">
-          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; padding-bottom:10px; margin-bottom:12px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#10b981;"></span>
-              <strong style="color:#052962; font-size:16px;">TRTT Super App • Marker ${CONFIG.MARKER} Locked</strong>
-            </div>
-            <span style="font-size:11px; font-weight:800; background:#e0f2fe; color:#0369a1; padding:3px 10px; border-radius:9999px;">
-              Via Carlo Felice ARST 08:17
-            </span>
-          </div>
-          <p style="font-size:13.5px; font-weight:700; color:#0f172a; margin:0 0 14px 0;">
-            Only App = Ticket আছে, Customer নাই • App + Blog = Customerও আছে, Ticketও আছে = Super App!
-          </p>
-          <div style="display:flex; gap:12px; flex-wrap:wrap;">
-            <a href="${CONFIG.URL_READ_BLOG}" 
-               style="display:inline-flex; align-items:center; gap:6px; background:#f1f5f9; color:#052962; font-weight:800; font-size:13.5px; padding:11px 20px; border-radius:10px; text-decoration:none; border:1px solid #cbd5e1;">
-              <span>📝</span> <span>1. Read The Blog</span>
-            </a>
-            <a href="${CONFIG.URL_EXPLORE_LIFE}" target="_blank" rel="noopener"
-               style="display:inline-flex; align-items:center; gap:6px; background:#052962; color:#ffffff; font-weight:800; font-size:13.5px; padding:11px 22px; border-radius:10px; text-decoration:none; box-shadow:0 4px 12px rgba(5,41,98,0.25);">
-              <span>🚀</span> <span>2. Explore Your Life (Super App)</span>
-            </a>
-            <a href="${CONFIG.AMAZON}" target="_blank" rel="noopener"
-               style="display:inline-flex; align-items:center; gap:6px; background:#fef3c7; border:1px solid #fde68a; color:#92400e; font-weight:800; font-size:13.5px; padding:11px 16px; border-radius:10px; text-decoration:none;">
-              <span>🎒</span> <span>Amazon 4shg6Hn</span>
-            </a>
-          </div>
-        </div>
-      `;
-      target.insertBefore(banner, target.firstChild);
-    }
-  }
-
-  // =========================================================================
-  // 5. SAFETY LOCKED DIRECT POSTING ENGINE
-  // =========================================================================
-  window.trttDirectPost = function(topic, htmlContent) {
-    const badWords = ['sex', 'porn', 'casino', 'crypto scam', 'drugs', 'fake news'];
-    if (badWords.some(w => topic.toLowerCase().includes(w))) {
-      alert('🚫 Blocked: খারাপ টপিক! - ' + topic);
-      return false;
-    }
-
-    const pin = prompt('🔒 TRTT Direct Post?\n\nTopic: ' + topic + '\n\nPIN দিন (' + CONFIG.PIN + '):\n\nSanluri থেকে Confirm করছেন?');
-    if (pin !== CONFIG.PIN) {
-      alert('❌ Wrong PIN - Post Cancelled!');
-      return false;
-    }
-
-    if (!confirm('✅ Sanluri থেকে Confirm করছেন?\n\n📌 Topic: ' + topic + '\n\n📧 Post to: ' + CONFIG.BLOG_NAME + '\n🔒 Marker: ' + CONFIG.MARKER + ' Locked\n\nDirect Post করবেন?')) {
-      return false;
-    }
-
-    const subject = topic.substring(0, 100);
-    const body = htmlContent || `<div>${subject} - Marker ${CONFIG.MARKER} Locked</div>`;
-    try {
-      const mailtoLink = `mailto:${CONFIG.BLOG_SECRET_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.open(mailtoLink, '_blank');
-      alert('✅ Approved from Sanluri!\n\nEmail খোলা হচ্ছে: ' + CONFIG.BLOG_SECRET_EMAIL + '\n\nSend করলেই ব্লগে পোস্ট হবে!');
-      return true;
-    } catch (e) {
-      alert('❌ Error: ' + e);
-      return false;
-    }
-  };
-
-  // Execution loop
   function loop() {
-    enforceExact2Sections();
-    injectTopSuperBar();
+    enforce2Menus();
+    injectUltimateMasterguide();
     enforceLinks();
   }
 
@@ -294,6 +154,4 @@
   }
 
   setInterval(loop, 400);
-
-  console.log(`%c 🔒 TRTT 2-Sections Enforcer Active | 1: Read The Blog | 2: Explore Your Life | Marker: ${CONFIG.MARKER} Locked `, 'background:#052962; color:#fff; padding:6px 12px; border-radius:6px; font-weight:bold;');
 })();
