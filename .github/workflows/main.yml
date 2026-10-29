@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: '0 8 * * *'
   workflow_dispatch:
+  push:
+    paths:
+      - 'trigger_post.txt'
 
 permissions:
   contents: write
@@ -12,13 +15,12 @@ jobs:
   generate-article:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -27,17 +29,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run app
+      - name: Run app with Secrets
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
+          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
+          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
+          TRAVEL_PAYOUT_MARKER: ${{ secrets.TRAVEL_PAYOUT_MARKER }}
+          AMAZON_LINK: ${{ secrets.AMAZON_LINK }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          python - <<'PY'
-          import time
-          time.sleep(12)
-          PY
           python main.py
-          echo "Pushed 1 article"
+          echo "Article published to Blogger via official API!"
 
       - name: Commit generated article
         if: ${{ success() }}
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "auto: add daily travel article"
+          commit_message: "auto: add daily travel article with Unsplash image & Blogger sync"
