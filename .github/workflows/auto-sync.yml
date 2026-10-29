@@ -1,0 +1,7 @@
+- name: Run Partner Sync Engine
+      env:
+        PARTNER_SITE_NAME: ${{ secrets.PARTNER_SITE_NAME }}
+        PARTNER_SITE_URL: ${{ secrets.PARTNER_SITE_URL }}
+        PARTNER_EMAIL: ${{ secrets.PARTNER_EMAIL }}
+      run: |
+        python partner_sync.py
