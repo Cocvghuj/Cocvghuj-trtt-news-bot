@@ -1,0 +1,29 @@
+name: One Time Full Blog Setup
+
+on:
+  workflow_dispatch: # কেবল আপনি ম্যানুয়ালি ক্লিক করলেই রান হবে, এতে মিনিট অপচয় হবে না!
+
+jobs:
+  one-time-setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-api-python-client google-auth
+
+      - name: Run One-Time Setup Script
+        env:
+          FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.FLIGHTSCOUTPRO_BLOG_ID }}
+          NEW_BLOG_ID: ${{ secrets.NEW_BLOG_ID }}
+          TRTT_BLOG_ID: ${{ secrets.TRTT_BLOG_ID }}
+          BLOGGER_API_KEY: ${{ secrets.BLOGGER_API_KEY }}
+        run: python setup_all_blogs.py
