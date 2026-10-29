@@ -10,7 +10,7 @@ def init_blogger_service():
     return build('blogger', 'v3', developerKey=API_KEY)
 
 def create_info_pages(service):
-    """গুগল পলিসি অনুযায়ী পূর্ণাঙ্গ ও প্রফেশনাল ইনফরমেশন পেজ তৈরি করে"""
+    """গুগল ও অ্যাডসেন্স পলিসি অনুযায়ী প্রফেশনাল পেজসমূহ ব্যাকগ্রাউন্ডে তৈরি করে"""
     
     pages_to_create = [
         {
@@ -18,10 +18,10 @@ def create_info_pages(service):
             "content": """
             <h2>Welcome to FlightScoutPro</h2>
             <p><strong>FlightScoutPro</strong> is a dedicated travel and aviation review platform designed to help travelers find cheap flights, explore worldwide destinations, and access civil engineer-reviewed travel insights.</p>
-            
+
             <h3>Our Network & Mission</h3>
             <p>FlightScoutPro operates as an officially managed partner site within the <strong>TRTT NEWS 24 BD Network</strong> (EuroVoyage HUB Twin Network). Our primary goal is to provide accurate, transparent, and updated flight scouting information to make your journey affordable and hassle-free.</p>
-            
+
             <h3>Why Choose Us?</h3>
             <ul>
                 <li><strong>Verified Deals:</strong> Up-to-date information on cheap flights and travel routes.</li>
@@ -65,9 +65,6 @@ def create_info_pages(service):
 
             <h3>License & Intellectual Property</h3>
             <p>Unless otherwise stated, FlightScoutPro and/or its licensors own the intellectual property rights for all material on FlightScoutPro. All intellectual property rights are reserved under the umbrella of TRTT NEWS 24 BD Network.</p>
-
-            <h3>Hyperlinking to our Content</h3>
-            <p>Organizations may link to our home page, to publications, or to other Website information so long as the link is not in any way deceptive and does not falsely imply sponsorship or endorsement.</p>
             """
         },
         {
@@ -75,14 +72,13 @@ def create_info_pages(service):
             "content": """
             <h2>Contact Us</h2>
             <p>If you have any questions, feedback, or business queries regarding FlightScoutPro or our network partnership, please feel free to reach out to us.</p>
-            
+
             <p><strong>Primary Contact Details:</strong></p>
             <ul>
                 <li><strong>Website:</strong> <a href="https://flightscoutpro.blogspot.com">FlightScoutPro</a></li>
                 <li><strong>Network Hub:</strong> <a href="https://trttnews24bd.blogspot.com" target="_blank">TRTT NEWS 24 BD</a></li>
                 <li><strong>Technical Management:</strong> Managed via GitHub Actions & Blogger API v3</li>
             </ul>
-            <p>You can also reach out to the site admin directly via our official partner portal or network communication channels.</p>
             """
         }
     ]
@@ -94,10 +90,9 @@ def create_info_pages(service):
                 "title": page["title"],
                 "content": page["content"]
             }
-            # Blogger API call to create pages
             request = service.pages().insert(blogId=BLOG_ID, body=body)
             response = request.execute()
-            print(f"✅ Success: Created full page '{page['title']}' - ID: {response.get('id')}")
+            print(f"✅ Success: Created page '{page['title']}' - ID: {response.get('id')}")
         except Exception as e:
             print(f"❌ Error creating page '{page['title']}': {e}")
 
