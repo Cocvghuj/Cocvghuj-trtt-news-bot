@@ -1,17 +1,40 @@
-[
-  {
-    "site_name": "TRTT NEWS 24 BD",
-    "site_url": "https://trttnews24bd.blogspot.com",
-    "role": "Main Network",
-    "status": "Active"
-  },
-  {
-    "site_name": "FlightScoutPro",
-    "site_url": "https://flightscoutpro.blogspot.com",
-    "role": "Travel & Photography Partner",
-    "owner": "Muntasir Rahman",
-    "contact_email": "muntasirrahaman694@gmail.com",
-    "contact_phone": "+8801314847336",
-    "status": "Active"
-  }
-]
+import json
+import os
+
+# আলাদা ফাইলে পার্টনারদের লিস্ট রাখা
+PARTNERS_FILE = "partners.json"
+
+def add_partner(site_name, site_url, role, owner_email):
+    partners = []
+    if os.path.exists(PARTNERS_FILE):
+        with open(PARTNERS_FILE, 'r', encoding='utf-8') as f:
+            try:
+                partners = json.load(f)
+            except json.JSONDecodeError:
+                partners = []
+    
+    # নতুন পার্টনারের ডেটা
+    new_data = {
+        "site_name": site_name,
+        "site_url": site_url,
+        "role": role,
+        "owner_email": owner_email
+    }
+    
+    # আগেই আছে কিনা চেক করা
+    if not any(p.get('site_url') == site_url for p in partners):
+        partners.append(new_data)
+        with open(PARTNERS_FILE, 'w', encoding='utf-8') as f:
+            json.dump(partners, f, indent=4, ensure_ascii=False)
+        print(f"✅ {site_name} সফলভাবে পার্টনার নেটওয়ার্কে যুক্ত হয়েছে!")
+    else:
+        print(f"ℹ️ {site_name} ইতিমধ্যেই যুক্ত রয়েছে।")
+
+if __name__ == "__main__":
+    # নতুন ব্লগ যুক্তকরণ (main.py না ছুঁয়েই)
+    add_partner(
+        site_name="FlightScoutPro",
+        site_url="https://flightscoutpro.blogspot.com",
+        role="Travel & Photography Partner",
+        owner_email="muntasirrahaman694@gmail.com"
+    )
