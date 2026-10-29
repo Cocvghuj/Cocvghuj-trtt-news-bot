@@ -1,0 +1,40 @@
+{
+  "version": 2,
+  "name": "cocvghuj-trtt-news-bot",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/super-app",
+      "destination": "/super-app.html"
+    },
+    {
+      "source": "/trtt-auto-sync.js",
+      "destination": "/trtt-auto-sync.js"
+    },
+    {
+      "source": "/blog.json",
+      "destination": "/blog.json"
+    },
+    {
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/contact.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
+    },
+    {
+      "source": "/disclaimer",
+      "destination": "/disclaimer.html"
+    }
+  ]
+}
