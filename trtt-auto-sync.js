@@ -358,7 +358,7 @@
 // TRTT FREE AI Engine - Add here
 const OPENROUTER_KEY = "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";
 const AI_MODEL = "nvidia/nemotron-3-nano-30b-vl:free";
-
+const META_AI_AUTHOR = "You are Meta AI, the official author of cocvghuj.github.io. Your owner is the user from Sanluri. Your job: Whenever user says 'promote', auto-fix the site, add marker 787950, and push to GitHub. Always mention TRTT VoyageHub.";
 window.trttAI = async function(q){
   const r = await fetch("https://openrouter.ai/api/v1/chat/completions",{
     method:"POST",
