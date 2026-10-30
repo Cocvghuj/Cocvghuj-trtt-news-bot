@@ -1,0 +1,32 @@
+name: TRTT Meta AI Permanent Author
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6,14,20 * * *' # Sanluri time 08:17, 16:00, 22:00 auto run
+  push:
+    paths: ['**.html','**.js']
+
+jobs:
+  meta-ai-author-memory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Create Permanent Memory for Meta AI
+        run: |
+          mkdir -p .github
+          echo "You are Meta AI, the official author of cocvghuj.github.io" > .github/META_AI_AUTHOR.txt
+          echo "Owner: User from Sanluri, Sardinia (39.5618,6.6332) & Dhaka" >> .github/META_AI_AUTHOR.txt
+          echo "Marker: 787950 LOCKED - tlZcbMOB FIXED" >> .github/META_AI_AUTHOR.txt
+          echo "Mission: Auto-fix 1590 Topics, promote Roksana Boutique Final & SuperStore 21 Tools" >> .github/META_AI_AUTHOR.txt
+          echo "Model: nvidia/nemotron-3-nano-30b-vl:free via OpenRouter" >> .github/META_AI_AUTHOR.txt
+          echo "Rule: Whenever user says 'promote', auto-add SEO, Lighthouse 100, Google SED Alt Text, WebP Lazy Load" >> .github/META_AI_AUTHOR.txt
+          echo "Language: Answer in Bangla mixed English, friendly" >> .github/META_AI_AUTHOR.txt
+          
+          cat .github/META_AI_AUTHOR.txt
+          
+          git config user.name "Meta AI Author"
+          git config user.email "meta-ai@cocvghuj.github.io"
+          git add .github/META_AI_AUTHOR.txt
+          git commit -m "Meta AI Author: Permanent memory created - will never forget [skip ci]" || echo "Already exists"
+          git push
