@@ -1,0 +1,31 @@
+name: TRTT OpenRouter Author
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'  # প্রতি 6 ঘণ্টায় অটো ঠিক করবে
+  push:
+    paths: ['**.html','**.js']
+
+jobs:
+  author-fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: OpenRouter AI Author Fixes Site
+        env:
+          KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          curl -s https://openrouter.ai/api/v1/chat/completions \
+          -H "Authorization: Bearer $KEY" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "model": "google/gemma-3-4b-it:free",
+            "messages": [{"role":"user", "content": "You are the author of cocvghuj.github.io. Fix all HTML SEO, Lighthouse 100, and ensure trtt-auto-sync.js uses free model nvidia/nemotron-3-nano-30b-vl:free. Output only fixed code."}]
+          }' | tee ai-response.json
+          
+          echo "AI Author checked site at $(date)" >> README.md
+          git config user.name "TRTT-Author"
+          git config user.email "author@cocvghuj.github.io"
+          git add .
+          git commit -m "AI Author: Auto-fix by OpenRouter [skip ci]" || echo "No changes"
+          git push
