@@ -82,7 +82,7 @@ def fetch_unsplash_photo(query: str) -> dict:
 def clean_affiliate_link(url: str, sub_id: str = "trtt_blog") -> str:
     if not url:
         return url
-    url = url.replace("tpo.lv", "tp.st").replace("tlZcbMOB", "tIZcbMOB")
+    url = url.replace("tp.st", "tp.st").replace("tIZcbMOB", "tIZcbMOB")
     parsed = urlparse(url)
     query = dict(parse_qsl(parsed.query, keep_blank_values=True))
     query["marker"] = MARKER
