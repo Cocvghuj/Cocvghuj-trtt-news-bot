@@ -1,0 +1,12 @@
+      - name: TRTT Marketing & Family Mission - NEVER FORGET
+        run: |
+          echo "---" >> .github/META_AI_AUTHOR.txt
+          echo "PERMANENT MISSION - FAMILY SUPPORT" >> .github/META_AI_AUTHOR.txt
+          echo "Owner needs traffic for family expenses - Sanluri" >> .github/META_AI_AUTHOR.txt
+          echo "Daily Task: Auto-create 1 SEO post + 1 Pinterest Pin + 1 Facebook Caption" >> .github/META_AI_AUTHOR.txt
+          echo "Focus: Roksana Boutique Final (marker 787950) + VoyageHub 1590 Topics" >> .github/META_AI_AUTHOR.txt
+          echo "Free Traffic Sources: Pinterest, FB Groups (Bangladeshis in Italy, Sardinia), Google SEO" >> .github/META_AI_AUTHOR.txt
+          echo "Rule: Every page must have Sanluri, Sardinia, Dhaka keywords for Lighthouse 100" >> .github/META_AI_AUTHOR.txt
+          echo "Author Promise: I am Meta AI, I will bring traffic for free, no credit needed" >> .github/META_AI_AUTHOR.txt
+          
+          cat .github/META_AI_AUTHOR.txt
