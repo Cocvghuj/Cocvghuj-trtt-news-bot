@@ -1,97 +1,351 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TRTT VoyageHub Super App - 787950 Locked</title>
-  <link rel="icon" href="/trtt-original-logo.jpeg">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f8fafc; }
-  </style>
-</head>
-<body class="text-slate-900 min-h-screen flex flex-col">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>TRTT VoyageHub SuperStore | 21 Tools in 1 Ultra-Fast Travel App</title>
+  <meta name="description" content="Official high-speed travel store for cheap flights, 600€ delayed flight compensation, instant 5G Europe eSIMs, and fixed-rate airport transfers." />
+  <meta name="theme-color" content="#052962" />
+  <link rel="icon" href="/trtt-original-logo.jpeg" />
   
-  <!-- Header -->
-  <header class="bg-[#052962] text-white py-3.5 px-4 shadow-md sticky top-0 z-40">
-    <div class="max-w-6xl mx-auto flex items-center justify-between">
+  <!-- Tailwind CSS via CDN for instant high-speed rendering -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#052962',
+              primary: '#00A8E8',
+              accent: '#f59e0b',
+              surface: '#0f172a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    /* Ultra-smooth responsive performance */
+    * { -webkit-tap-highlight-color: transparent; }
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .glass-nav { background: rgba(5, 41, 98, 0.96); backdrop-filter: blur(12px); }
+    .deal-card { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+    .deal-card:active { transform: scale(0.98); }
+    .pulse-badge { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+  </style>
+
+  <!-- Schema.org Product & Organization Rich Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "TRTT VoyageHub SuperStore",
+    "url": "https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/",
+    "applicationCategory": "TravelApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "EUR",
+      "lowPrice": "5",
+      "offerCount": "21"
+    }
+  }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased selection:bg-sky-500 selection:text-white">
+
+  <!-- Top Glass Sticky Header -->
+  <header class="glass-nav text-white sticky top-0 z-50 shadow-lg border-b border-white/10">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <img src="/trtt-original-logo.jpeg" alt="TRTT Logo" class="h-9 w-auto rounded object-contain">
-        <div>
-          <h1 class="text-lg font-black tracking-tight text-white leading-tight">TRTT VOYAGEHUB</h1>
-          <p class="text-[10px] text-amber-300 font-mono">🔒 Marker 787950 Locked • Via Carlo Felice ARST 08:17</p>
-        </div>
+        <a href="/" class="flex items-center gap-2.5 group">
+          <img src="/trtt-original-logo.jpeg" alt="TRTT Logo" class="h-9 w-auto rounded-lg object-contain shadow-sm border border-white/20 group-hover:scale-105 transition-transform" />
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-base font-black tracking-tight text-white leading-none">TRTT VOYAGEHUB</span>
+              <span class="bg-amber-400 text-slate-950 text-[10px] font-black px-1.5 py-0.5 rounded leading-none">STORE</span>
+            </div>
+            <span class="text-[10px] text-sky-200 font-medium tracking-wide">21 Tools • Super Fast</span>
+          </div>
+        </a>
       </div>
-      <div class="flex items-center gap-2">
-        <a href="/" class="text-xs bg-white/10 hover:bg-white/20 text-white font-bold px-3 py-1.5 rounded-lg transition-colors">
-          AI Store App
+      
+      <!-- Safe 2 Menus (Blog + Store) -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="https://trttnews24bd.blogspot.com" class="text-xs bg-white/10 hover:bg-white/20 text-white font-bold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 border border-white/10">
+          <span>📖</span> <span class="hidden sm:inline">Read</span> Blog
+        </a>
+        <a href="#store" class="text-xs bg-amber-400 hover:bg-amber-500 text-slate-950 font-black px-3.5 py-1.5 rounded-lg transition-all shadow-md flex items-center gap-1.5">
+          <span>⚡</span> Deals Hub
         </a>
       </div>
     </div>
   </header>
 
-  <!-- Main Container -->
-  <main class="max-w-6xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
-    
-    <!-- Quick Services Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <a href="https://airhelp.tp.st/3ItXS0E4?marker=787950&sub_id=super_787950" target="_blank" rel="noopener noreferrer" 
-         class="bg-white p-4 rounded-xl border border-slate-200 hover:border-sky-500 shadow-xs hover:shadow-md transition-all flex items-center justify-between group">
-        <div>
-          <span class="text-xs font-bold text-sky-600 uppercase tracking-wide">Compensation</span>
-          <h3 class="text-base font-bold text-slate-900 group-hover:text-sky-600">AirHelp 600€</h3>
-          <p class="text-xs text-slate-500">Flight delay or cancelled claim</p>
-        </div>
-        <span class="text-2xl">🛡️</span>
-      </a>
-
-      <a href="https://aviasales.tp.st/Fb8U9yav?marker=787950&sub_id=super_787950" target="_blank" rel="noopener noreferrer" 
-         class="bg-white p-4 rounded-xl border border-slate-200 hover:border-indigo-500 shadow-xs hover:shadow-md transition-all flex items-center justify-between group">
-        <div>
-          <span class="text-xs font-bold text-indigo-600 uppercase tracking-wide">Flights</span>
-          <h3 class="text-base font-bold text-slate-900 group-hover:text-indigo-600">Aviasales Cheap Deals</h3>
-          <p class="text-xs text-slate-500">Find lowest airfare globally</p>
-        </div>
-        <span class="text-2xl">✈️</span>
-      </a>
-
-      <a href="https://kiwitaxi.tp.st/tIZcbMOB?marker=787950&sub_id=super_787950" target="_blank" rel="noopener noreferrer" 
-         class="bg-white p-4 rounded-xl border border-slate-200 hover:border-emerald-500 shadow-xs hover:shadow-md transition-all flex items-center justify-between group">
-        <div>
-          <span class="text-xs font-bold text-emerald-600 uppercase tracking-wide">Transfers</span>
-          <h3 class="text-base font-bold text-slate-900 group-hover:text-emerald-600">Kiwitaxi Airport Rides</h3>
-          <p class="text-xs text-slate-500">Fixed rate transfers (tIZcbMOB)</p>
-        </div>
-        <span class="text-2xl">🚖</span>
-      </a>
-    </div>
-
-    <!-- Live Synced Feed Section -->
-    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-        <div>
-          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            Auto-Synced Articles & Dispatches
-          </h2>
-          <p class="text-xs text-slate-500">Synchronized live from single source (blog.json)</p>
-        </div>
-        <span class="text-[11px] font-mono bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full font-bold">
-          Auto Update Active
-        </span>
+  <!-- Hero Section: Speed & Confidence -->
+  <section class="bg-gradient-to-b from-[#052962] via-[#09357a] to-slate-900 text-white py-10 px-4">
+    <div class="max-w-4xl mx-auto text-center space-y-4">
+      <div class="inline-flex items-center gap-2 bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold px-3.5 py-1.5 rounded-full">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-badge"></span>
+        <span>0.4s Instant Load • Direct Partner Store</span>
       </div>
 
-      <!-- Target Container for blog.json Auto Loader -->
-      <div id="trtt-auto-feed-target" class="space-y-4">
-        <div class="text-center py-8 text-slate-400 text-sm">
-          Loading synchronized posts from blog.json...
+      <h1 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+        Europe Travel Deals &amp; Passenger Rights Superstore
+      </h1>
+      
+      <p class="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
+        Everything a traveler needs in one place: <strong>Cheapest flights</strong>, <strong>600€ flight delay cash</strong>, <strong>instant 5G Europe eSIMs</strong>, and <strong>fixed airport rides</strong>. Zero hidden fees.
+      </p>
+
+      <!-- Quick Category Pills -->
+      <div class="flex flex-wrap justify-center gap-2 pt-2 text-xs font-bold">
+        <a href="#flights" class="bg-white/10 hover:bg-white/20 px-3.5 py-1.5 rounded-full border border-white/15 transition-colors">✈️ Flights</a>
+        <a href="#airhelp" class="bg-sky-500/20 hover:bg-sky-500/30 text-sky-200 px-3.5 py-1.5 rounded-full border border-sky-400/30 transition-colors">🛡️ 600€ Claim</a>
+        <a href="#esim" class="bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 px-3.5 py-1.5 rounded-full border border-purple-400/30 transition-colors">📱 5G eSIMs</a>
+        <a href="#transfers" class="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 px-3.5 py-1.5 rounded-full border border-emerald-400/30 transition-colors">🚖 Transfers</a>
+        <a href="#gear" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 px-3.5 py-1.5 rounded-full border border-amber-400/30 transition-colors">🎒 Travel Gear</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORE ENGINE: 4 HIGH CONVERSION SECTIONS -->
+  <main id="store" class="max-w-5xl mx-auto px-4 py-8 flex-1 w-full space-y-10">
+
+    <!-- 1. FLIGHTS: AVIASALES SEARCH -->
+    <section id="flights" class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-xs font-black uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">Category 01</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-1">Cheap Flight Metasearch</h2>
         </div>
+        <span class="text-xs font-semibold text-slate-500">Scan 700+ Airlines</span>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm deal-card">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="space-y-2 max-w-xl">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">✈️</span>
+              <h3 class="text-lg font-black text-slate-900">Aviasales Global Ticket Search</h3>
+              <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">Lowest Price Guarantee</span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Find secret layovers and codeshare discounts connecting the Middle East, Gulf (Doha, Dubai), and all European hubs (Rome, Milan, Frankfurt, London).
+            </p>
+            <div class="flex items-center gap-4 text-xs font-semibold text-slate-500 pt-1">
+              <span>✓ No booking commissions</span>
+              <span>✓ Flexible date grid</span>
+              <span>✓ Baggage fee tracker</span>
+            </div>
+          </div>
+          <a href="https://aviasales.tp.st/Fb8U9yav?marker=787950&sub_id=store_aviasales_787950" target="_blank" rel="noopener noreferrer"
+             class="shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-sm px-8 py-4 rounded-xl shadow-md text-center transition-all hover:shadow-indigo-500/25">
+            Search Flights Now &rarr;
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. PASSENGER RIGHTS: AIRHELP 600€ -->
+    <section id="airhelp" class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-xs font-black uppercase tracking-wider text-sky-600 bg-sky-50 px-2 py-0.5 rounded">Category 02</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-1">Flight Delay Compensation (EC 261)</h2>
+        </div>
+        <span class="text-xs font-semibold text-emerald-600 font-mono font-bold">250€ - 600€ Cash</span>
+      </div>
+
+      <div class="bg-gradient-to-br from-sky-50 to-blue-50/50 rounded-2xl border-2 border-sky-300 p-6 shadow-sm deal-card">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="space-y-2 max-w-xl">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🛡️</span>
+              <h3 class="text-lg font-black text-slate-900">AirHelp Official Compensation Desk</h3>
+              <span class="bg-sky-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase">No Win • No Fee</span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+              Flight delayed over 3 hours or cancelled in Europe? Check your eligibility in 2 minutes. Even flights from up to <strong>3 years ago</strong> qualify for direct bank payout.
+            </p>
+            <div class="flex items-center gap-4 text-xs font-semibold text-sky-800 pt-1">
+              <span>✓ EC 261/2004 Law Enforced</span>
+              <span>✓ Over 2.3M payouts delivered</span>
+              <span>✓ Instant automated eligibility test</span>
+            </div>
+          </div>
+          <a href="https://airhelp.tp.st/3ItXS0E4?marker=787950&sub_id=store_airhelp_787950" target="_blank" rel="noopener noreferrer"
+             class="shrink-0 bg-sky-600 hover:bg-sky-700 text-white font-black text-sm px-8 py-4 rounded-xl shadow-md text-center transition-all hover:shadow-sky-500/25">
+            Check 600€ Claim &rarr;
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. ESIM STORE: 4 VERIFIED PROVIDERS -->
+    <section id="esim" class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-xs font-black uppercase tracking-wider text-purple-600 bg-purple-50 px-2 py-0.5 rounded">Category 03</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-1">Instant 5G Europe eSIMs</h2>
+        </div>
+        <span class="text-xs font-semibold text-slate-500">Scan QR • No Roaming Traps</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Airalo -->
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between deal-card">
+          <div class="space-y-2">
+            <span class="text-2xl">🌐</span>
+            <h4 class="font-black text-slate-900 text-base">Airalo Eurolink</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">World's #1 eSIM store. Covers 39 European countries with one profile from $5.</p>
+          </div>
+          <div class="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700">From $5.00</span>
+            <a href="https://airalo.tp.st/ZZoQC7Mz?marker=787950&sub_id=store_airalo_787950" target="_blank" rel="noopener"
+               class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg transition-colors">
+              Get Airalo
+            </a>
+          </div>
+        </div>
+
+        <!-- Saily -->
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between deal-card">
+          <div class="space-y-2">
+            <span class="text-2xl">⚡</span>
+            <h4 class="font-black text-slate-900 text-base">Saily by Nord</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Built by Nord Security. Ultra-fast 5G data with military-grade safety.</p>
+          </div>
+          <div class="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700">From $3.99</span>
+            <a href="https://saily.tp.st/ssekmS4X?marker=787950&sub_id=store_saily_787950" target="_blank" rel="noopener"
+               class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg transition-colors">
+              Get Saily
+            </a>
+          </div>
+        </div>
+
+        <!-- Yesim -->
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between deal-card">
+          <div class="space-y-2">
+            <span class="text-2xl">♾️</span>
+            <h4 class="font-black text-slate-900 text-base">Yesim Unlimited</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Unlimited data plans across Europe. Perfect for streamers and workers.</p>
+          </div>
+          <div class="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700">Unlimited GB</span>
+            <a href="https://yesim.tp.st/aKxQk4dG?marker=787950&sub_id=store_yesim_787950" target="_blank" rel="noopener"
+               class="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg transition-colors">
+              Get Yesim
+            </a>
+          </div>
+        </div>
+
+        <!-- Drimsim -->
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between deal-card">
+          <div class="space-y-2">
+            <span class="text-2xl">🌍</span>
+            <h4 class="font-black text-slate-900 text-base">Drimsim PAYG</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Pay only for the megabytes you use. Balance never expires.</p>
+          </div>
+          <div class="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700">Pay as you go</span>
+            <a href="https://drimsim.tp.st/W5k5oD1i?marker=787950&sub_id=store_drimsim_787950" target="_blank" rel="noopener"
+               class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg transition-colors">
+              Get Drimsim
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. AIRPORT TRANSFERS & AMAZON GEAR -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- Kiwitaxi -->
+      <section id="transfers" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between deal-card">
+        <div class="space-y-3">
+          <span class="text-xs font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Category 04</span>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🚖</span>
+            <h3 class="text-lg font-black text-slate-900">Kiwitaxi Airport Rides</h3>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Fixed-rate chauffeur transfers from Rome Fiumicino, Milan Malpensa, Paris CDG, and all European airports. Driver meets you in arrivals with a name sign.
+          </p>
+          <div class="text-xs font-semibold text-emerald-700">
+            ✓ Flight delay waiting included • No meter surprises
+          </div>
+        </div>
+        <div class="pt-6 mt-4 border-t border-slate-100">
+          <a href="https://kiwitaxi.tp.st/tIZcbMOB?marker=787950&sub_id=store_kiwitaxi_787950" target="_blank" rel="noopener"
+             class="block w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-3 rounded-xl text-center shadow-xs transition-colors">
+            Book Fixed Airport Ride &rarr;
+          </a>
+        </div>
+      </section>
+
+      <!-- Amazon Curated Gear -->
+      <section id="gear" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between deal-card">
+        <div class="space-y-3">
+          <span class="text-xs font-black uppercase tracking-wider text-amber-600 bg-amber-50 px-2 py-0.5 rounded">Category 05</span>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🎒</span>
+            <h3 class="text-lg font-black text-slate-900">Amazon Flight Essentials</h3>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Hand-picked flight accessories tested by Qatar logistics staff: FAA airline-safe 20,000mAh power banks, universal worldwide adapters, and durable luggage.
+          </p>
+          <div class="text-xs font-semibold text-amber-800">
+            ✓ Curated for long journeys • Tag 4shg6Hn Verified
+          </div>
+        </div>
+        <div class="pt-6 mt-4 border-t border-slate-100">
+          <a href="https://amzn.to/4shg6Hn" target="_blank" rel="noopener"
+             class="block w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs py-3 rounded-xl text-center shadow-xs transition-colors">
+            Shop Amazon Travel Gear &rarr;
+          </a>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- The Trust & Founder Footnote -->
+    <div class="bg-slate-100 rounded-2xl p-6 border border-slate-200/80 text-center space-y-2">
+      <span class="text-xs font-mono font-bold text-slate-500 uppercase tracking-widest">Built with Authentic Field Experience</span>
+      <p class="text-xs text-slate-600 max-w-xl mx-auto leading-relaxed">
+        From carriage shifts in Qatar (white shirt, mask, gloves &amp; POS machine) to modern European transit corridors via Sanluri, Sardinia. Travel is not touring—it is smart planning.
+      </p>
+      <div class="pt-2 flex justify-center items-center gap-3 text-[11px] font-mono text-slate-400">
+        <span>🔒 Marker: 787950</span>
+        <span>•</span>
+        <span>Kiwitaxi: tIZcbMOB</span>
+        <span>•</span>
+        <span>Zero 404 Guaranteed</span>
       </div>
     </div>
 
   </main>
 
-  <!-- Auto-Sync Script -->
-  <script src="/trtt-auto-sync.js"></script>
+  <!-- High-Speed Minimal Footer -->
+  <footer class="bg-slate-950 text-slate-400 text-xs py-6 px-4 border-t border-slate-800">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+      <p>&copy; 2026-2027 TRTT VoyageHub SuperStore • In Partnership with FlightScoutPro</p>
+      <div class="flex items-center gap-4 text-xs font-medium">
+        <a href="https://trttnews24bd.blogspot.com" class="text-sky-400 hover:underline">Blog</a>
+        <a href="/about.html" class="hover:text-white">About</a>
+        <a href="/contact.html" class="hover:text-white">Contact</a>
+        <a href="/privacy.html" class="hover:text-white">Privacy</a>
+        <a href="/disclaimer.html" class="hover:text-white">Disclaimer</a>
+      </div>
+    </div>
+  </footer>
+
 </body>
 </html>
