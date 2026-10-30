@@ -355,3 +355,20 @@
 
   setInterval(loop, 400);
 })();
+// TRTT FREE AI Engine - Add here
+const OPENROUTER_KEY = "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";
+const AI_MODEL = "nvidia/nemotron-3-nano-30b-vl:free";
+
+window.trttAI = async function(q){
+  const r = await fetch("https://openrouter.ai/api/v1/chat/completions",{
+    method:"POST",
+    headers:{
+      "Authorization":"Bearer "+OPENROUTER_KEY,
+      "Content-Type":"application/json",
+      "HTTP-Referer":"https://cocvghuj.github.io/"
+    },
+    body: JSON.stringify({model:AI_MODEL, messages:[{role:"user",content:q}]})
+  });
+  const d = await r.json();
+  return d.choices[0].message.content;
+}
