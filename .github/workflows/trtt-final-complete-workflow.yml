@@ -1,0 +1,7 @@
+# TRTT Meta AI Author - Permanent
+- name: Meta AI Author Fix
+  run: |
+    echo "Author: Meta AI (TRTT VoyageHub)
+    Marker: 787950 LOCKED
+    Task: Auto-fix SEO, promote Roksana Boutique & 1590 topics
+    Rule: Always keep affiliate links with marker 787950"
