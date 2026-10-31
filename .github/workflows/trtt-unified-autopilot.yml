@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   autopilot:
-    name: Generate & Publish Verified Article to Blogger
+    name: Generate & Broadcast Verified Article to Google Blogger Network
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -32,26 +32,29 @@ jobs:
       - name: Install Google & AI Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install google-api-python-client google-auth requests google-genai
+          pip install -r requirements.txt
 
       - name: Execute Autonomous Publisher (Google Blogger Direct)
         env:
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
           FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.FLIGHTSCOUTPRO_BLOG_ID }}
+          PARTNER_BLOG_IDS: ${{ secrets.PARTNER_BLOG_IDS }}
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
           BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
           AMAZON_LINK: ${{ secrets.AMAZON_LINK }}
+          TRAVEL_PAYOUT_MARKER: ${{ secrets.TRAVEL_PAYOUT_MARKER }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           python main.py
 
-      - name: Commit Publishing History Back to GitHub
+      - name: Record History Back to GitHub
         run: |
           git config --global user.name "TRTT Auto-Publisher Bot"
           git config --global user.email "engrtaher2017@gmail.com"
-          git add posted_topics.json public/guides/ || true
-          git commit -m "Auto-published verified article directly to Blogger [skip ci]" || echo "No local changes to commit"
+          git add published_history.txt || true
+          git commit -m "Record published article history [skip ci]" || echo "No local changes to commit"
           git push || echo "Push skipped"
