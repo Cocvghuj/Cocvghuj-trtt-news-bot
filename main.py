@@ -349,6 +349,38 @@ def is_trusted_source_url(url: str) -> bool:
         return False
 
 
+def verify_source_url(url: str, timeout: int = 8) -> bool:
+    """Check that a candidate source is reachable and stays on an allowlisted HTTPS domain."""
+    if not is_trusted_source_url(url):
+        return False
+    try:
+        response = requests.get(
+            url,
+            timeout=timeout,
+            allow_redirects=True,
+            headers={"User-Agent": "TRTTNewsSourceChecker/1.0 (+https://trttnews24bd.blogspot.com/)"},
+            stream=True,
+        )
+        try:
+            final_url = getattr(response, "url", url)
+            status_code = int(getattr(response, "status_code", 0))
+            content_type = str(getattr(response, "headers", {}).get("Content-Type", "")).lower()
+            return (
+                200 <= status_code < 300
+                and is_trusted_source_url(final_url)
+                and ("text/html" in content_type or "application/xhtml+xml" in content_type)
+            )
+        finally:
+            close = getattr(response, "close", None)
+            if callable(close):
+                close()
+    except requests.RequestException as exc:
+        print(f"Source URL check failed for {url}: {exc}")
+        return False
+    except (TypeError, ValueError):
+        return False
+
+
 def validate_article_response(text: str) -> dict:
     """Validate AI output before it can become a Blogger draft."""
     # Fail closed: never turn an API outage into an unsourced fallback article.
@@ -385,8 +417,9 @@ def validate_article_response(text: str) -> dict:
     source_links = re.findall(r'<a\b[^>]*href\s*=\s*["\'](https?://[^"\']+)["\'][^>]*>', sources_section, re.IGNORECASE)
     distinct_sources = {url.rstrip(".,);") for url in source_links}
     approved_sources = {url for url in distinct_sources if is_trusted_source_url(url)}
-    if len(approved_sources) < 2:
-        raise RuntimeError("Sources section must contain at least two distinct HTTPS URLs from the trusted-domain allowlist. Draft creation aborted.")
+    reachable_sources = {url for url in approved_sources if verify_source_url(url)}
+    if len(reachable_sources) < 2:
+        raise RuntimeError("Sources section must contain at least two reachable HTTPS HTML pages on trusted domains. Draft creation aborted.")
 
     meta = {
         "title": title_value,
