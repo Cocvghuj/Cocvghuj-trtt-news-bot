@@ -2,6 +2,6 @@
   "name": "cocvghuj-trtt-news-bot",
   "version": "1.0.0",
   "scripts": {
-    "build": "mkdir -p dist && cp -r *.html *.js *.json *.png *.jpeg *.jpg dist/ 2>/dev/null || true"
+    "build": "node build.js"
   }
 }
