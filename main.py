@@ -15,7 +15,12 @@ import requests
 from google import genai
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
-from slugify import slugify
+try:
+    from slugify import slugify
+except ImportError:
+    def slugify(text: str) -> str:
+        text = re.sub(r'[^\w\s-]', '', str(text).lower())
+        return re.sub(r'[-\s]+', '-', text).strip('-')
 
 # ==============================================================================
 # CONFIGURATION & SECRETS

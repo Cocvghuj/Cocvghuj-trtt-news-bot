@@ -27,12 +27,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
 
       - name: Install Google & AI Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install google-api-python-client google-auth google-auth-httplib2 google-auth-oauthlib requests google-genai python-slugify
+          pip install -r requirements.txt 2>/dev/null || true
 
       - name: Execute Autonomous Publisher (Google Blogger Direct)
         env:
