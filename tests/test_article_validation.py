@@ -184,5 +184,40 @@ class ArticleValidationTests(unittest.TestCase):
             main.validate_article_response("[METADATA]{bad json}[/METADATA]" + body)
 
 
+class DraftHistoryTests(unittest.TestCase):
+    def test_topic_history_key_matches_topic_selection_key(self):
+        topic = "Schengen Transit Checklist: Flight Safe Power Banks, SIMs and Rights"
+        self.assertEqual(main.topic_history_key(topic), main.slugify(topic))
+
+    def test_select_next_topic_skips_recorded_topic(self):
+        topics = [
+            {"topic": "First topic"},
+            {"topic": "Second topic"},
+        ]
+        selected = main.select_next_topic(
+            topics,
+            [main.topic_history_key("First topic")],
+        )
+        self.assertEqual(selected["topic"], "Second topic")
+
+    def test_select_next_topic_retries_first_when_all_topics_recorded(self):
+        topics = [{"topic": "First topic"}, {"topic": "Second topic"}]
+        history = [main.topic_history_key(item["topic"]) for item in topics]
+        self.assertEqual(main.select_next_topic(topics, history), topics[0])
+
+    def test_history_is_not_saved_without_confirmed_drafts(self):
+        with mock.patch.object(main, "save_history") as save:
+            recorded = main.record_topic_after_draft("A topic", [])
+        self.assertFalse(recorded)
+        save.assert_not_called()
+
+    def test_history_saves_topic_key_after_confirmed_draft(self):
+        drafts = [{"blog_name": "Test blog", "post_id": "123"}]
+        with mock.patch.object(main, "save_history") as save:
+            recorded = main.record_topic_after_draft("A topic", drafts)
+        self.assertTrue(recorded)
+        save.assert_called_once_with(main.topic_history_key("A topic"))
+
+
 if __name__ == "__main__":
     unittest.main()
