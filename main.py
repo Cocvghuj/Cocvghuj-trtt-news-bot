@@ -10,6 +10,7 @@ import json
 import os
 import re
 import difflib
+import html
 from datetime import datetime
 from typing import List, Dict, Optional
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
@@ -954,10 +955,11 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
 # MULTI-BLOG BROADCASTING VIA OFFICIAL GOOGLE BLOGGER API
 # ==============================================================================
 def normalize_article_text(value: str) -> str:
-    """Normalize article text for conservative duplicate detection."""
-    text = re.sub(r'<[^>]+>', ' ', value or '')
-    text = re.sub(r'&(?:nbsp|amp|quot|#39);', ' ', text, flags=re.IGNORECASE)
-    return re.sub(r'\\s+', ' ', text).strip().lower()
+    """Normalize HTML/text consistently for conservative duplicate detection."""
+    text = html.unescape(value or '')
+    text = re.sub(r'<[^>]+>', ' ', text)
+    return re.sub(r'\s+', ' ', text).strip().lower()
+
 
 
 DUPLICATE_CHECK_PAGE_SIZE = 100
