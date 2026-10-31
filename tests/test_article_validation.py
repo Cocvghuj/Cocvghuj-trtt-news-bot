@@ -73,6 +73,45 @@ class SourceUrlReachabilityTests(unittest.TestCase):
             self.assertFalse(main.verify_source_url("https://europa.eu/document"))
 
 
+class EvidenceLedgerTests(unittest.TestCase):
+    def test_rejects_missing_evidence_block(self):
+        body = "<p>" + ("Useful content. " * 100) + "</p><h2>Sources</h2>"
+        with self.assertRaises(RuntimeError):
+            main.validate_article_response(article(body))
+
+    def test_rejects_invalid_evidence_json(self):
+        metadata = {
+            "title": "Test article",
+            "search_description": "A test description",
+            "labels": ["Testing"],
+            "permalink_slug": "test-article",
+        }
+        raw = "[METADATA]" + json.dumps(metadata) + "[/METADATA]"
+        raw += "[EVIDENCE]{invalid json}[/EVIDENCE]"
+        raw += "<p>" + ("Useful content. " * 100) + "</p>"
+        with self.assertRaises(RuntimeError):
+            main.validate_article_response(raw)
+
+    def test_rejects_claim_mapped_to_non_inline_source(self):
+        metadata = {
+            "title": "Test article",
+            "search_description": "A test description",
+            "labels": ["Testing"],
+            "permalink_slug": "test-article",
+        }
+        evidence = {"claims": [
+            {"claim": "A factual claim with sufficient descriptive length.", "source_urls": ["https://example.com/not-cited"]}
+            for _ in range(2)
+        ]}
+        raw = "[METADATA]" + json.dumps(metadata) + "[/METADATA]"
+        raw += "[EVIDENCE]" + json.dumps(evidence) + "[/EVIDENCE]"
+        raw += "<p>" + ("Useful content. " * 100) + "</p>"
+        raw += "<h2>Sources</h2>"
+        raw += '<a href="https://europa.eu/source">EU</a><a href="https://gov.uk/source">UK</a>'
+        with self.assertRaises(RuntimeError):
+            main.validate_article_response(raw)
+
+
 class ArticleValidationTests(unittest.TestCase):
     def test_accepts_two_distinct_sources_in_sources_section(self):
         body = (
