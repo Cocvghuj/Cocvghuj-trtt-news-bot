@@ -281,6 +281,26 @@ class DraftHistoryTests(unittest.TestCase):
 
 
 
+class DuplicateTextNormalizationTests(unittest.TestCase):
+    def test_decodes_html_entities_before_comparing_titles(self):
+        self.assertEqual(
+            main.normalize_article_text("Flight &amp; Travel&nbsp;Guide"),
+            "flight & travel guide",
+        )
+
+    def test_strips_markup_and_normalizes_whitespace(self):
+        self.assertEqual(
+            main.normalize_article_text("<p>Flight</p>   <strong>Delay</strong>\nClaim"),
+            "flight delay claim",
+        )
+
+    def test_decodes_numeric_and_named_entities(self):
+        self.assertEqual(
+            main.normalize_article_text("Tom&#39;s&nbsp;Aviation &quot;Guide&quot;"),
+            "tom's aviation \"guide\"",
+        )
+
+
 class DuplicatePaginationTests(unittest.TestCase):
     class FakeRequest:
         def __init__(self, response):
