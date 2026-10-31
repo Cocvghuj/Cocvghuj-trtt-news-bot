@@ -437,9 +437,17 @@ Followed by the complete HTML article."""
         raise RuntimeError("Article body is too short for editorial review. Draft creation aborted.")
 
     source_heading = re.search(r'<h[1-6][^>]*>\s*Sources\s*</h[1-6]>', content_html, re.IGNORECASE)
-    source_links = re.findall(r'<a\b[^>]*href\s*=\s*["\']https?://[^"\']+["\'][^>]*>', content_html, re.IGNORECASE)
-    if not source_heading or len(source_links) < 2:
-        raise RuntimeError("Article lacks a Sources section with at least two direct source links. Draft creation aborted.")
+    if not source_heading:
+        raise RuntimeError("Article lacks a Sources section. Draft creation aborted.")
+    # Count distinct URLs only inside the Sources section, not affiliate/action-bar links.
+    sources_section = content_html[source_heading.end():]
+    next_heading = re.search(r'<h[1-6][^>]*>', sources_section, re.IGNORECASE)
+    if next_heading:
+        sources_section = sources_section[:next_heading.start()]
+    source_links = re.findall(r'<a\b[^>]*href\s*=\s*["\'](https?://[^"\']+)["\'][^>]*>', sources_section, re.IGNORECASE)
+    distinct_sources = {url.rstrip(".,);") for url in source_links}
+    if len(distinct_sources) < 2:
+        raise RuntimeError("Sources section must contain at least two distinct direct URLs. Draft creation aborted.")
 
     meta = {
         "title": title_value,
