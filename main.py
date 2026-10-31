@@ -156,9 +156,20 @@ def save_history(topic_id: str):
         handle.write(topic_id + "\n")
 
 
-def record_topic_after_draft(topic: str, created_drafts: List[dict]) -> bool:
-    """Record a topic only when Blogger confirms at least one created draft."""
-    if not created_drafts:
+def all_blog_targets_accounted_for(blog_outcomes: List[dict]) -> bool:
+    """A topic is complete only when every target has a draft or existing duplicate."""
+    if not blog_outcomes:
+        return False
+    return all(
+        outcome.get("status") in {"created", "already_exists"}
+        and outcome.get("post_id")
+        for outcome in blog_outcomes
+    )
+
+
+def record_topic_after_draft(topic: str, blog_outcomes: List[dict]) -> bool:
+    """Record a topic only after every configured blog has the article."""
+    if not all_blog_targets_accounted_for(blog_outcomes):
         return False
     save_history(topic_history_key(topic))
     return True
@@ -1029,7 +1040,24 @@ def create_drafts_on_blogs(title: str, html_content: str, meta: dict, article_da
                     (article_data or {}).get("content", html_content)
                 )
                 if duplicate:
-                    print("DUPLICATE SKIPPED for " + blog_name + ": " + str(duplicate.get("title", "")))
+                    duplicate_id = duplicate.get("id")
+                    if duplicate_id:
+                        edit_url = "https://www.blogger.com/blog/post/edit/" + str(blog_id) + "/" + str(duplicate_id)
+                        created_drafts.append({
+                            "blog_name": blog_name,
+                            "blog_id": blog_id,
+                            "post_id": str(duplicate_id),
+                            "edit_url": edit_url,
+                            "status": "already_exists",
+                        })
+                        print("EXISTING ARTICLE CONFIRMED for " + blog_name + ": " + edit_url)
+                    else:
+                        created_drafts.append({
+                            "blog_name": blog_name,
+                            "blog_id": blog_id,
+                            "status": "failed",
+                            "error": "Duplicate post found without a post ID.",
+                        })
                     continue
 
                 # Generate tailored HTML per blog if article_data and photo are available
@@ -1055,9 +1083,28 @@ def create_drafts_on_blogs(title: str, html_content: str, meta: dict, article_da
                 post_id = post.get("id")
                 if post_id:
                     edit_url = "https://www.blogger.com/blog/post/edit/" + str(blog_id) + "/" + str(post_id)
-                    created_drafts.append({"blog_name": blog_name, "blog_id": blog_id, "post_id": str(post_id), "edit_url": edit_url})
+                    created_drafts.append({
+                        "blog_name": blog_name,
+                        "blog_id": blog_id,
+                        "post_id": str(post_id),
+                        "edit_url": edit_url,
+                        "status": "created",
+                    })
                     print("SUCCESS: Draft created for " + blog_name + ": " + edit_url)
+                else:
+                    created_drafts.append({
+                        "blog_name": blog_name,
+                        "blog_id": blog_id,
+                        "status": "failed",
+                        "error": "Blogger insert response did not contain a post ID.",
+                    })
             except Exception as blog_err:
+                created_drafts.append({
+                    "blog_name": blog_name,
+                    "blog_id": blog_id,
+                    "status": "failed",
+                    "error": str(blog_err),
+                })
                 print(f"Notice posting to {blog_name} (ID: {blog_id}): {blog_err}")
 
         return created_drafts
@@ -1117,13 +1164,35 @@ def main():
         photo=photo
     )
     
-    if not created_drafts:
-        print("No Blogger drafts were created. Topic was NOT added to history; a later run may retry it.")
+    successful_blog_outcomes = [
+        outcome for outcome in created_drafts
+        if outcome.get("status") in {"created", "already_exists"}
+    ]
+    failed_blog_outcomes = [
+        outcome for outcome in created_drafts
+        if outcome.get("status") == "failed"
+    ]
+
+    if successful_blog_outcomes:
+        send_draft_notification(
+            article_data["meta"]["title"],
+            successful_blog_outcomes,
+            article_data["content"][:220],
+        )
+
+    if not record_topic_after_draft(selected_topic_info["topic"], created_drafts):
+        print(
+            "Topic remains in retry queue: "
+            + str(len(failed_blog_outcomes))
+            + " configured blog target(s) still need a confirmed draft."
+        )
         return
 
-    send_draft_notification(article_data["meta"]["title"], created_drafts, article_data["content"][:220])
-    record_topic_after_draft(selected_topic_info["topic"], created_drafts)
-    print(f"EXECUTION COMPLETE: Created {len(created_drafts)} Blogger draft(s); awaiting human review.")
+    newly_created = sum(1 for outcome in successful_blog_outcomes if outcome.get("status") == "created")
+    print(
+        f"EXECUTION COMPLETE: {newly_created} new Blogger draft(s); "
+        "all configured blogs now have the article; awaiting human review."
+    )
 
 if __name__ == "__main__":
     main()
