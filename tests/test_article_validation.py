@@ -14,13 +14,30 @@ def article(body):
     return "[METADATA]" + json.dumps(metadata) + "[/METADATA]" + body
 
 
+class TrustedSourceDomainTests(unittest.TestCase):
+    def test_accepts_https_eu_official_domain(self):
+        self.assertTrue(main.is_trusted_source_url("https://eur-lex.europa.eu/legal-content/EN/TXT/"))
+
+    def test_accepts_subdomain_of_allowlisted_domain(self):
+        self.assertTrue(main.is_trusted_source_url("https://www.gov.uk/"))
+
+    def test_rejects_http_even_on_allowlisted_domain(self):
+        self.assertFalse(main.is_trusted_source_url("http://europa.eu/example"))
+
+    def test_rejects_lookalike_domain(self):
+        self.assertFalse(main.is_trusted_source_url("https://europa.eu.example.com/fake"))
+
+    def test_rejects_unlisted_domain(self):
+        self.assertFalse(main.is_trusted_source_url("https://example.com/source"))
+
+
 class ArticleValidationTests(unittest.TestCase):
     def test_accepts_two_distinct_sources_in_sources_section(self):
         body = (
             "<h2>Article</h2><p>" + ("Useful content. " * 100) + "</p>"
             "<h2>Sources</h2>"
             '<p><a href="https://europa.eu/source-a">EU</a></p>'
-            '<p><a href="https://transport.gov/source-b">Government</a></p>'
+            '<p><a href="https://gov.uk/source-b">Government</a></p>'
         )
         result = main.validate_article_response(article(body))
         self.assertEqual(result["meta"]["title"], "Test article")
