@@ -248,10 +248,17 @@ def post_to_blogger(title: str, html_content: str, labels: List[str]) -> Optiona
             token_uri="https://oauth2.googleapis.com/token",
         )
         service = build("blogger", "v3", credentials=creds)
+        # 100% Google Blogger & Search Console Standards
         body = {
             "title": title,
             "content": html_content,
-            "labels": labels
+            "labels": labels,
+            "location": {
+                "name": "Sanluri, Sardinia, Italy",
+                "lat": 39.5613,
+                "lng": 8.6332,
+                "span": "0.05,0.05"
+            }
         }
         post = service.posts().insert(blogId=BLOGGER_BLOG_ID, body=body).execute()
         post_url = post.get("url")
