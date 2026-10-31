@@ -341,8 +341,10 @@ EDITORIAL REQUIREMENTS (Google Helpful Content & E-E-A-T Standards):
    - <h2>Airline Traps & Pitfalls to Avoid</h2>
    - <h2>Essential Travel Tech & Checklist</h2>
    - <h2>Frequently Asked Questions</h2> (3 clear, concrete Q&As)
-3. ZERO MENTION of AI, LLM, or prompts.
-4. Also generate a JSON header block formatted as:
+3. Do not invent personal field experience, interviews, quotes, statistics, legal rules, prices, or current events. Clearly distinguish established facts from practical suggestions.
+4. Include a final <h2>Sources</h2> section with at least two direct links to relevant, authoritative primary sources (for example official EU, government, regulator, airport, airline, or provider documentation). Link only sources you actually relied on; never fabricate URLs. If reliable sources cannot be identified, say so and do not produce a publishable article.
+5. Do not claim facts are verified merely because they are generated. Avoid unsupported certainty.
+6. Also generate a JSON header block formatted as:
 [METADATA]
 {{
   "title": "{topic}",
@@ -411,32 +413,42 @@ Followed by the complete HTML article."""
             except Exception as or_err:
                 print(f"OpenRouter ({or_model}) attempt notice: {or_err}")
 
-    # Layer 3: Autonomous Expert Knowledge Engine Fallback (guaranteed 100% uptime)
+    # Fail closed: never turn an API outage into an unsourced fallback article.
     if not text:
-        print("Using Built-in Autonomous Expert Travel Intelligence Engine fallback.")
-        return generate_fallback_expert_article(topic_info)
+        raise RuntimeError("No AI provider returned an article. Draft creation aborted; no fallback content will be used.")
+
+    meta_match = re.search(r'\[METADATA\](.*?)\[/METADATA\]', text, re.DOTALL)
+    if not meta_match:
+        raise RuntimeError("Article is missing the required metadata block. Draft creation aborted.")
+
+    try:
+        parsed_meta = json.loads(meta_match.group(1).strip())
+    except (TypeError, ValueError) as exc:
+        raise RuntimeError("Article metadata is invalid JSON. Draft creation aborted.") from exc
+
+    content_html = text.replace(meta_match.group(0), "").strip()
+    title_value = str(parsed_meta.get("title", "")).strip()
+    description = str(parsed_meta.get("search_description", "")).strip()
+    labels = parsed_meta.get("labels")
+    permalink = str(parsed_meta.get("permalink_slug", "")).strip()
+    if not title_value or not description or not isinstance(labels, list) or not labels or not permalink:
+        raise RuntimeError("Article metadata is incomplete. Draft creation aborted.")
+    if len(content_html) < 1200:
+        raise RuntimeError("Article body is too short for editorial review. Draft creation aborted.")
+
+    source_heading = re.search(r'<h[1-6][^>]*>\s*Sources\s*</h[1-6]>', content_html, re.IGNORECASE)
+    source_links = re.findall(r'<a\b[^>]*href\s*=\s*["\']https?://[^"\']+["\'][^>]*>', content_html, re.IGNORECASE)
+    if not source_heading or len(source_links) < 2:
+        raise RuntimeError("Article lacks a Sources section with at least two direct source links. Draft creation aborted.")
 
     meta = {
-        "title": topic,
-        "search_description": f"Verified field guide on {topic} with official passenger rights and booking tips.",
-        "labels": topic_info["default_labels"],
-        "permalink_slug": slugify(topic)
+        "title": title_value,
+        "search_description": description[:160],
+        "labels": [str(label).strip() for label in labels if str(label).strip()],
+        "permalink_slug": slugify(permalink)
     }
-    
-    meta_match = re.search(r'\[METADATA\](.*?)\[/METADATA\]', text, re.DOTALL)
-    content_html = text
-    if meta_match:
-        try:
-            parsed_meta = json.loads(meta_match.group(1).strip())
-            meta["title"] = parsed_meta.get("title", meta["title"])
-            meta["search_description"] = parsed_meta.get("search_description", meta["search_description"])[:160]
-            if parsed_meta.get("labels"):
-                meta["labels"] = list(set(meta["labels"] + parsed_meta["labels"]))
-            if parsed_meta.get("permalink_slug"):
-                meta["permalink_slug"] = slugify(parsed_meta["permalink_slug"])
-        except Exception as e:
-            print(f"Metadata JSON parsing notice: {e}")
-        content_html = text.replace(meta_match.group(0), "").strip()
+    if not meta["labels"] or not meta["permalink_slug"]:
+        raise RuntimeError("Article labels or permalink are invalid. Draft creation aborted.")
 
     return {
         "meta": meta,
