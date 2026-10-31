@@ -54,6 +54,7 @@ FLIGHTSCOUTPRO_URL = "https://flightscoutpro.blogspot.com"
 PWA_URL = "https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950"
 
 HISTORY_FILE = "drafted_history.txt"
+HISTORY_MIGRATION_FILE = "history_migration_map.json"
 
 # Core Topics designed for High Google Search Volume & Affiliate Conversion
 TOPIC_POOL = [
@@ -99,11 +100,41 @@ TOPIC_POOL = [
     }
 ]
 
+def apply_history_migrations(history: List[str], migration_map: dict) -> List[str]:
+    """Add explicitly mapped topic keys while preserving every legacy entry."""
+    migrated = list(history)
+    if not isinstance(migration_map, dict):
+        return migrated
+    for legacy_key, topic_key in migration_map.items():
+        if (
+            isinstance(legacy_key, str)
+            and legacy_key in history
+            and isinstance(topic_key, str)
+            and topic_key.strip()
+        ):
+            normalized_key = topic_key.strip()
+            if normalized_key not in migrated:
+                migrated.append(normalized_key)
+    return migrated
+
+
 def load_history() -> List[str]:
     if not os.path.exists(HISTORY_FILE):
-        return []
-    with open(HISTORY_FILE, "r", encoding="utf-8") as handle:
-        return [line.strip() for line in handle if line.strip()]
+        history = []
+    else:
+        with open(HISTORY_FILE, "r", encoding="utf-8") as handle:
+            history = [line.strip() for line in handle if line.strip()]
+
+    # Legacy article slugs cannot be reliably matched to topics automatically.
+    # Only owner-supplied, explicit mappings are applied; original entries remain untouched.
+    if os.path.exists(HISTORY_MIGRATION_FILE):
+        try:
+            with open(HISTORY_MIGRATION_FILE, "r", encoding="utf-8") as handle:
+                migration_map = json.load(handle)
+            history = apply_history_migrations(history, migration_map)
+        except (OSError, json.JSONDecodeError) as exc:
+            print(f"History migration map ignored; legacy history preserved: {exc}")
+    return history
 
 def topic_history_key(topic: str) -> str:
     """Use the selected topic's stable slug as its history identifier."""
