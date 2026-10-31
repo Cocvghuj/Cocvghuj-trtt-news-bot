@@ -1,0 +1,56 @@
+name: TRTT Unified Enterprise Autopilot (Google & Blogger)
+
+on:
+  schedule:
+    # Runs 2 times per day strictly within Google & GitHub API quotas (08:17 Sanluri & 20:17 Sanluri)
+    - cron: '17 6,18 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: trtt-single-autopilot
+  cancel-in-progress: true
+
+jobs:
+  autopilot:
+    name: Generate & Publish Verified Article to Blogger
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Set up Python Runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Google & AI Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-api-python-client google-auth requests google-genai
+
+      - name: Execute Autonomous Publisher (Google Blogger Direct)
+        env:
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
+          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
+          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          AMAZON_LINK: ${{ secrets.AMAZON_LINK }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python main.py
+
+      - name: Commit Publishing History Back to GitHub
+        run: |
+          git config --global user.name "TRTT Auto-Publisher Bot"
+          git config --global user.email "engrtaher2017@gmail.com"
+          git add posted_topics.json public/guides/ || true
+          git commit -m "Auto-published verified article directly to Blogger [skip ci]" || echo "No local changes to commit"
+          git push || echo "Push skipped"
