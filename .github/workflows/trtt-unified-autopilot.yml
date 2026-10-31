@@ -2,7 +2,7 @@ name: TRTT Unified Enterprise Autopilot (Google & Blogger)
 
 on:
   schedule:
-    # Runs 2 times per day strictly within Google & GitHub API quotas (08:17 Sanluri & 20:17 Sanluri)
+    # Creates two reviewable drafts per day (06:17 and 18:17 UTC).
     - cron: '17 6,18 * * *'
   workflow_dispatch:
 
@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   autopilot:
-    name: Generate & Broadcast Verified Article to Google Blogger Network
+    name: Generate Blogger Draft for Human Review
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -34,7 +34,7 @@ jobs:
           pip install google-api-python-client google-auth google-auth-httplib2 google-auth-oauthlib requests google-genai python-slugify
           pip install -r requirements.txt 2>/dev/null || true
 
-      - name: Execute Autonomous Publisher (Google Blogger Direct)
+      - name: Generate Reviewable Blogger Drafts
         env:
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
           FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.FLIGHTSCOUTPRO_BLOG_ID }}
@@ -52,10 +52,10 @@ jobs:
         run: |
           python main.py
 
-      - name: Record History Back to GitHub
+      - name: Record Draft History Back to GitHub
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add published_history.txt || true
+          git add drafted_history.txt || true
           git commit -m "Record published article history [skip ci]" || echo "No local changes to commit"
           git push || echo "Push skipped"
