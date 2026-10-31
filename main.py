@@ -16,6 +16,7 @@ from slugify import slugify
 MARKER = os.environ.get("TRAVEL_PAYOUT_MARKER", "787950")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BLOGGER_BLOG_ID = os.environ.get("BLOGGER_BLOG_ID")
+FLIGHTSCOUTPRO_BLOG_ID = os.environ.get("FLIGHTSCOUTPRO_BLOG_ID")
 BLOGGER_CLIENT_ID = os.environ.get("BLOGGER_CLIENT_ID")
 BLOGGER_CLIENT_SECRET = os.environ.get("BLOGGER_CLIENT_SECRET")
 BLOGGER_REFRESH_TOKEN = os.environ.get("BLOGGER_REFRESH_TOKEN")
@@ -234,11 +235,20 @@ def build_enterprise_html(content: str, topic: str, photo: dict) -> str:
 # ==============================================================================
 # BLOGGER OFFICIAL API POSTING
 # ==============================================================================
-def post_to_blogger(title: str, html_content: str, labels: List[str]) -> Optional[str]:
-    if not all([BLOGGER_BLOG_ID, BLOGGER_CLIENT_ID, BLOGGER_CLIENT_SECRET, BLOGGER_REFRESH_TOKEN]):
+def post_to_blogger(title: str, html_content: str, labels: List[str]) -> List[str]:
+    """Simultaneously publishes to TRTT News 24 BD & FlightScoutPro partner blogs so all partners see their authentic Google Views."""
+    if not all([BLOGGER_CLIENT_ID, BLOGGER_CLIENT_SECRET, BLOGGER_REFRESH_TOKEN]):
         print("Blogger OAuth credentials incomplete. Skipping Blogger direct post.")
-        return None
+        return []
 
+    # All registered network blogs that receive the publication
+    target_blog_ids = []
+    if BLOGGER_BLOG_ID:
+        target_blog_ids.append(("TRTT News 24 BD", BLOGGER_BLOG_ID))
+    if FLIGHTSCOUTPRO_BLOG_ID:
+        target_blog_ids.append(("FlightScoutPro", FLIGHTSCOUTPRO_BLOG_ID))
+
+    published_urls = []
     try:
         creds = Credentials(
             None,
@@ -248,7 +258,7 @@ def post_to_blogger(title: str, html_content: str, labels: List[str]) -> Optiona
             token_uri="https://oauth2.googleapis.com/token",
         )
         service = build("blogger", "v3", credentials=creds)
-        # 100% Google Blogger & Search Console Standards
+
         body = {
             "title": title,
             "content": html_content,
@@ -260,13 +270,20 @@ def post_to_blogger(title: str, html_content: str, labels: List[str]) -> Optiona
                 "span": "0.05,0.05"
             }
         }
-        post = service.posts().insert(blogId=BLOGGER_BLOG_ID, body=body).execute()
-        post_url = post.get("url")
-        print(f"SUCCESS: Article posted directly to Blogger! URL: {post_url}")
-        return post_url
+
+        for blog_name, blog_id in target_blog_ids:
+            try:
+                post = service.posts().insert(blogId=blog_id, body=body).execute()
+                p_url = post.get("url")
+                published_urls.append(p_url)
+                print(f"SUCCESS: Published to {blog_name} (Blog ID: {blog_id})! URL: {p_url}")
+            except Exception as blog_err:
+                print(f"Notice posting to {blog_name} (ID: {blog_id}): {blog_err}")
+
+        return published_urls
     except Exception as exc:
-        print(f"Error posting to Blogger API: {exc}")
-        return None
+        print(f"Error initializing Blogger API: {exc}")
+        return published_urls
 
 # ==============================================================================
 # MAIN EXECUTION
@@ -301,7 +318,8 @@ def main():
         f.write(full_html)
 
     # 5. Post directly to Google Blogger (Increases authentic Blogger View Counter)
-    blogger_url = post_to_blogger(topic, full_html, ["Europe Travel", "Flight Compensation", "eSIM", "TRTT News"])
+    published_urls = post_to_blogger(topic, full_html, ["Europe Travel", "Flight Compensation", "eSIM", "TRTT News"])
+    blogger_url = published_urls[0] if published_urls else None
 
     # 6. Dispatch instant alert to Telegram Channel
     send_telegram(topic, blogger_url or PWA_URL, raw_content[:200])
