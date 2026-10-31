@@ -53,8 +53,8 @@ jobs:
 
       - name: Record History Back to GitHub
         run: |
-          git config --global user.name "TRTT Auto-Publisher Bot"
-          git config --global user.email "engrtaher2017@gmail.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add published_history.txt || true
           git commit -m "Record published article history [skip ci]" || echo "No local changes to commit"
           git push || echo "Push skipped"
