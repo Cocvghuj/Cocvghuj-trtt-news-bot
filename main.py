@@ -960,28 +960,49 @@ def normalize_article_text(value: str) -> str:
     return re.sub(r'\\s+', ' ', text).strip().lower()
 
 
+DUPLICATE_CHECK_PAGE_SIZE = 100
+DUPLICATE_CHECK_MAX_PAGES = 10
+
+
 def find_duplicate_post(service, blog_id: str, title: str, content: str):
-    """Return a matching recent Blogger post if title or article body is a duplicate."""
+    """Return a matching LIVE/DRAFT post, paging safely through recent Blogger posts."""
     new_title = normalize_article_text(title)
     new_body = normalize_article_text(content)
     try:
-        response = service.posts().list(
-            blogId=blog_id, maxResults=100, fetchBodies=True,
-            status=["LIVE", "DRAFT"]
-        ).execute()
-        for existing in response.get("items", []):
-            old_title = normalize_article_text(existing.get("title", ""))
-            old_body = normalize_article_text(existing.get("content", ""))
-            if old_title and old_title == new_title:
-                return existing
-            if len(new_body) >= 500 and len(old_body) >= 500:
-                similarity = difflib.SequenceMatcher(None, new_body, old_body).ratio()
-                if similarity >= 0.88:
+        page_token = None
+        for page_number in range(DUPLICATE_CHECK_MAX_PAGES):
+            request_args = {
+                "blogId": blog_id,
+                "maxResults": DUPLICATE_CHECK_PAGE_SIZE,
+                "fetchBodies": True,
+                "status": ["LIVE", "DRAFT"],
+            }
+            if page_token:
+                request_args["pageToken"] = page_token
+            response = service.posts().list(**request_args).execute()
+            for existing in response.get("items", []):
+                old_title = normalize_article_text(existing.get("title", ""))
+                old_body = normalize_article_text(existing.get("content", ""))
+                if old_title and old_title == new_title:
                     return existing
+                if len(new_body) >= 500 and len(old_body) >= 500:
+                    similarity = difflib.SequenceMatcher(None, new_body, old_body).ratio()
+                    if similarity >= 0.88:
+                        return existing
+            page_token = response.get("nextPageToken")
+            if not page_token:
+                return None
+
+        # Do not create a draft when the scan was truncated: an older duplicate
+        # may still exist beyond the safety limit.
+        raise RuntimeError(
+            "Duplicate scan exceeded "
+            + str(DUPLICATE_CHECK_MAX_PAGES)
+            + " pages; refusing to create a potentially repeated draft."
+        )
     except Exception as exc:
-        # Fail closed: if duplicate checking cannot run, do not create a potentially repeated post.
+        # Fail closed: if duplicate checking cannot complete, do not insert a draft.
         raise RuntimeError("Duplicate check could not be completed for blog " + str(blog_id) + ": " + str(exc))
-    return None
 
 
 def create_drafts_on_blogs(title: str, html_content: str, meta: dict, article_data: dict = None, photo: dict = None) -> List[dict]:
