@@ -30,6 +30,7 @@ except ImportError:
 # ==============================================================================
 MARKER = os.environ.get("TRAVEL_PAYOUT_MARKER", "787950")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 
 # Primary & Partner Blog IDs for Multi-Blog Syndication
 BLOGGER_BLOG_ID = os.environ.get("BLOGGER_BLOG_ID")
@@ -141,15 +142,190 @@ def clean_affiliate_link(base_url: str, partner_name: str) -> str:
     return urlunparse(parsed._replace(query=urlencode(params)))
 
 # ==============================================================================
-# GEMINI AI ARTICLE & METADATA GENERATOR (E-E-A-T Standards)
+# ==============================================================================
+# AUTONOMOUS EXPERT KNOWLEDGE ENGINE (Zero-Downtime High-Quality Fallback)
+# ==============================================================================
+def generate_fallback_expert_article(topic_info: dict) -> dict:
+    """Generates rich, authentic, high-value E-E-A-T articles with zero API dependence."""
+    topic = topic_info["topic"]
+    category = topic_info.get("category", "Aviation & Travel Logistics")
+    
+    if "Passenger Rights" in category or "Claim" in topic or "600" in topic:
+        specific_content = """
+        <p class="lead" style="font-size: 18px; line-height: 1.7; color: #1e293b; font-weight: 500;">
+          Flight disruptions across European airspace are at historic peaks. For passengers flying to, from, or within the European Union, European Regulation (EC) No 261/2004 provides ironclad statutory compensation rights of up to <strong>€600 per passenger</strong>. Yet airlines routinely employ delay tactics and obscure jargon hoping passengers abandon their legal rights.
+        </p>
+
+        <h2>1. Statutory Compensation Tiers Under Regulation (EC) No 261/2004</h2>
+        <p>Your compensation amount is strictly calculated on distance traveled and the arrival delay at your final ticketed destination:</p>
+        <div style="overflow-x: auto; margin: 20px 0;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 14.5px; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <thead>
+              <tr style="background: #0284c7; color: #ffffff; text-align: left;">
+                <th style="padding: 12px 16px;">Flight Distance Category</th>
+                <th style="padding: 12px 16px;">Delay at Final Destination</th>
+                <th style="padding: 12px 16px;">Statutory Cash Payout</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background: #ffffff; border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 12px 16px; font-weight: 600;">Short Haul (Under 1,500 km)</td>
+                <td style="padding: 12px 16px;">3+ Hours</td>
+                <td style="padding: 12px 16px; color: #0284c7; font-weight: 700;">€250 per passenger</td>
+              </tr>
+              <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 12px 16px; font-weight: 600;">Medium Haul (1,500 km – 3,500 km)</td>
+                <td style="padding: 12px 16px;">3+ Hours</td>
+                <td style="padding: 12px 16px; color: #0284c7; font-weight: 700;">€400 per passenger</td>
+              </tr>
+              <tr style="background: #ffffff;">
+                <td style="padding: 12px 16px; font-weight: 600;">Long Haul (Over 3,500 km)</td>
+                <td style="padding: 12px 16px;">4+ Hours</td>
+                <td style="padding: 12px 16px; color: #16a34a; font-weight: 800; font-size: 16px;">€600 per passenger</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>2. Mandatory Airline Duty of Care (Right to Care)</h2>
+        <p>Independent of monetary compensation, carriers are legally compelled by EC 261 to provide free passenger care while waiting:</p>
+        <ul style="padding-left: 20px; color: #334155; line-height: 1.8;">
+          <li><strong>Meals and Refreshments:</strong> Reasonable food and beverage vouchers corresponding to the waiting duration.</li>
+          <li><strong>Communications:</strong> Free access to two phone calls, telex, fax messages, or emails.</li>
+          <li><strong>Hotel Accommodation &amp; Transfers:</strong> If the delayed flight is rescheduled for the following day, the airline must cover hotel lodging and airport ground transport.</li>
+        </ul>
+
+        <h2>3. Airline Defenses: Ordinary vs. Extraordinary Circumstances</h2>
+        <p>Airlines systematically attempt to claim <em>'extraordinary circumstances'</em> to deny payouts. However, landmark rulings by the European Court of Justice (CJEU) established that:</p>
+        <ul style="padding-left: 20px; color: #334155; line-height: 1.8;">
+          <li><strong>Technical Failures:</strong> Engine faults, component wear, and unexpected mechanical breakdowns are inherently part of routine airline operations and are <strong>NOT</strong> extraordinary circumstances.</li>
+          <li><strong>Crew Shortages &amp; Wildcat Strikes:</strong> Staff sickness, roster mismanagement, and airline internal strikes do not exempt the carrier.</li>
+          <li><strong>Legitimate Exemptions:</strong> Only extreme weather rendering runways unusable, political unrest, or general air traffic control (ATC) sector shutdowns constitute legitimate defenses.</li>
+        </ul>
+
+        <h2>4. Five-Step Immediate Terminal Checklist</h2>
+        <ol style="padding-left: 22px; color: #334155; line-height: 1.8;">
+          <li><strong>Secure Written Proof:</strong> Photograph departure flight displays and ask airline gate agents for an official written delay verification slip.</li>
+          <li><strong>Retain All Boarding Documents:</strong> Keep paper boarding passes, baggage tags, and e-ticket receipts.</li>
+          <li><strong>Decline Waiver Clauses:</strong> Do not sign vouchers that contain release-of-liability wording.</li>
+          <li><strong>Track Tail Number:</strong> Use flight tracking apps to check the incoming aircraft's registration and real-time positioning.</li>
+          <li><strong>File Your Claim Digitally:</strong> Submit your flight details through certified claims enforcement partners such as AirHelp to bypass airline customer service backlogs.</li>
+        </ol>
+
+        <h2>5. Frequently Asked Questions (FAQ)</h2>
+        <div style="background: #f1f5f9; border-radius: 12px; padding: 20px; margin-top: 18px;">
+          <p style="margin-bottom: 6px;"><strong>Q: Can I claim compensation if my flight was delayed several months ago?</strong></p>
+          <p style="margin-bottom: 14px; color: #475569;">A: Yes! National limitation periods range from 2 years (Italy) to 3 years (Germany) and up to 6 years (UK and Ireland). You can retroactively audit your past bookings.</p>
+          <p style="margin-bottom: 6px;"><strong>Q: What if I bought my ticket during a flash sale or through an online travel agent?</strong></p>
+          <p style="margin-bottom: 14px; color: #475569;">A: The ticket price has zero bearing on your legal entitlement. A €30 budget fare qualifies for the exact same €250 to €600 compensation as a business class ticket.</p>
+          <p style="margin-bottom: 6px;"><strong>Q: Do children and infants qualify for compensation?</strong></p>
+          <p style="margin-bottom: 0; color: #475569;">A: Any child with an allocated seat has a full claim. Infants traveling on an adult lap at a nominal fee may also qualify depending on ticket conditions.</p>
+        </div>
+        """
+    elif "eSIM" in category or "eSIM" in topic:
+        specific_content = """
+        <p class="lead" style="font-size: 18px; line-height: 1.7; color: #1e293b; font-weight: 500;">
+          International roaming fees remain one of the biggest hidden costs for international travelers. As embedded SIM (eSIM) technology becomes the universal standard across modern smartphones, travelers no longer need to pay exorbitant carrier fees or queue for physical SIM cards at airport kiosks.
+        </p>
+
+        <h2>1. eSIM vs. Traditional Physical SIM: Real Travel Advantages</h2>
+        <p>An eSIM (embedded SIM) is a digital microchip built directly into your smartphone motherboard. It allows you to download cellular network profiles digitally over Wi-Fi without swapping physical plastic cards:</p>
+        <ul style="padding-left: 20px; color: #334155; line-height: 1.8;">
+          <li><strong>Instant Multi-Country Switching:</strong> Seamlessly cross European borders without losing connectivity or incurring roaming shock.</li>
+          <li><strong>Keep Your Primary Number Active:</strong> Retain your domestic SIM for bank two-factor authentication (2FA) SMS while using the eSIM for affordable high-speed 5G data.</li>
+          <li><strong>Zero Physical Kiosk Lines:</strong> Avoid airport terminal queues, language barriers, and passport scans in foreign cities.</li>
+        </ul>
+
+        <h2>2. Leading Global Providers Compared: Airalo vs. Saily</h2>
+        <div style="overflow-x: auto; margin: 20px 0;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 14.5px; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <thead>
+              <tr style="background: #0284c7; color: #ffffff; text-align: left;">
+                <th style="padding: 12px 16px;">Provider</th>
+                <th style="padding: 12px 16px;">Network Coverage</th>
+                <th style="padding: 12px 16px;">Top Features</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background: #ffffff; border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 12px 16px; font-weight: 700;">Airalo (Eurolink)</td>
+                <td style="padding: 12px 16px;">39+ European Nations</td>
+                <td style="padding: 12px 16px; color: #0284c7; font-weight: 600;">Pioneer platform, flexible 1GB to 20GB bundles, instant in-app top up.</td>
+              </tr>
+              <tr style="background: #f8fafc;">
+                <td style="padding: 12px 16px; font-weight: 700;">Saily (Nord Security)</td>
+                <td style="padding: 12px 16px;">150+ Global Destinations</td>
+                <td style="padding: 12px 16px; color: #0284c7; font-weight: 600;">Built-in cybersecurity layer, automatic local carrier handover, competitive rates.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>3. Step-by-Step Pre-Flight eSIM Installation Guide</h2>
+        <ol style="padding-left: 22px; color: #334155; line-height: 1.8;">
+          <li><strong>Verify Device Compatibility:</strong> Ensure your phone is network-unlocked and supports eSIM (iPhone XS and newer, Google Pixel 3 and newer, Samsung Galaxy S20 and newer).</li>
+          <li><strong>Install Profile via QR Code:</strong> Complete purchase on Airalo before departure and scan the QR code under <em>Settings &gt; Cellular &gt; Add eSIM</em>.</li>
+          <li><strong>Label Your Cellular Plans:</strong> Name your primary carrier "Home" and the travel profile "Travel Data".</li>
+          <li><strong>Enable Data Roaming on Travel Line:</strong> Ensure Data Roaming is turned ON for your travel eSIM, but OFF for your domestic home line to prevent carrier charges.</li>
+        </ol>
+
+        <h2>4. Frequently Asked Questions (FAQ)</h2>
+        <div style="background: #f1f5f9; border-radius: 12px; padding: 20px; margin-top: 18px;">
+          <p style="margin-bottom: 6px;"><strong>Q: Can I still receive WhatsApp and Telegram calls?</strong></p>
+          <p style="margin-bottom: 14px; color: #475569;">A: Yes! Your messaging apps remain linked to your existing telephone number while utilizing high-speed data from the eSIM.</p>
+          <p style="margin-bottom: 6px;"><strong>Q: What happens when my data bundle expires?</strong></p>
+          <p style="margin-bottom: 0; color: #475569;">A: You receive an instant push notification at 80% and 100% usage, allowing 1-click in-app top-up without re-scanning or reinstalling.</p>
+        </div>
+        """
+    else:
+        specific_content = """
+        <p class="lead" style="font-size: 18px; line-height: 1.7; color: #1e293b; font-weight: 500;">
+          International travel demands meticulous logistical coordination, smart cost mitigation, and up-to-the-minute field intelligence. Whether orchestrating long-haul transit or booking airport ground transfers, leveraging proven strategies ensures frictionless journeys across international destinations.
+        </p>
+
+        <h2>1. Strategic Route Optimization &amp; Fare Intelligence</h2>
+        <p>Flight pricing algorithms fluctuate continuously based on demand patterns, fuel hedging, and hub capacity. By utilizing meta-search aggregators such as Aviasales, travelers can uncover hidden stopovers, open-jaw combinations, and regional low-cost carrier legs that standard airline engines conceal.</p>
+        
+        <h2>2. Fixed-Rate Ground Logistics &amp; Airport Transfers</h2>
+        <p>Arriving at an unfamiliar airport terminal often exposes travelers to unmetered taxi negotiations and surge pricing. Booking verified ground transfers via services like Kiwitaxi secures guaranteed fixed rates, terminal meet-and-greet services, and monitored flight arrivals with complimentary waiting windows.</p>
+
+        <h2>3. Transit Security, Power Reserves &amp; Tech Essentials</h2>
+        <p>Maintaining device uptime during extended layovers is essential. Always carry an airline-compliant power bank (under 100Wh to satisfy IATA passenger safety regulations) in your carry-on luggage—never in checked baggage—and keep digital copies of transit visas securely backed up.</p>
+
+        <h2>4. Step-by-Step Travel Day Blueprint</h2>
+        <ol style="padding-left: 22px; color: #334155; line-height: 1.8;">
+          <li><strong>Audit Passport Validity:</strong> Ensure at least 6 months validity from departure and 3 months beyond intended Schengen departure.</li>
+          <li><strong>Pre-Book High-Priority Services:</strong> Lock in ground transfers and travel eSIM profiles 48 hours prior to takeoff.</li>
+          <li><strong>Monitor Operational Gate Feeds:</strong> Track your aircraft inbound trajectory using real-time radar applications.</li>
+          <li><strong>Safeguard Claim Rights:</strong> In case of disruptions exceeding 3 hours, immediately record evidence to trigger statutory EC 261 compensation claims.</li>
+        </ol>
+
+        <h2>5. Frequently Asked Questions (FAQ)</h2>
+        <div style="background: #f1f5f9; border-radius: 12px; padding: 20px; margin-top: 18px;">
+          <p style="margin-bottom: 6px;"><strong>Q: What is the optimal window for booking international long-haul flights?</strong></p>
+          <p style="margin-bottom: 14px; color: #475569;">A: Industry data indicates that 6 to 10 weeks prior to departure offers the most favorable balance between seat availability and dynamic revenue management pricing.</p>
+          <p style="margin-bottom: 6px;"><strong>Q: How do I handle sudden flight rescheduling?</strong></p>
+          <p style="margin-bottom: 0; color: #475569;">A: If the reschedule shifts departure by more than 2 hours or arrival by more than 3 hours, you are entitled to a full cash refund or complimentary re-routing to your destination.</p>
+        </div>
+        """
+
+    meta = {
+        "title": topic,
+        "search_description": f"Verified field guide on {topic} with official passenger rights, logistics, and booking recommendations.",
+        "labels": topic_info["default_labels"],
+        "permalink_slug": slugify(topic)
+    }
+
+    return {
+        "meta": meta,
+        "content": specific_content.strip()
+    }
+
+# ==============================================================================
+# MULTI-LAYER AI & EXPERT ARTICLE GENERATOR (Google E-E-A-T Standards)
 # ==============================================================================
 def generate_article_with_metadata(topic_info: dict) -> dict:
     topic = topic_info["topic"]
-    if not GEMINI_API_KEY:
-        print("CRITICAL: GEMINI_API_KEY missing. Cannot generate fresh article.")
-        return None
-
-    client = genai.Client(api_key=GEMINI_API_KEY)
     
     prompt = f"""You are a senior European aviation & travel journalist writing for FlightScoutPro and TRTT News 24 BD.
 Generate a comprehensive, authentic, high-value guide for the topic: "{topic}".
@@ -176,41 +352,96 @@ EDITORIAL REQUIREMENTS (Google Helpful Content & E-E-A-T Standards):
 [/METADATA]
 Followed by the complete HTML article."""
 
-    try:
-        response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
-        text = getattr(response, "text", str(response)).strip()
-        
-        meta = {
-            "title": topic,
-            "search_description": f"Verified field guide on {topic} with official passenger rights and booking tips.",
-            "labels": topic_info["default_labels"],
-            "permalink_slug": slugify(topic)
-        }
-        
-        meta_match = re.search(r'\[METADATA\](.*?)\[/METADATA\]', text, re.DOTALL)
-        content_html = text
-        if meta_match:
-            try:
-                parsed_meta = json.loads(meta_match.group(1).strip())
-                meta["title"] = parsed_meta.get("title", meta["title"])
-                meta["search_description"] = parsed_meta.get("search_description", meta["search_description"])[:160]
-                if parsed_meta.get("labels"):
-                    meta["labels"] = list(set(meta["labels"] + parsed_meta["labels"]))
-                if parsed_meta.get("permalink_slug"):
-                    meta["permalink_slug"] = slugify(parsed_meta["permalink_slug"])
-            except Exception as e:
-                print(f"Metadata JSON parsing notice: {e}")
-            content_html = text.replace(meta_match.group(0), "").strip()
-            
-        return {
-            "meta": meta,
-            "content": content_html
-        }
-    except Exception as exc:
-        print(f"Gemini generation error: {exc}")
-        return None
+    text = None
 
-# ==============================================================================
+    # Layer 1: Google Gemini API with cascade across available models
+    if GEMINI_API_KEY:
+        try:
+            client = genai.Client(api_key=GEMINI_API_KEY)
+            candidate_models = [
+                "gemini-1.5-flash",
+                "gemini-2.0-flash",
+                "gemini-flash-latest",
+                "gemini-2.5-flash-lite",
+                "gemini-1.5-pro",
+                "gemini-2.5-flash"
+            ]
+            for model_name in candidate_models:
+                try:
+                    response = client.models.generate_content(model=model_name, contents=prompt)
+                    res_text = getattr(response, "text", str(response)).strip()
+                    if res_text and len(res_text) > 300:
+                        text = res_text
+                        print(f"Article successfully generated via Gemini ({model_name})")
+                        break
+                except Exception as mod_err:
+                    print(f"Notice: Gemini {model_name} attempt: {mod_err}")
+        except Exception as gem_exc:
+            print(f"Gemini client initialization notice: {gem_exc}")
+
+    # Layer 2: OpenRouter API Fallback (if configured in secrets)
+    if not text and os.environ.get("OPENROUTER_API_KEY"):
+        or_key = os.environ.get("OPENROUTER_API_KEY")
+        print("Engaging secondary generation fallback via OpenRouter...")
+        for or_model in ["meta-llama/llama-3.1-8b-instruct:free", "google/gemini-flash-1.5", "mistralai/mistral-7b-instruct:free"]:
+            try:
+                or_resp = requests.post(
+                    "https://openrouter.ai/api/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {or_key}",
+                        "Content-Type": "application/json",
+                        "HTTP-Referer": "https://trttnews24bd.blogspot.com",
+                        "X-Title": "TRTT Enterprise Publisher"
+                    },
+                    json={
+                        "model": or_model,
+                        "messages": [{"role": "user", "content": prompt}],
+                        "temperature": 0.7
+                    },
+                    timeout=25
+                )
+                if or_resp.status_code == 200:
+                    or_json = or_resp.json()
+                    candidates = or_json.get("choices", [])
+                    if candidates and candidates[0].get("message", {}).get("content"):
+                        text = candidates[0]["message"]["content"].strip()
+                        print(f"Article successfully generated via OpenRouter ({or_model})")
+                        break
+            except Exception as or_err:
+                print(f"OpenRouter ({or_model}) attempt notice: {or_err}")
+
+    # Layer 3: Autonomous Expert Knowledge Engine Fallback (guaranteed 100% uptime)
+    if not text:
+        print("Using Built-in Autonomous Expert Travel Intelligence Engine fallback.")
+        return generate_fallback_expert_article(topic_info)
+
+    meta = {
+        "title": topic,
+        "search_description": f"Verified field guide on {topic} with official passenger rights and booking tips.",
+        "labels": topic_info["default_labels"],
+        "permalink_slug": slugify(topic)
+    }
+    
+    meta_match = re.search(r'\[METADATA\](.*?)\[/METADATA\]', text, re.DOTALL)
+    content_html = text
+    if meta_match:
+        try:
+            parsed_meta = json.loads(meta_match.group(1).strip())
+            meta["title"] = parsed_meta.get("title", meta["title"])
+            meta["search_description"] = parsed_meta.get("search_description", meta["search_description"])[:160]
+            if parsed_meta.get("labels"):
+                meta["labels"] = list(set(meta["labels"] + parsed_meta["labels"]))
+            if parsed_meta.get("permalink_slug"):
+                meta["permalink_slug"] = slugify(parsed_meta["permalink_slug"])
+        except Exception as e:
+            print(f"Metadata JSON parsing notice: {e}")
+        content_html = text.replace(meta_match.group(0), "").strip()
+
+    return {
+        "meta": meta,
+        "content": content_html
+    }
+
 # BLOG PROFILES: TRTT News 24 BD & FlightScoutPro
 # ==============================================================================
 def get_blog_profile(blog_name: str, blog_id: str) -> dict:
