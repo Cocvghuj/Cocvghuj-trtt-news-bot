@@ -322,6 +322,33 @@ def generate_fallback_expert_article(topic_info: dict) -> dict:
         "content": specific_content.strip()
     }
 
+# Domains allowed as candidate primary/official references.
+# Domain membership is a first-pass filter, not proof that a particular page is accurate.
+TRUSTED_SOURCE_DOMAINS = {
+    "europa.eu", "eur-lex.europa.eu", "ec.europa.eu", "easa.europa.eu",
+    "icao.int", "iata.org", "caa.co.uk", "gov.uk", "faa.gov",
+    "transportation.gov", "transport.gov", "enac.gov.it", "mit.gov.it",
+    "viaggiaresicuri.it", "travel.state.gov", "canada.ca",
+    "airalo.com", "saily.com", "qatarairways.com", "kiwitaxi.com",
+    "localrent.com", "tiqets.com",
+}
+
+
+def is_trusted_source_url(url: str) -> bool:
+    """Accept HTTPS URLs on an explicit trusted-domain allowlist."""
+    try:
+        parsed = urlparse(url.strip())
+        host = (parsed.hostname or "").lower().rstrip(".")
+        return (
+            parsed.scheme.lower() == "https"
+            and bool(host)
+            and not host.startswith("www.www.")
+            and any(host == domain or host.endswith("." + domain) for domain in TRUSTED_SOURCE_DOMAINS)
+        )
+    except (TypeError, ValueError):
+        return False
+
+
 def validate_article_response(text: str) -> dict:
     """Validate AI output before it can become a Blogger draft."""
     # Fail closed: never turn an API outage into an unsourced fallback article.
@@ -357,8 +384,9 @@ def validate_article_response(text: str) -> dict:
         sources_section = sources_section[:next_heading.start()]
     source_links = re.findall(r'<a\b[^>]*href\s*=\s*["\'](https?://[^"\']+)["\'][^>]*>', sources_section, re.IGNORECASE)
     distinct_sources = {url.rstrip(".,);") for url in source_links}
-    if len(distinct_sources) < 2:
-        raise RuntimeError("Sources section must contain at least two distinct direct URLs. Draft creation aborted.")
+    approved_sources = {url for url in distinct_sources if is_trusted_source_url(url)}
+    if len(approved_sources) < 2:
+        raise RuntimeError("Sources section must contain at least two distinct HTTPS URLs from the trusted-domain allowlist. Draft creation aborted.")
 
     meta = {
         "title": title_value,
