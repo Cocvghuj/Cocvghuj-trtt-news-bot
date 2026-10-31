@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:css='false' b:responsive='true' b:version='2' class='v2' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <meta content='width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=5' name='viewport'/>
+  <title><data:blog.pageTitle/></title>
+  <b:include data='blog' name='all-head-content'/>
+  <link href='https://fonts.googleapis.com' rel='preconnect'/>
+  <link crossorigin='' href='https://fonts.gstatic.com' rel='preconnect'/>
+  <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap' rel='stylesheet'/>
+  <b:skin><![CDATA[
+  /* Clean FlightScoutPro Ultra Modern Skin */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #f8fafc;
+    color: #1e293b;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+  }
+  a { color: #0284c7; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .site-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 20px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .site-title {
+    font-size: 24px;
+    font-weight: 900;
+    color: #0369a1;
+    letter-spacing: -0.02em;
+  }
+  .site-nav {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .site-nav a { color: #475569; }
+  .site-nav a:hover { color: #0284c7; text-decoration: none; }
+  .main-content {
+    padding: 40px 0;
+  }
+  .post-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 15px -3px rgba(15,23,42,0.05);
+  }
+  .post-card h1, .post-card h2.post-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+  .post-card h2.post-title a { color: #0f172a; }
+  .post-card h2.post-title a:hover { color: #0284c7; text-decoration: none; }
+  .post-meta {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .footer-wrap {
+    background: #0f172a;
+    color: #94a3b8;
+    padding: 36px 0;
+    margin-top: 60px;
+    font-size: 13px;
+  }
+  .footer-links {
+    display: flex;
+    gap: 20px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .footer-links a { color: #cbd5e1; font-weight: 600; }
+  ]]></b:skin>
+</head>
+<body>
+  <header class='site-header'>
+    <div class='container header-content'>
+      <div>
+        <a class='site-title' expr:href='data:blog.homepageUrl'>✈️ FlightScoutPro</a>
+        <div style='font-size: 12px; color: #64748b;'>Aviation Intelligence &amp; Flight Deals Hub</div>
+      </div>
+      <nav class='site-nav'>
+        <a expr:href='data:blog.homepageUrl + "p/about-us.html"'>About</a>
+        <a expr:href='data:blog.homepageUrl + "p/contact-us.html"'>Contact</a>
+        <a expr:href='data:blog.homepageUrl + "p/privacy-policy.html"'>Privacy Policy</a>
+        <a expr:href='data:blog.homepageUrl + "p/disclaimer.html"'>Disclaimer</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class='main-content'>
+    <div class='container'>
+      <b:section id='main' showaddelement='no'>
+        <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog'>
+          <b:includable id='main'>
+            <b:loop values='data:posts' var='post'>
+              <article class='post-card'>
+                <h2 class='post-title'>
+                  <a expr:href='data:post.url'><data:post.title/></a>
+                </h2>
+                <div class='post-meta'>
+                  <span>✍️ <data:post.author/></span> &bull; 
+                  <span>📅 <data:post.dateHeader/></span>
+                </div>
+                <div class='post-body'>
+                  <data:post.body/>
+                </div>
+              </article>
+            </b:loop>
+          </b:includable>
+        </b:widget>
+      </b:section>
+    </div>
+  </main>
+
+  <footer class='footer-wrap'>
+    <div class='container'>
+      <p><strong>FlightScoutPro</strong> &bull; Founded by Muntasir Rahman (Dhaka, Bangladesh). Passenger rights &amp; aviation intelligence.</p>
+      <div class='footer-links'>
+        <a expr:href='data:blog.homepageUrl + "p/about-us.html"'>About Us</a>
+        <a expr:href='data:blog.homepageUrl + "p/contact-us.html"'>Contact Us</a>
+        <a expr:href='data:blog.homepageUrl + "p/privacy-policy.html"'>Privacy Policy</a>
+        <a expr:href='data:blog.homepageUrl + "p/disclaimer.html"'>Disclaimer</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

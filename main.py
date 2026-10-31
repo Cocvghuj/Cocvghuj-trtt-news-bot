@@ -3,6 +3,7 @@ TRTT Enterprise Auto-Publisher Engine (Google Blogger Direct & Multi-Blog Networ
 Protocol 26391/2026 • Marker 787950 LOCKED
 Dedicated to family: Roksana | Taifa | Tashrif (From Sanluri to Dhaka)
 Strictly compliant with Google Search, Google Search Console, and GitHub Rules.
+Automated Multi-Blog Publishing for TRTT News 24 BD & FlightScoutPro.
 """
 
 import json
@@ -12,9 +13,11 @@ from datetime import datetime
 from typing import List, Dict, Optional
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 import requests
+
 from google import genai
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+
 try:
     from slugify import slugify
 except ImportError:
@@ -40,11 +43,14 @@ BLOGGER_REFRESH_TOKEN = os.environ.get("BLOGGER_REFRESH_TOKEN")
 
 UNSPLASH_ACCESS_KEY = os.environ.get("UNSPLASH_ACCESS_KEY")
 AMAZON_LINK = os.environ.get("AMAZON_LINK", "https://amzn.to/4shg6Hn")
+
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 
 BLOGGER_URL = "https://trttnews24bd.blogspot.com"
+FLIGHTSCOUTPRO_URL = "https://flightscoutpro.blogspot.com"
 PWA_URL = "https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950"
+
 HISTORY_FILE = "published_history.txt"
 
 # Core Topics designed for High Google Search Volume & Affiliate Conversion
@@ -52,17 +58,17 @@ TOPIC_POOL = [
     {
         "topic": "How to Claim Up to 600€ for Flight Delays in Europe Under EC 261",
         "category": "Passenger Rights",
-        "default_labels": ["Flight Compensation", "AirHelp", "EU Regulation 261", "Passenger Rights", "Europe Travel", "TRTT News 24 BD"]
+        "default_labels": ["Flight Compensation", "AirHelp", "EU Regulation 261", "Passenger Rights", "Europe Travel", "FlightScoutPro"]
     },
     {
         "topic": "Best Travel eSIM for Europe 2026: Compare Airalo, Saily, and Unlimited Data",
         "category": "eSIM & Connectivity",
-        "default_labels": ["eSIM", "Airalo", "Saily", "Europe Travel", "Travel Tech", "TRTT News 24 BD"]
+        "default_labels": ["eSIM", "Airalo", "Saily", "Europe Travel", "Travel Tech", "FlightScoutPro"]
     },
     {
         "topic": "Cheap Flights from Middle East and Gulf to Europe: Top Routing Secrets",
         "category": "Cheap Flights",
-        "default_labels": ["Aviasales", "Cheap Flights", "Qatar Airways", "Gulf to Europe", "Flight Hacks", "TRTT News 24 BD"]
+        "default_labels": ["Aviasales", "Cheap Flights", "Qatar Airways", "Gulf to Europe", "Flight Hacks", "FlightScoutPro"]
     },
     {
         "topic": "Airport Transfers Without Metered Surprises: Fixed Price Kiwitaxi Guide",
@@ -99,15 +105,14 @@ def load_history() -> List[str]:
 
 def save_history(title_id: str):
     with open(HISTORY_FILE, "a", encoding="utf-8") as handle:
-        handle.write(f"{title_id}\n")
-
+        handle.write(title_id + "\n")
 # ==============================================================================
 # UNSPLASH API: Dynamic Real High-Res Photography
 # ==============================================================================
 def fetch_unsplash_photo(query: str) -> dict:
     fallback = {
         "url": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1200&q=80",
-        "author": "TRTT Travel Bureau",
+        "author": "TRTT & FlightScout Travel Bureau",
         "alt": f"Europe travel flight and journey: {query}"
     }
     if not UNSPLASH_ACCESS_KEY:
@@ -146,19 +151,19 @@ def generate_article_with_metadata(topic_info: dict) -> dict:
 
     client = genai.Client(api_key=GEMINI_API_KEY)
     
-    prompt = f"""You are a senior European travel journalist and logistics expert writing for TRTT News 24 BD and partner network.
+    prompt = f"""You are a senior European aviation & travel journalist writing for FlightScoutPro and TRTT News 24 BD.
 Generate a comprehensive, authentic, high-value guide for the topic: "{topic}".
 
 EDITORIAL REQUIREMENTS (Google Helpful Content & E-E-A-T Standards):
-1. TONE: Human, authoritative, practical, and empathetic. Mention real logistics perspective (ground transit in Sardinia, Via Carlo Felice, carriage logistics in Qatar) so it sounds like genuine field experience, NOT generic AI fluff.
+1. TONE: Human, authoritative, practical, and empathetic. Mention real-world aviation logistics (e.g. EU Regulation 261/2004 claim rules, airline denial tactics, airport hubs, transit hacks) so it sounds like genuine field experience, NOT generic AI fluff.
 2. STRUCTURE:
-   - Output clean HTML body (headings with h2/h3, bullet points, callout boxes).
+   - Output clean HTML body (use <h2>, <h3>, <ul>, <li>, <p>, <blockquote>, <strong>).
    - Real-world Executive Hook (80-100 words)
-   - H2: Core Legal & Practical Reality
-   - H2: Step-by-Step Action Guide
-   - H2: Pitfalls & Airline Traps to Avoid
-   - H2: Essential Checklist & Gear
-   - H2: Frequently Asked Questions (3 clear Q&As)
+   - <h2>Core Passenger Rights & Flight Reality</h2>
+   - <h2>Step-by-Step Action Guide</h2>
+   - <h2>Airline Traps & Pitfalls to Avoid</h2>
+   - <h2>Essential Travel Tech & Checklist</h2>
+   - <h2>Frequently Asked Questions</h2> (3 clear, concrete Q&As)
 3. ZERO MENTION of AI, LLM, or prompts.
 4. Also generate a JSON header block formatted as:
 [METADATA]
@@ -175,10 +180,9 @@ Followed by the complete HTML article."""
         response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
         text = getattr(response, "text", str(response)).strip()
         
-        # Parse metadata block if present
         meta = {
             "title": topic,
-            "search_description": f"Verified field guide on {topic} with official passenger rights and booking tips by TRTT News 24 BD.",
+            "search_description": f"Verified field guide on {topic} with official passenger rights and booking tips.",
             "labels": topic_info["default_labels"],
             "permalink_slug": slugify(topic)
         }
@@ -197,7 +201,7 @@ Followed by the complete HTML article."""
             except Exception as e:
                 print(f"Metadata JSON parsing notice: {e}")
             content_html = text.replace(meta_match.group(0), "").strip()
-
+            
         return {
             "meta": meta,
             "content": content_html
@@ -207,9 +211,71 @@ Followed by the complete HTML article."""
         return None
 
 # ==============================================================================
-# GOOGLE SCHEMA.ORG, OPEN GRAPH & RICH SNIPPETS INJECTION
+# BLOG PROFILES: TRTT News 24 BD & FlightScoutPro
 # ==============================================================================
-def build_enterprise_html(article_data: dict, photo: dict) -> str:
+def get_blog_profile(blog_name: str, blog_id: str) -> dict:
+    """Returns tailored branding, author details, and legal links for each blog."""
+    name_lower = (blog_name or "").lower()
+    id_lower = (blog_id or "").lower()
+    
+    is_flightscout = (
+        (FLIGHTSCOUTPRO_BLOG_ID and blog_id == FLIGHTSCOUTPRO_BLOG_ID)
+        or "flightscout" in name_lower
+        or "flightscout" in id_lower
+    )
+    
+    if is_flightscout:
+        return {
+            "id": "flightscoutpro",
+            "name": "FlightScoutPro",
+            "subtitle": "Aviation Intelligence & Flight Deals Hub",
+            "url": FLIGHTSCOUTPRO_URL,
+            "author_name": "Muntasir Rahman",
+            "author_role": "Owner & Lead Aviation Intelligence Editor",
+            "author_location": "Dhaka, Bangladesh",
+            "author_email": "muntasirrahaman694@gmail.com",
+            "author_phone": "+8801314847336",
+            "badge": "✈️ FlightScoutPro Aviation Intelligence • Dhaka &amp; Global",
+            "theme_primary": "#0284c7",
+            "theme_gradient": "linear-gradient(135deg, #0369a1 0%, #0284c7 100%)",
+            "cta_title": "✈️ FlightScoutPro Deal &amp; Compensation Radar",
+            "cta_desc": "Search real-time low airfares, claim up to €600 compensation for delayed flights, and get instant eSIM data.",
+            "about_url": f"{FLIGHTSCOUTPRO_URL}/p/about-us.html",
+            "contact_url": f"{FLIGHTSCOUTPRO_URL}/p/contact-us.html",
+            "privacy_url": f"{FLIGHTSCOUTPRO_URL}/p/privacy-policy.html",
+            "disclaimer_url": f"{FLIGHTSCOUTPRO_URL}/p/disclaimer.html",
+            "footer_tag": "Published by FlightScoutPro • Founded by Muntasir Rahman (Dhaka, Bangladesh)"
+        }
+    else:
+        return {
+            "id": "trttnews24bd",
+            "name": "TRTT News 24 BD",
+            "subtitle": "Global Travel Logistics & Diaspora News Hub",
+            "url": BLOGGER_URL,
+            "author_name": "Abu Taher",
+            "author_role": "Founder, Network Hub &amp; Chief Publishing Bureau",
+            "author_location": "Via Carlo Felice, Sanluri, South Sardinia, Italy &amp; Milan, Italy",
+            "author_email": "engrtaher2017@gmail.com",
+            "author_phone": "",
+            "badge": "📍 Sanluri, Sardinia, Italy &amp; Dhaka • TRTT Global Logistics",
+            "theme_primary": "#052962",
+            "theme_gradient": "linear-gradient(135deg, #052962 0%, #00A8E8 100%)",
+            "cta_title": "🛡️ TRTT VoyageHub Super App • 21 Travel Logistics Tools Active",
+            "cta_desc": "Compare flights, claim 600€ flight delays, activate 5G eSIMs, and book fixed-price airport rides instantly.",
+            "about_url": f"{BLOGGER_URL}/p/about-us.html",
+            "contact_url": f"{BLOGGER_URL}/p/contact-us.html",
+            "privacy_url": f"{BLOGGER_URL}/p/privacy-policy.html",
+            "disclaimer_url": f"{BLOGGER_URL}/p/disclaimer.html",
+            "footer_tag": "Published by TRTT News 24 BD &amp; VoyageHub Network • Dedicated to Roksana, Taifa &amp; Tashrif (Sanluri to Dhaka)"
+        }
+
+# ==============================================================================
+# ENTERPRISE HTML BUILDER (Modern, Clean, Responsive & E-E-A-T Compliant)
+# ==============================================================================
+def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = None) -> str:
+    if blog_profile is None:
+        blog_profile = get_blog_profile("TRTT News 24 BD", BLOGGER_BLOG_ID or "")
+        
     meta = article_data["meta"]
     content = article_data["content"]
     title = meta["title"]
@@ -221,49 +287,44 @@ def build_enterprise_html(article_data: dict, photo: dict) -> str:
     airalo_link = clean_affiliate_link("https://airalo.tp.st/ZZoQC7Mz", "airalo")
     kiwitaxi_link = clean_affiliate_link("https://kiwitaxi.tp.st/tlZcbMOB", "kiwitaxi")
 
+    now_iso = datetime.utcnow().isoformat()
+    canonical_url = f"{blog_profile['url']}/{meta['permalink_slug']}.html"
+
     schema_json = {
         "@context": "https://schema.org",
         "@type": "NewsArticle",
         "headline": title,
         "description": search_desc,
         "image": [photo["url"]],
-        "datePublished": datetime.utcnow().isoformat(),
-        "dateModified": datetime.utcnow().isoformat(),
+        "datePublished": now_iso,
+        "dateModified": now_iso,
         "author": {
             "@type": "Person",
-            "name": "Abu Taher & TRTT Editorial Bureau",
-            "jobTitle": "Senior Travel Logistics Specialist"
+            "name": blog_profile["author_name"],
+            "jobTitle": blog_profile["author_role"],
+            "email": blog_profile["author_email"]
         },
         "publisher": {
             "@type": "Organization",
-            "name": "TRTT News 24 BD & FlightScoutPro Network",
+            "name": blog_profile["name"],
+            "url": blog_profile["url"],
             "logo": {
                 "@type": "ImageObject",
                 "url": "https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/trtt-original-logo.jpeg"
             }
         },
-        "contentLocation": {
-            "@type": "Place",
-            "name": "Sanluri, Sardinia, Italy",
-            "geo": {
-                "@type": "GeoCoordinates",
-                "latitude": 39.5613,
-                "longitude": 8.6332
-            }
-        },
         "keywords": tags_str,
         "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": f"{BLOGGER_URL}/{meta['permalink_slug']}.html"
+            "@id": canonical_url
         }
     }
 
-    html = f"""
-<!-- Google Search Console & SEO Meta Header -->
+    phone_html = f" &bull; <span>WhatsApp: <strong>{blog_profile['author_phone']}</strong></span>" if blog_profile.get("author_phone") else ""
+
+    html = f"""<!-- Google Search Console & SEO Meta Header -->
 <meta name="description" content="{search_desc}">
 <meta name="keywords" content="{tags_str}">
-<meta name="geo.region" content="IT-CA">
-<meta name="geo.placename" content="Sanluri, Sardinia, Italy">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{search_desc}">
 <meta property="og:image" content="{photo['url']}">
@@ -274,80 +335,185 @@ def build_enterprise_html(article_data: dict, photo: dict) -> str:
 {json.dumps(schema_json, indent=2)}
 </script>
 
-<div style="font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; max-width: 860px; margin: 0 auto; color: #1e293b; line-height: 1.8;">
+<!-- AUTONOMOUS ENTERPRISE STYLING ENGINE (Auto-injected by GitHub Actions Bot) -->
+<style>
+  .fs-article-wrap {{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+    max-width: 840px !important;
+    margin: 0 auto !important;
+    color: #1e293b !important;
+    line-height: 1.8 !important;
+    font-size: 16px !important;
+    word-break: break-word !important;
+  }}
+  .fs-article-wrap h1, .fs-article-wrap h2, .fs-article-wrap h3 {{
+    color: #0f172a !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.02em !important;
+  }}
+  .fs-article-wrap h2 {{
+    font-size: 23px !important;
+    margin-top: 36px !important;
+    margin-bottom: 16px !important;
+    padding-bottom: 8px !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    color: #0f172a !important;
+  }}
+  .fs-article-wrap h3 {{
+    font-size: 19px !important;
+    margin-top: 24px !important;
+    margin-bottom: 12px !important;
+    color: #1e293b !important;
+  }}
+  .fs-article-wrap p {{
+    margin-bottom: 18px !important;
+    color: #334155 !important;
+    font-size: 16px !important;
+  }}
+  .fs-article-wrap ul, .fs-article-wrap ol {{
+    padding-left: 24px !important;
+    margin-bottom: 20px !important;
+  }}
+  .fs-article-wrap li {{
+    margin-bottom: 8px !important;
+    color: #334155 !important;
+  }}
+  .fs-article-wrap blockquote {{
+    border-left: 4px solid {blog_profile['theme_primary']} !important;
+    background: #f8fafc !important;
+    padding: 16px 20px !important;
+    margin: 24px 0 !important;
+    border-radius: 0 12px 12px 0 !important;
+    font-style: normal !important;
+    color: #0f172a !important;
+  }}
+  /* Contempo & Blogger theme reset */
+  .post-body, .entry-content {{
+    font-size: 16px !important;
+    line-height: 1.8 !important;
+    color: #1e293b !important;
+  }}
+</style>
 
-  <!-- Location & Metadata Badge -->
-  <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; font-size: 11px; color: #64748b;">
-    <span style="background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-weight: bold;">📍 Sanluri, Sardinia, Italy &amp; Dhaka</span>
-    <span style="background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 6px; font-weight: bold;">🔒 Marker {MARKER} Locked</span>
-    <span style="background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 6px;">🏷️ {tags_str}</span>
+<div class="fs-article-wrap">
+
+  <!-- Location, Status & Category Badge -->
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; font-size: 12px;">
+    <span style="background: #e0f2fe; color: #0369a1; padding: 5px 12px; border-radius: 6px; font-weight: 700;">{blog_profile['badge']}</span>
+    <span style="background: #ecfdf5; color: #047857; padding: 5px 12px; border-radius: 6px; font-weight: 700;">✓ Verified Passenger Intel</span>
+    <span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 6px;">🏷️ {tags_str}</span>
   </div>
 
-  <!-- High-Res Photography -->
-  <div style="position: relative; border-radius: 16px; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);">
+  <!-- High-Res Photography with Attribution & Overlay -->
+  <div style="position: relative; border-radius: 16px; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.12);">
     <img src="{photo['url']}" alt="{photo['alt']}" style="width: 100%; height: auto; max-height: 440px; object-fit: cover; display: block;" />
-    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(5,41,98,0.85), transparent); padding: 12px 18px; color: #ffffff; font-size: 11px;">
-      <span>📸 Photography: {photo['author']} (via Unsplash)</span> • <span>Verified Field Report</span>
+    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(15,23,42,0.9) 0%, rgba(15,23,42,0.4) 60%, transparent 100%); padding: 14px 20px; color: #ffffff; font-size: 12px;">
+      <span>📸 Photography: <strong>{photo['author']}</strong> (Unsplash Verified)</span> &bull; <span>Marker {MARKER} Locked</span>
     </div>
   </div>
 
-  <!-- Action Bar: Direct 21 Tools Super App Access -->
-  <div style="background: linear-gradient(135deg, #052962, #00A8E8); color: #ffffff; padding: 18px 22px; border-radius: 14px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-    <div>
-      <strong style="font-size: 15px;">TRTT VoyageHub Super App • 21 Travel Tools Active</strong>
-      <p style="margin: 3px 0 0 0; font-size: 12px; color: #e2e8f0;">Compare flights, claim 600€ delays, and activate 5G eSIMs instantly.</p>
+  <!-- Key Takeaways / এক নজরে সারসংক্ষেপ Box -->
+  <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 14px; padding: 20px; margin-bottom: 28px;">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="background: #22c55e; color: #ffffff; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase;">Quick Summary</span>
+      <h3 style="margin: 0; font-size: 16px; color: #14532d; font-weight: 800;">⚡ Key Takeaways &amp; Executive Summary</h3>
     </div>
-    <div style="display: flex; gap: 8px;">
-      <a href="{BLOGGER_URL}" style="background: #ffffff; color: #052962; font-weight: 800; font-size: 12px; padding: 9px 16px; border-radius: 8px; text-decoration: none;">
-        📖 Blog Feed
+    <ul style="margin: 0; padding-left: 20px; color: #166534; font-size: 14.5px; line-height: 1.7;">
+      <li><strong>Verified Regulations:</strong> Under EC 261/2004, European flight disruptions exceeding 3 hours entitle qualifying passengers up to €600.</li>
+      <li><strong>Action Strategy:</strong> Never accept airport meal vouchers as final waiver of legal statutory compensation rights.</li>
+      <li><strong>Connectivity &amp; Navigation:</strong> Secure regional 5G eSIM connectivity beforehand to track live aircraft tail registration and ATC status.</li>
+    </ul>
+  </div>
+
+  <!-- Action Bar: Fast Travel Tools & Partner Access -->
+  <div style="background: {blog_profile['theme_gradient']}; color: #ffffff; padding: 20px 24px; border-radius: 14px; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; box-shadow: 0 4px 15px rgba(2,132,199,0.18);">
+    <div>
+      <strong style="font-size: 16px; display: block; margin-bottom: 4px;">{blog_profile['cta_title']}</strong>
+      <p style="margin: 0; font-size: 13px; color: #e2e8f0; line-height: 1.5;">{blog_profile['cta_desc']}</p>
+    </div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <a href="{blog_profile['url']}" style="background: #ffffff; color: {blog_profile['theme_primary']}; font-weight: 800; font-size: 12px; padding: 10px 18px; border-radius: 8px; text-decoration: none; display: inline-block;">
+        📰 Latest Feed
       </a>
-      <a href="{PWA_URL}" target="_blank" rel="noopener" style="background: #f59e0b; color: #0f172a; font-weight: 800; font-size: 12px; padding: 9px 16px; border-radius: 8px; text-decoration: none;">
-        🚀 Explore 21 Tools
+      <a href="{airhelp_link}" target="_blank" rel="noopener" style="background: #f59e0b; color: #0f172a; font-weight: 800; font-size: 12px; padding: 10px 18px; border-radius: 8px; text-decoration: none; display: inline-block;">
+        🛡️ Claim €600
       </a>
     </div>
   </div>
 
   <!-- Article Body -->
-  <div style="font-size: 15px; color: #334155;">
+  <div style="font-size: 16px; color: #334155; line-height: 1.8;">
     {content}
   </div>
 
-  <!-- High-Converting Verified Affiliate Strip -->
-  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 22px; margin-top: 36px;">
-    <h3 style="margin: 0 0 14px 0; font-size: 16px; color: #0f172a;">🛡️ Verified Travel &amp; Logistics Partners (Marker {MARKER})</h3>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-      <a href="{airhelp_link}" target="_blank" rel="noopener" style="display: block; padding: 12px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; text-decoration: none; color: #0f172a; font-weight: bold; font-size: 13px;">
+  <!-- High-Converting Verified Partner Strip -->
+  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 22px; margin-top: 36px; margin-bottom: 30px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 14px; gap: 8px;">
+      <h3 style="margin: 0; font-size: 16px; color: #0f172a; font-weight: 800;">🛡️ Official Travel &amp; Logistics Partners (Marker {MARKER})</h3>
+      <span style="font-size: 11px; background: #e2e8f0; color: #475569; padding: 3px 8px; border-radius: 4px; font-weight: 600;">Affiliate Disclosure: Verified Safe</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+      <a href="{airhelp_link}" target="_blank" rel="noopener" style="display: block; padding: 12px 14px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; text-decoration: none; color: #0f172a; font-weight: 700; font-size: 13px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
         🛡️ AirHelp €600 Claim &rarr;
       </a>
-      <a href="{aviasales_link}" target="_blank" rel="noopener" style="display: block; padding: 12px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; text-decoration: none; color: #0f172a; font-weight: bold; font-size: 13px;">
-        ✈️ Aviasales Lowest Fares &rarr;
+      <a href="{aviasales_link}" target="_blank" rel="noopener" style="display: block; padding: 12px 14px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; text-decoration: none; color: #0f172a; font-weight: 700; font-size: 13px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        ✈️ Aviasales Fares &rarr;
       </a>
-      <a href="{airalo_link}" target="_blank" rel="noopener" style="display: block; padding: 12px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; text-decoration: none; color: #0f172a; font-weight: bold; font-size: 13px;">
-        📱 Airalo Instant 5G eSIM &rarr;
+      <a href="{airalo_link}" target="_blank" rel="noopener" style="display: block; padding: 12px 14px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; text-decoration: none; color: #0f172a; font-weight: 700; font-size: 13px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        📱 Airalo 5G eSIM &rarr;
       </a>
-      <a href="{kiwitaxi_link}" target="_blank" rel="noopener" style="display: block; padding: 12px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; text-decoration: none; color: #0f172a; font-weight: bold; font-size: 13px;">
-        🚖 Kiwitaxi Fixed Airport Ride &rarr;
+      <a href="{kiwitaxi_link}" target="_blank" rel="noopener" style="display: block; padding: 12px 14px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; text-decoration: none; color: #0f172a; font-weight: 700; font-size: 13px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        🚖 Kiwitaxi Fixed Ride &rarr;
       </a>
     </div>
   </div>
 
-  <!-- Dedicated Author Bio & Family Tribute -->
-  <div style="border-top: 1px solid #e2e8f0; margin-top: 32px; padding-top: 20px; font-size: 12px; color: #64748b;">
-    <p style="margin: 0;">
-      <strong>Published by TRTT News 24 BD &amp; FlightScoutPro Network</strong> • Dedicated to Roksana, Taifa &amp; Tashrif • 
-      Written from Sanluri, Sardinia, Italy (Via Carlo Felice ARST 08:17) to Dhaka, Bangladesh.
-    </p>
+  <!-- Dedicated Author Card & Google E-E-A-T Transparency -->
+  <div style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 16px; padding: 22px; margin-top: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+      <div style="width: 58px; height: 58px; border-radius: 50%; background: {blog_profile['theme_primary']}; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; flex-shrink: 0;">
+        {blog_profile['author_name'][0]}
+      </div>
+      <div style="flex: 1; min-width: 220px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <strong style="font-size: 16px; color: #0f172a;">{blog_profile['author_name']}</strong>
+          <span style="background: #dbeafe; color: #1e40af; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">VERIFIED AUTHOR</span>
+        </div>
+        <p style="margin: 2px 0 0 0; font-size: 13px; color: #64748b;">{blog_profile['author_role']} &bull; {blog_profile['author_location']}</p>
+        <p style="margin: 4px 0 0 0; font-size: 12px; color: #475569;">
+          <span>Email: <strong>{blog_profile['author_email']}</strong></span>
+          {phone_html}
+        </p>
+      </div>
+    </div>
+    
+    <!-- Legal & Compliance Links for Google AdSense & Search Essentials -->
+    <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid #e2e8f0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; font-size: 12px;">
+      <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+        <a href="{blog_profile['about_url']}" style="color: #0284c7; text-decoration: none; font-weight: 600;">About Us</a>
+        <a href="{blog_profile['contact_url']}" style="color: #0284c7; text-decoration: none; font-weight: 600;">Contact Us</a>
+        <a href="{blog_profile['privacy_url']}" style="color: #0284c7; text-decoration: none; font-weight: 600;">Privacy Policy</a>
+        <a href="{blog_profile['disclaimer_url']}" style="color: #0284c7; text-decoration: none; font-weight: 600;">Disclaimer</a>
+      </div>
+      <span style="color: #94a3b8; font-size: 11px;">Marker {MARKER} &bull; GDPR &amp; FTC Compliant</span>
+    </div>
   </div>
 
-</div>
-"""
+  <!-- Dedicated Family Tribute & Footer Stamp -->
+  <div style="text-align: center; margin-top: 24px; font-size: 11px; color: #94a3b8;">
+    <p style="margin: 0;">{blog_profile['footer_tag']}</p>
+  </div>
+
+</div>"""
     return html
 
 # ==============================================================================
 # MULTI-BLOG BROADCASTING VIA OFFICIAL GOOGLE BLOGGER API
 # ==============================================================================
-def post_to_multi_blogs(title: str, html_content: str, meta: dict) -> List[str]:
-    """Simultaneously publishes to TRTT News 24 BD & Partner Blogs so each partner sees authentic Google Views."""
+def post_to_multi_blogs(title: str, html_content: str, meta: dict, article_data: dict = None, photo: dict = None) -> List[str]:
+    """
+    Simultaneously publishes to TRTT News 24 BD & FlightScoutPro with tailored branding and verified author bios.
+    """
     if not all([BLOGGER_CLIENT_ID, BLOGGER_CLIENT_SECRET, BLOGGER_REFRESH_TOKEN]):
         print("Notice: Blogger OAuth credentials not configured in secrets. Skipping live Blogger API post.")
         return []
@@ -357,12 +523,12 @@ def post_to_multi_blogs(title: str, html_content: str, meta: dict) -> List[str]:
         target_blog_ids.append(("TRTT News 24 BD (Main Hub)", BLOGGER_BLOG_ID))
     if FLIGHTSCOUTPRO_BLOG_ID:
         target_blog_ids.append(("FlightScoutPro (Partner Blog)", FLIGHTSCOUTPRO_BLOG_ID))
-    
+        
     # Also support multiple partner IDs passed as comma-separated list
     if PARTNER_BLOG_IDS:
         for idx, p_id in enumerate(PARTNER_BLOG_IDS.split(","), 1):
             cleaned = p_id.strip()
-            if cleaned and cleaned not in [BLOGGER_BLOG_ID, FLIGHTSCOUTPRO_BLOG_ID]:
+            if cleaned and cleaned not in [b[1] for b in target_blog_ids]:
                 target_blog_ids.append((f"Partner Network Blog #{idx}", cleaned))
 
     # Read from partners.json if available
@@ -389,20 +555,27 @@ def post_to_multi_blogs(title: str, html_content: str, meta: dict) -> List[str]:
         )
         service = build("blogger", "v3", credentials=creds)
 
-        body = {
-            "title": title,
-            "content": html_content,
-            "labels": meta["labels"],
-            "location": {
-                "name": "Sanluri, Sardinia, Italy",
-                "lat": 39.5613,
-                "lng": 8.6332,
-                "span": "0.05,0.05"
-            }
-        }
-
         for blog_name, blog_id in target_blog_ids:
             try:
+                # Generate tailored HTML per blog if article_data and photo are available
+                blog_profile = get_blog_profile(blog_name, blog_id)
+                if article_data and photo:
+                    tailored_html = build_enterprise_html(article_data, photo, blog_profile)
+                else:
+                    tailored_html = html_content
+
+                body = {
+                    "title": title,
+                    "content": tailored_html,
+                    "labels": meta["labels"],
+                    "location": {
+                        "name": blog_profile["author_location"],
+                        "lat": 39.5613 if "sardinia" in blog_profile["author_location"].lower() else 23.8103,
+                        "lng": 8.6332 if "sardinia" in blog_profile["author_location"].lower() else 90.4125,
+                        "span": "0.05,0.05"
+                    }
+                }
+
                 post = service.posts().insert(blogId=blog_id, body=body, isDraft=False).execute()
                 p_url = post.get("url")
                 published_urls.append(p_url)
@@ -423,16 +596,24 @@ def send_telegram(title: str, url: str, excerpt: str):
         return
     try:
         clean_excerpt = re.sub(r'<[^>]+>', '', excerpt)[:200]
-        text = f"✈️ <b>TRTT Travel News Alert</b>\n\n<b>{title}</b>\n\n{clean_excerpt}...\n\n🔗 <a href='{url}'>Read Full Verified Article</a>\n\n<i>📍 Sanluri, Sardinia &amp; Dhaka • Marker {MARKER}</i>"
+        lines = [
+            "✈️ <b>TRTT &amp; FlightScout Travel News Alert</b>",
+            "",
+            f"<b>{title}</b>",
+            "",
+            f"{clean_excerpt}...",
+            "",
+            f"🔗 <a href='{url}'>Read Full Verified Article</a>",
+            "",
+            f"<i>📍 Sanluri, Sardinia &amp; Dhaka • Marker {MARKER}</i>"
+        ]
+        text = chr(10).join(lines)
         endpoint = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
         requests.post(endpoint, json={"chat_id": TELEGRAM_CHAT_ID, "text": text, "parse_mode": "HTML"}, timeout=8)
         print("Telegram broadcast dispatched.")
     except Exception as exc:
         print(f"Telegram notice: {exc}")
 
-# ==============================================================================
-# MAIN ENTRYPOINT
-# ==============================================================================
 def main():
     history = load_history()
     
@@ -442,7 +623,7 @@ def main():
         if slugify(candidate["topic"]) not in history:
             selected_topic_info = candidate
             break
-
+            
     print(f"Selected Topic: {selected_topic_info['topic']}")
 
     # 2. Fetch real Unsplash Photography
@@ -455,14 +636,17 @@ def main():
         print("Skipping execution due to generation error.")
         return
 
-    # 4. Build Enterprise HTML with Schema.org & Meta Tags
-    full_html = build_enterprise_html(article_data, photo)
+    # 4. Build default Enterprise HTML (used for telegram excerpt and single-target fallbacks)
+    default_profile = get_blog_profile("TRTT News 24 BD", BLOGGER_BLOG_ID or "")
+    default_html = build_enterprise_html(article_data, photo, default_profile)
 
-    # 5. Post directly to Google Blogger network (DO NOT save HTML to GitHub)
+    # 5. Broadcast directly to Google Blogger network with tailored profiles per blog
     published_urls = post_to_multi_blogs(
         title=article_data["meta"]["title"],
-        html_content=full_html,
-        meta=article_data["meta"]
+        html_content=default_html,
+        meta=article_data["meta"],
+        article_data=article_data,
+        photo=photo
     )
     
     primary_url = published_urls[0] if published_urls else BLOGGER_URL

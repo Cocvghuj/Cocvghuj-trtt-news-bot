@@ -1,0 +1,180 @@
+/* ==========================================================================
+   FLIGHTSCOUTPRO MAGIC OVERHAUL CSS (For Blogger Contempo & Classic Themes)
+   Author: Muntasir Rahman (muntasirrahaman694@gmail.com | +8801314847336)
+   How to apply:
+   Blogger Dashboard -> Theme -> Customize -> Advanced -> Add CSS -> Paste -> Save
+   ========================================================================== */
+
+/* 1. Global Reset & Smooth Typography */
+body, html {
+  background-color: #f8fafc !important;
+  color: #1e293b !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1.75 !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 2. Remove Contempo Ugly Grey Borders & Cluttered Margins */
+.bg-photo-overlay,
+.bg-photo-container {
+  display: none !important;
+}
+
+.main-container,
+.centered-top,
+.centered-bottom,
+.page_body {
+  max-width: 1140px !important;
+  margin: 0 auto !important;
+  padding: 16px !important;
+  background: transparent !important;
+}
+
+/* 3. Header: Clean Modern Aviation Branding */
+.header-widget,
+header#header {
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06) !important;
+  padding: 24px 32px !important;
+  margin-bottom: 28px !important;
+  border: 1px solid #e2e8f0 !important;
+  text-align: left !important;
+}
+
+.header-widget h1,
+.header-widget .title,
+header h1.title {
+  font-size: 28px !important;
+  font-weight: 900 !important;
+  color: #0369a1 !important;
+  letter-spacing: -0.02em !important;
+  margin: 0 !important;
+}
+
+.header-widget .description,
+header .description {
+  font-size: 14px !important;
+  color: #64748b !important;
+  margin-top: 6px !important;
+}
+
+/* 4. Article / Post Stream Card Styling */
+.post-outer-container,
+.post-outer,
+article.post {
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 15px -3px rgba(15, 23, 42, 0.05) !important;
+  padding: 32px !important;
+  margin-bottom: 32px !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-outer-container:hover {
+  box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.1) !important;
+}
+
+/* 5. Post Headings & Typography */
+h1.post-title,
+.post-title a {
+  font-size: 26px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  line-height: 1.3 !important;
+  text-decoration: none !important;
+}
+
+.post-title a:hover {
+  color: #0284c7 !important;
+}
+
+.post-body {
+  font-size: 16.5px !important;
+  line-height: 1.8 !important;
+  color: #334155 !important;
+}
+
+.post-body h2 {
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin-top: 36px !important;
+  margin-bottom: 16px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+}
+
+.post-body h3 {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  margin-top: 24px !important;
+}
+
+.post-body p {
+  margin-bottom: 18px !important;
+}
+
+.post-body img {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* 6. Clean Navigation Bar */
+.tabs-inner,
+nav.navigation {
+  background: #ffffff !important;
+  border-radius: 12px !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 8px 16px !important;
+  margin-bottom: 24px !important;
+}
+
+.tabs-inner .widget ul li a,
+nav.navigation a {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #334155 !important;
+  padding: 8px 14px !important;
+  border-radius: 8px !important;
+  text-decoration: none !important;
+  transition: all 0.2s;
+}
+
+.tabs-inner .widget ul li a:hover,
+nav.navigation a:hover {
+  background: #f0f9ff !important;
+  color: #0284c7 !important;
+}
+
+/* 7. Hide Ugly Blogger Clutter Widgets */
+.widget.ReportAbuse,
+.widget.Attribution,
+.widget.Profile,
+.post-feeds,
+.feed-links {
+  display: none !important;
+}
+
+/* 8. Responsive Mobile Optimization */
+@media (max-width: 768px) {
+  .post-outer-container,
+  .post-outer,
+  article.post {
+    padding: 20px 16px !important;
+    border-radius: 12px !important;
+  }
+  h1.post-title,
+  .post-title a {
+    font-size: 21px !important;
+  }
+  .header-widget,
+  header#header {
+    padding: 18px 20px !important;
+  }
+}
