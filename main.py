@@ -397,7 +397,7 @@ def validate_article_response(text: str) -> dict:
         raise RuntimeError("Article metadata is invalid JSON. Draft creation aborted.") from exc
 
     content_without_meta = text.replace(meta_match.group(0), "").strip()
-    evidence_match = re.search(r'\\[EVIDENCE\\](.*?)\\[/EVIDENCE\\]', content_without_meta, re.DOTALL)
+    evidence_match = re.search(r'\[EVIDENCE\](.*?)\[/EVIDENCE\]', content_without_meta, re.DOTALL)
     if not evidence_match:
         raise RuntimeError("Article is missing its structured evidence ledger. Draft creation aborted.")
     try:
@@ -434,7 +434,7 @@ def validate_article_response(text: str) -> dict:
 
     # Ensure the article body actually cites sources listed in its Sources section.
     article_body = content_html[:source_heading.start()]
-    inline_links = re.findall(r'<a\\b[^>]*href\\s*=\\s*["\\'](https?://[^"\\']+)["\\'][^>]*>', article_body, re.IGNORECASE)
+    inline_links = re.findall(r'<a\b[^>]*href\s*=\s*["\'](https?://[^"\']+)["\'][^>]*>', article_body, re.IGNORECASE)
     inline_sources = {url.rstrip(".,);") for url in inline_links}
     if len(inline_sources.intersection(reachable_sources)) < 2:
         raise RuntimeError("At least two verified Sources URLs must also be cited inline in the article body. Draft creation aborted.")
