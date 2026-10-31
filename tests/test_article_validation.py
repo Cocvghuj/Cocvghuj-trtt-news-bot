@@ -58,7 +58,7 @@ class SourceUrlReachabilityTests(unittest.TestCase):
             def close(self):
                 pass
 
-        with unittest.mock.patch.object(main.requests, "get", return_value=FakeResponse()):
+        with mock.patch.object(main.requests, "get", return_value=FakeResponse()):
             self.assertFalse(main.verify_source_url("https://europa.eu/source"))
 
     def test_rejects_non_html_response(self):
@@ -114,13 +114,26 @@ class EvidenceLedgerTests(unittest.TestCase):
 
 class ArticleValidationTests(unittest.TestCase):
     def test_accepts_two_distinct_sources_in_sources_section(self):
+        source_a = "https://europa.eu/source-a"
+        source_b = "https://gov.uk/source-b"
+        evidence = {"claims": [
+            {"claim": "The first factual claim is supported by the EU source.", "source_urls": [source_a]},
+            {"claim": "The second factual claim is supported by the UK source.", "source_urls": [source_b]},
+        ]}
         body = (
             "<h2>Article</h2><p>" + ("Useful content. " * 100) + "</p>"
-            "<h2>Sources</h2>"
-            '<p><a href="https://europa.eu/source-a">EU</a></p>'
-            '<p><a href="https://gov.uk/source-b">Government</a></p>'
+            + f'<p>First claim <a href="{source_a}">EU source</a></p>'
+            + f'<p>Second claim <a href="{source_b}">UK source</a></p>'
+            + "<h2>Sources</h2>"
+            + f'<p><a href="{source_a}">EU</a></p>'
+            + f'<p><a href="{source_b}">Government</a></p>'
         )
-        result = main.validate_article_response(article(body))
+        raw = article(body).replace(
+            "[/METADATA]",
+            "[/METADATA][EVIDENCE]" + json.dumps(evidence) + "[/EVIDENCE]",
+        )
+        with mock.patch.object(main, "verify_source_url", return_value=True):
+            result = main.validate_article_response(raw)
         self.assertEqual(result["meta"]["title"], "Test article")
 
     def test_rejects_missing_ai_output(self):
