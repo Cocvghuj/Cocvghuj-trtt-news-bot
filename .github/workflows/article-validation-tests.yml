@@ -1,6 +1,7 @@
 name: Article Validation Tests
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
