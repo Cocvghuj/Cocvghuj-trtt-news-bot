@@ -70,28 +70,3 @@ with open("public/trtt-auto-sync.js", "w", encoding="utf-8") as f:
     f.write(js_content)
 
 print(f"✅ Auto Built - blog.json + trtt-auto-sync.js - Marker {MARKER} Locked - Vercel {VERCEL_URL}")
-"""
-
-**File 2: `.github/workflows/auto-build.yml` - GitHub Actions - Auto Push - Google AI Studio এর মত না - Real Live Push:**
-
-```yaml
-name: TRTT Auto Builder - Google Blog + Vercel
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - run: python engine/trtt_auto_builder.py
-      - run: |
-          git config --global user.name "TRTT Auto Builder"
-          git config --global user.email "engrtaher2017.trttnews24bd@blogger.com"
-          git add public/blog.json public/trtt-auto-sync.js
-          git commit -m "Auto Build - Marker 787950 Locked - Money Source - trttpayout.com" || echo "No changes"
-          git push
