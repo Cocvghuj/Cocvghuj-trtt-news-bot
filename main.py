@@ -9,6 +9,7 @@ Automated Multi-Blog Publishing for TRTT News 24 BD & FlightScoutPro.
 import json
 import os
 import re
+import difflib
 from datetime import datetime
 from typing import List, Dict, Optional
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
@@ -741,6 +742,37 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
 # ==============================================================================
 # MULTI-BLOG BROADCASTING VIA OFFICIAL GOOGLE BLOGGER API
 # ==============================================================================
+def normalize_article_text(value: str) -> str:
+    """Normalize article text for conservative duplicate detection."""
+    text = re.sub(r'<[^>]+>', ' ', value or '')
+    text = re.sub(r'&(?:nbsp|amp|quot|#39);', ' ', text, flags=re.IGNORECASE)
+    return re.sub(r'\\s+', ' ', text).strip().lower()
+
+
+def find_duplicate_post(service, blog_id: str, title: str, content: str):
+    """Return a matching recent Blogger post if title or article body is a duplicate."""
+    new_title = normalize_article_text(title)
+    new_body = normalize_article_text(content)
+    try:
+        response = service.posts().list(
+            blogId=blog_id, maxResults=100, fetchBodies=True,
+            status=["LIVE", "DRAFT"]
+        ).execute()
+        for existing in response.get("items", []):
+            old_title = normalize_article_text(existing.get("title", ""))
+            old_body = normalize_article_text(existing.get("content", ""))
+            if old_title and old_title == new_title:
+                return existing
+            if len(new_body) >= 500 and len(old_body) >= 500:
+                similarity = difflib.SequenceMatcher(None, new_body, old_body).ratio()
+                if similarity >= 0.88:
+                    return existing
+    except Exception as exc:
+        # Fail closed: if duplicate checking cannot run, do not create a potentially repeated post.
+        raise RuntimeError("Duplicate check could not be completed for blog " + str(blog_id) + ": " + str(exc))
+    return None
+
+
 def create_drafts_on_blogs(title: str, html_content: str, meta: dict, article_data: dict = None, photo: dict = None) -> List[dict]:
     """
     Creates reviewable Blogger drafts on configured blogs; publication requires human approval.
@@ -791,6 +823,15 @@ def create_drafts_on_blogs(title: str, html_content: str, meta: dict, article_da
 
         for blog_name, blog_id in target_blog_ids:
             try:
+                # Check recent LIVE and DRAFT posts before inserting into this blog.
+                duplicate = find_duplicate_post(
+                    service, blog_id, title,
+                    (article_data or {}).get("content", html_content)
+                )
+                if duplicate:
+                    print("DUPLICATE SKIPPED for " + blog_name + ": " + str(duplicate.get("title", "")))
+                    continue
+
                 # Generate tailored HTML per blog if article_data and photo are available
                 blog_profile = get_blog_profile(blog_name, blog_id)
                 if article_data and photo:
