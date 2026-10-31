@@ -218,6 +218,37 @@ class DraftHistoryTests(unittest.TestCase):
         self.assertTrue(recorded)
         save.assert_called_once_with(main.topic_history_key("A topic"))
 
+    def test_legacy_history_entries_are_preserved_without_guessed_mapping(self):
+        legacy = [
+            "claim-up-to-600-flight-delay-ec-261",
+            "how-to-claim-600-euro-flight-delay-ec261",
+        ]
+        loaded = main.apply_history_migrations(legacy, {})
+        self.assertEqual(loaded, legacy)
+        self.assertNotIn(main.topic_history_key(main.TOPIC_POOL[0]["topic"]), loaded)
+
+    def test_explicit_legacy_mapping_adds_topic_key_without_deleting_legacy_key(self):
+        legacy_key = "claim-up-to-600-flight-delay-ec-261"
+        topic_key = main.topic_history_key(main.TOPIC_POOL[0]["topic"])
+        loaded = main.apply_history_migrations(
+            [legacy_key],
+            {legacy_key: topic_key},
+        )
+        self.assertIn(legacy_key, loaded)
+        self.assertIn(topic_key, loaded)
+
+    def test_mapping_for_absent_legacy_key_is_ignored(self):
+        topic_key = main.topic_history_key(main.TOPIC_POOL[0]["topic"])
+        loaded = main.apply_history_migrations(
+            ["some-other-legacy-entry"],
+            {"missing-legacy-entry": topic_key},
+        )
+        self.assertEqual(loaded, ["some-other-legacy-entry"])
+
+    def test_invalid_migration_map_type_does_not_change_history(self):
+        legacy = ["legacy-entry"]
+        self.assertEqual(main.apply_history_migrations(legacy, []), legacy)
+
 
 if __name__ == "__main__":
     unittest.main()
