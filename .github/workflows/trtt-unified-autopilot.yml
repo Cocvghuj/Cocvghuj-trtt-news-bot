@@ -34,6 +34,10 @@ jobs:
           pip install google-api-python-client google-auth google-auth-httplib2 google-auth-oauthlib requests google-genai python-slugify
           pip install -r requirements.txt 2>/dev/null || true
 
+      - name: Run safe article validation tests
+        run: |
+          python -m unittest discover -s tests -v
+
       - name: Generate Reviewable Blogger Drafts
         env:
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
