@@ -1,0 +1,359 @@
+দুঃখিত, আপনার অসুবিধার জন্য আমি খুব খারাপ বোধ করছি। আমি একজন AI অ্যাসিস্ট্যান্ট, আমি কোড লিখতে জানি। শুধু আগের রেসপন্সে কোডটুকু লম্বা ছিল এবং স্ক্রল করতে গিয়ে হয়তো কপি করতে সমস্যা হয়েছে।
+
+নিচে একই কোডটি আবারও একদম পরিষ্কার করে দিচ্ছি। আপনি নিচে থেকে কোড ব্লকটি কপি করে নিন।
+
+---
+
+## কোড কপি করার নিয়ম (দিয়ে গুন)
+
+১. নিচে কোড ব্লকের মধ্যে থাকা সবকিছু সিলেক্ট করুন (Ctrl+A → Ctrl+C)।
+২. আপনার কম্পিউটারে **Notepad** (উইন্ডোজ) বা **TextEdit** (ম্যাক) খুলুন।
+৩. সেখানে পেস্ট করুন (Ctrl+V)।
+৪. ফাইলের নাম দিন `index.html` এবং সেভ করুন।
+৫. ফাইলটি ডাবল-ক্লিক করলে ব্রাউজারে খুলবে।
+
+---
+
+## পূর্ণাঙ্গ কোড (`index.html`)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="marker" content="787950">
+  <title>Travel Toolkit | Free International Standard Travel Tools</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .marker-id { opacity: 0.6; font-size: 0.75rem; font-family: monospace; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="flex items-center gap-2">
+          <span class="text-xl font-bold text-blue-600">✈️Travel</span>
+          <span class="font-semibold text-gray-900">Toolkit</span>
+        </div>
+        <div class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
+          <a href="#budget" class="hover:text-blue-600 transition">Budget Calculator</a>
+          <a href="#currency" class="hover:text-blue-600 transition">Currency Converter</a>
+          <a href="#packing" class="hover:text-blue-600 transition">Packing List</a>
+          <a href="#about" class="hover:text-blue-600 transition">About</a>
+        </div>
+        <div class="text-xs text-gray-400 marker-id hidden md:block">Marker 787950</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="bg-blue-900 text-white py-16 px-4 text-center">
+    <h1 class="text-3xl md:text-5xl font-bold mb-4">Free Travel Tools for Every Journey</h1>
+    <p class="text-blue-100 text-lg max-w-2xl mx-auto">Plan your budget, convert currencies, and pack smarter — built to international standards.</p>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-5xl mx-auto px-4 py-12 space-y-16">
+
+    <!-- Tool 1: Budget Calculator -->
+    <section id="budget" class="bg-white rounded-2xl shadow-xl border border-gray-200 p-6 md:p-10">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-800">Travel Budget Calculator</h2>
+        <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">Tool 1</span>
+      </div>
+      <p class="text-gray-600 mb-6">Estimate your total trip cost based on duration and daily expenses.</p>
+
+      <form id="budgetForm" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Destination</label>
+          <input type="text" id="bd-destination" placeholder="e.g. Paris, France"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Days</label>
+          <input type="number" id="bd-days" min="1" placeholder="Days"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
+          <select id="bd-currency" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white">
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="BDT">BDT (৳)</option>
+            <option value="INR">INR (₹)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Hotel / Night</label>
+          <input type="number" id="bd-hotel" min="0" placeholder="0"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Food / Day</label>
+          <input type="number" id="bd-food" min="0" placeholder="0"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Transport / Day</label>
+          <input type="number" id="bd-transport" min="0" placeholder="0"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+        </div>
+
+        <div class="md:col-span-3">
+          <label class="block text-sm font-medium text-gray-700 mb-1">One-time Costs (Flights, Visa, Insurance)</label>
+          <input type="number" id="bd-onetime" min="0" placeholder="0"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+        </div>
+
+        <div class="md:col-span-3 pt-4">
+          <button type="button" onclick="calculateBudget()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-lg transition shadow-lg flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            Calculate Total Budget
+          </button>
+        </div>
+      </form>
+
+      <div id="bd-result" class="hidden mt-8 bg-green-50 border border-green-200 rounded-2xl p-6">
+        <h3 class="text-lg font-bold text-green-800 mb-4">Estimated Budget</h3>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+          <div class="bg-white p-3 rounded-lg border border-green-100">
+            <div class="text-xs font-semibold text-green-600 uppercase">Total</div>
+            <div id="bd-total" class="text-xl font-bold text-gray-900">$0</div>
+          </div>
+          <div class="bg-white p-3 rounded-lg border border-green-100">
+            <div class="text-xs font-semibold text-green-600 uppercase">Per Day</div>
+            <div id="bd-perday" class="text-xl font-bold text-gray-900">$0</div>
+          </div>
+          <div class="bg-white p-3 rounded-lg border border-green-100">
+            <div class="text-xs font-semibold text-green-600 uppercase">Accommodation</div>
+            <div id="bd-hotel-total" class="text-xl font-bold text-gray-900">$0</div>
+          </div>
+          <div class="bg-white p-3 rounded-lg border border-green-100">
+            <div class="text-xs font-semibold text-green-600 uppercase">Food + Transport</div>
+            <div id="bd-daily-total" class="text-xl font-bold text-gray-900">$0</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tool 2: Currency Converter -->
+    <section id="currency" class="bg-white rounded-2xl shadow-xl border border-gray-200 p-6 md:p-10">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-800">Currency Converter</h2>
+        <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">Tool 2</span>
+      </div>
+      <p class="text-gray-600 mb-6">Convert amounts using approximate rates. Check live rates before exchanging money.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+          <input type="number" id="cc-amount" value="100"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">From</label>
+          <select id="cc-from" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white">
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+            <option value="BDT">BDT</option>
+            <option value="INR">INR</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">To</label>
+          <select id="cc-to" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white">
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+            <option value="GBP">GBP</option>
+            <option value="BDT">BDT</option>
+            <option value="INR">INR</option>
+          </select>
+        </div>
+        <div class="md:col-span-1">
+          <button onclick="convertCurrency()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-lg transition shadow-lg">Convert</button>
+        </div>
+      </div>
+
+      <div id="cc-result" class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100 text-center text-lg font-bold text-blue-800 hidden">
+        100 USD = 0 EUR
+      </div>
+      <p class="mt-4 text-xs text-gray-400 text-center">Rates are illustrative. Verify with your bank before exchange.</p>
+    </section>
+
+    <!-- Tool 3: Packing Checklist -->
+    <section id="packing" class="bg-white rounded-2xl shadow-xl border border-gray-200 p-6 md:p-10">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-800">Smart Packing Checklist</h2>
+        <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold">Tool 3</span>
+      </div>
+      <p class="text-gray-600 mb-6">Check off items as you pack. Your list is saved in your browser.</p>
+
+      <div id="packing-list" class="space-y-2">
+        <!-- Items injected by JavaScript -->
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button onclick="resetPacking()" class="text-xs text-gray-500 hover:text-gray-700 underline">Reset list</button>
+      </div>
+      <p id="packing-progress" class="mt-4 text-sm text-gray-600 text-center"></p>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-400 py-10 px-4 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto text-center">
+      <p class="text-sm mb-2">✈️ Travel Toolkit — Free tools for travelers worldwide.</p>
+      <p class="text-xs marker-id">Marker ID: 787950 | Built with Tailwind CSS | International Standard UI</p>
+      <p class="text-xs mt-2">© 2026 Travel Toolkit. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // ============================
+    // MARKER ID as requested
+    // ============================
+    const MARKER_ID = '787950';
+    console.log('Travel Toolkit initialized. Marker:', MARKER_ID);
+
+    // ============================
+    // Budget Calculator
+    // ============================
+    function calculateBudget() {
+      const days = parseFloat(document.getElementById('bd-days').value) || 0;
+      const hotel = parseFloat(document.getElementById('bd-hotel').value) || 0;
+      const food = parseFloat(document.getElementById('bd-food').value) || 0;
+      const transport = parseFloat(document.getElementById('bd-transport').value) || 0;
+      const onetime = parseFloat(document.getElementById('bd-onetime').value) || 0;
+      const currency = document.getElementById('bd-currency').value;
+
+      const daily = food + transport;
+      const stayTotal = hotel * days;
+      const dailyTotal = daily * days;
+      const grandTotal = stayTotal + dailyTotal + onetime;
+      const perDay = days > 0 ? grandTotal / days : 0;
+
+      const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: currency });
+
+      document.getElementById('bd-total').textContent = fmt(grandTotal);
+      document.getElementById('bd-perday').textContent = fmt(perDay);
+      document.getElementById('bd-hotel-total').textContent = fmt(stayTotal);
+      document.getElementById('bd-daily-total').textContent = fmt(dailyTotal);
+
+      document.getElementById('bd-result').classList.remove('hidden');
+      document.getElementById('bd-result').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ============================
+    // Currency Converter (illustrative static rates)
+    // ============================
+    const rates = {
+      USD: 1,
+      EUR: 0.92,
+      GBP: 0.79,
+      BDT: 109.50,
+      INR: 83.50
+    };
+
+    function convertCurrency() {
+      const amount = parseFloat(document.getElementById('cc-amount').value) || 0;
+      const from = document.getElementById('cc-from').value;
+      const to = document.getElementById('cc-to').value;
+
+      const usdAmount = amount / rates[from];
+      const result = usdAmount * rates[to];
+
+      document.getElementById('cc-result').classList.remove('hidden');
+      document.getElementById('cc-result').textContent = `${amount} ${from} = ${result.toFixed(2)} ${to}`;
+    }
+
+    // ============================
+    // Packing Checklist (localStorage)
+    // ============================
+    const defaultItems = [
+      'Passport & Visa',
+      'Travel Insurance Documents',
+      'Flight Tickets / E-tickets',
+      'Hotel Reservations',
+      'Credit Cards & Cash',
+      'Phone & Charger',
+      'Power Bank',
+      'Travel Adapter',
+      'Toothbrush & Toothpaste',
+      'Clothes (weather appropriate)',
+      'Shoes (comfortable walking)',
+      'Underwear & Socks',
+      'Jacket / Raincoat',
+      'Medications & First Aid',
+      'Sunscreen',
+      'Sunglasses',
+      'Water Bottle',
+      'Snacks',
+      'Notebook & Pen'
+    ];
+
+    let packingState = JSON.parse(localStorage.getItem('packing_787950')) ||
+      defaultItems.reduce((acc, item) => { acc[item] = false; return acc; }, {});
+
+    function renderPacking() {
+      const container = document.getElementById('packing-list');
+      container.innerHTML = '';
+      let checked = 0;
+
+      Object.entries(packingState).forEach(([item, done]) => {
+        if (done) checked++;
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between p-3 border border-gray-200 rounded-lg bg-gray-50 hover:bg-blue-50 transition group';
+        div.innerHTML = `
+          <label class="flex items-center gap-3 cursor-pointer select-none w-full">
+            <input type="checkbox" class="rounded text-blue-600 focus:ring-blue-500" ${done ? 'checked' : ''}
+              onchange="toggleItem('${item}', this.checked)">
+            <span class="${done ? 'line-through text-gray-400' : 'text-gray-700'}">${item}</span>
+          </label>
+          <button onclick="removeItem('${item}')" class="text-gray-300 hover:text-red-500 transition opacity-0 group-hover:opacity-100">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        `;
+        container.appendChild(div);
+      });
+
+      document.getElementById('packing-progress').textContent = `${checked} / ${Object.keys(packingState).length} items packed`;
+    }
+
+    function toggleItem(item, checked) {
+      packingState[item] = checked;
+      localStorage.setItem('packing_787950', JSON.stringify(packingState));
+      renderPacking();
+    }
+
+    function removeItem(item) {
+      delete packingState[item];
+      localStorage.setItem('packing_787950', JSON.stringify(packingState));
+      renderPacking();
+    }
+
+    function resetPacking() {
+      if (confirm('Reset the entire packing list?')) {
+        packingState = defaultItems.reduce((acc, item) => { acc[item] = false; return acc; }, {});
+        localStorage.setItem('packing_787950', JSON.stringify(packingState));
+        renderPacking();
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      renderPacking();
+      convertCurrency();
+    });
+  </script>
+</body>
+</html>
