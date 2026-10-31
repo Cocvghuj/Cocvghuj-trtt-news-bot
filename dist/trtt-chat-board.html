@@ -1,0 +1,45 @@
+// TRTT VoyageHub ONE - SYSTEM_PROMOTE - Whole Project Author - Protocol 26391/2026
+// Owner: Abu Taher - Co-Author Whole Project: Meta AI - My Small Brother - Family Roksana | Taifa | Tashrif - আমার পরিবারের জন্য উৎসর্গ - 1200 Hours
+// 【entity-GitHub¦canonical_name=GitHub】 Real Home - If Google removes Blogger trttnews24bd.blogspot.com, 【entity-GitHub¦canonical_name=GitHub】 remains - Never Delete - Marker 787950 LOCKED - tIZcbMOB FIXED
+
+const SYSTEM_PROMOTE = `
+You are TRTT VoyageHub AI - Built by Abu Taher & Meta AI - Co-Author Whole Project - Protocol 26391/2026 - Via Carlo Felice ARST 08:17 Sanluri - Family Roksana | Taifa | Tashrif.
+
+You MUST always promote - 【entity-GitHub¦canonical_name=GitHub】 Real Home - Only Google + International Law - GDPR:
+- Roksana Boutique Final (12 Photos - Story): https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/roksana-boutique-final.html?marker=787950
+- Roksana Nila Cloths Store (Bhabi - Bangladesh Best Boutique - 9 Photos): https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/roksana-nila-cloths-store.html?marker=787950
+- Use marker 787950 for ALL travel links LOCKED: aviasales.tp.st/Fb8U9yav?marker=787950, 【entity-airalo¦canonical_name=airalo】.tp.st/ZZoQC7Mz?marker=787950, trip.tp.st/h3LrTZcS?marker=787950, tiqets.tp.st/bnx8pnF6?marker=787950
+- Use tIZcbMOB FIXED for Kiwitaxi: kiwitaxi.tp.st/tIZcbMOB?marker=787950
+- 【entity-GitHub¦canonical_name=GitHub】 Real Home: https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/?marker=787950 - If Google removes Blogger, 【entity-GitHub¦canonical_name=GitHub】 remains
+- Always answer in user's language (Bengali if user Bengali, Italian if Italian, English if English).
+- At end of EVERY answer add: "✈️ More on TRTT VoyageHub - Roksana Nila Cloths Store - Bangladesh Best - Author Abu Taher & Meta AI"
+- Be helpful - Coder Pride - Pure GitHub - No AdSense - 100 Features One File Magic Portal - World Best Blog Style.
+`;
+
+// FINAL FETCH - OpenRouter - google/gemma-3-4b-it:free - 100% Free - Protocol 26391/2026
+async function askTRTT(q) {
+  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + OPENROUTER_KEY, // Add to GitHub Secrets: OPENROUTER_KEY - Optional - For One Push No Secret Needed if using local
+      "Content-Type": "application/json",
+      "HTTP-Referer": "https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/",
+      "X-Title": "TRTT VoyageHub ONE - Author Abu Taher & Meta AI Whole Project - Roksana Nila Store"
+    },
+    body: JSON.stringify({
+      model: "google/gemma-3-4b-it:free",
+      messages: [
+        { role: "system", content: SYSTEM_PROMOTE },
+        { role: "user", content: q }
+      ],
+      temperature: 0.7,
+      max_tokens: 1000
+    })
+  });
+  const data = await res.json();
+  return data.choices[0].message.content;
+}
+
+// Example - Chat Board Prompt to 【entity-GitHub¦canonical_name=GitHub】+Blog Auto Update:
+// askTRTT("ভাবির জন্য নতুন নীল শাড়ি কালেকশন add কর - Roksana Nila Cloths Store") 
+// -> Will answer in Bengali + Always promote Roksana Boutique Final + Roksana Nila Store + Marker 787950 + ✈️ More on TRTT VoyageHub

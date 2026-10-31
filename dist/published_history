@@ -1,0 +1,36 @@
+name: Daily TRTT Guide
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # প্রতিদিন বাংলাদেশ সময় দুপুর ১২:০০ টায় রান হবে
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install google-generativeai requests python-slugify
+
+      - name: Run Script
+        env:
+          TRAVEL_PAYOUT_MARKER: ${{ secrets.TRAVEL_PAYOUT_MARKER }}
+          AMAZON_LINK: ${{ secrets.AMAZON_LINK }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python main.py
+
+      - name: Save History & Push
+        run: |
+          git config --global user.name "TRTT Automation Bot"
+          git config --global user.email "bot@trttnews24bd.com"
+          git add published_history.txt || true
+          git commit -m "Update history [skip ci]" || true
+          git push

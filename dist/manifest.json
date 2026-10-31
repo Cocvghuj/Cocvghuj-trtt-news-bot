@@ -1,0 +1,16 @@
+{
+  "name": "TRTT VoyageHub - Cheap Flights 19 Euro eSIM",
+  "short_name": "TRTT VoyageHub",
+  "description": "Cheap flights from 19 Euro, eSIM and travel deals",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "https://cocvghuj-trtt-news-bot.vercel.app/favicon.ico",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

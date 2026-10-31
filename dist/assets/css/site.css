@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRTT News 24 BD | Travel News, Guides & Smart Europe Planning</title>
+    <meta name="description" content="TRTT News 24 BD delivers travel news, Europe guides, destination inspiration, and smart trip-planning content for real-world travel decisions." />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:title" content="TRTT News 24 BD" />
+    <meta property="og:description" content="Travel news, guides, destination inspiration, and smart planning for Europe travelers." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/" />
+    <link rel="stylesheet" href="assets/css/site.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container topbar">
+        <div class="brand" aria-label="TRTT News 24 BD">
+          <span class="brand-badge">T</span>
+          <span>TRTT News 24 BD</span>
+        </div>
+
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="index.html">Home</a>
+          <a href="blog/index.html">News</a>
+          <a href="travel-guide.html">Travel Guide</a>
+          <a href="destinations/index.html">Destinations</a>
+          <a href="app.html">Map</a>
+          <a href="trtt-shop/esim/index.html">eSIM Deals</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-panel">
+          <div class="eyebrow">Travel • News • Smart Planning</div>
+          <h1>Travel smarter across Europe with trusted guides and daily inspiration.</h1>
+          <p>
+            TRTT News 24 BD helps readers discover practical Europe travel ideas, cost-conscious itineraries,
+            city guides, and destination insight designed for real-world planning.
+          </p>
+
+          <div class="cta-row">
+            <a class="btn primary" href="travel-guide.html">Read the travel guide</a>
+            <a class="btn secondary" href="blog/index.html">Browse latest stories</a>
+          </div>
+        </div>
+      </section>
+
+      <div class="container notice">
+        <strong>Affiliate disclosure:</strong> Some links on this website may be affiliate links. We may earn a commission at no extra cost to you when you book through them.
+      </div>
+
+      <section class="section container">
+        <div class="feature-list">
+          <article class="feature-box">
+            <div class="kicker">Top picks</div>
+            <h2>Best cities to visit</h2>
+            <ul>
+              <li>Rome for history, food, and classic sightseeing.</li>
+              <li>Paris for iconic culture and elegant city planning.</li>
+              <li>Barcelona for beaches, design, and nightlife.</li>
+              <li>Lisbon for value, viewpoints, and relaxed city walking.</li>
+            </ul>
+          </article>
+
+          <article class="feature-box">
+            <div class="kicker">Planning</div>
+            <h2>Smart trip preparation</h2>
+            <ul>
+              <li>Compare flights and rail routes early.</li>
+              <li>Pick one country or cluster of cities per trip.</li>
+              <li>Use local transit to save money and time.</li>
+              <li>Keep a daily budget buffer for surprises.</li>
+            </ul>
+          </article>
+
+          <article class="feature-box">
+            <div class="kicker">Essentials</div>
+            <h2>Travel essentials</h2>
+            <ul>
+              <li>eSIM for mobile data and maps.</li>
+              <li>Travel insurance and emergency contact prep.</li>
+              <li>Portable charger and simple packing list.</li>
+              <li>Offline maps and local transport apps.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section container">
+        <div class="kicker">Featured destinations</div>
+        <div class="compact-grid">
+          <article class="article-card">
+            <div>
+              <span class="tag">Italy</span>
+              <h3>Rome</h3>
+              <p>Classic monuments, lively neighborhoods, and a city built for walking culture.</p>
+            </div>
+            <a class="read-more" href="destinations/rome.html">Explore Rome</a>
+          </article>
+
+          <article class="article-card">
+            <div>
+              <span class="tag">France</span>
+              <h3>Paris</h3>
+              <p>Blend iconic landmarks, neighborhoods, and a more relaxed pace for better travel flow.</p>
+            </div>
+            <a class="read-more" href="destinations/paris.html">Explore Paris</a>
+          </article>
+
+          <article class="article-card">
+            <div>
+              <span class="tag">Spain</span>
+              <h3>Barcelona</h3>
+              <p>Beach energy, design, and an easy rhythm for a shorter, memorable city trip.</p>
+            </div>
+            <a class="read-more" href="destinations/barcelona.html">Explore Barcelona</a>
+          </article>
+
+          <article class="article-card">
+            <div>
+              <span class="tag">Portugal</span>
+              <h3>Lisbon</h3>
+              <p>Affordable views, good food, and a slower rhythm that keeps travel enjoyable.</p>
+            </div>
+            <a class="read-more" href="destinations/lisbon.html">Explore Lisbon</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section container">
+        <div class="kicker">Why readers use our guide</div>
+        <div class="grid">
+          <article class="card">
+            <h2>Practical advice</h2>
+            <p>We focus on route planning, daily pacing, affordable choices, and real-world travel decisions rather than vague inspiration-only content.</p>
+          </article>
+
+          <article class="card">
+            <h2>Trust-first content</h2>
+            <p>We add clear disclosure, editorial notes, and transparent travel guidance to keep readers informed and confident.</p>
+          </article>
+
+          <article class="card">
+            <h2>Modern publishing flow</h2>
+            <p>Our editorial structure supports articles, guides, destination pages, news updates, and future AI-assisted content workflows.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section container">
+        <div class="kicker">Latest from TRTT</div>
+        <div class="grid">
+          <article class="article-card">
+            <div>
+              <span class="tag">Europe</span>
+              <h3>Budget-friendly city breaks for couples</h3>
+              <p>Short-haul destinations that are affordable, easy to navigate, and memorable without overplanning.</p>
+            </div>
+            <a class="read-more" href="blog/article-1.html">Read more</a>
+          </article>
+
+          <article class="article-card">
+            <div>
+              <span class="tag">Planning</span>
+              <h3>How to build a realistic Europe budget</h3>
+              <p>A smarter way to estimate transport, local costs, food, and your daily travel buffer.</p>
+            </div>
+            <a class="read-more" href="blog/article-2.html">Read more</a>
+          </article>
+
+          <article class="article-card">
+            <div>
+              <span class="tag">Travel tools</span>
+              <h3>What to compare before buying an eSIM</h3>
+              <p>Data limits, coverage, and support quality matter more than a flashy brand name.</p>
+            </div>
+            <a class="read-more" href="trtt-shop/esim/index.html">Read more</a>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div>© TRTT News 24 BD</div>
+        <div>Travel information and smart planning resources.</div>
+      </div>
+    </footer>
+  </body>
+</html>
