@@ -1,5 +1,6 @@
 import json
 import unittest
+from unittest import mock
 
 import main
 
@@ -29,6 +30,47 @@ class TrustedSourceDomainTests(unittest.TestCase):
 
     def test_rejects_unlisted_domain(self):
         self.assertFalse(main.is_trusted_source_url("https://example.com/source"))
+
+
+class SourceUrlReachabilityTests(unittest.TestCase):
+    def test_rejects_untrusted_url_without_network(self):
+        self.assertFalse(main.verify_source_url("https://example.com/source"))
+
+    def test_rejects_non_https_url_without_network(self):
+        self.assertFalse(main.verify_source_url("http://europa.eu/source"))
+
+    def test_accepts_reachable_trusted_html_page(self):
+        class FakeResponse:
+            status_code = 200
+            url = "https://europa.eu/source"
+            headers = {"Content-Type": "text/html; charset=utf-8"}
+            def close(self):
+                pass
+
+        with mock.patch.object(main.requests, "get", return_value=FakeResponse()):
+            self.assertTrue(main.verify_source_url("https://europa.eu/source"))
+
+    def test_rejects_redirect_to_untrusted_domain(self):
+        class FakeResponse:
+            status_code = 200
+            url = "https://example.com/redirected"
+            headers = {"Content-Type": "text/html"}
+            def close(self):
+                pass
+
+        with unittest.mock.patch.object(main.requests, "get", return_value=FakeResponse()):
+            self.assertFalse(main.verify_source_url("https://europa.eu/source"))
+
+    def test_rejects_non_html_response(self):
+        class FakeResponse:
+            status_code = 200
+            url = "https://europa.eu/document"
+            headers = {"Content-Type": "application/pdf"}
+            def close(self):
+                pass
+
+        with unittest.mock.patch.object(main.requests, "get", return_value=FakeResponse()):
+            self.assertFalse(main.verify_source_url("https://europa.eu/document"))
 
 
 class ArticleValidationTests(unittest.TestCase):
