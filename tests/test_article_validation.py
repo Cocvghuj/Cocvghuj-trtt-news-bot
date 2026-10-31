@@ -280,5 +280,58 @@ class DraftHistoryTests(unittest.TestCase):
         self.assertEqual(main.apply_history_migrations(legacy, []), legacy)
 
 
+
+class DuplicatePaginationTests(unittest.TestCase):
+    class FakeRequest:
+        def __init__(self, response):
+            self.response = response
+        def execute(self):
+            return self.response
+
+    class FakePosts:
+        def __init__(self, responses):
+            self.responses = list(responses)
+            self.calls = []
+        def list(self, **kwargs):
+            self.calls.append(kwargs)
+            if not self.responses:
+                raise AssertionError("Unexpected extra page request")
+            return DuplicatePaginationTests.FakeRequest(self.responses.pop(0))
+
+    class FakeService:
+        def __init__(self, responses):
+            self.posts_api = DuplicatePaginationTests.FakePosts(responses)
+        def posts(self):
+            return self.posts_api
+
+    def test_duplicate_found_on_second_page(self):
+        service = self.FakeService([
+            {"items": [{"title": "Unrelated", "content": "x"}], "nextPageToken": "page-2"},
+            {"items": [{"id": "existing-2", "title": "Test article", "content": "body"}]},
+        ])
+        duplicate = main.find_duplicate_post(service, "blog-1", "Test article", "new body")
+        self.assertEqual(duplicate["id"], "existing-2")
+        self.assertEqual(len(service.posts_api.calls), 2)
+        self.assertEqual(service.posts_api.calls[1]["pageToken"], "page-2")
+        self.assertEqual(service.posts_api.calls[0]["status"], ["LIVE", "DRAFT"])
+
+    def test_refuses_to_claim_no_duplicate_when_scan_limit_reached(self):
+        service = self.FakeService([
+            {"items": [], "nextPageToken": "page-2"},
+            {"items": [], "nextPageToken": "page-3"},
+        ])
+        with mock.patch.object(main, "DUPLICATE_CHECK_MAX_PAGES", 2):
+            with self.assertRaisesRegex(RuntimeError, "Duplicate check could not be completed"):
+                main.find_duplicate_post(service, "blog-1", "Test article", "new body")
+        self.assertEqual(len(service.posts_api.calls), 2)
+
+    def test_returns_none_only_after_last_page(self):
+        service = self.FakeService([
+            {"items": [], "nextPageToken": "page-2"},
+            {"items": []},
+        ])
+        self.assertIsNone(main.find_duplicate_post(service, "blog-1", "Test article", "new body"))
+        self.assertEqual(len(service.posts_api.calls), 2)
+
 if __name__ == "__main__":
     unittest.main()
