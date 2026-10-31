@@ -52,7 +52,7 @@ BLOGGER_URL = "https://trttnews24bd.blogspot.com"
 FLIGHTSCOUTPRO_URL = "https://flightscoutpro.blogspot.com"
 PWA_URL = "https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950"
 
-HISTORY_FILE = "published_history.txt"
+HISTORY_FILE = "drafted_history.txt"
 
 # Core Topics designed for High Google Search Volume & Affiliate Conversion
 TOPIC_POOL = [
@@ -741,9 +741,9 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
 # ==============================================================================
 # MULTI-BLOG BROADCASTING VIA OFFICIAL GOOGLE BLOGGER API
 # ==============================================================================
-def post_to_multi_blogs(title: str, html_content: str, meta: dict, article_data: dict = None, photo: dict = None) -> List[str]:
+def create_drafts_on_blogs(title: str, html_content: str, meta: dict, article_data: dict = None, photo: dict = None) -> List[dict]:
     """
-    Simultaneously publishes to TRTT News 24 BD & FlightScoutPro with tailored branding and verified author bios.
+    Creates reviewable Blogger drafts on configured blogs; publication requires human approval.
     """
     if not all([BLOGGER_CLIENT_ID, BLOGGER_CLIENT_SECRET, BLOGGER_REFRESH_TOKEN]):
         print("Notice: Blogger OAuth credentials not configured in secrets. Skipping live Blogger API post.")
@@ -775,7 +775,10 @@ def post_to_multi_blogs(title: str, html_content: str, meta: dict, article_data:
         except Exception as e:
             print(f"partners.json read notice: {e}")
 
-    published_urls = []
+    created_drafts = []
+    if not target_blog_ids:
+        print('No target Blogger blog IDs configured; no drafts created.')
+        return created_drafts
     try:
         creds = Credentials(
             None,
@@ -807,43 +810,40 @@ def post_to_multi_blogs(title: str, html_content: str, meta: dict, article_data:
                     }
                 }
 
-                post = service.posts().insert(blogId=blog_id, body=body, isDraft=False).execute()
-                p_url = post.get("url")
-                published_urls.append(p_url)
-                print(f"SUCCESS: Published to {blog_name} (Blog ID: {blog_id})! URL: {p_url}")
+                post = service.posts().insert(blogId=blog_id, body=body, isDraft=True).execute()
+                post_id = post.get("id")
+                if post_id:
+                    edit_url = "https://www.blogger.com/blog/post/edit/" + str(blog_id) + "/" + str(post_id)
+                    created_drafts.append({"blog_name": blog_name, "blog_id": blog_id, "post_id": str(post_id), "edit_url": edit_url})
+                    print("SUCCESS: Draft created for " + blog_name + ": " + edit_url)
             except Exception as blog_err:
                 print(f"Notice posting to {blog_name} (ID: {blog_id}): {blog_err}")
 
-        return published_urls
+        return created_drafts
     except Exception as exc:
         print(f"Error initializing Google Blogger API: {exc}")
-        return published_urls
+        return created_drafts
 
 # ==============================================================================
 # TELEGRAM DISPATCH
 # ==============================================================================
-def send_telegram(title: str, url: str, excerpt: str):
+def send_draft_notification(title: str, drafts: List[dict], excerpt: str):
+    """Send direct Blogger editor links; publication remains a human decision."""
     if not (TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID):
+        print("Telegram credentials not configured; draft links are in the workflow log.")
         return
     try:
         clean_excerpt = re.sub(r'<[^>]+>', '', excerpt)[:200]
-        lines = [
-            "✈️ <b>TRTT &amp; FlightScout Travel News Alert</b>",
-            "",
-            f"<b>{title}</b>",
-            "",
-            f"{clean_excerpt}...",
-            "",
-            f"🔗 <a href='{url}'>Read Full Verified Article</a>",
-            "",
-            f"<i>📍 Sanluri, Sardinia &amp; Dhaka • Marker {MARKER}</i>"
-        ]
-        text = chr(10).join(lines)
-        endpoint = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-        requests.post(endpoint, json={"chat_id": TELEGRAM_CHAT_ID, "text": text, "parse_mode": "HTML"}, timeout=8)
-        print("Telegram broadcast dispatched.")
+        lines = ["📝 <b>TRTT: নতুন আর্টিকেল Draft প্রস্তুত</b>", "", "<b>" + title + "</b>", "", clean_excerpt, "", "<b>প্রকাশের আগে তথ্য ও লিংক যাচাই করুন:</b>"]
+        for draft in drafts:
+            safe_name = re.sub(r'[<>]', '', draft["blog_name"])
+            lines.append("✍️ <a href=\"" + draft["edit_url"] + "\">" + safe_name + " — Blogger খুলে Publish করুন</a>")
+        lines.extend(["", "Draft স্বয়ংক্রিয়ভাবে প্রকাশিত হয়নি। আপনার অনুমোদন প্রয়োজন।"])
+        response = requests.post("https://api.telegram.org/bot" + TELEGRAM_BOT_TOKEN + "/sendMessage", json={"chat_id": TELEGRAM_CHAT_ID, "text": chr(10).join(lines), "parse_mode": "HTML", "disable_web_page_preview": True}, timeout=10)
+        response.raise_for_status()
+        if not response.json().get("ok"): print("Telegram did not confirm delivery.")
     except Exception as exc:
-        print(f"Telegram notice: {exc}")
+        print(f"Telegram draft notification notice: {exc}")
 
 def main():
     history = load_history()
@@ -871,8 +871,8 @@ def main():
     default_profile = get_blog_profile("TRTT News 24 BD", BLOGGER_BLOG_ID or "")
     default_html = build_enterprise_html(article_data, photo, default_profile)
 
-    # 5. Broadcast directly to Google Blogger network with tailored profiles per blog
-    published_urls = post_to_multi_blogs(
+    # 5. Create reviewable drafts on configured Blogger network
+    created_drafts = create_drafts_on_blogs(
         title=article_data["meta"]["title"],
         html_content=default_html,
         meta=article_data["meta"],
@@ -880,16 +880,13 @@ def main():
         photo=photo
     )
     
-    primary_url = published_urls[0] if published_urls else BLOGGER_URL
+    if not created_drafts:
+        print("No Blogger drafts were created. Topic was NOT added to history; a later run may retry it.")
+        return
 
-    # 6. Telegram notification
-    send_telegram(article_data["meta"]["title"], primary_url, article_data["content"][:220])
-
-    # 7. Record to local history so we don't repeat topics
+    send_draft_notification(article_data["meta"]["title"], created_drafts, article_data["content"][:220])
     save_history(article_data["meta"]["permalink_slug"])
-    
-    print(f"EXECUTION COMPLETE: Successfully published to {len(published_urls)} network blogs!")
-    print(f"Google Search Console & Blogger View tracking active for: {article_data['meta']['title']}")
+    print(f"EXECUTION COMPLETE: Created {len(created_drafts)} Blogger draft(s); awaiting human review.")
 
 if __name__ == "__main__":
     main()
