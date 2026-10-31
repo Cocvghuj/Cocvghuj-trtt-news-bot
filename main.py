@@ -396,7 +396,18 @@ def validate_article_response(text: str) -> dict:
     except (TypeError, ValueError) as exc:
         raise RuntimeError("Article metadata is invalid JSON. Draft creation aborted.") from exc
 
-    content_html = text.replace(meta_match.group(0), "").strip()
+    content_without_meta = text.replace(meta_match.group(0), "").strip()
+    evidence_match = re.search(r'\\[EVIDENCE\\](.*?)\\[/EVIDENCE\\]', content_without_meta, re.DOTALL)
+    if not evidence_match:
+        raise RuntimeError("Article is missing its structured evidence ledger. Draft creation aborted.")
+    try:
+        evidence_data = json.loads(evidence_match.group(1).strip())
+    except (TypeError, ValueError) as exc:
+        raise RuntimeError("Evidence ledger is invalid JSON. Draft creation aborted.") from exc
+    evidence_claims = evidence_data.get("claims") if isinstance(evidence_data, dict) else None
+    if not isinstance(evidence_claims, list) or len(evidence_claims) < 2:
+        raise RuntimeError("Evidence ledger must contain at least two factual claims. Draft creation aborted.")
+    content_html = content_without_meta.replace(evidence_match.group(0), "").strip()
     title_value = str(parsed_meta.get("title", "")).strip()
     description = str(parsed_meta.get("search_description", "")).strip()
     labels = parsed_meta.get("labels")
@@ -427,6 +438,18 @@ def validate_article_response(text: str) -> dict:
     inline_sources = {url.rstrip(".,);") for url in inline_links}
     if len(inline_sources.intersection(reachable_sources)) < 2:
         raise RuntimeError("At least two verified Sources URLs must also be cited inline in the article body. Draft creation aborted.")
+
+    # Every evidence-ledger claim must map to reachable URLs that are cited inline.
+    for index, item in enumerate(evidence_claims, start=1):
+        if not isinstance(item, dict):
+            raise RuntimeError(f"Evidence claim {index} is not a JSON object. Draft creation aborted.")
+        claim_text = str(item.get("claim", "")).strip()
+        claim_urls = item.get("source_urls")
+        if len(claim_text) < 20 or not isinstance(claim_urls, list) or not claim_urls:
+            raise RuntimeError(f"Evidence claim {index} is incomplete. Draft creation aborted.")
+        normalized_claim_urls = {str(url).strip().rstrip(".,);") for url in claim_urls}
+        if not normalized_claim_urls.issubset(reachable_sources.intersection(inline_sources)):
+            raise RuntimeError(f"Evidence claim {index} references a source not both reachable and cited inline. Draft creation aborted.")
 
     meta = {
         "title": title_value,
@@ -465,7 +488,12 @@ EDITORIAL REQUIREMENTS (Google Helpful Content & E-E-A-T Standards):
 3. Do not invent personal field experience, interviews, quotes, statistics, legal rules, prices, or current events. Clearly distinguish established facts from practical suggestions.
 4. Include inline source links beside material factual claims in the article body. Every inline source URL must also appear in the final <h2>Sources</h2> section, and every listed source should support a nearby claim. Include at least two direct links to relevant, authoritative primary sources (for example official EU, government, regulator, airport, airline, or provider documentation). Link only sources you actually relied on; never fabricate URLs. If reliable sources cannot be identified, say so and do not produce a publishable article.
 5. Do not claim facts are verified merely because they are generated. Avoid unsupported certainty. Do not present a source as supporting a claim unless you have checked the relevant page.
-6. Also generate a JSON header block formatted as:
+6. Before the article HTML, output an [EVIDENCE] JSON block with this exact shape:
+[EVIDENCE]
+{"claims":[{"claim":"A concise factual claim from the article","source_urls":["https://official-source.example/page"]},{"claim":"Another factual claim","source_urls":["https://official-source.example/other-page"]}]}
+[/EVIDENCE]
+Include at least two material factual claims and map each claim to one or more exact URLs used inline in the article and listed in Sources. Do not mark claims as verified; all claims require human review.
+7. Also generate a JSON header block formatted as:
 [METADATA]
 {{
   "title": "{topic}",
