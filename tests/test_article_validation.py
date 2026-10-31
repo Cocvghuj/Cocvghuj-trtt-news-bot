@@ -69,7 +69,7 @@ class SourceUrlReachabilityTests(unittest.TestCase):
             def close(self):
                 pass
 
-        with unittest.mock.patch.object(main.requests, "get", return_value=FakeResponse()):
+        with mock.patch.object(main.requests, "get", return_value=FakeResponse()):
             self.assertFalse(main.verify_source_url("https://europa.eu/document"))
 
 
