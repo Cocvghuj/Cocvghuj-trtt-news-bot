@@ -105,9 +105,32 @@ def load_history() -> List[str]:
     with open(HISTORY_FILE, "r", encoding="utf-8") as handle:
         return [line.strip() for line in handle if line.strip()]
 
-def save_history(title_id: str):
+def topic_history_key(topic: str) -> str:
+    """Use the selected topic's stable slug as its history identifier."""
+    return slugify(topic)
+
+
+def select_next_topic(topic_pool: List[dict], history: List[str]) -> dict:
+    """Choose the first topic whose stable topic slug is not in history."""
+    if not topic_pool:
+        raise ValueError("Topic pool is empty.")
+    for candidate in topic_pool:
+        if topic_history_key(candidate["topic"]) not in history:
+            return candidate
+    return topic_pool[0]
+
+
+def save_history(topic_id: str):
     with open(HISTORY_FILE, "a", encoding="utf-8") as handle:
-        handle.write(title_id + "\n")
+        handle.write(topic_id + "\n")
+
+
+def record_topic_after_draft(topic: str, created_drafts: List[dict]) -> bool:
+    """Record a topic only when Blogger confirms at least one created draft."""
+    if not created_drafts:
+        return False
+    save_history(topic_history_key(topic))
+    return True
 # ==============================================================================
 # UNSPLASH API: Dynamic Real High-Res Photography
 # ==============================================================================
@@ -1036,11 +1059,7 @@ def main():
     history = load_history()
     
     # 1. Pick next fresh topic from pool
-    selected_topic_info = TOPIC_POOL[0]
-    for candidate in TOPIC_POOL:
-        if slugify(candidate["topic"]) not in history:
-            selected_topic_info = candidate
-            break
+    selected_topic_info = select_next_topic(TOPIC_POOL, history)
             
     print(f"Selected Topic: {selected_topic_info['topic']}")
 
@@ -1072,7 +1091,7 @@ def main():
         return
 
     send_draft_notification(article_data["meta"]["title"], created_drafts, article_data["content"][:220])
-    save_history(article_data["meta"]["permalink_slug"])
+    record_topic_after_draft(selected_topic_info["topic"], created_drafts)
     print(f"EXECUTION COMPLETE: Created {len(created_drafts)} Blogger draft(s); awaiting human review.")
 
 if __name__ == "__main__":
