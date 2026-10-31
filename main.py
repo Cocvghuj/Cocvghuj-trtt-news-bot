@@ -322,20 +322,22 @@ def generate_fallback_expert_article(topic_info: dict) -> dict:
         "content": specific_content.strip()
     }
 
-# Domains allowed as candidate primary/official references.
-# Domain membership is a first-pass filter, not proof that a particular page is accurate.
-TRUSTED_SOURCE_DOMAINS = {
+# Separate public authorities from commercial providers. Allowlisting is only
+# a source-type filter: it does not prove that a page supports a particular claim.
+OFFICIAL_SOURCE_DOMAINS = {
     "europa.eu", "eur-lex.europa.eu", "ec.europa.eu", "easa.europa.eu",
     "icao.int", "iata.org", "caa.co.uk", "gov.uk", "faa.gov",
     "transportation.gov", "transport.gov", "enac.gov.it", "mit.gov.it",
     "viaggiaresicuri.it", "travel.state.gov", "canada.ca",
+}
+PROVIDER_SOURCE_DOMAINS = {
     "airalo.com", "saily.com", "qatarairways.com", "kiwitaxi.com",
     "localrent.com", "tiqets.com",
 }
+TRUSTED_SOURCE_DOMAINS = OFFICIAL_SOURCE_DOMAINS | PROVIDER_SOURCE_DOMAINS
 
 
-def is_trusted_source_url(url: str) -> bool:
-    """Accept HTTPS URLs on an explicit trusted-domain allowlist."""
+def _matches_source_domain(url: str, domains: set) -> bool:
     try:
         parsed = urlparse(url.strip())
         host = (parsed.hostname or "").lower().rstrip(".")
@@ -343,10 +345,25 @@ def is_trusted_source_url(url: str) -> bool:
             parsed.scheme.lower() == "https"
             and bool(host)
             and not host.startswith("www.www.")
-            and any(host == domain or host.endswith("." + domain) for domain in TRUSTED_SOURCE_DOMAINS)
+            and any(host == domain or host.endswith("." + domain) for domain in domains)
         )
-    except (TypeError, ValueError):
+    except (AttributeError, TypeError, ValueError):
         return False
+
+
+def is_official_source_url(url: str) -> bool:
+    """Return True only for HTTPS pages on the official/authority domain list."""
+    return _matches_source_domain(url, OFFICIAL_SOURCE_DOMAINS)
+
+
+def is_provider_source_url(url: str) -> bool:
+    """Return True only for HTTPS pages on the commercial provider domain list."""
+    return _matches_source_domain(url, PROVIDER_SOURCE_DOMAINS)
+
+
+def is_trusted_source_url(url: str) -> bool:
+    """Accept HTTPS URLs from either approved source class."""
+    return is_official_source_url(url) or is_provider_source_url(url)
 
 
 def verify_source_url(url: str, timeout: int = 8) -> bool:
@@ -430,7 +447,10 @@ def validate_article_response(text: str) -> dict:
     approved_sources = {url for url in distinct_sources if is_trusted_source_url(url)}
     reachable_sources = {url for url in approved_sources if verify_source_url(url)}
     if len(reachable_sources) < 2:
-        raise RuntimeError("Sources section must contain at least two reachable HTTPS HTML pages on trusted domains. Draft creation aborted.")
+        raise RuntimeError("Sources section must contain at least two reachable HTTPS HTML pages on approved official/provider domains. Draft creation aborted.")
+    official_reachable_sources = {url for url in reachable_sources if is_official_source_url(url)}
+    if not official_reachable_sources:
+        raise RuntimeError("Sources section must include at least one reachable official/government/regulator source. Draft creation aborted.")
 
     # Ensure the article body actually cites sources listed in its Sources section.
     article_body = content_html[:source_heading.start()]
@@ -438,6 +458,8 @@ def validate_article_response(text: str) -> dict:
     inline_sources = {url.rstrip(".,);") for url in inline_links}
     if len(inline_sources.intersection(reachable_sources)) < 2:
         raise RuntimeError("At least two verified Sources URLs must also be cited inline in the article body. Draft creation aborted.")
+    if not inline_sources.intersection(official_reachable_sources):
+        raise RuntimeError("At least one reachable official/government/regulator source must also be cited inline. Draft creation aborted.")
 
     # Every evidence-ledger claim must map to reachable URLs that are cited inline.
     for index, item in enumerate(evidence_claims, start=1):
@@ -486,7 +508,7 @@ EDITORIAL REQUIREMENTS (Google Helpful Content & E-E-A-T Standards):
    - <h2>Essential Travel Tech & Checklist</h2>
    - <h2>Frequently Asked Questions</h2> (3 clear, concrete Q&As)
 3. Do not invent personal field experience, interviews, quotes, statistics, legal rules, prices, or current events. Clearly distinguish established facts from practical suggestions.
-4. Include inline source links beside material factual claims in the article body. Every inline source URL must also appear in the final <h2>Sources</h2> section, and every listed source should support a nearby claim. Include at least two direct links to relevant, authoritative primary sources (for example official EU, government, regulator, airport, airline, or provider documentation). Link only sources you actually relied on; never fabricate URLs. If reliable sources cannot be identified, say so and do not produce a publishable article.
+4. Include inline source links beside material factual claims in the article body. Every inline source URL must also appear in the final <h2>Sources</h2> section, and every listed source should support a nearby claim. Include at least one official government/regulator/international-authority source, plus at least one additional relevant primary source (official authority or the directly responsible airline/provider documentation). Commercial provider pages may support claims about that provider's own services or policies, but must never be presented as independent government/regulatory authority. Link only sources you actually relied on; never fabricate URLs. If reliable sources cannot be identified, say so and do not produce a publishable article.
 5. Do not claim facts are verified merely because they are generated. Avoid unsupported certainty. Do not present a source as supporting a claim unless you have checked the relevant page.
 6. Before the article HTML, output an [EVIDENCE] JSON block with this exact shape:
 [EVIDENCE]
