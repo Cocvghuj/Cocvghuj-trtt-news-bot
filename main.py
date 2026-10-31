@@ -667,6 +667,9 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
       <a href="{blog_profile['url']}" style="background: #ffffff; color: {blog_profile['theme_primary']}; font-weight: 800; font-size: 12px; padding: 10px 18px; border-radius: 8px; text-decoration: none; display: inline-block;">
         📰 Latest Feed
       </a>
+      <a href="{PWA_URL}" target="_blank" rel="noopener" style="background: #0f172a; color: #ffffff; font-weight: 800; font-size: 12px; padding: 10px 18px; border-radius: 8px; text-decoration: none; display: inline-block;">
+        ⚡ Open Fast App
+      </a>
       <a href="{airhelp_link}" target="_blank" rel="noopener" style="background: #f59e0b; color: #0f172a; font-weight: 800; font-size: 12px; padding: 10px 18px; border-radius: 8px; text-decoration: none; display: inline-block;">
         🛡️ Claim €600
       </a>
