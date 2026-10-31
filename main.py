@@ -421,6 +421,13 @@ def validate_article_response(text: str) -> dict:
     if len(reachable_sources) < 2:
         raise RuntimeError("Sources section must contain at least two reachable HTTPS HTML pages on trusted domains. Draft creation aborted.")
 
+    # Ensure the article body actually cites sources listed in its Sources section.
+    article_body = content_html[:source_heading.start()]
+    inline_links = re.findall(r'<a\\b[^>]*href\\s*=\\s*["\\'](https?://[^"\\']+)["\\'][^>]*>', article_body, re.IGNORECASE)
+    inline_sources = {url.rstrip(".,);") for url in inline_links}
+    if len(inline_sources.intersection(reachable_sources)) < 2:
+        raise RuntimeError("At least two verified Sources URLs must also be cited inline in the article body. Draft creation aborted.")
+
     meta = {
         "title": title_value,
         "search_description": description[:160],
@@ -456,8 +463,8 @@ EDITORIAL REQUIREMENTS (Google Helpful Content & E-E-A-T Standards):
    - <h2>Essential Travel Tech & Checklist</h2>
    - <h2>Frequently Asked Questions</h2> (3 clear, concrete Q&As)
 3. Do not invent personal field experience, interviews, quotes, statistics, legal rules, prices, or current events. Clearly distinguish established facts from practical suggestions.
-4. Include a final <h2>Sources</h2> section with at least two direct links to relevant, authoritative primary sources (for example official EU, government, regulator, airport, airline, or provider documentation). Link only sources you actually relied on; never fabricate URLs. If reliable sources cannot be identified, say so and do not produce a publishable article.
-5. Do not claim facts are verified merely because they are generated. Avoid unsupported certainty.
+4. Include inline source links beside material factual claims in the article body. Every inline source URL must also appear in the final <h2>Sources</h2> section, and every listed source should support a nearby claim. Include at least two direct links to relevant, authoritative primary sources (for example official EU, government, regulator, airport, airline, or provider documentation). Link only sources you actually relied on; never fabricate URLs. If reliable sources cannot be identified, say so and do not produce a publishable article.
+5. Do not claim facts are verified merely because they are generated. Avoid unsupported certainty. Do not present a source as supporting a claim unless you have checked the relevant page.
 6. Also generate a JSON header block formatted as:
 [METADATA]
 {{
