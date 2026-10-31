@@ -286,6 +286,8 @@ class DuplicatePaginationTests(unittest.TestCase):
         def __init__(self, response):
             self.response = response
         def execute(self):
+            if isinstance(self.response, Exception):
+                raise self.response
             return self.response
 
     class FakePosts:
@@ -332,6 +334,28 @@ class DuplicatePaginationTests(unittest.TestCase):
         ])
         self.assertIsNone(main.find_duplicate_post(service, "blog-1", "Test article", "new body"))
         self.assertEqual(len(service.posts_api.calls), 2)
+
+    def test_api_failure_on_first_page_fails_closed_with_blog_context(self):
+        service = self.FakeService([OSError("temporary Blogger API outage")])
+        with self.assertRaisesRegex(
+            RuntimeError,
+            r"Duplicate check could not be completed for blog blog-1: temporary Blogger API outage",
+        ):
+            main.find_duplicate_post(service, "blog-1", "Test article", "new body")
+        self.assertEqual(len(service.posts_api.calls), 1)
+
+    def test_api_failure_on_later_page_does_not_report_no_duplicate(self):
+        service = self.FakeService([
+            {"items": [], "nextPageToken": "page-2"},
+            OSError("page token request failed"),
+        ])
+        with self.assertRaisesRegex(
+            RuntimeError,
+            r"Duplicate check could not be completed for blog blog-2: page token request failed",
+        ):
+            main.find_duplicate_post(service, "blog-2", "Test article", "new body")
+        self.assertEqual(len(service.posts_api.calls), 2)
+        self.assertEqual(service.posts_api.calls[1]["pageToken"], "page-2")
 
 if __name__ == "__main__":
     unittest.main()
