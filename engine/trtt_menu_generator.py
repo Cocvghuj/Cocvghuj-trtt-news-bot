@@ -9,7 +9,7 @@ from datetime import datetime
 CONFIG = {
     "MARKER": "787950",
     "【entity-AMAZON¦canonical_name=Amazon】": "https://amzn.to/4shg6Hn",
-    "BLOG": "https://ttnews24bd.blogspot.com",
+    "BLOG": "https://trttnews24bd.blogspot.com",
     "VERCEL": "https://cocvghuj-trtt-news-bot.vercel.app",
     "BLOG_NAME": "trttnews24bd",
     "LOCATION": "Sanluri"
