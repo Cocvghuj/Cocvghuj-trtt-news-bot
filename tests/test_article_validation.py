@@ -22,6 +22,21 @@ class TrustedSourceDomainTests(unittest.TestCase):
     def test_accepts_subdomain_of_allowlisted_domain(self):
         self.assertTrue(main.is_trusted_source_url("https://www.gov.uk/"))
 
+
+    def test_official_and_provider_domains_are_separate(self):
+        self.assertTrue(main.is_official_source_url("https://www.gov.uk/"))
+        self.assertFalse(main.is_provider_source_url("https://www.gov.uk/"))
+        self.assertTrue(main.is_provider_source_url("https://www.airalo.com/"))
+        self.assertFalse(main.is_official_source_url("https://www.airalo.com/"))
+
+    def test_trusted_source_accepts_both_classes(self):
+        self.assertTrue(main.is_trusted_source_url("https://www.gov.uk/"))
+        self.assertTrue(main.is_trusted_source_url("https://www.airalo.com/"))
+
+    def test_official_source_rejects_provider_and_http(self):
+        self.assertFalse(main.is_official_source_url("https://airalo.com/"))
+        self.assertFalse(main.is_official_source_url("http://gov.uk/"))
+
     def test_rejects_http_even_on_allowlisted_domain(self):
         self.assertFalse(main.is_trusted_source_url("http://europa.eu/example"))
 
