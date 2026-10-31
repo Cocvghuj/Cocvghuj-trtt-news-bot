@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Googlebot & Bingbot Optimization
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+Sitemap: https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/sitemap.xml
