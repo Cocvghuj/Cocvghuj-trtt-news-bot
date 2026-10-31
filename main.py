@@ -324,55 +324,55 @@ def generate_fallback_expert_article(topic_info: dict) -> dict:
 
 def validate_article_response(text: str) -> dict:
     """Validate AI output before it can become a Blogger draft."""
-# Fail closed: never turn an API outage into an unsourced fallback article.
-if not text:
-    raise RuntimeError("No AI provider returned an article. Draft creation aborted; no fallback content will be used.")
+    # Fail closed: never turn an API outage into an unsourced fallback article.
+    if not text:
+        raise RuntimeError("No AI provider returned an article. Draft creation aborted; no fallback content will be used.")
 
-meta_match = re.search(r'\[METADATA\](.*?)\[/METADATA\]', text, re.DOTALL)
-if not meta_match:
-    raise RuntimeError("Article is missing the required metadata block. Draft creation aborted.")
+    meta_match = re.search(r'\[METADATA\](.*?)\[/METADATA\]', text, re.DOTALL)
+    if not meta_match:
+        raise RuntimeError("Article is missing the required metadata block. Draft creation aborted.")
 
-try:
-    parsed_meta = json.loads(meta_match.group(1).strip())
-except (TypeError, ValueError) as exc:
-    raise RuntimeError("Article metadata is invalid JSON. Draft creation aborted.") from exc
+    try:
+        parsed_meta = json.loads(meta_match.group(1).strip())
+    except (TypeError, ValueError) as exc:
+        raise RuntimeError("Article metadata is invalid JSON. Draft creation aborted.") from exc
 
-content_html = text.replace(meta_match.group(0), "").strip()
-title_value = str(parsed_meta.get("title", "")).strip()
-description = str(parsed_meta.get("search_description", "")).strip()
-labels = parsed_meta.get("labels")
-permalink = str(parsed_meta.get("permalink_slug", "")).strip()
-if not title_value or not description or not isinstance(labels, list) or not labels or not permalink:
-    raise RuntimeError("Article metadata is incomplete. Draft creation aborted.")
-if len(content_html) < 1200:
-    raise RuntimeError("Article body is too short for editorial review. Draft creation aborted.")
+    content_html = text.replace(meta_match.group(0), "").strip()
+    title_value = str(parsed_meta.get("title", "")).strip()
+    description = str(parsed_meta.get("search_description", "")).strip()
+    labels = parsed_meta.get("labels")
+    permalink = str(parsed_meta.get("permalink_slug", "")).strip()
+    if not title_value or not description or not isinstance(labels, list) or not labels or not permalink:
+        raise RuntimeError("Article metadata is incomplete. Draft creation aborted.")
+    if len(content_html) < 1200:
+        raise RuntimeError("Article body is too short for editorial review. Draft creation aborted.")
 
-source_heading = re.search(r'<h[1-6][^>]*>\s*Sources\s*</h[1-6]>', content_html, re.IGNORECASE)
-if not source_heading:
-    raise RuntimeError("Article lacks a Sources section. Draft creation aborted.")
-# Count distinct URLs only inside the Sources section, not affiliate/action-bar links.
-sources_section = content_html[source_heading.end():]
-next_heading = re.search(r'<h[1-6][^>]*>', sources_section, re.IGNORECASE)
-if next_heading:
-    sources_section = sources_section[:next_heading.start()]
-source_links = re.findall(r'<a\b[^>]*href\s*=\s*["\'](https?://[^"\']+)["\'][^>]*>', sources_section, re.IGNORECASE)
-distinct_sources = {url.rstrip(".,);") for url in source_links}
-if len(distinct_sources) < 2:
-    raise RuntimeError("Sources section must contain at least two distinct direct URLs. Draft creation aborted.")
+    source_heading = re.search(r'<h[1-6][^>]*>\s*Sources\s*</h[1-6]>', content_html, re.IGNORECASE)
+    if not source_heading:
+        raise RuntimeError("Article lacks a Sources section. Draft creation aborted.")
+    # Count distinct URLs only inside the Sources section, not affiliate/action-bar links.
+    sources_section = content_html[source_heading.end():]
+    next_heading = re.search(r'<h[1-6][^>]*>', sources_section, re.IGNORECASE)
+    if next_heading:
+        sources_section = sources_section[:next_heading.start()]
+    source_links = re.findall(r'<a\b[^>]*href\s*=\s*["\'](https?://[^"\']+)["\'][^>]*>', sources_section, re.IGNORECASE)
+    distinct_sources = {url.rstrip(".,);") for url in source_links}
+    if len(distinct_sources) < 2:
+        raise RuntimeError("Sources section must contain at least two distinct direct URLs. Draft creation aborted.")
 
-meta = {
-    "title": title_value,
-    "search_description": description[:160],
-    "labels": [str(label).strip() for label in labels if str(label).strip()],
-    "permalink_slug": slugify(permalink)
-}
-if not meta["labels"] or not meta["permalink_slug"]:
-    raise RuntimeError("Article labels or permalink are invalid. Draft creation aborted.")
+    meta = {
+        "title": title_value,
+        "search_description": description[:160],
+        "labels": [str(label).strip() for label in labels if str(label).strip()],
+        "permalink_slug": slugify(permalink)
+    }
+    if not meta["labels"] or not meta["permalink_slug"]:
+        raise RuntimeError("Article labels or permalink are invalid. Draft creation aborted.")
 
-return {
-    "meta": meta,
-    "content": content_html
-}
+    return {
+        "meta": meta,
+        "content": content_html
+    }
 
     
 # ==============================================================================
