@@ -211,12 +211,42 @@ class DraftHistoryTests(unittest.TestCase):
         self.assertFalse(recorded)
         save.assert_not_called()
 
-    def test_history_saves_topic_key_after_confirmed_draft(self):
-        drafts = [{"blog_name": "Test blog", "post_id": "123"}]
+    def test_history_not_saved_when_any_blog_target_failed(self):
+        outcomes = [
+            {"blog_name": "Main", "post_id": "123", "status": "created"},
+            {"blog_name": "Partner", "status": "failed", "error": "API unavailable"},
+        ]
         with mock.patch.object(main, "save_history") as save:
-            recorded = main.record_topic_after_draft("A topic", drafts)
+            recorded = main.record_topic_after_draft("A topic", outcomes)
+        self.assertFalse(recorded)
+        save.assert_not_called()
+
+    def test_history_saved_when_all_blog_targets_created_drafts(self):
+        outcomes = [
+            {"blog_name": "Main", "post_id": "123", "status": "created"},
+            {"blog_name": "Partner", "post_id": "456", "status": "created"},
+        ]
+        with mock.patch.object(main, "save_history") as save:
+            recorded = main.record_topic_after_draft("A topic", outcomes)
         self.assertTrue(recorded)
         save.assert_called_once_with(main.topic_history_key("A topic"))
+
+    def test_existing_duplicate_counts_as_confirmed_blog_coverage(self):
+        outcomes = [
+            {"blog_name": "Main", "post_id": "123", "status": "created"},
+            {"blog_name": "Partner", "post_id": "789", "status": "already_exists"},
+        ]
+        self.assertTrue(main.all_blog_targets_accounted_for(outcomes))
+
+    def test_failed_or_missing_post_id_does_not_count_as_coverage(self):
+        outcomes = [
+            {"blog_name": "Main", "post_id": "123", "status": "created"},
+            {"blog_name": "Partner", "status": "already_exists"},
+        ]
+        self.assertFalse(main.all_blog_targets_accounted_for(outcomes))
+
+    def test_empty_blog_outcomes_do_not_mark_topic_complete(self):
+        self.assertFalse(main.all_blog_targets_accounted_for([]))
 
     def test_legacy_history_entries_are_preserved_without_guessed_mapping(self):
         legacy = [
