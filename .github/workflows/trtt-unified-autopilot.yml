@@ -16,6 +16,7 @@ concurrency:
 jobs:
   autopilot:
     name: Generate Blogger Draft for Human Review
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
