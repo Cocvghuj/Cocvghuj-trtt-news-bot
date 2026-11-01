@@ -19,10 +19,10 @@ test("API authorization fails closed when access token is not configured", () =>
   assert.equal(result.status, 503);
 });
 
-test("API authorization accepts only the configured bearer token", () => {
+test("API authorization trims configured token boundary whitespace", () => {
   const name = "TRTT_TEST_COMMAND_CENTER_TOKEN";
   const previous = process.env[name];
-  process.env[name] = "owner-token";
+  process.env[name] = "  owner-token\n";
   try {
     const result = authorize({ headers: { authorization: "Bearer owner-token" } }, name);
     assert.equal(result.ok, true);
