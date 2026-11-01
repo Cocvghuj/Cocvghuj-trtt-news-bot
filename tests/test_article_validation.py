@@ -377,5 +377,25 @@ class DuplicatePaginationTests(unittest.TestCase):
         self.assertEqual(len(service.posts_api.calls), 2)
         self.assertEqual(service.posts_api.calls[1]["pageToken"], "page-2")
 
+
+    def test_same_title_with_different_html_entity_format_is_duplicate(self):
+        service = self.FakeService([
+            {"items": [{"id": "existing-title", "title": "Flight &amp; Travel Guide", "content": "older content"}]},
+        ])
+        duplicate = main.find_duplicate_post(
+            service, "blog-1", "Flight & Travel Guide", "different article content"
+        )
+        self.assertEqual(duplicate["id"], "existing-title")
+
+    def test_same_body_with_different_html_formatting_is_duplicate(self):
+        body = ("Flight delay compensation rules and passenger rights explained clearly. " * 10).strip()
+        html_body = "<article><p>" + body + "</p></article>"
+        service = self.FakeService([
+            {"items": [{"id": "existing-body", "title": "Older headline", "content": html_body}]},
+        ])
+        duplicate = main.find_duplicate_post(service, "blog-1", "New headline", body)
+        self.assertEqual(duplicate["id"], "existing-body")
+
+
 if __name__ == "__main__":
     unittest.main()
