@@ -17,6 +17,7 @@ from typing import List, Dict, Optional
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 import requests
 
+from config import AFFILIATE_SERVICES
 from google import genai
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -208,6 +209,18 @@ def clean_affiliate_link(base_url: str, partner_name: str) -> str:
     params["marker"] = MARKER
     params["sub_id"] = f"blogger_seo_{partner_name}_{MARKER}"
     return urlunparse(parsed._replace(query=urlencode(params)))
+
+def affiliate_service_url(service_id: str) -> str:
+    """Resolve Blogger affiliate CTAs from the shared canonical affiliate catalog."""
+    service = next(
+        (item for item in AFFILIATE_SERVICES if item.get("id") == service_id),
+        None,
+    )
+    if not service:
+        raise RuntimeError(
+            "Affiliate service is missing from affiliate-services.json: " + service_id
+        )
+    return clean_affiliate_link(service["url"], service_id)
 
 # ==============================================================================
 # ==============================================================================
@@ -724,10 +737,10 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
     search_desc = meta["search_description"]
     tags_str = ", ".join(meta["labels"])
     
-    airhelp_link = clean_affiliate_link("https://airhelp.tp.st/3ItXS0E4", "airhelp")
-    aviasales_link = clean_affiliate_link("https://aviasales.tp.st/Fb8U9yav", "aviasales")
-    airalo_link = clean_affiliate_link("https://airalo.tp.st/ZZoQC7Mz", "airalo")
-    kiwitaxi_link = clean_affiliate_link("https://kiwitaxi.tp.st/tlZcbMOB", "kiwitaxi")
+    airhelp_link = affiliate_service_url("airhelp")
+    aviasales_link = affiliate_service_url("aviasales")
+    airalo_link = affiliate_service_url("airalo")
+    kiwitaxi_link = affiliate_service_url("kiwitaxi")
 
     now_iso = datetime.utcnow().isoformat()
     canonical_url = f"{blog_profile['url']}/{meta['permalink_slug']}.html"
@@ -842,7 +855,7 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
   <!-- Location, Status & Category Badge -->
   <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; font-size: 12px;">
     <span style="background: #e0f2fe; color: #0369a1; padding: 5px 12px; border-radius: 6px; font-weight: 700;">{blog_profile['badge']}</span>
-    <span style="background: #ecfdf5; color: #047857; padding: 5px 12px; border-radius: 6px; font-weight: 700;">✓ Verified Passenger Intel</span>
+    <span style="background: #ecfdf5; color: #047857; padding: 5px 12px; border-radius: 6px; font-weight: 700;">Source links checked • Human review required</span>
     <span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 6px;">🏷️ {tags_str}</span>
   </div>
 
@@ -854,17 +867,9 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
     </div>
   </div>
 
-  <!-- Key Takeaways / এক নজরে সারসংক্ষেপ Box -->
-  <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 14px; padding: 20px; margin-bottom: 28px;">
-    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-      <span style="background: #22c55e; color: #ffffff; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase;">Quick Summary</span>
-      <h3 style="margin: 0; font-size: 16px; color: #14532d; font-weight: 800;">⚡ Key Takeaways &amp; Executive Summary</h3>
-    </div>
-    <ul style="margin: 0; padding-left: 20px; color: #166534; font-size: 14.5px; line-height: 1.7;">
-      <li><strong>Verified Regulations:</strong> Under EC 261/2004, European flight disruptions exceeding 3 hours entitle qualifying passengers up to €600.</li>
-      <li><strong>Action Strategy:</strong> Never accept airport meal vouchers as final waiver of legal statutory compensation rights.</li>
-      <li><strong>Connectivity &amp; Navigation:</strong> Secure regional 5G eSIM connectivity beforehand to track live aircraft tail registration and ATC status.</li>
-    </ul>
+  <!-- Editorial review notice: no topic-independent factual claims are injected. -->
+  <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 14px 18px; margin-bottom: 24px; color: #1e40af; font-size: 13px;">
+    Source links are checked automatically. Please review the article's factual claims and sources before publication.
   </div>
 
   <!-- Action Bar: Fast Travel Tools & Partner Access -->
@@ -895,7 +900,7 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
   <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 22px; margin-top: 36px; margin-bottom: 30px;">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 14px; gap: 8px;">
       <h3 style="margin: 0; font-size: 16px; color: #0f172a; font-weight: 800;">🛡️ Official Travel &amp; Logistics Partners (Marker {MARKER})</h3>
-      <span style="font-size: 11px; background: #e2e8f0; color: #475569; padding: 3px 8px; border-radius: 4px; font-weight: 600;">Affiliate Disclosure: Verified Safe</span>
+      <span style="font-size: 11px; background: #e2e8f0; color: #475569; padding: 3px 8px; border-radius: 4px; font-weight: 600;">Affiliate disclosure: We may earn a commission at no extra cost to you</span>
     </div>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
       <a href="{airhelp_link}" target="_blank" rel="noopener" style="display: block; padding: 12px 14px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; text-decoration: none; color: #0f172a; font-weight: 700; font-size: 13px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
@@ -922,7 +927,7 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
       <div style="flex: 1; min-width: 220px;">
         <div style="display: flex; align-items: center; gap: 8px;">
           <strong style="font-size: 16px; color: #0f172a;">{blog_profile['author_name']}</strong>
-          <span style="background: #dbeafe; color: #1e40af; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">VERIFIED AUTHOR</span>
+          <span style="background: #dbeafe; color: #1e40af; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">EDITORIAL TEAM</span>
         </div>
         <p style="margin: 2px 0 0 0; font-size: 13px; color: #64748b;">{blog_profile['author_role']} &bull; {blog_profile['author_location']}</p>
         <p style="margin: 4px 0 0 0; font-size: 12px; color: #475569;">
@@ -940,7 +945,7 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
         <a href="{blog_profile['privacy_url']}" style="color: #0284c7; text-decoration: none; font-weight: 600;">Privacy Policy</a>
         <a href="{blog_profile['disclaimer_url']}" style="color: #0284c7; text-decoration: none; font-weight: 600;">Disclaimer</a>
       </div>
-      <span style="color: #94a3b8; font-size: 11px;">Marker {MARKER} &bull; GDPR &amp; FTC Compliant</span>
+      <span style="color: #94a3b8; font-size: 11px;">Affiliate links may earn a commission; please review our privacy and disclosure policies.</span>
     </div>
   </div>
 
