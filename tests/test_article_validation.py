@@ -515,7 +515,7 @@ class DraftWorkflowFailClosedTests(unittest.TestCase):
             mock.patch.object(main, "generate_article_with_metadata", return_value=article_data),
             mock.patch.object(main, "build_enterprise_html", return_value="<p>HTML</p>"),
             mock.patch.object(main, "create_drafts_on_blogs", return_value=[]),
-            mock.patch.object(main, "record_topic_after_draft") as record,
+            mock.patch.object(main, "record_topic_after_draft", return_value=False) as record,
         ):
             with self.assertRaisesRegex(RuntimeError, "Draft workflow incomplete"):
                 main.main()
