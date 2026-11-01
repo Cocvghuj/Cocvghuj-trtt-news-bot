@@ -1175,8 +1175,9 @@ def main():
     # 3. Generate article with metadata (Title, Labels, Search Description, Slug, Location)
     article_data = generate_article_with_metadata(selected_topic_info)
     if not article_data:
-        print("Skipping execution due to generation error.")
-        return
+        raise RuntimeError(
+            "Article generation returned no validated content. Draft workflow aborted."
+        )
 
     # 4. Build default Enterprise HTML (used for telegram excerpt and single-target fallbacks)
     default_profile = get_blog_profile("TRTT News 24 BD", BLOGGER_BLOG_ID or "")
