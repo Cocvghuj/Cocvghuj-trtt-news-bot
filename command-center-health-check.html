@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>TRTT Command Center — Private Health Check</title>
+  <style>
+    body{font:16px system-ui,sans-serif;max-width:620px;margin:48px auto;padding:0 18px;color:#172033}
+    label{display:block;margin:18px 0 6px;font-weight:600}
+    input{box-sizing:border-box;width:100%;padding:12px;border:1px solid #aab3c2;border-radius:8px;font:inherit}
+    button{margin-top:14px;padding:11px 18px;border:0;border-radius:8px;background:#173d70;color:white;font:inherit}
+    button:disabled{opacity:.6}
+    pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f5f8;padding:14px;border-radius:8px}
+    .hint{color:#526078;font-size:.92rem}
+  </style>
+</head>
+<body>
+  <h1>TRTT AI Command Center</h1>
+  <h2>Private Health Check</h2>
+  <p class="hint">This page sends your access token only to this site's HTTPS health endpoint. It is not saved in browser storage, URL, or page output. Do not use a shared device.</p>
+  <form id="health-form">
+    <label for="token">Command Center access token</label>
+    <input id="token" type="password" autocomplete="off" spellcheck="false" required>
+    <button id="check" type="submit">Check health</button>
+  </form>
+  <h3>Result</h3>
+  <pre id="result" role="status" aria-live="polite">Not checked yet.</pre>
+  <script>
+    "use strict";
+    const form = document.getElementById("health-form");
+    const tokenInput = document.getElementById("token");
+    const button = document.getElementById("check");
+    const output = document.getElementById("result");
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const token = tokenInput.value;
+      tokenInput.value = "";
+      button.disabled = true;
+      output.textContent = "Checking…";
+      try {
+        const response = await fetch("/api/command-center/health", {
+          method: "GET",
+          cache: "no-store",
+          headers: { "Authorization": "Bearer " + token, "Accept": "application/json" },
+          credentials: "same-origin"
+        });
+        const body = await response.json().catch(() => ({ error: "Response was not valid JSON." }));
+        output.textContent = "HTTP " + response.status + "\n" + JSON.stringify(body, null, 2);
+      } catch (error) {
+        output.textContent = "Request failed. Check the Preview deployment and try again.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
