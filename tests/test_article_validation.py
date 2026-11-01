@@ -422,6 +422,37 @@ class DuplicatePaginationTests(unittest.TestCase):
         duplicate = main.find_duplicate_post(service, "blog-1", "New headline", body)
         self.assertEqual(duplicate["id"], "existing-body")
 
+    def test_article_body_inside_enterprise_wrapper_is_duplicate_with_changed_title(self):
+        body = ("A detailed guide to passenger rights and flight compensation. " * 15).strip()
+        wrapped_body = (
+            '<div class="fs-article-wrap"><div class="site-header">Shared layout text</div>'
+            '<div class="article-body"><p>' + body + '</p></div>'
+            '<div class="affiliate-footer">Shared footer text</div></div>'
+        )
+        service = self.FakeService([
+            {"items": [{"id": "wrapped-duplicate", "title": "Older headline", "content": wrapped_body}]},
+        ])
+        duplicate = main.find_duplicate_post(
+            service, "blog-1", "Updated headline", body
+        )
+        self.assertEqual(duplicate["id"], "wrapped-duplicate")
+
+    def test_near_duplicate_body_inside_enterprise_wrapper_is_detected(self):
+        original = ("A detailed guide to passenger rights and flight compensation. " * 15).strip()
+        changed = original.replace("detailed guide", "practical guide", 1)
+        wrapped_body = (
+            '<div class="fs-article-wrap"><div class="article-body"><p>'
+            + original
+            + '</p></div><div class="footer">Shared site footer</div></div>'
+        )
+        service = self.FakeService([
+            {"items": [{"id": "wrapped-near-duplicate", "title": "Older headline", "content": wrapped_body}]},
+        ])
+        duplicate = main.find_duplicate_post(
+            service, "blog-1", "Different headline", changed
+        )
+        self.assertEqual(duplicate["id"], "wrapped-near-duplicate")
+
 
     def test_mixed_bengali_english_title_matches_html_and_entity_variant(self):
         stored_title = "ফ্লাইট Delay &amp; Compensation — Europe ২০২৬"
