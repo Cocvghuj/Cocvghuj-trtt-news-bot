@@ -1,55 +1,57 @@
-// ai.js - Full Auto OpenRouter - No need to touch index.html HTML
-const OPENROUTER_KEY = "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";
-const MODEL = "nvidia/nemotron-3.5-lightning:free";
-
-(function() {
-  // Auto create UI without touching HTML
-  const style = document.createElement('style');
-  style.innerHTML = `#ai-box{position:fixed;bottom:20px;right:20px;z-index:99999;display:flex;gap:5px}#ai-input{padding:12px;width:220px;border-radius:25px;border:1px solid #ccc;box-shadow:0 2px 10px rgba(0,0,0,0.1)}#ai-btn{padding:12px 18px;border-radius:25px;background:#000;color:#fff;border:none;cursor:pointer}#ai-output{position:fixed;bottom:80px;right:20px;width:300px;max-height:400px;overflow-y:auto;padding:15px;background:#fff;border-radius:15px;box-shadow:0 5px 20px rgba(0,0,0,0.2);display:none;z-index:99999;font-family:sans-serif;font-size:14px;line-height:1.5}`;
+(function () {
+  // This legacy public widget is retained only as a safe authenticated client.
+  // The access token is held in memory for this page session only; provider keys
+  // are never sent to or stored in the browser.
+  if (document.getElementById("trtt-ai-panel")) return;
+  const style = document.createElement("style");
+  style.textContent = "#trtt-ai-panel{position:fixed;right:16px;bottom:16px;z-index:99990;width:min(360px,calc(100vw - 32px));font:14px system-ui;background:#fff;color:#111827;border:1px solid #d1d5db;border-radius:16px;padding:14px;box-shadow:0 8px 32px #0002}#trtt-ai-panel input,#trtt-ai-panel textarea{box-sizing:border-box;width:100%;padding:10px;border:1px solid #d1d5db;border-radius:9px;margin:5px 0}#trtt-ai-panel button{padding:9px 13px;border:0;border-radius:9px;background:#111827;color:white;cursor:pointer}#trtt-ai-output{white-space:pre-wrap;max-height:220px;overflow:auto;margin-top:10px}#trtt-ai-panel small{color:#6b7280}";
   document.head.appendChild(style);
-
-  const box = document.createElement('div');
-  box.id = 'ai-box';
-  box.innerHTML = `<input id="ai-input" placeholder="কোথায় যাবে? লিখো..."><button id="ai-btn">Go</button>`;
-  document.body.appendChild(box);
-
-  const output = document.createElement('div');
-  output.id = 'ai-output';
-  document.body.appendChild(output);
-
-  async function autoGenerate() {
-    const input = document.getElementById('ai-input');
-    const prompt = input.value.trim();
-    if(!prompt) return;
-    
-    output.style.display = "block";
-    output.innerHTML = "AI লিখছে... ✈️ একটু অপেক্ষা করো...";
-
-    try {
-      const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": "Bearer " + OPENROUTER_KEY,
-          "Content-Type": "application/json",
-          "HTTP-Referer": "https://cocvghuj.github.io",
-          "X-Title": "Trtr Travel"
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          messages: [
-            { role: "system", content: "You are a Europe travel expert. Answer in simple Bengali+English mix, short, helpful, give flight/hotel tips." },
-            { role: "user", content: prompt }
-          ]
-        })
-      });
-      const data = await res.json();
-      if(data.error) throw new Error(data.error.message);
-      output.innerHTML = data.choices[0].message.content.replace(/\n/g, "<br>");
-    } catch(e) {
-      output.innerHTML = "Error: " + e.message + "<br>Key টা ঠিক আছে কিনা দেখো।";
+  const panel = document.createElement("section");
+  panel.id = "trtt-ai-panel";
+  const title = document.createElement("strong");
+  title.textContent = "TRTT AI Assistant";
+  const note = document.createElement("small");
+  note.textContent = "Secure server-side AI. Enter your owner access token; it is not saved.";
+  const token = document.createElement("input");
+  token.type = "password";
+  token.autocomplete = "off";
+  token.placeholder = "Command Center access token";
+  token.setAttribute("aria-label", "Command Center access token");
+  const prompt = document.createElement("textarea");
+  prompt.rows = 2;
+  prompt.placeholder = "তোমার প্রশ্ন লিখো...";
+  prompt.setAttribute("aria-label", "তোমার প্রশ্ন");
+  const button = document.createElement("button");
+  button.type = "button";
+  button.textContent = "Send";
+  const output = document.createElement("div");
+  output.id = "trtt-ai-output";
+  output.setAttribute("role", "status");
+  panel.append(title, document.createElement("br"), note, token, prompt, button, output);
+  document.body.appendChild(panel);
+  button.addEventListener("click", async function () {
+    const accessToken = token.value.trim();
+    const message = prompt.value.trim();
+    if (!accessToken || !message) {
+      output.textContent = "Access token ও প্রশ্ন—দুটিই দিতে হবে।";
+      return;
     }
-  }
-
-  document.getElementById('ai-btn').addEventListener('click', autoGenerate);
-  document.getElementById('ai-input').addEventListener('keypress', (e) => { if(e.key === 'Enter') autoGenerate(); });
+    button.disabled = true;
+    output.textContent = "AI উত্তর তৈরি করছে...";
+    try {
+      const response = await fetch("/api/command-center/chat", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + accessToken, "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: message })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Request failed");
+      output.textContent = data.text || "কোনো উত্তর পাওয়া যায়নি।";
+    } catch (error) {
+      output.textContent = "সেবা এখন প্রস্তুত নয়: " + String(error.message || "Unknown error");
+    } finally {
+      button.disabled = false;
+      token.value = "";
+    }
+  });
 })();
