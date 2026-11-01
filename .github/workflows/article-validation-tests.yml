@@ -13,8 +13,10 @@ on:
       - "super-app.html"
       - "build.js"
       - "package.json"
+      - "requirements.txt"
       - "tests/**"
       - ".github/workflows/article-validation-tests.yml"
+      - ".github/workflows/trtt-unified-autopilot.yml"
   pull_request:
     branches: [main]
     paths:
