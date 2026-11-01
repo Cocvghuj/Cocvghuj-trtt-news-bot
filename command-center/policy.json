@@ -1,0 +1,7 @@
+{
+  "default": "deny",
+  "allowed_without_additional_confirmation": ["read_project_metadata", "web_research", "ai_request_within_free_quota", "create_gmail_draft", "append_audit_event"],
+  "requires_owner_approval": ["send_email", "create_calendar_event", "modify_google_drive_file", "modify_notion_page", "github_write", "vercel_deploy", "telegram_send", "change_oauth_scopes", "change_environment_variables"],
+  "blocked": ["paid_api_usage", "paid_service_provisioning", "blogger_draft_or_publish", "run_blogger_workflow", "execute_main_py", "delete_user_data", "publish_public_content_without_review"],
+  "secrets": "Store only in Vercel environment variables or a dedicated secret manager. Never commit tokens, OAuth refresh tokens, private keys, or passwords."
+}

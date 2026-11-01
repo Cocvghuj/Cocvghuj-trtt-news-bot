@@ -3,7 +3,7 @@ name: Article Validation Tests
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, "feature/**"]
     paths:
       - "main.py"
       - "config.py"
@@ -11,6 +11,10 @@ on:
       - "affiliate-links.js"
       - "index.html"
       - "super-app.html"
+      - "ai.js"
+      - "api/**"
+      - "lib/**"
+      - "command-center/**"
       - "build.js"
       - "package.json"
       - "requirements.txt"
@@ -27,6 +31,10 @@ on:
       - "affiliate-links.js"
       - "index.html"
       - "super-app.html"
+      - "ai.js"
+      - "api/**"
+      - "lib/**"
+      - "command-center/**"
       - "build.js"
       - "package.json"
       - "requirements.txt"
@@ -40,9 +48,9 @@ permissions:
 
 jobs:
   validate-articles:
-    name: Run safe validation and storefront build checks
+    name: Run safe validation, Command Center tests and storefront build
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,20 +62,34 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install google-genai google-auth google-api-python-client requests python-slugify
-      - name: Run tests (no Blogger publishing)
+      - name: Run existing safe article tests (no Blogger publishing)
         run: python -m unittest discover -s tests -v
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Check affiliate synchronizer syntax
-        run: node --check affiliate-links.js
+      - name: Run Command Center security and integration tests
+        run: npm test
+      - name: Check JavaScript syntax and secret exposure
+        run: |
+          node --check ai.js
+          node --check api/command-center/health.js
+          node --check api/command-center/chat.js
+          node --check api/command-center/events.js
+          node --check api/command-center/backup.js
+          node --check lib/command-center/auth.js
+          node --check lib/command-center/policy.js
+          node --check lib/command-center/providers.js
+          node --check lib/command-center/google.js
+          node --check lib/command-center/audit.js
+          node --check lib/command-center/ai-router.js
+          ! grep -Eq 'sk-or-v1-[A-Za-z0-9]+' ai.js
       - name: Verify Vercel build configuration
         run: |
           python -c "import json; c=json.load(open('vercel.json', encoding='utf-8')); assert c['buildCommand'] == 'npm run build'; assert c['outputDirectory'] == 'dist'"
       - name: Build Vercel static output
         run: npm run build
-      - name: Verify affiliate assets in Vercel output
+      - name: Verify public and private asset boundaries
         run: |
           test -s dist/index.html
           test -s dist/super-app.html
@@ -75,6 +97,7 @@ jobs:
           test -s dist/affiliate-links.js
           test -s dist/manifest.json
           test -s dist/robots.txt
+          test -s dist/ai.js
           test ! -e dist/main.py
           test ! -e dist/config.py
           test ! -e dist/partners.json
@@ -83,3 +106,6 @@ jobs:
           test ! -e dist/build.js
           test ! -e dist/README.md
           test ! -d dist/tests
+          test ! -d dist/api
+          test ! -d dist/lib
+          test ! -d dist/command-center
