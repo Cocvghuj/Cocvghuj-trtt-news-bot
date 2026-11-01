@@ -59,7 +59,8 @@ class AffiliateCatalogTests(unittest.TestCase):
             if service["network"] != "travelpayouts":
                 continue
             parsed = urlparse(service["url"])
-            self.assertIn(parsed.hostname, {"tpo.lv"} if parsed.hostname == "tpo.lv" else {parsed.hostname})
+            self.assertTrue(parsed.hostname == "tpo.lv" or parsed.hostname.endswith(".tpo.lv"), parsed.hostname)
+            self.assertEqual(parsed.scheme, "https")
             self.assertEqual(parse_qs(parsed.query).get("marker"), [self.catalog["marker"]])
 
     def test_python_config_loads_the_same_complete_catalog(self):
