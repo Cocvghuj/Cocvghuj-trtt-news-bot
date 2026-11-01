@@ -568,6 +568,8 @@ class BloggerAffiliateCatalogTests(unittest.TestCase):
             article_data,
             photo,
             {
+                "id": "test-blog",
+                "name": "Test Blog",
                 "author_name": "Editor",
                 "author_role": "Editor",
                 "author_location": "Europe",
