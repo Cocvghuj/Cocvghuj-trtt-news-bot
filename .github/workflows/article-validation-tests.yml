@@ -68,3 +68,13 @@ jobs:
           test -s dist/super-app.html
           test -s dist/affiliate-services.json
           test -s dist/affiliate-links.js
+          test -s dist/manifest.json
+          test -s dist/robots.txt
+          test ! -e dist/main.py
+          test ! -e dist/config.py
+          test ! -e dist/partners.json
+          test ! -e dist/requirements.txt
+          test ! -e dist/package.json
+          test ! -e dist/build.js
+          test ! -e dist/README.md
+          test ! -d dist/tests
