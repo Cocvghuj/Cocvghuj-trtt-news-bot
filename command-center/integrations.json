@@ -13,10 +13,10 @@
     {"id":"openrouter","category":"ai","role":"fallback","phase":"credential_consent_required","free_policy":"Require model ID ending in :free unless paid use is explicitly enabled."},
     {"id":"openai","category":"ai","role":"optional","phase":"credential_consent_required","free_policy":"Disabled by default; never call unless ALLOW_PAID_AI=true."},
     {"id":"google_workspace","category":"productivity","services":["gmail","drive","sheets","docs","slides","calendar","tasks","forms"],"phase":"oauth_consent_required","free_policy":"Personal product access does not imply unlimited or free API usage."},
-    {"id":"notion","category":"knowledge","phase":"integration_token_required","free_policy":"Use existing connected workspace where available; app runtime needs its own authorized integration."},
-    {"id":"github","category":"development","phase":"app_installation_required","free_policy":"Repository-scoped GitHub App permissions; no personal access token in source."},
-    {"id":"vercel","category":"hosting","phase":"project_oidc_required","free_policy":"Use project OIDC where supported; no deployment or paid feature without owner approval."},
-    {"id":"telegram","category":"messaging","phase":"bot_consent_required","free_policy":"Allowlisted owner chat only; verify webhook secret."},
-    {"id":"web_research","category":"research","phase":"provider_selection_required","free_policy":"Use available platform search or a configured provider; no scraping bypass."}
+    {"id":"notion","category":"knowledge","phase":"integration_token_required","free_policy":"App runtime requires a Notion integration token and page sharing."},
+    {"id":"github","category":"development","phase":"app_installation_required","free_policy":"Repository-scoped GitHub App; current app route is read-only."},
+    {"id":"vercel","category":"hosting","phase":"project_oidc_required","free_policy":"Use project OIDC where supported; no paid feature or deployment action without owner approval."},
+    {"id":"telegram","category":"messaging","phase":"bot_consent_required","free_policy":"Webhook secret and owner chat allowlist required."},
+    {"id":"web_research","category":"research","phase":"disabled_pending_quota_review","free_policy":"Gemini Google Search grounding has usage-based billing beyond the current free allowance; keep disabled until quota and billing are explicitly checked."}
   ]
 }

@@ -77,12 +77,21 @@ jobs:
           node --check api/command-center/chat.js
           node --check api/command-center/events.js
           node --check api/command-center/backup.js
+          node --check api/command-center/gmail-draft.js
+          node --check api/command-center/calendar-events.js
+          node --check api/command-center/github-repo.js
+          node --check api/command-center/notion-note.js
+          node --check api/command-center/telegram-webhook.js
           node --check lib/command-center/auth.js
           node --check lib/command-center/policy.js
           node --check lib/command-center/providers.js
           node --check lib/command-center/google.js
           node --check lib/command-center/audit.js
           node --check lib/command-center/ai-router.js
+          node --check lib/command-center/google-services.js
+          node --check lib/command-center/notion.js
+          node --check lib/command-center/github-app.js
+          node --check lib/command-center/telegram.js
           ! grep -Eq 'sk-or-v1-[A-Za-z0-9]+' ai.js
       - name: Verify Vercel build configuration
         run: |
