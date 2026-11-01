@@ -1,4 +1,7 @@
+import json
 import os
+from pathlib import Path
+from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 # --- API KEYS & SECRETS ---
 MARKER = os.environ.get("TRAVEL_PAYOUT_MARKER", "787950")
@@ -38,13 +41,26 @@ TOPICS = [
     }
 ]
 
-# --- Affiliate Links Master Database ---
+# --- Affiliate Links: single source of truth in affiliate-services.json ---
+_catalog_path = Path(__file__).with_name("affiliate-services.json")
+with _catalog_path.open(encoding="utf-8") as _catalog_file:
+    _affiliate_catalog = json.load(_catalog_file)
+
+def _affiliate_url(service):
+    if service["network"] == "amazon-associates":
+        return AMAZON_LINK
+    parsed = urlparse(service["url"])
+    query = dict(parse_qsl(parsed.query, keep_blank_values=True))
+    query["marker"] = MARKER
+    return urlunparse(parsed._replace(query=urlencode(query)))
+
 AFFILIATE_SERVICES = [
-    {"name": "Aviasales", "url": f"https://aviasales.tp.st/Fb8U9ay?marker={MARKER}"},
-    {"name": "Airalo eSIM", "url": f"https://airalo.tp.st/ZZoQC7Mz?marker={MARKER}"},
-    {"name": "AirHelp", "url": f"https://airhelp.tp.st/3ItXSOE4?marker={MARKER}"},
-    {"name": "Klook", "url": f"https://klook.tp.st/TWKnenhz?marker={MARKER}"},
-    {"name": "GetTransfer", "url": f"https://gettransfer.tp.st/1u82RU5s?marker={MARKER}"},
-    {"name": "Hotels", "url": f"https://economybookings.tp.st/pyHqIOo?marker={MARKER}"},
-    {"name": "Amazon Travel Gear", "url": AMAZON_LINK},
+    {
+        "id": service["id"],
+        "name": service["name"],
+        "network": service["network"],
+        "category": service["category"],
+        "url": _affiliate_url(service),
+    }
+    for service in _affiliate_catalog["services"]
 ]
