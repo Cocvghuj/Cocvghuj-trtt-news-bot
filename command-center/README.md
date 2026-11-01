@@ -36,7 +36,7 @@ Do not copy every record into every service. Keep one canonical record and store
 ## Required Vercel environment variables
 - `COMMAND_CENTER_ACCESS_TOKEN`: long random owner-only access token.
 - `COMMAND_CENTER_BACKUP_TOKEN`: separate long random backup token.
-- `GEMINI_API_KEY`, optional `GEMINI_MODEL` (default `gemini-2.5-flash`).
+- `GEMINI_API_KEY`, `GEMINI_FREE_TIER_CONFIRMED=true` only after checking the Google AI Studio project is on the free tier, optional `GEMINI_MODEL` (default `gemini-2.5-flash`).
 - `OPENROUTER_API_KEY`, `OPENROUTER_MODEL` (must end in `:free` while paid use is disabled).
 - `ALLOW_PAID_AI`: leave unset or `false`; never enable without explicit budget approval.
 - `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN`.

@@ -47,7 +47,7 @@ test("external writes require owner approval", () => {
 });
 
 test("provider readiness reports presence only and never returns secret values", () => {
-  const status = getProviderStatus({ GEMINI_API_KEY: "test-secret", OPENROUTER_API_KEY: "another-secret", OPENROUTER_MODEL: "model:free" });
+  const status = getProviderStatus({ GEMINI_API_KEY: "test-secret", GEMINI_FREE_TIER_CONFIRMED: "true", OPENROUTER_API_KEY: "another-secret", OPENROUTER_MODEL: "model:free" });
   assert.equal(status.find((p) => p.id === "gemini").configured, true);
   assert.equal(status.find((p) => p.id === "openrouter").configured, true);
   assert.equal(JSON.stringify(status).includes("test-secret"), false);
