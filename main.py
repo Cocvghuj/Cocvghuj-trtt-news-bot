@@ -11,6 +11,7 @@ import os
 import re
 import difflib
 import html
+import unicodedata
 from datetime import datetime
 from typing import List, Dict, Optional
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
@@ -957,8 +958,10 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
 def normalize_article_text(value: str) -> str:
     """Normalize HTML/text consistently for conservative duplicate detection."""
     text = html.unescape(value or '')
+    text = unicodedata.normalize('NFC', text)
     text = re.sub(r'<[^>]+>', ' ', text)
-    return re.sub(r'\s+', ' ', text).strip().lower()
+    text = re.sub(r'\s+', ' ', text).strip().lower()
+    return unicodedata.normalize('NFC', text)
 
 
 
