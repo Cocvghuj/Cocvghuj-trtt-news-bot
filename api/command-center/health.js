@@ -5,7 +5,10 @@ const { getProviderStatus } = require("../../lib/command-center/providers");
 module.exports = function handler(req, res) {
   if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed." });
   const auth = authorize(req);
-  if (!auth.ok) return res.status(auth.status).json({ error: auth.error });
+  if (!auth.ok) {
+    res.setHeader("Cache-Control", "no-store");
+    return res.status(auth.status).json({ error: auth.error, diagnostic: auth.diagnostic });
+  }
   res.setHeader("Cache-Control", "no-store");
   return res.status(200).json({
     service: "TRTT AI Command Center",
