@@ -81,3 +81,18 @@ Add Search Console, Analytics, Maps, Photos, or other Google services only after
 
 ## Not yet connected
 The code scaffold does not mean OAuth or account access is complete. External account consent and environment setup are intentionally pending. No paid services are provisioned by this project.
+
+
+## Google OAuth authorization-code setup (Preview only)
+
+The OAuth helper is deliberately a manual, owner-consent flow; it does not connect an account merely because the code is deployed.
+
+1. In Google Cloud project `trtt-news-24`, enable only the Google APIs required for the chosen workflows and configure the OAuth consent screen / test users.
+2. Create a **Web application** OAuth client. Add the exact Preview callback URL shown below to Authorized redirect URIs:
+   `https://<your-preview-host>/api/command-center/google-oauth-callback`
+3. Add these Vercel **Preview** variables (never Production for this task): `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_REDIRECT_URI` (exact URL above), and `GOOGLE_OAUTH_SCOPES` (space-separated scopes selected by the owner; default is only `openid email profile`). Keep `COMMAND_CENTER_ACCESS_TOKEN` configured for Preview as well.
+4. Call `POST /api/command-center/google-oauth-start` with `Authorization: Bearer <COMMAND_CENTER_ACCESS_TOKEN>` from a secure local terminal. Open the returned `authorization_url` in the same browser. Complete consent yourself.
+5. The callback exchanges the code with PKCE and validates the one-time state cookie. It returns the refresh token **once** in a no-store response because this project has no approved token vault/database. Copy it directly into Vercel Preview as `GOOGLE_REFRESH_TOKEN`; never paste it into chat, GitHub, logs, or email. Clear browser history after copying.
+6. Redeploy the Preview after adding the variables and run a read-only smoke test. The app does not store the refresh token in its database or repository.
+
+The callback uses HTTPS-only, HttpOnly, SameSite=Lax, 10-minute state/verifier cookies, PKCE S256, exact redirect URI matching, and no-store/no-referrer response headers. A refresh token is sensitive: only perform the callback on a trusted device/browser. If no refresh token is returned, revoke the app grant in your Google Account and repeat consent with offline access. Do not add broader scopes without reviewing the need first.
