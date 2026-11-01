@@ -20,6 +20,9 @@ const PUBLIC_TEXT_FILES = new Set([
   'robots.txt',
   'sitemap.txt'
 ]);
+const PRIVATE_FILES = new Set([
+  'build.js'
+]);
 const IGNORED_DIRECTORIES = new Set([
   '.git', '.github', 'dist', 'node_modules',
   'tests', '__pycache__', '.venv', 'venv',
@@ -33,6 +36,7 @@ fs.mkdirSync(dist, { recursive: true });
 
 function isPublicAsset(filePath) {
   const filename = path.basename(filePath).toLowerCase();
+  if (PRIVATE_FILES.has(filename)) return false;
   if (PUBLIC_JSON_FILES.has(filename) || PUBLIC_TEXT_FILES.has(filename)) {
     return true;
   }
