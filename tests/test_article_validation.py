@@ -301,6 +301,32 @@ class DuplicateTextNormalizationTests(unittest.TestCase):
         )
 
 
+class UnicodeDuplicateNormalizationTests(unittest.TestCase):
+    def test_bengali_text_is_preserved_and_casefolded_only_by_lowercase(self):
+        self.assertEqual(
+            main.normalize_article_text("বাংলাদেশের বিমানযাত্রী অধিকার"),
+            "বাংলাদেশের বিমানযাত্রী অধিকার",
+        )
+
+    def test_bengali_canonical_composition_matches_decomposed_text(self):
+        composed = "ড়"
+        decomposed = "ড\\u09bc"
+        self.assertEqual(
+            main.normalize_article_text(composed),
+            main.normalize_article_text(decomposed),
+        )
+
+    def test_bengali_vowel_signs_and_joiners_are_preserved(self):
+        text = "কি ক্\\u200dষ"
+        self.assertEqual(main.normalize_article_text(text), text)
+
+    def test_unicode_normalization_does_not_remove_distinct_marks(self):
+        self.assertNotEqual(
+            main.normalize_article_text("কি"),
+            main.normalize_article_text("কী"),
+        )
+
+
 class DuplicatePaginationTests(unittest.TestCase):
     class FakeRequest:
         def __init__(self, response):
