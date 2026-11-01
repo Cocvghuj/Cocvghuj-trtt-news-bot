@@ -452,3 +452,38 @@ class DuplicatePaginationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class DraftWorkflowFailClosedTests(unittest.TestCase):
+    def test_missing_blogger_oauth_credentials_raise_instead_of_successful_skip(self):
+        with mock.patch.object(main, "BLOGGER_CLIENT_ID", None), \\
+             mock.patch.object(main, "BLOGGER_CLIENT_SECRET", None), \\
+             mock.patch.object(main, "BLOGGER_REFRESH_TOKEN", None):
+            with self.assertRaisesRegex(RuntimeError, "OAuth credentials are incomplete"):
+                main.create_drafts_on_blogs("Title", "<p>body</p>", {"labels": []})
+
+    def test_missing_target_blog_ids_raise_instead_of_successful_skip(self):
+        with mock.patch.object(main, "BLOGGER_CLIENT_ID", "client"), \\
+             mock.patch.object(main, "BLOGGER_CLIENT_SECRET", "secret"), \\
+             mock.patch.object(main, "BLOGGER_REFRESH_TOKEN", "refresh"), \\
+             mock.patch.object(main, "BLOGGER_BLOG_ID", None), \\
+             mock.patch.object(main, "FLIGHTSCOUTPRO_BLOG_ID", None), \\
+             mock.patch.object(main, "PARTNER_BLOG_IDS", ""), \\
+             mock.patch.object(main.os.path, "exists", return_value=False):
+            with self.assertRaisesRegex(RuntimeError, "No Blogger target blog IDs"):
+                main.create_drafts_on_blogs("Title", "<p>body</p>", {"labels": []})
+
+    def test_incomplete_draft_run_raises_and_does_not_advance_history(self):
+        article_data = {
+            "meta": {"title": "Test", "labels": ["Test"]},
+            "content": "<p>Article</p>",
+        }
+        with mock.patch.object(main, "load_history", return_value=[]), \\
+             mock.patch.object(main, "fetch_unsplash_photo", return_value={"url": "https://example.com/image.jpg", "author": "Test", "alt": "Test"}), \\
+             mock.patch.object(main, "generate_article_with_metadata", return_value=article_data), \\
+             mock.patch.object(main, "build_enterprise_html", return_value="<p>HTML</p>"), \\
+             mock.patch.object(main, "create_drafts_on_blogs", return_value=[]), \\
+             mock.patch.object(main, "record_topic_after_draft") as record:
+            with self.assertRaisesRegex(RuntimeError, "Draft workflow incomplete"):
+                main.main()
+        record.assert_called_once_with(main.TOPIC_POOL[0]["topic"], [])
