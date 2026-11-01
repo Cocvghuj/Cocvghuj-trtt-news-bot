@@ -1,0 +1,174 @@
+{
+  "version": 1,
+  "marker": "787950",
+  "services": [
+    {
+      "id": "aviasales",
+      "name": "Aviasales",
+      "network": "travelpayouts",
+      "category": "Flights",
+      "url": "https://aviasales.tpo.lv/Fb8U9yav?marker=787950",
+      "description": "Flight metasearch"
+    },
+    {
+      "id": "airhelp",
+      "name": "AirHelp",
+      "network": "travelpayouts",
+      "category": "Compensation",
+      "url": "https://airhelp.tpo.lv/3ItXS0E4?marker=787950",
+      "description": "Flight delay and cancellation claims"
+    },
+    {
+      "id": "compensair",
+      "name": "Compensair",
+      "network": "travelpayouts",
+      "category": "Compensation",
+      "url": "https://compensair.tpo.lv/YgVXgRnB?marker=787950",
+      "description": "EU passenger-rights claims"
+    },
+    {
+      "id": "kiwitaxi",
+      "name": "Kiwitaxi",
+      "network": "travelpayouts",
+      "category": "Transfers",
+      "url": "https://kiwitaxi.tpo.lv/tIZcbMOB?marker=787950",
+      "description": "Airport rides"
+    },
+    {
+      "id": "gettransfer",
+      "name": "GetTransfer",
+      "network": "travelpayouts",
+      "category": "Transfers",
+      "url": "https://gettransfer.tpo.lv/1u8zRU5s?marker=787950",
+      "description": "Private driver transfers"
+    },
+    {
+      "id": "intui",
+      "name": "Intui.travel",
+      "network": "travelpayouts",
+      "category": "Transfers",
+      "url": "https://intui.tpo.lv/tiSkz4Yq?marker=787950",
+      "description": "Airport shuttles"
+    },
+    {
+      "id": "welcome-pickups",
+      "name": "Welcome Pickups",
+      "network": "travelpayouts",
+      "category": "Transfers",
+      "url": "https://tpo.lv/h3LrTZcS?marker=787950",
+      "description": "City and airport transfers"
+    },
+    {
+      "id": "localrent",
+      "name": "LocalRent",
+      "network": "travelpayouts",
+      "category": "Car rental",
+      "url": "https://localrent.tpo.lv/4jd1IRQG?marker=787950",
+      "description": "Local car hire"
+    },
+    {
+      "id": "getrentacar",
+      "name": "GetRentACar",
+      "network": "travelpayouts",
+      "category": "Car rental",
+      "url": "https://getrentacar.tpo.lv/VZe2HcGc?marker=787950",
+      "description": "Car rental offers"
+    },
+    {
+      "id": "economybookings",
+      "name": "EconomyBookings",
+      "network": "travelpayouts",
+      "category": "Car rental",
+      "url": "https://economybookings.tpo.lv/pyHqRiOo?marker=787950",
+      "description": "Car rental comparison"
+    },
+    {
+      "id": "qeeq",
+      "name": "QEEQ",
+      "network": "travelpayouts",
+      "category": "Car rental",
+      "url": "https://qeeq.tpo.lv/HKhCeDhY?marker=787950",
+      "description": "Car rental deals"
+    },
+    {
+      "id": "airalo",
+      "name": "Airalo",
+      "network": "travelpayouts",
+      "category": "eSIM",
+      "url": "https://airalo.tpo.lv/ZZoQC7Mz?marker=787950",
+      "description": "Travel eSIM"
+    },
+    {
+      "id": "yesim",
+      "name": "Yesim",
+      "network": "travelpayouts",
+      "category": "eSIM",
+      "url": "https://yesim.tpo.lv/krzFKLpg?marker=787950",
+      "description": "Travel data plans"
+    },
+    {
+      "id": "drimsim",
+      "name": "Drimsim",
+      "network": "travelpayouts",
+      "category": "eSIM",
+      "url": "https://drimsim.tpo.lv/Ly7ywlY8?marker=787950",
+      "description": "Pay-as-you-go SIM"
+    },
+    {
+      "id": "saily",
+      "name": "Saily",
+      "network": "travelpayouts",
+      "category": "eSIM",
+      "url": "https://saily.tpo.lv/ssekmS4X?marker=787950",
+      "description": "Travel eSIM"
+    },
+    {
+      "id": "tiqets",
+      "name": "Tiqets",
+      "network": "travelpayouts",
+      "category": "Tours",
+      "url": "https://tiqets.tpo.lv/bnx8pnF6?marker=787950",
+      "description": "Museum and attraction tickets"
+    },
+    {
+      "id": "klook",
+      "name": "Klook",
+      "network": "travelpayouts",
+      "category": "Tours",
+      "url": "https://klook.tpo.lv/TWKnemhz?marker=787950",
+      "description": "Travel activities"
+    },
+    {
+      "id": "gocity",
+      "name": "GoCity",
+      "network": "travelpayouts",
+      "category": "Tours",
+      "url": "https://gocity.tpo.lv/QSQw8FwU?marker=787950",
+      "description": "City attraction passes"
+    },
+    {
+      "id": "kkday",
+      "name": "KKday",
+      "network": "travelpayouts",
+      "category": "Tours",
+      "url": "https://kkday.tpo.lv/JaAfTgGF?marker=787950",
+      "description": "Day trips and experiences"
+    },
+    {
+      "id": "radical-storage",
+      "name": "Radical Storage",
+      "network": "travelpayouts",
+      "category": "Luggage",
+      "url": "https://radicalstorage.tpo.lv/WkGqxIsD?marker=787950",
+      "description": "Luggage storage"
+    },
+    {
+      "id": "amazon-flight-gear",
+      "name": "Amazon Flight Gear",
+      "network": "amazon-associates",
+      "category": "Shopping",
+      "url": "https://amzn.to/4shg6Hn",
+      "description": "Travel accessories"
+    }
+  ]
+}
