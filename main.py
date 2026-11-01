@@ -1015,8 +1015,9 @@ def create_drafts_on_blogs(title: str, html_content: str, meta: dict, article_da
     Creates reviewable Blogger drafts on configured blogs; publication requires human approval.
     """
     if not all([BLOGGER_CLIENT_ID, BLOGGER_CLIENT_SECRET, BLOGGER_REFRESH_TOKEN]):
-        print("Notice: Blogger OAuth credentials not configured in secrets. Skipping live Blogger API post.")
-        return []
+        raise RuntimeError(
+            "Blogger OAuth credentials are incomplete. Refusing to report a successful no-op run."
+        )
 
     target_blog_ids = []
     if BLOGGER_BLOG_ID:
@@ -1046,8 +1047,9 @@ def create_drafts_on_blogs(title: str, html_content: str, meta: dict, article_da
 
     created_drafts = []
     if not target_blog_ids:
-        print('No target Blogger blog IDs configured; no drafts created.')
-        return created_drafts
+        raise RuntimeError(
+            "No Blogger target blog IDs are configured. Refusing to report a successful no-op run."
+        )
     try:
         creds = Credentials(
             None,
@@ -1135,8 +1137,7 @@ def create_drafts_on_blogs(title: str, html_content: str, meta: dict, article_da
 
         return created_drafts
     except Exception as exc:
-        print(f"Error initializing Google Blogger API: {exc}")
-        return created_drafts
+        raise RuntimeError(f"Could not initialize Google Blogger API: {exc}") from exc
 
 # ==============================================================================
 # TELEGRAM DISPATCH
@@ -1207,12 +1208,15 @@ def main():
         )
 
     if not record_topic_after_draft(selected_topic_info["topic"], created_drafts):
-        print(
-            "Topic remains in retry queue: "
-            + str(len(failed_blog_outcomes))
-            + " configured blog target(s) still need a confirmed draft."
+        failure_count = len(failed_blog_outcomes)
+        raise RuntimeError(
+            "Draft workflow incomplete: "
+            + str(failure_count)
+            + " target(s) failed or "
+            + str(len(created_drafts) - failure_count)
+            + " target(s) were not fully confirmed. "
+            + "Topic history was not advanced; next run will safely re-check existing drafts."
         )
-        return
 
     newly_created = sum(1 for outcome in successful_blog_outcomes if outcome.get("status") == "created")
     print(
