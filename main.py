@@ -991,8 +991,20 @@ def find_duplicate_post(service, blog_id: str, title: str, content: str):
                 if old_title and old_title == new_title:
                     return existing
                 if len(new_body) >= 500 and len(old_body) >= 500:
-                    similarity = difflib.SequenceMatcher(None, new_body, old_body).ratio()
-                    if similarity >= 0.88:
+                    # Existing Blogger posts contain a site-wide HTML wrapper around
+                    # the original article body. Measure how much of the new article
+                    # is represented in the stored post, rather than penalizing that
+                    # wrapper for making the stored text longer.
+                    if new_body in old_body:
+                        return existing
+                    matcher = difflib.SequenceMatcher(
+                        None, new_body, old_body, autojunk=False
+                    )
+                    matched_chars = sum(
+                        block.size for block in matcher.get_matching_blocks()
+                    )
+                    coverage = matched_chars / len(new_body)
+                    if coverage >= 0.88:
                         return existing
             page_token = response.get("nextPageToken")
             if not page_token:
