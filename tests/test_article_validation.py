@@ -423,5 +423,32 @@ class DuplicatePaginationTests(unittest.TestCase):
         self.assertEqual(duplicate["id"], "existing-body")
 
 
+    def test_mixed_bengali_english_title_matches_html_and_entity_variant(self):
+        stored_title = "ফ্লাইট Delay &amp; Compensation — Europe ২০২৬"
+        new_title = "ফ্লাইট Delay & Compensation — Europe ২০২৬"
+        service = self.FakeService([
+            {"items": [{"id": "mixed-title", "title": stored_title, "content": "short old body"}]},
+        ])
+        duplicate = main.find_duplicate_post(
+            service, "blog-1", new_title, "a different short article body"
+        )
+        self.assertEqual(duplicate["id"], "mixed-title")
+
+    def test_mixed_bengali_english_article_matches_markup_variant(self):
+        sentence = (
+            "বিমান বিলম্ব হলে passenger rights ও compensation rules "
+            "জানুন before submitting an airline claim. "
+        )
+        plain_body = sentence * 12
+        html_body = "<article><p>" + (sentence.replace("&", "&amp;") * 12) + "</p></article>"
+        service = self.FakeService([
+            {"items": [{"id": "mixed-body", "title": "Older mixed-language title", "content": html_body}]},
+        ])
+        duplicate = main.find_duplicate_post(
+            service, "blog-1", "A different headline", plain_body
+        )
+        self.assertEqual(duplicate["id"], "mixed-body")
+
+
 if __name__ == "__main__":
     unittest.main()
