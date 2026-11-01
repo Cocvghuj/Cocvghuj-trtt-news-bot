@@ -481,10 +481,6 @@ class DuplicatePaginationTests(unittest.TestCase):
         self.assertEqual(duplicate["id"], "mixed-body")
 
 
-if __name__ == "__main__":
-    unittest.main()
-
-
 class DraftWorkflowFailClosedTests(unittest.TestCase):
     def test_missing_blogger_oauth_credentials_raise_instead_of_successful_skip(self):
         with (
@@ -533,6 +529,67 @@ class DraftWorkflowFailClosedTests(unittest.TestCase):
         ):
             with self.assertRaisesRegex(RuntimeError, "Article generation returned no validated content"):
                 main.main()
+
+
+
+class BloggerAffiliateCatalogTests(unittest.TestCase):
+    def test_blogger_affiliate_links_use_canonical_catalog_destinations(self):
+        from urllib.parse import parse_qs, urlparse
+
+        for service_id in ("airhelp", "aviasales", "airalo", "kiwitaxi"):
+            with self.subTest(service_id=service_id):
+                service = next(
+                    item for item in main.AFFILIATE_SERVICES
+                    if item["id"] == service_id
+                )
+                generated = main.affiliate_service_url(service_id)
+                self.assertEqual(urlparse(generated).netloc, urlparse(service["url"]).netloc)
+                self.assertEqual(urlparse(generated).path, urlparse(service["url"]).path)
+                query = parse_qs(urlparse(generated).query)
+                self.assertEqual(query.get("marker"), [main.MARKER])
+                self.assertEqual(query.get("sub_id"), [f"blogger_seo_{service_id}_{main.MARKER}"])
+
+    def test_blogger_template_does_not_claim_unverified_compliance_or_verification(self):
+        photo = {
+            "url": "https://images.example/photo.jpg",
+            "author": "Example Photographer",
+            "alt": "Example travel photo",
+        }
+        article_data = {
+            "meta": {
+                "title": "Test article",
+                "search_description": "Test description",
+                "labels": ["Testing"],
+                "permalink_slug": "test-article",
+            },
+            "content": "<p>" + ("A factual article sentence. " * 50) + "</p>",
+        }
+        rendered = main.build_enterprise_html(
+            article_data,
+            photo,
+            {
+                "author_name": "Editor",
+                "author_role": "Editor",
+                "author_location": "Europe",
+                "author_email": "editor@example.com",
+                "author_phone": "",
+                "badge": "Editorial",
+                "theme_primary": "#123456",
+                "theme_gradient": "linear-gradient(90deg, #123456, #abcdef)",
+                "cta_title": "Travel tools",
+                "cta_desc": "Compare services",
+                "url": "https://example.com",
+                "about_url": "https://example.com/about",
+                "contact_url": "https://example.com/contact",
+                "privacy_url": "https://example.com/privacy",
+                "disclaimer_url": "https://example.com/disclaimer",
+                "footer_tag": "Editorial team",
+            },
+        )
+        self.assertNotIn("GDPR &amp; FTC Compliant", rendered)
+        self.assertNotIn("VERIFIED AUTHOR", rendered)
+        self.assertNotIn("Verified Passenger Intel", rendered)
+        self.assertIn("Human review required", rendered)
 
 
 if __name__ == "__main__":
