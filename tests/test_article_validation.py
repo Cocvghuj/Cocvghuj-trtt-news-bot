@@ -310,7 +310,7 @@ class UnicodeDuplicateNormalizationTests(unittest.TestCase):
 
     def test_bengali_canonical_composition_matches_decomposed_text(self):
         composed = "ড়"
-        decomposed = "ড\\u09bc"
+        decomposed = "ড\u09bc"
         self.assertEqual(
             main.normalize_article_text(composed),
             main.normalize_article_text(decomposed),
