@@ -1,37 +1,37 @@
-# TRTT Blogger GitHub → Vercel → Gadget control
+# TRTT Blogger — GitHub-controlled menu and theme assets
 
-## One-time Blogger Gadget loader
+This setup makes GitHub the source of truth for the public navigation and CSS styling served to the Blogger site.
 
-Keep one HTML/JavaScript gadget on the Blogger layout. It loads the menu and theme from the Vercel production deployment:
+## One-time Blogger action (required)
+
+In Blogger Dashboard → Layout, keep one HTML/JavaScript gadget and add:
 
 ```html
 <link rel="stylesheet" href="https://cocvghuj-trtt-news-bot.vercel.app/trtt-theme.css">
 <script defer src="https://cocvghuj-trtt-news-bot.vercel.app/trtt-blog-menu.js"></script>
 ```
 
-Do not paste OAuth credentials or GitHub/Vercel tokens into Blogger. The gadget only loads public presentation assets.
+Save the gadget. This one-time Blogger action cannot currently be automated through the public Blogger API. Do not paste OAuth credentials, GitHub tokens, or Vercel tokens into Blogger.
 
-## Edit the menu
+## Ongoing GitHub control
 
-Change `trtt-blog-menu.json` in GitHub:
-- `brand`: menu brand text
-- `links`: ordered label + URL entries
-- `menuBackground`, `mobileBackground`, `textColor`: menu colors
+- Edit `trtt-blog-menu.json` to change brand, links, and menu colors.
+- Edit `trtt-theme.css` to change the visual styling.
+- Push to `main`; the connected Vercel project builds and serves the assets.
+- The gadget loads the public assets. It does not receive any secrets.
 
-## Edit the theme
+## Posts and Pages
 
-Change `trtt-theme.css` in GitHub. The Vercel Git integration builds the repository and publishes the root browser assets from `dist/`. The existing gadget loader remains unchanged.
+- `posts/*.md` is the source for GitHub-managed Blogger posts.
+- `pages/trttnews24bd/*.html` is the source for GitHub-managed Blogger pages.
+- The GitHub Actions content-sync workflow publishes new files and updates changed files.
+- Removing a source file removes the corresponding managed Blogger item on the next sync. Review deletions carefully.
+- Blogger items without the repository's source marker are not managed by this sync.
 
-## Posts and Pages source of truth
+## Comments and audit
 
-- Add or edit a Markdown article in `posts/*.md`; the GitHub workflow publishes it as a live Blogger post.
-- Add or edit a page in `pages/trttnews24bd/*.html`; the same workflow publishes it as a live Blogger Page.
-- Remove a source file to remove only the corresponding Blogger item that was created and marked by this GitHub sync.
-- `posts/news_guideline.md` is an editorial instruction file and is intentionally never published.
-- The sync uses the existing `BLOGGER_BLOG_ID`, `BLOGGER_CLIENT_ID`, `BLOGGER_CLIENT_SECRET`, and `BLOGGER_REFRESH_TOKEN` GitHub Actions secrets. No credentials are sent to the browser.
+Use GitHub Actions → **Blogger Admin and Comments** for read-only audit/listing and explicit comment moderation. See [BLOGGER_COMMENTS_ADMIN.md](./BLOGGER_COMMENTS_ADMIN.md).
 
-The first content-sync run reconciles every supported source file. Later pushes update changed items and remove deleted GitHub-managed items. Blogger items without the TRTT source marker are never modified or deleted.
+## Honest control boundary
 
-## Scope boundary
-
-This controls Blogger Posts and Pages plus the Gadget-delivered menu/theme assets. Blogger Theme XML, Layout gadget placement, account settings, and Blogger-only settings are not exposed by the public Blogger API; the one-time Gadget loader must remain installed in Blogger.
+GitHub controls the posts, pages, menu configuration, delivered CSS, and supported comment operations. It does **not** control Blogger Theme XML, Layout gadget placement, every Blogger setting, or Google account-level settings. The Blogger API does not provide general write endpoints for those areas. A complete takeover is therefore not possible with the current Blogger API; the one-time gadget installation and unsupported dashboard settings remain manual.
