@@ -1,0 +1,98 @@
+/* ==========================================================================
+   TRTT NEWS 24 BD OVERHAUL CSS (For Blogger Themes)
+   Author: Abu Taher (engrtaher2017@gmail.com | Sanluri, South Sardinia, Italy)
+   How to apply:
+   Blogger Dashboard -> Theme -> Customize -> Advanced -> Add CSS -> Paste -> Save
+   ========================================================================== */
+
+body, html {
+  background-color: #f8fafc !important;
+  color: #1e293b !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1.75 !important;
+}
+
+.main-container,
+.centered-top,
+.centered-bottom,
+.page_body {
+  max-width: 1140px !important;
+  margin: 0 auto !important;
+  padding: 16px !important;
+  background: transparent !important;
+}
+
+.header-widget,
+header#header {
+  background: linear-gradient(135deg, #052962 0%, #004b99 100%) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 20px -2px rgba(5, 41, 98, 0.15) !important;
+  padding: 24px 32px !important;
+  margin-bottom: 28px !important;
+  border: 1px solid #00A8E8 !important;
+  text-align: left !important;
+}
+
+.header-widget h1,
+.header-widget .title,
+header h1.title {
+  font-size: 28px !important;
+  font-weight: 900 !important;
+  color: #ffffff !important;
+  letter-spacing: -0.02em !important;
+  margin: 0 !important;
+}
+
+.header-widget .description,
+header .description {
+  font-size: 14px !important;
+  color: #e2e8f0 !important;
+  margin-top: 6px !important;
+}
+
+.post-outer-container,
+.post-outer,
+article.post {
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 15px -3px rgba(15, 23, 42, 0.05) !important;
+  padding: 32px !important;
+  margin-bottom: 32px !important;
+}
+
+h1.post-title,
+.post-title a {
+  font-size: 26px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  line-height: 1.3 !important;
+  text-decoration: none !important;
+}
+
+.post-title a:hover {
+  color: #00A8E8 !important;
+}
+
+.post-body {
+  font-size: 16.5px !important;
+  line-height: 1.8 !important;
+  color: #334155 !important;
+}
+
+.widget.ReportAbuse,
+.widget.Attribution,
+.widget.Profile,
+.post-feeds,
+.feed-links {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .post-outer-container,
+  .post-outer,
+  article.post {
+    padding: 20px 16px !important;
+  }
+}
