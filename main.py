@@ -298,7 +298,7 @@ def generate_fallback_expert_article(topic_info: dict) -> dict:
         <h2>5. Frequently Asked Questions (FAQ)</h2>
         <div style="background: #f1f5f9; border-radius: 12px; padding: 20px; margin-top: 18px;">
           <p style="margin-bottom: 6px;"><strong>Q: Can I claim compensation if my flight was delayed several months ago?</strong></p>
-          <p style="margin-bottom: 14px; color: #475569;">A: Yes! National limitation periods range from 2 years (Italy) to 3 years (Germany) and up to 6 years (UK and Ireland). You can retroactively audit your past bookings.</p>
+          <p style="margin-bottom: 14px; color: #475569;">A: Claim deadlines differ by country and can depend on the flight, carrier, and applicable law. Check the relevant national authority or obtain legal advice before assuming an older flight is still eligible.</p>
           <p style="margin-bottom: 6px;"><strong>Q: What if I bought my ticket during a flash sale or through an online travel agent?</strong></p>
           <p style="margin-bottom: 14px; color: #475569;">A: The ticket price has zero bearing on your legal entitlement. A €30 budget fare qualifies for the exact same €250 to €600 compensation as a business class ticket.</p>
           <p style="margin-bottom: 6px;"><strong>Q: Do children and infants qualify for compensation?</strong></p>
@@ -745,7 +745,7 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
     kiwitaxi_link = affiliate_service_url("kiwitaxi")
 
     now_iso = datetime.utcnow().isoformat()
-    canonical_url = f"{blog_profile['url']}/{meta['permalink_slug']}.html"
+    canonical_url = f"{blog_profile['url']}/{datetime.utcnow():%Y/%m}/{meta['permalink_slug']}.html"
 
     schema_json = {
         "@context": "https://schema.org",
