@@ -82,3 +82,5 @@ jobs:
               print(str(exc)[:1200])
               sys.exit(1)
           PY
+
+# Read-only OAuth verification trigger: no Blogger content or settings are modified.
