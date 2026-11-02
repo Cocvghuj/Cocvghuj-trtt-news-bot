@@ -4,6 +4,21 @@
   var MENU_ID = "trtt-final-menu";
   var STYLE_ID = "trtt-final-menu-styles";
 
+  function hideLegacyLeftMenu() {
+    var candidates = document.querySelectorAll("nav, [id*='menu' i], [class*='menu' i], [id*='nav' i], [class*='nav' i]");
+    candidates.forEach(function (el) {
+      if (!el || el.id === MENU_ID || el.closest("#" + MENU_ID)) return;
+      var label = ((el.id || "") + " " + (typeof el.className === "string" ? el.className : "")).toLowerCase();
+      if (!/(menu|nav)/.test(label) && el.tagName !== "NAV") return;
+      var rect = el.getBoundingClientRect();
+      var links = el.querySelectorAll("a");
+      if (rect.width > 0 && rect.width <= 380 && rect.height >= 70 && rect.left <= 180 && links.length >= 2) {
+        el.style.setProperty("display", "none", "important");
+        el.style.setProperty("visibility", "hidden", "important");
+      }
+    });
+  }
+
   function installMenu() {
     if (!document.body || document.getElementById(MENU_ID)) return;
 
@@ -11,8 +26,8 @@
     style.id = STYLE_ID;
     style.textContent = [
       "#trtt-final-menu{position:sticky;top:0;z-index:99999;width:100%;background:#ff2e63;font-family:Arial,sans-serif;box-sizing:border-box}",
-      "/* Hide legacy left-side navigation without hiding the page sidebar/content */",
-      "#left-menu,#leftMenu,#left_menu,.left-menu,.left_menu,.left-navigation,.left-nav,.left-sidebar-menu,.sidebar-menu,.vertical-menu,.vertical-menu-wrapper,.old-menu,.old-navigation{display:none!important;visibility:hidden!important}",
+      "/* Hide common legacy left-side navigation containers; preserve content sidebars */",
+      "#left-menu,#leftMenu,#left_menu,#left-sidebar,#sidebar-left,#left-sidebar-wrapper,#sidebar-left-wrapper,#menu-left,#left-navigation,.left-menu,.left_menu,.left-navigation,.left-nav,.left-sidebar,.sidebar-left,.left-sidebar-menu,.vertical-menu,.vertical-menu-wrapper,.old-menu,.old-navigation{display:none!important;visibility:hidden!important}",
       "#trtt-final-menu *{box-sizing:border-box}",
       "#trtt-final-menu .trtt-bar{min-height:50px;padding:0 15px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative}",
       "#trtt-final-menu .trtt-logo-txt{color:#fff;font-weight:800;font-size:16px;letter-spacing:1px;white-space:nowrap}",
@@ -42,7 +57,7 @@
         '</ul>' +
       '</div>';
 
-    document.body.insertBefore(menu, document.body.firstChild);
+    document.body.insertBefore(menu, document.body.firstChild);\n    hideLegacyLeftMenu();
 
     var toggle = menu.querySelector(".trtt-ham");
     function closeMenu() {
