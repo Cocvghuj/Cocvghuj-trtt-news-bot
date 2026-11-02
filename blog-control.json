@@ -1,21 +1,22 @@
 {
-  "theme": {"golapi": "#ff2e63", "kathali": "#FFC300", "piaji": "#AF7AC5", "bg": "#fffafb", "text": "#222"},
+  "brand": "TRTT NEWS 24 BD",
+  "theme": {
+    "primary": "#052962",
+    "accent": "#00A8E8",
+    "background": "#f8fafc",
+    "surface": "#ffffff",
+    "text": "#1e293b",
+    "muted": "#64748b",
+    "menuBackground": "#052962",
+    "mobileBackground": "#093b7a",
+    "menuText": "#ffffff"
+  },
   "menu": [
-    {"id": "home", "label": "Home", "href": "/", "icon": "🏠"},
-    {"id": "esim", "label": "eSIM", "href": "/search/label/eSIM", "icon": "📱"},
-    {"id": "flights", "label": "Flights", "href": "/search/label/Flights", "icon": "✈️"},
-    {"id": "hotels", "label": "Hotels", "href": "/search/label/Hotels", "icon": "🏨"},
-    {"id": "contact", "label": "Contact", "href": "/p/contact.html", "icon": "✉️"}
-  ],
-  "roksanaVault": {
-    "name": "ROKSANA NILLA",
-    "colors": "Golapi #ff2e63, Kathali #FFC300, Piaji #AF7AC5 - Bou's Choice",
-    "ticker": "ROKSANA NILLA'S FINAL VAULT | Bou's Choice - Golapi Kathali Piaji | Trillion Dollar Future | Marker 787950 | Sanluri Italy",
-    "mode": "travelerFriendly",
-    "hackText": "stealth"
-  },
-  "megaVault": {
-    "flightTicker": "Cagliari → Rome €29 | Italy → BD €450 | eSIM Active | Marker 787950 LIVE"
-  },
-  "customCSS": ""
+    { "id": "home", "label": "Home", "href": "/" },
+    { "id": "esim", "label": "eSIM Guide", "href": "/search/label/eSIM" },
+    { "id": "flights", "label": "Flights", "href": "/search/label/Flights" },
+    { "id": "hotels", "label": "Hotels", "href": "/search/label/Hotels" },
+    { "id": "about", "label": "About Us", "href": "/p/about-us.html" },
+    { "id": "contact", "label": "Contact", "href": "/p/contact.html" }
+  ]
 }
