@@ -212,7 +212,8 @@ def sync_resource(resource, kind: str, desired: dict[str, dict[str, Any]]) -> tu
             else:
                 result = resource.insert(
                     blogId=BLOG_ID, body=body, isDraft=False
-                ).execute()
+                ).execute(num_retries=7)
+                time.sleep(1.25)
             created += 1
             print(f"PUBLISHED {source_path}: Blogger ID {result.get('id')}")
 
