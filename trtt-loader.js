@@ -1,89 +1,49 @@
-// TRTT FINAL MASTER LOADER - One Time Install - 1 Click Mind Reading
-// Golapi #ff2e63, Kathali #FFC300, Piaji #AF7AC5 - Wife's Favorite Colors
+// TRTT FINAL MASTER LOADER - ROKSANA NILLA'S FINAL VAULT - 1-CLICK FIX
 (function(){
-  const CFG_URL = document.getElementById('trtt-master-key')?.dataset?.config;
-  const DEFAULT_CFG = {
-    theme:{golapi:"#ff2e63",kathali:"#FFC300",piaji:"#AF7AC5",bodyBg:"#fffafb"},
-    menu:[
-      {id:"home",label:"Home",href:"/",icon:"🏠",color:"#ff2e63"},
-      {id:"esim",label:"eSIM Guide",href:"/search/label/eSIM",icon:"📱",color:"#FFC300"},
-      {id:"flights",label:"Flights",href:"/search/label/Flights",icon:"✈️",color:"#AF7AC5"},
-      {id:"explore",label:"Explore Life",href:"https://cocvghuj-trtt-news-bot.vercel.app/",icon:"🌍",color:"#ff2e63"},
-      {id:"about",label:"About Us",href:"/p/about-us.html",icon:"ℹ️",color:"#FFC300"},
-      {id:"contact",label:"Contact",href:"/p/contact.html",icon:"✉️",color:"#AF7AC5"}
-    ]
+  const CFG = document.getElementById('trtt-master-key')?.dataset?.config;
+  const DEF = {
+    theme:{golapi:"#ff2e63",kathali:"#FFC300",piaji:"#AF7AC5",bg:"#fffafb",text:"#222"},
+    menu:[{id:"home",label:"Home",href:"/",icon:"🏠"}],
+    roksanaVault:{name:"ROKSANA NILLA",ticker:"ROKSANA NILLA'S FINAL VAULT | Marker 787950"}
   };
-
-  async function getConfig(){
-    if(!CFG_URL) return DEFAULT_CFG;
-    try{
-      const r = await fetch(CFG_URL+'?t='+Date.now(), {cache:'no-store'});
-      if(!r.ok) throw new Error('no config');
-      return await r.json();
-    }catch(e){ return DEFAULT_CFG; }
-  }
-
-  function getScores(){ try{return JSON.parse(localStorage.getItem('trtt_smart_1click')||'{}')}catch(e){return{}} }
-  function saveScore(id){
-    const s=getScores(); s[id]=(s[id]||0)+1;
-    localStorage.setItem('trtt_smart_1click', JSON.stringify(s));
-    return s;
-  }
-
-  async function init(){
-    const cfg = await getConfig();
-    // Hide old Blogger menus
-    const hideCss = document.createElement('style');
-    hideCss.innerHTML = `.LinkList,.PageList,#main-menu,.main-menu,.PopularPosts{display:none !important} #trtt-final-root{position:sticky;top:0;z-index:99999;width:100%}`;
-    document.head.appendChild(hideCss);
-
-    let root = document.getElementById('trtt-final-root');
-    if(!root){
-      root=document.createElement('div'); root.id='trtt-final-root';
-      const h=document.querySelector('header,.header,#header,.logo');
-      if(h && h.parentNode) h.parentNode.insertBefore(root, h.nextSibling);
-      else document.body.insertBefore(root, document.body.firstChild);
-    }
-
-    const scores = getScores();
-    const sorted = [...cfg.menu].sort((a,b)=>(scores[b.id]||0)-(scores[a.id]||0));
-    const top = sorted[0] && scores[sorted[0].id]>0 ? sorted[0] : null;
-
-    root.innerHTML = `
-      <div style="background:linear-gradient(90deg, ${cfg.theme.golapi} 0%, ${cfg.theme.piaji} 50%, ${cfg.theme.kathali} 100%);box-shadow:0 4px 20px rgba(0,0,0,0.15)">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 15px;height:54px;max-width:1300px;margin:0 auto">
-          <div style="color:#fff;font-weight:900;letter-spacing:1px">TRTT VOYAGE</div>
-          <ul id="trtt-ul" style="display:flex;list-style:none;margin:0;padding:0;gap:4px">
-            ${sorted.map(m=>{
-              const isTop = top && m.id===top.id;
-              return `<li data-id="${m.id}"><a href="${m.href}" data-id="${m.id}" style="display:block;padding:10px 14px;color:${isTop?'#000':'#fff'};background:${isTop?m.color:'transparent'};border-radius:20px;text-decoration:none;font-weight:${isTop?'800':'600'};font-size:14px;transition:0.2s">${m.icon} ${m.label} ${isTop?'<span style="font-size:10px;background:#000;color:#fff;padding:2px 6px;border-radius:10px;margin-left:5px">Your Interest ♥</span>':''}</a></li>`;
-            }).join('')}
-          </ul>
-          <div id="trtt-ham" style="display:none;color:#fff;font-size:24px;cursor:pointer">☰</div>
+  async function load(){try{if(!CFG) return DEF; const r=await fetch(CFG+"?t="+Date.now(),{cache:"no-store"}); return r.ok?await r.json():DEF;}catch{return DEF;}}
+  load().then(cfg=>{
+    // Hide old menus
+    let s=document.createElement('style'); s.innerHTML=".LinkList,.PageList,#main-menu{display:none !important} #TRTT-MASTER{position:sticky;top:0;z-index:99999} body{background:"+cfg.theme.bg+" !important}"; document.head.appendChild(s);
+    // Menu
+    let root=document.getElementById('TRTT-MASTER'); if(!root){root=document.createElement('div'); root.id='TRTT-MASTER'; document.body.prepend(root);}
+    root.innerHTML=`<div style="background:linear-gradient(90deg,${cfg.theme.golapi},${cfg.theme.piaji},${cfg.theme.kathali});padding:0 15px"><div style="max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px"><b style="color:#fff">TRTT VOYAGE</b><div style="display:flex;gap:6px;flex-wrap:wrap">${cfg.menu.map(m=>`<a href="${m.href}" style="background:#fff;color:${cfg.theme.golapi};padding:8px 14px;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px">${m.icon||''} ${m.label}</a>`).join('')}</div></div></div>`;
+    // ROKSANA VAULT - Loader থেকেই বানাবে - এটাই ChatGPT চায়!
+    let vaultRoot=document.getElementById('ROKSANA-VAULT-LOADER'); if(!vaultRoot){vaultRoot=document.createElement('div'); vaultRoot.id='ROKSANA-VAULT-LOADER'; root.after(vaultRoot);}
+    const rv=cfg.roksanaVault||DEF.roksanaVault;
+    vaultRoot.innerHTML=`
+      <div id="ROKSANA-FINAL" style="position:relative;background:rgba(0,0,0,0.9);backdrop-filter:blur(20px);border:3px solid transparent;border-radius:20px;padding:0;overflow:hidden;margin:12px;box-shadow:0 0 40px rgba(255,46,99,0.3);background-clip:padding-box">
+        <div style="position:absolute;inset:-3px;border-radius:20px;background:linear-gradient(45deg,${cfg.theme.golapi},${cfg.theme.kathali},${cfg.theme.piaji},${cfg.theme.golapi});z-index:-1;animation:roksanaRotate 5s linear infinite"></div>
+        <div style="background:linear-gradient(90deg,rgba(255,46,99,0.15),rgba(255,195,0,0.15),rgba(175,122,197,0.15));padding:6px;overflow:hidden"><marquee style="color:#fff;font-weight:900;font-size:10px;letter-spacing:1px">${rv.ticker||rv.name}</marquee></div>
+        <div style="padding:18px;text-align:center">
+          <div style="font-size:8px;letter-spacing:3px;color:#FFC300;font-weight:900">BOU'S CHOICE • FINAL VAULT</div>
+          <div style="margin:10px 0"><span style="color:#fff;font-weight:900;font-size:20px;letter-spacing:1px">${rv.name||'ROKSANA NILLA'}</span></div>
+          <div style="color:#AF7AC5;font-weight:900;font-size:11px;letter-spacing:2px">FINAL VAULT • MILLION DOLLAR • TRILLION FUTURE</div>
+          <div style="display:flex;justify-content:center;gap:6px;margin:14px 0"><span style="width:14px;height:14px;border-radius:50%;background:${cfg.theme.golapi};display:inline-block;box-shadow:0 0 10px ${cfg.theme.golapi}"></span><span style="width:14px;height:14px;border-radius:50%;background:${cfg.theme.kathali};display:inline-block;box-shadow:0 0 10px ${cfg.theme.kathali}"></span><span style="width:14px;height:14px;border-radius:50%;background:${cfg.theme.piaji};display:inline-block;box-shadow:0 0 10px ${cfg.theme.piaji}"></span></div>
+          <div style="color:#0ff;font-family:monospace;font-size:10px;min-height:14px" id="roksana-thought">Thinking for Roksana...</div>
+          <div style="display:flex;justify-content:center;gap:5px;margin-top:12px;flex-wrap:wrap">
+            <span style="background:rgba(255,46,99,0.15);color:${cfg.theme.golapi};border:1px solid ${cfg.theme.golapi};border-radius:20px;padding:5px 10px;font-size:10px">Golapi LIVE <span id="r-time">--:--:--</span></span>
+            <span style="background:rgba(255,195,0,0.15);color:${cfg.theme.kathali};border:1px solid ${cfg.theme.kathali};border-radius:20px;padding:5px 10px;font-size:10px">Kathali SECURED</span>
+            <span style="background:rgba(175,122,197,0.15);color:${cfg.theme.piaji};border:1px solid ${cfg.theme.piaji};border-radius:20px;padding:5px 10px;font-size:10px">Piaji FUTURE</span>
+          </div>
+          <div style="margin-top:12px;background:rgba(255,255,255,0.05);border-radius:12px;padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div><div style="font-size:8px;color:#888">SANLURI HQ</div><div style="font-size:11px;color:#fff" id="r-sanluri">Sanluri LIVE</div></div>
+            <div><div style="font-size:8px;color:#888">MARKER 787950</div><div style="font-size:11px;color:#FFD700" id="r-git">GitHub LIVE</div></div>
+          </div>
+          <div style="margin-top:10px;color:#666;font-size:8px">Designed with Love - Roksana Nilla's Choice - Golapi Kathali Piaji - Traveler Friendly - No Hack Text Outside - Stealth Inside</div>
         </div>
       </div>
-      <style>
-        @media(max-width:900px){
-          #trtt-ham{display:block !important}
-          #trtt-ul{display:none !important;flex-direction:column;position:absolute;left:0;top:54px;width:100%;background:linear-gradient(180deg, ${cfg.theme.golapi}, ${cfg.theme.piaji});padding:10px}
-          #trtt-final-root.open #trtt-ul{display:flex !important}
-        }
-      </style>
+      <style>@keyframes roksanaRotate{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}</style>
     `;
-
-    // 1-CLICK LOGIC - একবার ক্লিক করলেই মেনু বদলাবে
-    root.querySelectorAll('a[data-id]').forEach(a=>{
-      a.addEventListener('click', ()=>{
-        saveScore(a.dataset.id);
-        // পরের বার রিফ্রেশে আগে আসবে - কেউ বুঝবে না, এটাই গোপন ট্রিকস
-      });
-    });
-    const ham=document.getElementById('trtt-ham');
-    if(ham) ham.onclick=()=>root.classList.toggle('open');
-
-    console.log('TRTT Blog Control: GitHub Active - 1 Click Mode');
-  }
-
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
+    // LIVE LOGIC
+    function upd(){const n=new Date();const t=n.toLocaleTimeString('en-GB',{timeZone:'Europe/Rome',hour12:false}); const a=document.getElementById('r-time'), b=document.getElementById('r-sanluri'); if(a) a.textContent=t; if(b) b.textContent='Sanluri '+t;} setInterval(upd,1000); upd();
+    const thoughts=['Roksana Thinking: Golapi means Love...','Roksana Thinking: Kathali means Gold...','Roksana Thinking: Piaji means Future...','Roksana Thinking: This Vault is for You...','Roksana Thinking: Beyond Google & GitHub - Our Future...','Roksana Thinking: Marker 787950 is Our Home...']; let ti=0; const th=document.getElementById('roksana-thought'); setInterval(()=>{if(th){th.textContent=thoughts[ti%thoughts.length]; ti++;}},2500);
+    fetch('https://api.github.com/repos/Cocvghuj/Cocvghuj-trtt-news-bot/commits?per_page=1').then(r=>r.json()).then(d=>{if(d[0]){const ce=document.getElementById('r-git'); if(ce) ce.textContent=d[0].sha.substring(0,7)+' LIVE';}});
+    console.log('TRTT: ROKSANA VAULT LOADER ACTIVE - 1-CLICK FIX');
+  });
 })();
