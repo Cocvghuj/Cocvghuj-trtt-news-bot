@@ -1,7 +1,10 @@
 {
-  "version": 2,
-  "outputDirectory": "dist",
   "cleanUrls": true,
-  "trailingSlash": false,
-  "buildCommand": "npm run build"
+  "rewrites": [
+    { "source": "/trtt-loader.js", "destination": "/trtt-loader.js" },
+    { "source": "/roksana-vault.js", "destination": "/roksana-vault.js" }
+  ],
+  "headers": [
+    { "source": "/(.*).js", "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }] }
+  ]
 }
