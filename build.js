@@ -15,7 +15,6 @@ const PUBLIC_EXTENSIONS = new Set([
 const PUBLIC_JSON_FILES = new Set([
   'affiliate-services.json',
   'manifest.json',
-  'trtt-blog-menu.json',
   'blog-control.json'
 ]);
 const PUBLIC_TEXT_FILES = new Set([
