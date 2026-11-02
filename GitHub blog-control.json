@@ -1,0 +1,14 @@
+{
+  "theme": {"golapi": "#ff2e63", "kathali": "#FFC300", "piaji": "#AF7AC5", "bg": "#fffafb"},
+  "menu": [
+    {"id": "home", "label": "Home", "href": "/", "icon": "🏠"},
+    {"id": "esim", "label": "eSIM Future", "href": "/search/label/eSIM", "icon": "📱"},
+    {"id": "flights", "label": "Flights AI", "href": "/search/label/Flights", "icon": "✈️"},
+    {"id": "future", "label": "Future Lab", "href": "/p/future.html", "icon": "🔮"}
+  ],
+  "futureVault": {
+    "mode": "living",
+    "ticker": "FUTURE BEYOND GOOGLE & GITHUB | TRTT LIVING VAULT | Marker 787950 | Sanluri Time: LIVE | AI Generating..."
+  },
+  "customCSS": ""
+}
