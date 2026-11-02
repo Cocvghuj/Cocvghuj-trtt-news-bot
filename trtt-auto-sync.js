@@ -1,19 +1,15 @@
 /**
  * TRTT Enterprise Engine v19.0 (GOOGLE SEARCH RICH GRAPH & INTERNATIONAL LEGAL DATA)
  * 
- * 1. GOOGLE SCHEMA.ORG KNOWLEDGE GRAPH (Rich Snippets, Star Ratings, Organization, FAQ, TravelGuide):
- *    - Injects dynamic <script type="application/ld+json"> into document head.
- *    - Connects TRTT News 24 BD & FlightScoutPro with bidirectional entity linking.
- *    - FAQPage Schema: Directly feeds Google AI Overviews and Google Search Dropdowns.
- *    - BreadcrumbList & Organization Schemas for instant sitelinks in search results.
+ * 1. Structured data: publisher organization entity only.
+ *    - Injects a JSON-LD NewsMediaOrganization entity into document head.
  * 2. INTERNATIONAL LEGAL & REGULATORY COMPLIANCE:
  *    - EU GDPR / Italian Garante Privacy compliance.
  *    - FTC & Google Webmaster Affiliate Transparency (Marker 787950 declaration).
  *    - rel="sponsored nofollow noopener" on all commercial links.
  * 3. GOOGLE MATERIAL M3 + GITHUB DARK PRIMA DESIGN:
  *    - Glassmorphic top bar, M3 action pills, 3D Conic Gradient card.
- * 4. REAL-TIME GOOGLE IP & COUNTRY SYNC:
- *    - subid = 'trtt_lock_' + country_code | Kiwitaxi tIZcbMOB FIXED.
+ * 4. Affiliate attribution uses a non-personal default country code; no visitor IP lookup.
  */
 (function() {
   const CONFIG = {
@@ -68,124 +64,9 @@
             "areaServed": ["IT", "EU", "BD", "QA"],
             "availableLanguage": ["English", "Bengali", "Italian"]
           },
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "Via Carlo Felice ARST 08:17",
-            "addressLocality": "Sanluri",
-            "addressRegion": "Sardinia",
-            "postalCode": "09025",
-            "addressCountry": "IT"
-          }
-        },
-
-        // Connected Partner Entity: FlightScoutPro
-        {
-          "@type": "TravelAgency",
-          "@id": CONFIG.FLIGHTSCOUT_URL + "/#agency",
-          "name": "FlightScoutPro Intelligence Bureau",
-          "url": CONFIG.FLIGHTSCOUT_URL,
-          "parentOrganization": {
-            "@id": CONFIG.BLOG_URL + "/#organization"
-          },
           "description": "European passenger rights, flight compensation under EC 261, and verified low-fare routes."
         },
 
-        // Core Travel Guide Article with High E-E-A-T
-        {
-          "@type": "TravelGuide",
-          "@id": CONFIG.GUIDE_URL + "/#guide",
-          "headline": "European Flight Logistics, Passenger Rights (EC 261 600€) & 5G Connectivity Masterguide",
-          "description": "Comprehensive practical transit intelligence for European and Gulf corridors. Covers Aviasales, AirHelp 600€ claims, Airalo 5G eSIMs, and Kiwitaxi chauffeur transfers.",
-          "image": [
-            CONFIG.HERO_IMAGE,
-            "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhGIViEQzbsyK0KHWtYnl1bHbRrSKjX8XbeHyFU5kHlX4BSbwjV2mcy-K7bj_NuhPDzDojIZNzU5nzA1aVukNypAcOmzauPyTPSYYg72wWw8jmnegjxVCLBagh3-uyl7eyQK6oy9nnbWEMcVloAd88diVqPO8uw-zl7g7ey5HWzeLJ5KujfrxleCR5Hjvs/w600-rw/Photos.webp"
-          ],
-          "datePublished": "2026-05-11T08:17:00+02:00",
-          "dateModified": new Date().toISOString(),
-          "author": {
-            "@type": "Person",
-            "name": "Engr Abu Taher",
-            "jobTitle": "Logistics Operations & Passenger Rights Advocate",
-            "email": "engrtaher2017@gmail.com",
-            "worksFor": {
-              "@id": CONFIG.BLOG_URL + "/#organization"
-            }
-          },
-          "publisher": {
-            "@id": CONFIG.BLOG_URL + "/#organization"
-          },
-          "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.9",
-            "reviewCount": "1590",
-            "bestRating": "5",
-            "worstRating": "1"
-          }
-        },
-
-        // Google Search Rich Snippet FAQPage (Shows Dropdowns in Search Results)
-        {
-          "@type": "FAQPage",
-          "@id": CONFIG.BLOG_URL + "/#faq",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "How much cash can I claim for a delayed flight in Europe?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Under European Regulation EC 261/2004, passengers on flights delayed by 3 hours or more arriving at or departing from an EU airport are legally entitled to compensation ranging from 250€ to 600€ in direct cash."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "What is the best 5G eSIM for traveling across Europe?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "The top-rated electronic SIM providers are Airalo (Eurolink 39 countries), Saily by Nord Security (high privacy), and Yesim (unlimited data packages), all activated instantly via QR code without physical SIM cards."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "How does Kiwitaxi guarantee fixed airport transfers?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Kiwitaxi confirms the ride price in advance with no meter surprises or night surcharges, including 60 minutes of complimentary waiting time even if your flight is delayed."
-              }
-            }
-          ]
-        },
-
-        // Sitelinks Breadcrumbs for Google Search Engine
-        {
-          "@type": "BreadcrumbList",
-          "@id": CONFIG.BLOG_URL + "/#breadcrumbs",
-          "itemListElement": [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Home",
-              "item": CONFIG.BLOG_URL
-            },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "Europe Masterguide",
-              "item": CONFIG.GUIDE_URL
-            },
-            {
-              "@type": "ListItem",
-              "position": 3,
-              "name": "SuperStore Hub",
-              "item": CONFIG.SUPERSTORE_URL
-            },
-            {
-              "@type": "ListItem",
-              "position": 4,
-              "name": "FlightScoutPro",
-              "item": CONFIG.FLIGHTSCOUT_URL
-            }
-          ]
-        }
       ]
     };
 
@@ -293,25 +174,6 @@
     document.head.appendChild(style);
   }
 
-  // Real-Time IP Country Synchronization
-  function syncVisitorCountry() {
-    try {
-      fetch('https://ipapi.co/json/')
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.country_code) {
-            userCountry = data.country_code.toLowerCase();
-            const badge = document.getElementById('trtt-ip-country-badge');
-            if (badge) {
-              badge.textContent = 'IP: ' + userCountry.toUpperCase() + ' (Auto-Tracked)';
-            }
-            enforceGoogleCompliantLinks();
-          }
-        })
-        .catch(() => {});
-    } catch(e) {}
-  }
-
   // URL Tracker with Google-mandated tags
   function getTrackedUrl(rawUrl, category) {
     if (!rawUrl) return rawUrl;
@@ -337,7 +199,7 @@
       if (!img.hasAttribute('loading')) img.setAttribute('loading', 'lazy');
       if (!img.hasAttribute('decoding')) img.setAttribute('decoding', 'async');
       if (!img.hasAttribute('alt') || img.getAttribute('alt').trim() === '') {
-        img.setAttribute('alt', 'TRTT Verified Europe Travel & Logistics Guide');
+        img.setAttribute('alt', 'Travel information image');
       }
     });
 
@@ -374,7 +236,7 @@
     });
   }
 
-  // GDPR Cookie Banner
+  // Cookie notice; does not claim legal compliance or certify consent.
   function renderGDPRBanner() {
     if (localStorage.getItem('trtt_cookie_consent_esim') === 'accepted') return;
     if (document.getElementById('trtt-gdpr-banner')) return;
@@ -390,8 +252,8 @@
     `;
     banner.innerHTML = `
       <div style="max-width: 780px; line-height: 1.5;">
-        <strong>🍪 Google Search Transparency &amp; Cookie Notice:</strong>
-        TRTT News 24 BD participates in verified travel affiliate programs (Aviasales, Airalo, Kiwitaxi, Amazon) under <strong>Marker ${CONFIG.MARKER}</strong>. 100% Compliant with EU GDPR &amp; Italian Privacy Laws.
+        <strong>🍪 Affiliate &amp; Cookie Notice:</strong>
+        TRTT News 24 BD participates in verified travel affiliate programs (Aviasales, Airalo, Kiwitaxi, Amazon) under <strong>Marker ${CONFIG.MARKER}</strong>. Please review our Privacy Policy for details.
       </div>
       <div style="display:flex; gap:8px; align-items:center;">
         <a href="https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/privacy.html" target="_blank" style="color: #93c5fd; text-decoration: underline; font-size: 11px;">Privacy Policy</a>
@@ -451,7 +313,7 @@
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:20px; border-bottom:1px solid #30363d; padding-bottom:14px;">
         <div style="display:flex; align-items:center; gap:8px;">
           <span style="background:#FFD700; color:#000000; font-size:10.5px; font-weight:900; padding:3px 10px; border-radius:6px; text-transform:uppercase; font-family:'JetBrains Mono', monospace;">
-            GOOGLE KNOWLEDGE GRAPH ACTIVE
+            TRTT PUBLISHER INFORMATION
           </span>
           <span style="background:#21262d; border:1px solid #30363d; color:#e6edf3; font-size:11px; font-weight:700; padding:3px 10px; border-radius:6px;">
             FlightScoutPro × TRTT Bureau
@@ -459,10 +321,9 @@
         </div>
         <div style="display:flex; gap:8px; font-family:'JetBrains Mono', monospace; font-size:11px;">
           <span id="trtt-ip-country-badge" style="background:#010409; color:#00D26A; padding:3px 9px; border-radius:6px; border:1px solid #30363d;">
-            IP: IT (Auto-Tracked)
+            Affiliate region: IT
           </span>
           <span style="background:#010409; color:#58a6ff; padding:3px 9px; border-radius:6px; border:1px solid #30363d;">
-            Sanluri 39.5613,8.6332
           </span>
         </div>
       </div>
@@ -521,14 +382,14 @@
           <div style="width:100%; max-width:320px;">
             <div class="roksana-img-card">
               <div class="upvote-badge">
-                <span>▲ 24.5k</span> <span>Upvoted</span>
+                <span>TRTT FEATURED</span>
               </div>
               <a href="${CONFIG.GUIDE_URL}">
                 <img src="${CONFIG.HERO_IMAGE}" alt="European Airline Flight Transit and Airport Terminal High Resolution Photography" loading="lazy" decoding="async" />
               </a>
               <div style="position:absolute; bottom:4px; left:4px; right:4px; background:linear-gradient(to top, rgba(13,17,23,0.95), transparent); padding:12px 14px; border-radius:0 0 17px 17px; color:#ffffff; font-size:11px;">
-                <span style="color:#FFD700; font-weight:800;">Google Schema Active • Star Rating 4.9/5</span><br>
-                <span style="color:#8b949e; font-size:10px;">Via Carlo Felice ARST 08:17 Sanluri</span>
+                <span style="color:#FFD700; font-weight:800;">Travel guide and travel resources</span><br>
+                <span style="color:#8b949e; font-size:10px;">TRTT VoyageHub</span>
               </div>
             </div>
           </div>
@@ -541,7 +402,7 @@
         <span>🔒 Travelpayouts Marker 787950 Locked</span>
         <span>Kiwitaxi tIZcbMOB Fixed</span>
         <span>Amazon 4shg6Hn Verified</span>
-        <span style="color:#00D26A;">Google Schema Graph 100% Valid ✓</span>
+        <span style="color:#00D26A;">Structured data enabled</span>
       </div>
     `;
 
@@ -557,13 +418,10 @@
     enforceGoogleCompliantLinks();
   }
 
-  syncVisitorCountry();
-
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', loop);
   } else {
     loop();
   }
 
-  setInterval(loop, 400);
 })();
