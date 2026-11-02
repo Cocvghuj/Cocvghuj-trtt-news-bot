@@ -1,0 +1,14 @@
+{
+  "theme": {"golapi": "#ff2e63", "kathali": "#FFC300", "piaji": "#AF7AC5", "bg": "#fffafb"},
+  "menu": [
+    {"id": "home", "label": "Home", "href": "/", "icon": "🏠"},
+    {"id": "esim", "label": "eSIM", "href": "/search/label/eSIM", "icon": "📱"},
+    {"id": "flights", "label": "Flights", "href": "/search/label/Flights", "icon": "✈️"},
+    {"id": "hotels", "label": "Hotels", "href": "/search/label/Hotels", "icon": "🏨"}
+  ],
+  "roksanaVault": {
+    "name": "Roksana Nilla",
+    "colors": "Golapi #ff2e63, Kathali #FFC300, Piaji #AF7AC5 - Bou's Choice",
+    "ticker": "Roksana Nilla's Final Vault | Bou's Choice Colors | Golapi Kathali Piaji | Trillion Dollar Future | Marker 787950"
+  }
+}
