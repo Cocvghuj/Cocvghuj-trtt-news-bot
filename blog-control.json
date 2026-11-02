@@ -1,11 +1,5 @@
 {
-  "theme": {
-    "golapi": "#ff2e63",
-    "kathali": "#FFC300",
-    "piaji": "#AF7AC5",
-    "bg": "#fffafb",
-    "text": "#222222"
-  },
+  "theme": {"golapi": "#ff2e63", "kathali": "#FFC300", "piaji": "#AF7AC5", "bg": "#fffafb", "text": "#222"},
   "menu": [
     {"id": "home", "label": "Home", "href": "/", "icon": "🏠"},
     {"id": "esim", "label": "eSIM", "href": "/search/label/eSIM", "icon": "📱"},
@@ -13,14 +7,15 @@
     {"id": "hotels", "label": "Hotels", "href": "/search/label/Hotels", "icon": "🏨"},
     {"id": "contact", "label": "Contact", "href": "/p/contact.html", "icon": "✉️"}
   ],
+  "roksanaVault": {
+    "name": "ROKSANA NILLA",
+    "colors": "Golapi #ff2e63, Kathali #FFC300, Piaji #AF7AC5 - Bou's Choice",
+    "ticker": "ROKSANA NILLA'S FINAL VAULT | Bou's Choice - Golapi Kathali Piaji | Trillion Dollar Future | Marker 787950 | Sanluri Italy",
+    "mode": "travelerFriendly",
+    "hackText": "stealth"
+  },
   "megaVault": {
-    "flightTicker": "Cagliari → Rome €29 | Italy → BD €450 | eSIM Active | Schengen Insurance €15 | Marker 787950 LIVE",
-    "satelliteMap": true,
-    "voiceVault": true,
-    "blockchainHash": true,
-    "nightMode": true,
-    "faceScan": true,
-    "selfDestruct": true
+    "flightTicker": "Cagliari → Rome €29 | Italy → BD €450 | eSIM Active | Marker 787950 LIVE"
   },
   "customCSS": ""
 }
