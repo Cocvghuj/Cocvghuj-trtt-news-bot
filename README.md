@@ -20,7 +20,7 @@ This repository is the source of truth for the GitHub-managed parts of TRTT News
 | --- | --- | --- |
 | Posts | `posts/*.md` → Blogger Posts via GitHub Actions | Supported files are published live; edits sync; deleting a managed source file deletes its managed Blogger post |
 | Pages | `pages/trttnews24bd/*.html` → Blogger Pages via GitHub Actions | Same managed-source behavior as posts |
-| Menu | `trtt-blog-menu.json` → Vercel → Blogger HTML/JavaScript gadget | The gadget must be installed once in Blogger Layout |
+| Menu | `blog-control.json` → Vercel → Blogger HTML/JavaScript gadget | The gadget must be installed once in Blogger Layout |
 | Theme styling | `trtt-theme.css` → Vercel → Blogger gadget stylesheet | CSS styling is controlled; Blogger Theme XML is not |
 | Comments | GitHub Actions workflow **Blogger Admin and Comments** | Read/list/approve/mark-spam/delete selected comments; moderation is manual |
 | Blog audit | GitHub Actions workflow **Blogger Admin and Comments** | Read-only blog, post, page, comment and page-view report |
