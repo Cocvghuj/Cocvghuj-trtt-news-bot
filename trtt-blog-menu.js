@@ -114,6 +114,7 @@
     bar.appendChild(list);
     menu.appendChild(bar);
     document.body.insertBefore(menu, document.body.firstChild);
+    loadRoksanaVault();
     hideLegacyLeftMenu();
 
     function closeMenu() {
@@ -140,6 +141,18 @@
       var observer = new MutationObserver(hideLegacyLeftMenu);
       observer.observe(document.body, { childList: true, subtree: true });
     }
+  }
+
+  function loadRoksanaVault() {
+    if (document.getElementById("roksana-vault-loader")) return;
+    var script = document.createElement("script");
+    script.id = "roksana-vault-loader";
+    script.async = true;
+    script.src = new URL("roksana-vault.js", scriptUrl).href;
+    script.onerror = function () {
+      if (window.console && console.warn) console.warn("Roksana Vault could not be loaded; check public asset access.");
+    };
+    document.head.appendChild(script);
   }
 
   function start() {
