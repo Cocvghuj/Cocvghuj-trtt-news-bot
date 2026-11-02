@@ -1,4 +1,6 @@
 import json
+import os
+import tempfile
 import unittest
 from unittest import mock
 
@@ -231,6 +233,32 @@ class DraftHistoryTests(unittest.TestCase):
         self.assertTrue(recorded)
         save.assert_called_once_with(main.topic_history_key("A topic"))
 
+    def test_save_history_is_atomic_and_idempotent(self):
+        with tempfile.TemporaryDirectory() as directory:
+            history_path = os.path.join(directory, "drafted_history.txt")
+            with open(history_path, "w", encoding="utf-8") as handle:
+                handle.write("legacy-entry\n")
+            with mock.patch.object(main, "HISTORY_FILE", history_path):
+                self.assertTrue(main.save_history("topic-one"))
+                self.assertFalse(main.save_history("topic-one"))
+            with open(history_path, "r", encoding="utf-8") as handle:
+                self.assertEqual(handle.read(), "legacy-entry\ntopic-one\n")
+
+    def test_history_replace_failure_preserves_original_file_and_cleans_temp(self):
+        with tempfile.TemporaryDirectory() as directory:
+            history_path = os.path.join(directory, "drafted_history.txt")
+            with open(history_path, "w", encoding="utf-8") as handle:
+                handle.write("legacy-entry\n")
+            with (
+                mock.patch.object(main, "HISTORY_FILE", history_path),
+                mock.patch.object(main.os, "replace", side_effect=OSError("disk full")),
+            ):
+                with self.assertRaisesRegex(OSError, "disk full"):
+                    main.save_history("topic-one")
+            with open(history_path, "r", encoding="utf-8") as handle:
+                self.assertEqual(handle.read(), "legacy-entry\n")
+            self.assertEqual(os.listdir(directory), ["drafted_history.txt"])
+
     def test_existing_duplicate_counts_as_confirmed_blog_coverage(self):
         outcomes = [
             {"blog_name": "Main", "post_id": "123", "status": "created"},
@@ -351,6 +379,32 @@ class DuplicatePaginationTests(unittest.TestCase):
             self.posts_api = DuplicatePaginationTests.FakePosts(responses)
         def posts(self):
             return self.posts_api
+
+    def test_topic_marker_matches_same_topic_after_title_and_body_change(self):
+        topic_key = main.topic_history_key("The same topic")
+        marker = main.topic_draft_marker(topic_key)
+        service = self.FakeService([
+            {"items": [{"id": "marked-draft", "title": "Old AI title", "content": "<article>old body</article>" + marker}]},
+        ])
+        duplicate = main.find_duplicate_post(
+            service,
+            "blog-1",
+            "New AI title",
+            "completely regenerated body",
+            topic_key=topic_key,
+        )
+        self.assertEqual(duplicate["id"], "marked-draft")
+
+    def test_topic_marker_does_not_match_a_different_topic(self):
+        stored_key = main.topic_history_key("First topic")
+        other_key = main.topic_history_key("Second topic")
+        service = self.FakeService([
+            {"items": [{"id": "marked-draft", "title": "Old AI title", "content": main.topic_draft_marker(stored_key)}]},
+        ])
+        duplicate = main.find_duplicate_post(
+            service, "blog-1", "New AI title", "different body", topic_key=other_key
+        )
+        self.assertIsNone(duplicate)
 
     def test_duplicate_found_on_second_page(self):
         service = self.FakeService([
@@ -479,6 +533,98 @@ class DuplicatePaginationTests(unittest.TestCase):
             service, "blog-1", "A different headline", plain_body
         )
         self.assertEqual(duplicate["id"], "mixed-body")
+
+
+class DraftRecoveryTests(unittest.TestCase):
+    class FakeRequest:
+        def __init__(self, response):
+            self.response = response
+
+        def execute(self):
+            return self.response
+
+    class FakePosts:
+        def __init__(self):
+            self.items = []
+            self.insert_calls = []
+            self.list_calls = []
+
+        def list(self, **kwargs):
+            self.list_calls.append(kwargs)
+            return DraftRecoveryTests.FakeRequest({"items": list(self.items)})
+
+        def insert(self, blogId, body, isDraft):
+            self.insert_calls.append({"blogId": blogId, "body": body, "isDraft": isDraft})
+            post = {
+                "id": "draft-" + str(len(self.insert_calls)),
+                "title": body["title"],
+                "content": body["content"],
+            }
+            self.items.append(post)
+            return DraftRecoveryTests.FakeRequest(post)
+
+    class FakeService:
+        def __init__(self):
+            self.posts_api = DraftRecoveryTests.FakePosts()
+
+        def posts(self):
+            return self.posts_api
+
+    def test_history_write_failure_reuses_existing_draft_after_regeneration(self):
+        service = self.FakeService()
+        topic = "A topic that must not create a second draft"
+        photo = {"url": "https://example.test/photo.jpg"}
+        meta = {"labels": ["Travel"]}
+        first_article = {"content": "First generated article body"}
+        second_article = {"content": "A completely different regenerated article body"}
+
+        with (
+            mock.patch.object(main, "BLOGGER_CLIENT_ID", "client"),
+            mock.patch.object(main, "BLOGGER_CLIENT_SECRET", "secret"),
+            mock.patch.object(main, "BLOGGER_REFRESH_TOKEN", "refresh"),
+            mock.patch.object(main, "BLOGGER_BLOG_ID", "blog-1"),
+            mock.patch.object(main, "FLIGHTSCOUTPRO_BLOG_ID", None),
+            mock.patch.object(main, "PARTNER_BLOG_IDS", ""),
+            mock.patch.object(main.os.path, "exists", return_value=False),
+            mock.patch.object(main, "Credentials", return_value=object()),
+            mock.patch.object(main, "build", return_value=service),
+            mock.patch.object(main, "get_blog_profile", return_value={"author_location": "Europe"}),
+            mock.patch.object(
+                main,
+                "build_enterprise_html",
+                side_effect=["<article>first version</article>", "<article>second version</article>"],
+            ),
+        ):
+            first_outcomes = main.create_drafts_on_blogs(
+                "First AI title",
+                "<p>Fallback</p>",
+                meta,
+                article_data=first_article,
+                photo=photo,
+                topic=topic,
+            )
+            with mock.patch.object(main, "save_history", side_effect=OSError("disk full")):
+                with self.assertRaisesRegex(OSError, "disk full"):
+                    main.record_topic_after_draft(topic, first_outcomes)
+
+            second_outcomes = main.create_drafts_on_blogs(
+                "Regenerated AI title",
+                "<p>Different fallback</p>",
+                meta,
+                article_data=second_article,
+                photo=photo,
+                topic=topic,
+            )
+
+        self.assertEqual(first_outcomes[0]["status"], "created")
+        self.assertEqual(second_outcomes[0]["status"], "already_exists")
+        self.assertEqual(second_outcomes[0]["post_id"], "draft-1")
+        self.assertEqual(len(service.posts_api.insert_calls), 1)
+        self.assertTrue(service.posts_api.insert_calls[0]["isDraft"])
+        self.assertIn(
+            main.topic_draft_marker(main.topic_history_key(topic)),
+            service.posts_api.items[0]["content"],
+        )
 
 
 class DraftWorkflowFailClosedTests(unittest.TestCase):

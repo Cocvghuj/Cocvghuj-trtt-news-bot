@@ -10,7 +10,9 @@ import json
 import os
 import re
 import difflib
+import hashlib
 import html
+import tempfile
 import unicodedata
 from datetime import datetime
 from typing import List, Dict, Optional
@@ -144,6 +146,25 @@ def topic_history_key(topic: str) -> str:
     return slugify(topic)
 
 
+def topic_draft_marker(topic_key: str) -> str:
+    """Build an invisible, deterministic marker for recovering a draft by topic."""
+    normalized_key = str(topic_key or "").strip()
+    if not normalized_key:
+        raise ValueError("Topic key is required for a draft recovery marker.")
+    digest = hashlib.sha256(normalized_key.encode("utf-8")).hexdigest()
+    return "<!-- trtt-topic-key:" + digest + " -->"
+
+
+def add_topic_draft_marker(content: str, topic_key: Optional[str]) -> str:
+    """Attach the recovery marker to Blogger HTML without changing visible content."""
+    if not topic_key:
+        return content
+    marker = topic_draft_marker(topic_key)
+    if marker in content:
+        return content
+    return content.rstrip() + "\n" + marker + "\n"
+
+
 def select_next_topic(topic_pool: List[dict], history: List[str]) -> dict:
     """Choose the first topic whose stable topic slug is not in history."""
     if not topic_pool:
@@ -154,9 +175,49 @@ def select_next_topic(topic_pool: List[dict], history: List[str]) -> dict:
     return topic_pool[0]
 
 
-def save_history(topic_id: str):
-    with open(HISTORY_FILE, "a", encoding="utf-8") as handle:
-        handle.write(topic_id + "\n")
+def save_history(topic_id: str) -> bool:
+    """Atomically record a topic key once; failed writes leave prior history intact."""
+    normalized_topic_id = str(topic_id).strip()
+    if not normalized_topic_id:
+        raise ValueError("Topic history key must not be empty.")
+
+    existing_entries = []
+    try:
+        with open(HISTORY_FILE, "r", encoding="utf-8") as handle:
+            existing_entries = [line.rstrip("\r\n") for line in handle]
+    except FileNotFoundError:
+        pass
+
+    if normalized_topic_id in {entry.strip() for entry in existing_entries}:
+        return False
+
+    if existing_entries and existing_entries[-1] == "":
+        existing_entries = existing_entries[:-1]
+    updated_history = existing_entries + [normalized_topic_id]
+    contents = "\n".join(updated_history) + "\n"
+    history_directory = os.path.dirname(os.path.abspath(HISTORY_FILE))
+    file_descriptor, temporary_path = tempfile.mkstemp(
+        prefix=".drafted_history.",
+        suffix=".tmp",
+        dir=history_directory,
+    )
+    try:
+        with os.fdopen(file_descriptor, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write(contents)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary_path, HISTORY_FILE)
+    except BaseException:
+        try:
+            os.close(file_descriptor)
+        except OSError:
+            pass
+        try:
+            os.unlink(temporary_path)
+        except FileNotFoundError:
+            pass
+        raise
+    return True
 
 
 def all_blog_targets_accounted_for(blog_outcomes: List[dict]) -> bool:
@@ -976,10 +1037,17 @@ DUPLICATE_CHECK_PAGE_SIZE = 100
 DUPLICATE_CHECK_MAX_PAGES = 10
 
 
-def find_duplicate_post(service, blog_id: str, title: str, content: str):
-    """Return a matching LIVE/DRAFT post, paging safely through recent Blogger posts."""
+def find_duplicate_post(
+    service,
+    blog_id: str,
+    title: str,
+    content: str,
+    topic_key: Optional[str] = None,
+):
+    """Return a matching LIVE/DRAFT post, preferring the stable topic recovery marker."""
     new_title = normalize_article_text(title)
     new_body = normalize_article_text(content)
+    recovery_marker = topic_draft_marker(topic_key) if topic_key else None
     try:
         page_token = None
         for page_number in range(DUPLICATE_CHECK_MAX_PAGES):
@@ -993,8 +1061,11 @@ def find_duplicate_post(service, blog_id: str, title: str, content: str):
                 request_args["pageToken"] = page_token
             response = service.posts().list(**request_args).execute()
             for existing in response.get("items", []):
+                existing_content = str(existing.get("content", ""))
+                if recovery_marker and recovery_marker in existing_content:
+                    return existing
                 old_title = normalize_article_text(existing.get("title", ""))
-                old_body = normalize_article_text(existing.get("content", ""))
+                old_body = normalize_article_text(existing_content)
                 if old_title and old_title == new_title:
                     return existing
                 if len(new_body) >= 500 and len(old_body) >= 500:
@@ -1029,7 +1100,14 @@ def find_duplicate_post(service, blog_id: str, title: str, content: str):
         raise RuntimeError("Duplicate check could not be completed for blog " + str(blog_id) + ": " + str(exc))
 
 
-def create_drafts_on_blogs(title: str, html_content: str, meta: dict, article_data: dict = None, photo: dict = None) -> List[dict]:
+def create_drafts_on_blogs(
+    title: str,
+    html_content: str,
+    meta: dict,
+    article_data: dict = None,
+    photo: dict = None,
+    topic: str = None,
+) -> List[dict]:
     """
     Creates reviewable Blogger drafts on configured blogs; publication requires human approval.
     """
@@ -1064,6 +1142,7 @@ def create_drafts_on_blogs(title: str, html_content: str, meta: dict, article_da
         except Exception as e:
             print(f"partners.json read notice: {e}")
 
+    topic_key = topic_history_key(topic) if topic else None
     created_drafts = []
     if not target_blog_ids:
         raise RuntimeError(
@@ -1083,8 +1162,11 @@ def create_drafts_on_blogs(title: str, html_content: str, meta: dict, article_da
             try:
                 # Check recent LIVE and DRAFT posts before inserting into this blog.
                 duplicate = find_duplicate_post(
-                    service, blog_id, title,
-                    (article_data or {}).get("content", html_content)
+                    service,
+                    blog_id,
+                    title,
+                    (article_data or {}).get("content", html_content),
+                    topic_key=topic_key,
                 )
                 if duplicate:
                     duplicate_id = duplicate.get("id")
@@ -1116,7 +1198,7 @@ def create_drafts_on_blogs(title: str, html_content: str, meta: dict, article_da
 
                 body = {
                     "title": title,
-                    "content": tailored_html,
+                    "content": add_topic_draft_marker(tailored_html, topic_key),
                     "labels": meta["labels"],
                     "location": {"name": blog_profile["author_location"]}
                 }
@@ -1203,7 +1285,8 @@ def main():
         html_content=default_html,
         meta=article_data["meta"],
         article_data=article_data,
-        photo=photo
+        photo=photo,
+        topic=selected_topic_info["topic"],
     )
     
     successful_blog_outcomes = [
