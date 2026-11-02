@@ -16,6 +16,7 @@ import html
 import os
 import re
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -149,7 +150,7 @@ def list_all(resource):
         kwargs = {"blogId": BLOG_ID, "maxResults": 500}
         if token:
             kwargs["pageToken"] = token
-        response = resource.list(**kwargs).execute()
+        response = resource.list(**kwargs).execute(num_retries=7)
         items.extend(response.get("items", []))
         token = response.get("nextPageToken")
         if not token:
@@ -193,18 +194,21 @@ def sync_resource(resource, kind: str, desired: dict[str, dict[str, Any]]) -> tu
             if kind == "post":
                 result = resource.update(
                     blogId=BLOG_ID, postId=old["id"], body=body, publish=True
-                ).execute()
+                ).execute(num_retries=7)
+                time.sleep(1.25)
             else:
                 result = resource.update(
                     blogId=BLOG_ID, pageId=old["id"], body=body
-                ).execute()
+                ).execute(num_retries=7)
+                time.sleep(1.25)
             updated += 1
             print(f"UPDATED {source_path}: Blogger ID {result.get('id', old['id'])}")
         else:
             if kind == "post":
                 result = resource.insert(
                     blogId=BLOG_ID, body=body, isDraft=False
-                ).execute()
+                ).execute(num_retries=7)
+                time.sleep(1.25)
             else:
                 result = resource.insert(
                     blogId=BLOG_ID, body=body, isDraft=False
@@ -216,9 +220,11 @@ def sync_resource(resource, kind: str, desired: dict[str, dict[str, Any]]) -> tu
     for source_path, old in by_source.items():
         if source_path not in desired:
             if kind == "post":
-                resource.delete(blogId=BLOG_ID, postId=old["id"]).execute()
+                resource.delete(blogId=BLOG_ID, postId=old["id"]).execute(num_retries=7)
+                time.sleep(1.25)
             else:
-                resource.delete(blogId=BLOG_ID, pageId=old["id"]).execute()
+                resource.delete(blogId=BLOG_ID, pageId=old["id"]).execute(num_retries=7)
+                time.sleep(1.25)
             deleted += 1
             print(f"DELETED Blogger-managed {kind}: {source_path} (source file removed)")
 
@@ -246,7 +252,7 @@ def main() -> int:
     records = collect_sources()
     print(f"GitHub source files discovered: {len(records)}")
     service = make_service()
-    blog = service.blogs().get(blogId=BLOG_ID).execute()
+    blog = service.blogs().get(blogId=BLOG_ID).execute(num_retries=7)
     print(f"Connected Blogger blog: {blog.get('name')} ({blog.get('url')})")
 
     post_counts = sync_resource(service.posts(), "post", records)
