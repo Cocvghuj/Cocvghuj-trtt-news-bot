@@ -4,6 +4,8 @@
   var ROOT_ID = "RoksanaFinalVault";
   var STYLE_ID = "roksana-vault-styles";
   var TIMER_KEY = "__roksanaVaultTimer";
+  var COLOR_TIMER_KEY = "__roksanaVaultColorTimer";
+  var colorStep = 0;
   var OBSERVER_KEY = "__roksanaVaultObserver";
   var COLORS = [
     "#FF2E63", "#FFC300", "#AF7AC5", "#E8A0A8",
@@ -151,6 +153,14 @@
     return true;
   }
 
+  function cycleColors() {
+    var cards = document.querySelectorAll("#" + ROOT_ID + " .rv-card");
+    cards.forEach(function (card, index) {
+      card.style.setProperty("--rv-color", COLORS[(index + colorStep) % COLORS.length]);
+    });
+    colorStep = (colorStep + 1) % COLORS.length;
+  }
+
   function updateClock() {
     var clock = document.getElementById("rv-clock");
     if (!clock) return;
@@ -167,6 +177,9 @@
     if (window[TIMER_KEY]) window.clearInterval(window[TIMER_KEY]);
     updateClock();
     window[TIMER_KEY] = window.setInterval(updateClock, 1000);
+    if (window[COLOR_TIMER_KEY]) window.clearInterval(window[COLOR_TIMER_KEY]);
+    cycleColors();
+    window[COLOR_TIMER_KEY] = window.setInterval(cycleColors, 2800);
 
     if (window[OBSERVER_KEY]) window[OBSERVER_KEY].disconnect();
     if (window.MutationObserver) {
