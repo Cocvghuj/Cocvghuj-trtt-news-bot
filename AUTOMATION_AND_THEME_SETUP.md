@@ -15,7 +15,7 @@
 - **TRTT NEWS 24 BD (`trttnews24bd.blogspot.com`):**
   - **মালিক/প্রধান সম্পাদক:** Abu Taher (আবু তাহের)
   - **ইমেইল:** `engrtaher2017@gmail.com`
-  - **ঠিকানা:** Via Carlo Felice, Sanluri, South Sardinia, Italy / Milan, Italy
+  - **অবস্থান:** Italy
   - **উইজেট:** VoyageHub Super App (21 Tools), ট্রাভেল অ্যান্ড লজিস্টিকস পার্টনার স্ট্রিপ, ভেরিফাইড অথর কার্ড।
 
 ---
