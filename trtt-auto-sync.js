@@ -1,10 +1,9 @@
 /**
  * TRTT Enterprise Engine v19.0 (GOOGLE SEARCH RICH GRAPH & INTERNATIONAL LEGAL DATA)
  * 
- * 1. GOOGLE SCHEMA.ORG KNOWLEDGE GRAPH (Rich Snippets, Star Ratings, Organization, FAQ, TravelGuide):
+ * 1. Structured data: organization and navigation entities only; no fabricated reviews or page-wide FAQ.
  *    - Injects dynamic <script type="application/ld+json"> into document head.
  *    - Connects TRTT News 24 BD & FlightScoutPro with bidirectional entity linking.
- *    - FAQPage Schema: Directly feeds Google AI Overviews and Google Search Dropdowns.
  *    - BreadcrumbList & Organization Schemas for instant sitelinks in search results.
  * 2. INTERNATIONAL LEGAL & REGULATORY COMPLIANCE:
  *    - EU GDPR / Italian Garante Privacy compliance.
@@ -68,25 +67,6 @@
             "areaServed": ["IT", "EU", "BD", "QA"],
             "availableLanguage": ["English", "Bengali", "Italian"]
           },
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "Via Carlo Felice ARST 08:17",
-            "addressLocality": "Sanluri",
-            "addressRegion": "Sardinia",
-            "postalCode": "09025",
-            "addressCountry": "IT"
-          }
-        },
-
-        // Connected Partner Entity: FlightScoutPro
-        {
-          "@type": "TravelAgency",
-          "@id": CONFIG.FLIGHTSCOUT_URL + "/#agency",
-          "name": "FlightScoutPro Intelligence Bureau",
-          "url": CONFIG.FLIGHTSCOUT_URL,
-          "parentOrganization": {
-            "@id": CONFIG.BLOG_URL + "/#organization"
-          },
           "description": "European passenger rights, flight compensation under EC 261, and verified low-fare routes."
         },
 
@@ -100,8 +80,6 @@
             CONFIG.HERO_IMAGE,
             "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhGIViEQzbsyK0KHWtYnl1bHbRrSKjX8XbeHyFU5kHlX4BSbwjV2mcy-K7bj_NuhPDzDojIZNzU5nzA1aVukNypAcOmzauPyTPSYYg72wWw8jmnegjxVCLBagh3-uyl7eyQK6oy9nnbWEMcVloAd88diVqPO8uw-zl7g7ey5HWzeLJ5KujfrxleCR5Hjvs/w600-rw/Photos.webp"
           ],
-          "datePublished": "2026-05-11T08:17:00+02:00",
-          "dateModified": new Date().toISOString(),
           "author": {
             "@type": "Person",
             "name": "Engr Abu Taher",
@@ -114,47 +92,9 @@
           "publisher": {
             "@id": CONFIG.BLOG_URL + "/#organization"
           },
-          "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.9",
-            "reviewCount": "1590",
-            "bestRating": "5",
-            "worstRating": "1"
-          }
         },
 
         // Google Search Rich Snippet FAQPage (Shows Dropdowns in Search Results)
-        {
-          "@type": "FAQPage",
-          "@id": CONFIG.BLOG_URL + "/#faq",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "How much cash can I claim for a delayed flight in Europe?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Under European Regulation EC 261/2004, passengers on flights delayed by 3 hours or more arriving at or departing from an EU airport are legally entitled to compensation ranging from 250€ to 600€ in direct cash."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "What is the best 5G eSIM for traveling across Europe?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "The top-rated electronic SIM providers are Airalo (Eurolink 39 countries), Saily by Nord Security (high privacy), and Yesim (unlimited data packages), all activated instantly via QR code without physical SIM cards."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "How does Kiwitaxi guarantee fixed airport transfers?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Kiwitaxi confirms the ride price in advance with no meter surprises or night surcharges, including 60 minutes of complimentary waiting time even if your flight is delayed."
-              }
-            }
-          ]
-        },
-
         // Sitelinks Breadcrumbs for Google Search Engine
         {
           "@type": "BreadcrumbList",
@@ -462,7 +402,6 @@
             IP: IT (Auto-Tracked)
           </span>
           <span style="background:#010409; color:#58a6ff; padding:3px 9px; border-radius:6px; border:1px solid #30363d;">
-            Sanluri 39.5613,8.6332
           </span>
         </div>
       </div>
@@ -527,8 +466,8 @@
                 <img src="${CONFIG.HERO_IMAGE}" alt="European Airline Flight Transit and Airport Terminal High Resolution Photography" loading="lazy" decoding="async" />
               </a>
               <div style="position:absolute; bottom:4px; left:4px; right:4px; background:linear-gradient(to top, rgba(13,17,23,0.95), transparent); padding:12px 14px; border-radius:0 0 17px 17px; color:#ffffff; font-size:11px;">
-                <span style="color:#FFD700; font-weight:800;">Google Schema Active • Star Rating 4.9/5</span><br>
-                <span style="color:#8b949e; font-size:10px;">Via Carlo Felice ARST 08:17 Sanluri</span>
+                <span style="color:#FFD700; font-weight:800;">Travel guide and travel resources</span><br>
+                <span style="color:#8b949e; font-size:10px;">TRTT VoyageHub</span>
               </div>
             </div>
           </div>
