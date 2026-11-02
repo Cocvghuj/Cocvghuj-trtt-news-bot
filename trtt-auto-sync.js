@@ -70,62 +70,6 @@
           "description": "European passenger rights, flight compensation under EC 261, and verified low-fare routes."
         },
 
-        // Core Travel Guide Article with High E-E-A-T
-        {
-          "@type": "TravelGuide",
-          "@id": CONFIG.GUIDE_URL + "/#guide",
-          "headline": "European Flight Logistics, Passenger Rights (EC 261 600€) & 5G Connectivity Masterguide",
-          "description": "Comprehensive practical transit intelligence for European and Gulf corridors. Covers Aviasales, AirHelp 600€ claims, Airalo 5G eSIMs, and Kiwitaxi chauffeur transfers.",
-          "image": [
-            CONFIG.HERO_IMAGE,
-            "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhGIViEQzbsyK0KHWtYnl1bHbRrSKjX8XbeHyFU5kHlX4BSbwjV2mcy-K7bj_NuhPDzDojIZNzU5nzA1aVukNypAcOmzauPyTPSYYg72wWw8jmnegjxVCLBagh3-uyl7eyQK6oy9nnbWEMcVloAd88diVqPO8uw-zl7g7ey5HWzeLJ5KujfrxleCR5Hjvs/w600-rw/Photos.webp"
-          ],
-          "author": {
-            "@type": "Person",
-            "name": "Engr Abu Taher",
-            "jobTitle": "Logistics Operations & Passenger Rights Advocate",
-            "email": "engrtaher2017@gmail.com",
-            "worksFor": {
-              "@id": CONFIG.BLOG_URL + "/#organization"
-            }
-          },
-          "publisher": {
-            "@id": CONFIG.BLOG_URL + "/#organization"
-          },
-        },
-
-        // Google Search Rich Snippet FAQPage (Shows Dropdowns in Search Results)
-        // Sitelinks Breadcrumbs for Google Search Engine
-        {
-          "@type": "BreadcrumbList",
-          "@id": CONFIG.BLOG_URL + "/#breadcrumbs",
-          "itemListElement": [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Home",
-              "item": CONFIG.BLOG_URL
-            },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "Europe Masterguide",
-              "item": CONFIG.GUIDE_URL
-            },
-            {
-              "@type": "ListItem",
-              "position": 3,
-              "name": "SuperStore Hub",
-              "item": CONFIG.SUPERSTORE_URL
-            },
-            {
-              "@type": "ListItem",
-              "position": 4,
-              "name": "FlightScoutPro",
-              "item": CONFIG.FLIGHTSCOUT_URL
-            }
-          ]
-        }
       ]
     };
 
