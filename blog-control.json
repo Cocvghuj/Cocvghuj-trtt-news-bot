@@ -4,16 +4,23 @@
     "kathali": "#FFC300",
     "piaji": "#AF7AC5",
     "bg": "#fffafb",
-    "text": "#222222",
-    "font": "Hind Siliguri, sans-serif"
+    "text": "#222222"
   },
   "menu": [
     {"id": "home", "label": "Home", "href": "/", "icon": "🏠"},
-    {"id": "esim", "label": "eSIM Guide", "href": "/search/label/eSIM", "icon": "📱"},
+    {"id": "esim", "label": "eSIM", "href": "/search/label/eSIM", "icon": "📱"},
     {"id": "flights", "label": "Flights", "href": "/search/label/Flights", "icon": "✈️"},
     {"id": "hotels", "label": "Hotels", "href": "/search/label/Hotels", "icon": "🏨"},
-    {"id": "explore", "label": "Explore Life", "href": "https://cocvghuj-trtt-news-bot.vercel.app/", "icon": "🌍"},
     {"id": "contact", "label": "Contact", "href": "/p/contact.html", "icon": "✉️"}
   ],
-  "customCSS": ".post-title{color:#ff2e63 !important} .post{border-radius:15px}"
+  "megaVault": {
+    "flightTicker": "Cagliari → Rome €29 | Italy → BD €450 | eSIM Active | Schengen Insurance €15 | Marker 787950 LIVE",
+    "satelliteMap": true,
+    "voiceVault": true,
+    "blockchainHash": true,
+    "nightMode": true,
+    "faceScan": true,
+    "selfDestruct": true
+  },
+  "customCSS": ""
 }
