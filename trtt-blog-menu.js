@@ -6,7 +6,7 @@
   var scriptUrl = document.currentScript && document.currentScript.src
     ? document.currentScript.src
     : "https://cocvghuj-trtt-news-bot.vercel.app/trtt-blog-menu.js";
-  var configUrl = new URL("trtt-blog-menu.json", scriptUrl).href;
+  var configUrl = new URL("blog-control.json", scriptUrl).href;
 
   function hideLegacyLeftMenu() {
     var candidates = document.querySelectorAll("nav, [id*='menu' i], [class*='menu' i], [id*='nav' i], [class*='nav' i]");
@@ -32,7 +32,15 @@
   function installMenu(config) {
     if (!document.body || document.getElementById(MENU_ID)) return;
     config = config && typeof config === "object" ? config : {};
-    var links = Array.isArray(config.links) ? config.links : [];
+    var links = Array.isArray(config.menu)
+      ? config.menu.map(function (item) {
+          return item && {
+            label: (item.icon ? item.icon + " " : "") + item.label,
+            url: item.href
+          };
+        })
+      : (Array.isArray(config.links) ? config.links : []);
+    var theme = config.theme && typeof config.theme === "object" ? config.theme : {};
     if (!links.length) {
       links = [
         { label: "Home", url: "/" },
@@ -63,16 +71,16 @@
     var menu = document.createElement("nav");
     menu.id = MENU_ID;
     menu.setAttribute("aria-label", "Main navigation");
-    menu.style.setProperty("--trtt-menu-bg", config.menuBackground || "#ff2e63");
-    menu.style.setProperty("--trtt-menu-mobile-bg", config.mobileBackground || "#ff5a8a");
-    menu.style.setProperty("--trtt-menu-text", config.textColor || "#ffffff");
+    menu.style.setProperty("--trtt-menu-bg", theme.menuBackground || theme.primary || config.menuBackground || "#052962");
+    menu.style.setProperty("--trtt-menu-mobile-bg", theme.mobileBackground || config.mobileBackground || "#093b7a");
+    menu.style.setProperty("--trtt-menu-text", theme.menuText || config.textColor || "#ffffff");
 
     var bar = document.createElement("div");
     bar.className = "trtt-bar";
     var brand = document.createElement("a");
     brand.className = "trtt-logo-txt";
     brand.href = "/";
-    brand.textContent = typeof config.brand === "string" ? config.brand : "TRTT VOYAGE";
+    brand.textContent = typeof config.brand === "string" ? config.brand : "TRTT NEWS 24 BD";
     bar.appendChild(brand);
 
     var toggle = document.createElement("button");
