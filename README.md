@@ -37,9 +37,9 @@ The sync uses stable source markers and does not intentionally modify Blogger po
 
 ## Menu and styling
 
-Edit `trtt-blog-menu.json` for the brand, ordered links, and colors. Edit `trtt-theme.css` for presentation. The Vercel build copies public browser assets from the repository into `dist/`.
+Edit `blog-control.json` for the brand, ordered links, and colors. Edit `trtt-theme.css` for presentation. The Vercel build copies public browser assets from the repository into `dist/`.
 
-One-time Blogger setup is required: keep a single HTML/JavaScript gadget in Blogger Layout containing the loader shown in [BLOGGER_MENU_INSTALL.md](./BLOGGER_MENU_INSTALL.md). Do not place OAuth credentials or deployment tokens in that gadget.
+One-time Blogger setup is required: keep a single HTML/JavaScript gadget in Blogger Layout containing the assets shown in [BLOGGER_MENU_INSTALL.md](./BLOGGER_MENU_INSTALL.md). Do not place OAuth credentials or deployment tokens in that gadget.
 
 ## Comments and audit
 
