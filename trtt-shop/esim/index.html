@@ -43,7 +43,7 @@
       <span class="eyebrow">STAY CONNECTED • ITALY &amp; EUROPE</span>
       <h1 id="page-heading">Find an eSIM for your next journey</h1>
       <p>Compare travel eSIM providers and check coverage, data allowances, device compatibility and current prices before you buy. Plans and availability vary by destination.</p>
-      <a class="primary-link affiliate-link" data-provider="airalo" data-base="https://airalo.tpo.lv/ZZoQC7Mz" data-country="IT" href="https://airalo.tpo.lv/ZZoQC7Mz?subid=trtt_lock_IT&amp;subid2=trtt_voyage" target="_blank" rel="sponsored nofollow noopener noreferrer">Get Airalo eSIM - Best Price <span aria-hidden="true">→</span></a>
+      <a class="primary-link affiliate-link" data-provider="airalo" data-country="IT" href="https://airalo.tpo.lv/ZZoQC7Mz?subid=trtt_lock_IT&amp;subid2=trtt_voyage" target="_blank" rel="sponsored nofollow noopener noreferrer">Get Airalo eSIM - Best Price <span aria-hidden="true">→</span></a>
     </section>
 
     <section class="panel" aria-labelledby="compare-heading">
@@ -55,17 +55,17 @@
         <article class="compare-item">
           <h3>Saily eSIM</h3>
           <p>Explore data plans for trips across Europe and beyond.</p>
-          <a class="small-link affiliate-link" data-provider="saily" data-base="https://saily.tpo.lv/ssekmS4X" data-country="IT" href="https://saily.tpo.lv/ssekmS4X?subid=trtt_lock_IT&amp;subid2=trtt_voyage" target="_blank" rel="sponsored nofollow noopener noreferrer">Get Saily eSIM →</a>
+          <a class="small-link affiliate-link" data-provider="saily" data-country="IT" href="https://saily.tpo.lv/ssekmS4X?subid=trtt_lock_IT&amp;subid2=trtt_voyage" target="_blank" rel="sponsored nofollow noopener noreferrer">Get Saily eSIM →</a>
         </article>
         <article class="compare-item">
           <h3>Yesim eSIM</h3>
           <p>Compare available regional and country-specific packages.</p>
-          <a class="small-link affiliate-link" data-provider="yesim" data-base="https://yesim.tpo.lv/krzFKLpg" data-country="IT" href="https://yesim.tpo.lv/krzFKLpg?subid=trtt_lock_IT&amp;subid2=trtt_voyage" target="_blank" rel="sponsored nofollow noopener noreferrer">Get Yesim eSIM →</a>
+          <a class="small-link affiliate-link" data-provider="yesim" data-country="IT" href="https://yesim.tpo.lv/krzFKLpg?subid=trtt_lock_IT&amp;subid2=trtt_voyage" target="_blank" rel="sponsored nofollow noopener noreferrer">Get Yesim eSIM →</a>
         </article>
         <article class="compare-item">
           <h3>Drimsim</h3>
           <p>Check pay-as-you-go rates and supported networks for your route.</p>
-          <a class="small-link affiliate-link" data-provider="drimsim" data-base="https://drimsim.tpo.lv/Ly7ywIY8" data-country="IT" href="https://drimsim.tpo.lv/Ly7ywIY8?subid=trtt_lock_IT&amp;subid2=trtt_voyage" target="_blank" rel="sponsored nofollow noopener noreferrer">Explore Drimsim →</a>
+          <a class="small-link affiliate-link" data-provider="drimsim" data-country="IT" href="https://drimsim.tpo.lv/Ly7ywIY8?subid=trtt_lock_IT&amp;subid2=trtt_voyage" target="_blank" rel="sponsored nofollow noopener noreferrer">Explore Drimsim →</a>
         </article>
       </div>
     </section>
@@ -75,7 +75,7 @@
         <h2 id="gear-heading">Travel essentials</h2>
         <p>Browse travel adapters, power banks and useful accessories before departure.</p>
       </div>
-      <a class="amazon-link affiliate-link" data-provider="amazon" data-base="https://amzn.to/4shg6Hn" data-country="IT" href="https://amzn.to/4shg6Hn?subid=trtt_lock_IT&amp;subid2=trtt_voyage" target="_blank" rel="sponsored nofollow noopener noreferrer">Shop travel gear →</a>
+      <a class="amazon-link affiliate-link" data-provider="amazon" data-country="IT" href="https://amzn.to/4shg6Hn?subid=trtt_lock_IT&amp;subid2=trtt_voyage" target="_blank" rel="sponsored nofollow noopener noreferrer">Shop travel gear →</a>
     </section>
   </main>
 
@@ -108,9 +108,12 @@
 
       function updateAffiliateLinks(code) {
         var safeCountry = /^[A-Z]{2}$/.test(code) ? code : "IT";
-        document.querySelectorAll(".affiliate-link[data-base]").forEach(function (link) {
-          var base = link.getAttribute("data-base");
-          link.href = base + "?subid=trtt_lock_" + safeCountry + "&subid2=trtt_voyage";
+        document.querySelectorAll(".affiliate-link[href]").forEach(function (link) {
+          var target = new URL(link.getAttribute("href"));
+          target.search = "";
+          target.searchParams.set("subid", "trtt_lock_" + safeCountry);
+          target.searchParams.set("subid2", "trtt_voyage");
+          link.href = target.toString();
         });
       }
 
