@@ -1,46 +1,59 @@
-// Vercel Serverless - ROKSANA NILLA LIVE THINKING - OpenRouter Proxy - Brand Protected
-// API Key Vercel Environment Variable এ থাকবে - OPENROUTER_API_KEY - Safe!
+// ROKSANA NILLA LIVE AI - DUAL BACKUP - OpenRouter + Gemini + Local - Marker 787950
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET');
-  
-  const thoughts = [
-    "Golapi means Love - Roksana's Choice #ff2e63",
-    "Kathali means Gold - Sonar Moto Hasi #FFC300",
-    "Piaji means Dream - Amader Vobissot #AF7AC5",
+  res.setHeader('Cache-Control', 'no-cache');
+
+  const fallback = [
+    "Golapi means Love - #ff2e63",
+    "Kathali means Gold - #FFC300",
+    "Piaji means Dream - #AF7AC5",
     "Marker 787950 SECURED - Sanluri HQ LIVE",
-    "Cagliari - Rome €29 Live - Best Deal Today!",
-    "eSIM Italy €4.99 - Instant Activation - TRTT",
-    "Building Trillion Dollar Future Beyond Google & GitHub"
+    "Cagliari - Rome €29 Live - Best Deal!",
+    "eSIM Italy €4.99 - Instant - TRTT",
+    "Building Trillion Dollar Future Beyond Google"
   ];
 
-  // Try OpenRouter if Key exists, else fallback to local thoughts
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  if (apiKey) {
+  // 1st Try: OpenRouter
+  const openRouterKey = process.env.OPENROUTER_API_KEY;
+  if (openRouterKey) {
     try {
       const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${apiKey}`,
+          'Authorization': `Bearer ${openRouterKey}`,
           'Content-Type': 'application/json',
           'HTTP-Referer': 'https://trttnews24bd.blogspot.com',
-          'X-Title': 'Roksana Nilla Final Vault'
+          'X-Title': 'Roksana Nilla Vault'
         },
         body: JSON.stringify({
           model: 'openai/gpt-3.5-turbo',
-          messages: [{role:'user', content:'Generate 1 short live thinking for Roksana Nilla Final Vault - Golapi Kathali Piaji - Marker 787950 - Sanluri Italy - Max 12 words - Example: Roksana Thinking: Cagliari Rome €29 Live'}],
-          max_tokens: 30
+          messages: [{ role: 'user', content: 'Generate 1 short live thinking for Roksana Nilla Vault - Golapi Kathali Piaji - Marker 787950 - Max 10 words - No quotes' }],
+          max_tokens: 25
         })
       });
       const data = await r.json();
-      const liveText = data.choices?.[0]?.message?.content?.trim();
-      if (liveText) {
-        return res.status(200).json({ thinking: `Roksana Thinking: ${liveText}`, source: 'openrouter' });
-      }
-    } catch(e){ console.log('OpenRouter error, fallback', e); }
+      const txt = data.choices?.[0]?.message?.content?.trim();
+      if (txt) return res.status(200).json({ thinking: `Roksana Thinking: ${txt}`, source: 'openrouter-live' });
+    } catch (e) { console.log('OpenRouter fail, trying Gemini', e.message); }
   }
 
-  // Fallback - No API Key or Error - Local Live
-  const idx = Math.floor(Date.now()/5000) % thoughts.length;
-  return res.status(200).json({ thinking: `Roksana Thinking: ${thoughts[idx]}...`, source: 'local' });
+  // 2nd Try: Gemini (Your Existing Key)
+  const geminiKey = process.env.GEMINI_API_KEY;
+  if (geminiKey) {
+    try {
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: "Generate 1 short live thinking for Roksana Nilla Vault - Golapi Kathali Piaji - Marker 787950 - Max 10 words" }] }] })
+      });
+      const d = await r.json();
+      const live = d.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+      if (live) return res.status(200).json({ thinking: `Roksana Thinking: ${live}`, source: 'gemini-live' });
+    } catch (e) { console.log('Gemini fail, fallback to local', e.message); }
+  }
+
+  // 3rd Fallback: Local - Always Works!
+  const idx = Math.floor(Date.now() / 5000) % fallback.length;
+  return res.status(200).json({ thinking: `Roksana Thinking: ${fallback[idx]}...`, source: 'local-backup' });
 }
