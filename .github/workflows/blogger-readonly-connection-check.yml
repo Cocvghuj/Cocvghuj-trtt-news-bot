@@ -2,6 +2,11 @@ name: Blogger Read-only OAuth Check
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/blogger-readonly-connection-check.yml'
 
 permissions:
   contents: read
