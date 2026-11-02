@@ -711,10 +711,10 @@ def get_blog_profile(blog_name: str, blog_id: str) -> dict:
             "url": BLOGGER_URL,
             "author_name": "Abu Taher",
             "author_role": "Founder, Network Hub &amp; Chief Publishing Bureau",
-            "author_location": "Via Carlo Felice, Sanluri, South Sardinia, Italy &amp; Milan, Italy",
+            "author_location": "Sardinia, Italy",
             "author_email": "engrtaher2017@gmail.com",
             "author_phone": "",
-            "badge": "📍 Sanluri, Sardinia, Italy &amp; Dhaka • TRTT Global Logistics",
+            "badge": "📍 Italy &amp; Bangladesh • TRTT Global Logistics",
             "theme_primary": "#052962",
             "theme_gradient": "linear-gradient(135deg, #052962 0%, #00A8E8 100%)",
             "cta_title": "🛡️ TRTT VoyageHub Super App • 21 Travel Logistics Tools Active",
@@ -1118,12 +1118,7 @@ def create_drafts_on_blogs(title: str, html_content: str, meta: dict, article_da
                     "title": title,
                     "content": tailored_html,
                     "labels": meta["labels"],
-                    "location": {
-                        "name": blog_profile["author_location"],
-                        "lat": 39.5613 if "sardinia" in blog_profile["author_location"].lower() else 23.8103,
-                        "lng": 8.6332 if "sardinia" in blog_profile["author_location"].lower() else 90.4125,
-                        "span": "0.05,0.05"
-                    }
+                    "location": {"name": blog_profile["author_location"]}
                 }
 
                 post = service.posts().insert(blogId=blog_id, body=body, isDraft=True).execute()
