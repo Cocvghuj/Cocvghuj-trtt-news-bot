@@ -515,11 +515,11 @@ class DraftWorkflowFailClosedTests(unittest.TestCase):
             mock.patch.object(main, "generate_article_with_metadata", return_value=article_data),
             mock.patch.object(main, "build_enterprise_html", return_value="<p>HTML</p>"),
             mock.patch.object(main, "create_drafts_on_blogs", return_value=[]),
-            mock.patch.object(main, "record_topic_after_draft") as record,
+            mock.patch.object(main, "save_history") as save_history,
         ):
             with self.assertRaisesRegex(RuntimeError, "Draft workflow incomplete"):
                 main.main()
-        record.assert_called_once_with(main.TOPIC_POOL[0]["topic"], [])
+        save_history.assert_not_called()
 
     def test_missing_generated_article_raises_instead_of_successful_skip(self):
         with (
