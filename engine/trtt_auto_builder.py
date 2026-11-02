@@ -1,5 +1,5 @@
 # TRTT Auto Builder - Google Blogger + Vercel Super App - Marker 787950 Locked
-# Via Carlo Felice ARST 08:17 Sanluri - Qatar Carriage Job to Super App
+# TRTT travel and publishing tools.
 import json, os, datetime
 
 MARKER = "787950"
@@ -12,7 +12,7 @@ VERCEL_URL = f"https://cocvghuj-trtt-news-bot.vercel.app/?marker={MARKER}"
 NEWS = [
     {
         "title": "Travel Is Not Touring: I Built 21 Tools in 1 App After Qatar Carriage Job",
-        "content": "Qatar 2020 Carriage Job Photo - Mask + Hair Cap + Gloves + POS - From Sanluri Via Carlo Felice ARST 08:17 to Global - 21 Tools in 1 App - Cheap Flights + eSIM + Hotels + Claim",
+        "content": "Qatar 2020 Carriage Job Photo - Mask + Hair Cap + Gloves + POS - From Italy to global destinations - 21 Tools in 1 App - Cheap Flights + eSIM + Hotels + Claim",
         "link": VERCEL_URL
     }
 ]
