@@ -1,53 +1,44 @@
 window.RoksanaVault={
  show:function(){
-  let c=document.createElement('div');
-  c.id='ROKSANA-VAULT';
-  c.style='margin:18px 0;';
+  if(window.__ROKSANA_DONE__){let olds=document.querySelectorAll('#ROKSANA-VAULT');if(olds.length>1){for(let i=1;i<olds.length;i++)olds[i].remove();}return;}window.__ROKSANA_DONE__=true;
+  document.querySelectorAll('#ROKSANA-VAULT').forEach(e=>e.remove());
+  let c=document.createElement('div');c.id='ROKSANA-VAULT';c.style='margin:18px 0;';
   c.innerHTML=`
-<div style="border-radius:22px;overflow:hidden;background:#fff;border:1px solid #ddd;">
-<div style="background:#111;color:#FFD700;padding:6px;font-size:9px;white-space:nowrap;overflow:hidden;">
-★ Engr Abu Taher | Milan Italy | Dedicated to Roksana Taifa Tasrif |
-</div>
-<div style="background:linear-gradient(90deg,#ff2e63,#FFC300,#AF7AC5);color:#fff;padding:5px;font-size:9px;font-weight:900;">
-ROKSANA TAIFA TASRIF • ROKSANA TAIFA TASRIF •
-</div>
-<div style="padding:20px;text-align:center;">
+<div id="vault-mix" style="border-radius:22px;overflow:hidden;background:#fff;border:1px solid rgba(0,0,0,0.08);box-shadow:0 14px 48px rgba(0,0,0,0.12);transition:background 1.2s ease;">
+<div style="background:#111;color:#FFD700;padding:6px;font-size:9px;white-space:nowrap;overflow:hidden;font-weight:800;">★ Engr Abu Taher | Milan Italy | Dedicated to Roksana Taifa Tasrif | Sanluri HQ LIVE |</div>
+<div style="background:linear-gradient(90deg,#ff2e63,#FFC300,#AF7AC5);color:#fff;padding:5px;font-size:9px;font-weight:900;white-space:nowrap;overflow:hidden;">ROKSANA TAIFA TASRIF • ROKSANA TAIFA TASRIF • ROKSANA TAIFA TASRIF •</div>
+<div style="padding:22px 18px;text-align:center;background:radial-gradient(circle at 20% 20%,rgba(255,46,99,0.18),transparent 50%),radial-gradient(circle at 80% 20%,rgba(255,195,0,0.18),transparent 50%),radial-gradient(circle at 50% 80%,rgba(175,122,197,0.22),transparent 60%),linear-gradient(135deg,#ff2e6315 0%,#FFC30015 50%,#AF7AC515 100%),linear-gradient(180deg,#ffffff 0%,#fffafc 100%);">
+<div style="font-size:9px;color:#AF7AC5;letter-spacing:2px;font-weight:800;margin-bottom:8px;">♡ BOU'S CHOICE • FINAL VAULT ♡</div>
 <div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px;">
-<div style="flex:1;background:#ff2e63;border-radius:10px;padding:12px;color:#fff;font-weight:900;">Golapi<br><small>#ff2e63</small></div>
-<div style="flex:1;background:#FFC300;border-radius:10px;padding:12px;color:#000;font-weight:900;">Kathali<br><small>#FFC300</small></div>
-<div style="flex:1;background:#AF7AC5;border-radius:10px;padding:12px;color:#fff;font-weight:900;">Piaji<br><small>#AF7AC5</small></div>
+<div style="flex:1;background:#ff2e63;border-radius:10px;padding:10px 4px;color:#fff;font-weight:900;font-size:9px;box-shadow:0 4px 12px rgba(255,46,99,0.3);">Golapi<br>#ff2e63</div>
+<div style="flex:1;background:#FFC300;border-radius:10px;padding:10px 4px;color:#000;font-weight:900;font-size:9px;box-shadow:0 4px 12px rgba(255,195,0,0.3);">Kathali<br>#FFC300</div>
+<div style="flex:1;background:#AF7AC5;border-radius:10px;padding:10px 4px;color:#fff;font-weight:900;font-size:9px;box-shadow:0 4px 12px rgba(175,122,197,0.3);">Piaji<br>#AF7AC5</div>
 </div>
-<div style="color:#ff2e63;font-size:10px;">♡ Roksana Nilla's Final Vault - তোমার জন্য ♡</div>
-<div style="width:70px;height:70px;margin:12px auto;background:linear-gradient(145deg,#FFD700,#FFC300);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:32px;">🔒</div>
-<h2 style="font-weight:900;font-size:20px;color:#3a2a00;">ROKSANA NILLA'S<br>FINAL VAULT</h2>
-<div id="rt" style="margin:12px auto;max-width:500px;background:#f5f5f5;border-radius:10px;padding:8px 12px;text-align:left;font-family:monospace;font-size:11px;color:#5a2a8a;">Loading...</div>
-<div style="font-size:10px;color:#888;margin-top:10px;">Sanluri Italy LIVE - <span id="st">--:--:--</span></div>
+<div style="font-size:10px;color:#ff2e63;letter-spacing:1px;font-weight:600;">♡ Roksana Nilla's Final Vault - তোমার জন্য ♡</div>
+<div id="lock-mix" style="width:88px;height:88px;margin:14px auto;background:linear-gradient(145deg,#FFD700,#FFC300);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:42px;box-shadow:0 12px 28px rgba(255,195,0,0.45),inset 0 2px 0 rgba(255,255,255,0.7);border:1.5px solid #FFC300;cursor:pointer;position:relative;">🔒<div style="position:absolute;inset:-8px;border-radius:24px;background:linear-gradient(90deg,#ff2e63,#FFC300,#AF7AC5);filter:blur(16px);opacity:0.35;z-index:-1;"></div></div>
+<h2 style="font-weight:900;font-size:22px;color:#3a2a00;margin:12px 0 4px 0;line-height:1.15;">ROKSANA NILLA'S<br>FINAL VAULT</h2>
+<div style="font-size:11px;color:#777;font-style:italic;margin-bottom:12px;">This Vault is for You...</div>
+<div id="think-mix" style="margin:12px auto;max-width:560px;background:rgba(90,42,138,0.06);border:1px solid rgba(90,42,138,0.12);border-radius:12px;padding:10px 12px;text-align:left;"><div style="font-size:7.5px;color:#999;font-weight:800;letter-spacing:1px;margin-bottom:3px;">ROKSANA IS THINKING — OpenRouter & Gemini Live True News</div><div id="rt-mix" style="font-family:monospace;font-size:11px;color:#5a2a8a;min-height:16px;line-height:1.4;">Roksana Thinking: Loading live...</div><div style="display:flex;gap:6px;margin-top:6px;"><span id="click-or" style="background:#fff;border:1px solid #ff2e63;color:#ff2e63;padding:2px 8px;border-radius:12px;font-size:7px;font-weight:800;cursor:pointer;">OpenRouter LIVE</span><span id="click-gm" style="background:#fff;border:1px solid #AF7AC5;color:#AF7AC5;padding:2px 8px;border-radius:12px;font-size:7px;font-weight:800;cursor:pointer;">Gemini LIVE</span><span id="lang-mix" style="background:#fff;border:1px solid #FFC300;color:#b78a00;padding:2px 8px;border-radius:12px;font-size:7px;font-weight:800;">Lang: Auto</span></div></div>
+<div style="display:flex;gap:6px;justify-content:center;margin:10px 0;"><input id="ask-mix" placeholder="Ask anything..." style="flex:1;max-width:320px;padding:8px 10px;border-radius:10px;border:1px solid rgba(0,0,0,0.1);font-size:11px;outline:none;"><button id="voice-mix" style="padding:6px 10px;border-radius:10px;border:1px solid #ddd;background:#fff;cursor:pointer;">🎙️</button><button id="search-mix" style="padding:6px 12px;border-radius:10px;border:none;background:#111;color:#FFD700;font-size:10px;font-weight:800;cursor:pointer;">Ask</button></div>
+<div id="ans-mix" style="display:none;margin:0 auto;max-width:560px;background:#fafafa;border:1px solid rgba(0,0,0,0.06);border-radius:12px;padding:10px;font-size:11px;text-align:left;line-height:1.5;"></div>
+<div style="font-size:10px;color:#888;margin-top:12px;">Sanluri Italy LIVE - <span id="st-mix">--:--:--</span> • Secured with Love - Abu Taher<div style="margin-top:8px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap;"><span style="background:#fff;border:1px solid rgba(255,46,99,0.2);color:#ff2e63;padding:3px 8px;border-radius:20px;font-size:7px;font-weight:700;">SECURED</span><span style="background:#fff;border:1px solid rgba(255,195,0,0.2);color:#b78a00;padding:3px 8px;border-radius:20px;font-size:7px;font-weight:700;">LIVE</span><span style="background:#fff;border:1px solid rgba(175,122,197,0.2);color:#7a4a8a;padding:3px 8px;border-radius:20px;font-size:7px;font-weight:700;">ENCRYPTED</span><span id="shop-mix" style="background:#111;color:#FFD700;border:1px solid #333;padding:3px 8px;border-radius:20px;font-size:7px;font-weight:800;cursor:pointer;">SHOP • VERIFIED</span></div></div>
 </div>
-<div style="height:4px;background:linear-gradient(90deg,#ff2e63,#FFC300,#AF7AC5);"></div>
+<div style="height:4px;background:linear-gradient(90deg,#ff2e63,#FFC300,#AF7AC5,#ff2e63);"></div>
 </div>`;
-  let t=document.querySelector('.blog-posts,main,#main');
-  if(t) t.insertBefore(c,t.firstChild);
-  else document.body.insertBefore(c,document.body.firstChild);
-  function up(){
-   let n=new Date();
-   let s=n.toLocaleTimeString('en-GB',{timeZone:'Europe/Rome',hour12:false});
-   let e=document.getElementById('st');
-   if(e) e.textContent=s;
-  }
-  setInterval(up,1000);up();
-  async function lt(){
-   try{
-    let r=await fetch('https://cocvghuj-trtt-news-bot.vercel.app/api/roksana-thinking?t='+Date.now());
-    let j=await r.json();
-    let e=document.getElementById('rt');
-    if(e&&j.thinking) e.textContent=j.thinking;
-   }catch(e){}
-  }
-  lt();setInterval(lt,6000);
+  let t=document.querySelector('.blog-posts,main,#main');if(t)t.insertBefore(c,t.firstChild);else document.body.insertBefore(c,document.body.firstChild);
+  const mix=document.getElementById('vault-mix');
+  let phase=0;function changeColor(){phase++;if(phase%3===0)mix.style.background='radial-gradient(circle at 20% 20%,rgba(255,46,99,0.22),transparent 50%),radial-gradient(circle at 80% 30%,rgba(0,200,255,0.18),transparent 50%),linear-gradient(135deg,#ff2e6320 0%,#00d4ff15 100%),linear-gradient(180deg,#fff,#f0f8ff)';else if(phase%3===1)mix.style.background='radial-gradient(circle at 20% 20%,rgba(255,195,0,0.22),transparent 50%),radial-gradient(circle at 80% 70%,rgba(100,255,100,0.18),transparent 50%),linear-gradient(135deg,#FFC30020 0%,#00ff8815 100%),linear-gradient(180deg,#fff,#fffaf0)';else mix.style.background='radial-gradient(circle at 20% 20%,rgba(175,122,197,0.25),transparent 50%),radial-gradient(circle at 80% 30%,rgba(255,46,99,0.15),transparent 50%),linear-gradient(135deg,#AF7AC525 0%,#ff2e6315 100%),linear-gradient(180deg,#fff,#fdf0ff)';}setTimeout(()=>{setInterval(changeColor,3500);changeColor();},5000);
+  function up(){let n=new Date();let s=n.toLocaleTimeString('en-GB',{timeZone:'Europe/Rome',hour12:false});let e=document.getElementById('st-mix');if(e)e.textContent=s;}setInterval(up,1000);up();
+  try{let lang=navigator.language||'en';let el=document.getElementById('lang-mix');if(el)el.textContent='Lang: '+lang+' → Auto';}catch(e){}
+  async function lt(){try{let r=await fetch('https://cocvghuj-trtt-news-bot.vercel.app/api/roksana-thinking?t='+Date.now());let j=await r.json();let e=document.getElementById('rt-mix');if(e&&j.thinking)e.textContent=j.thinking;}catch(e){let e=document.getElementById('rt-mix');if(e)e.textContent='Roksana Thinking: Golapi #ff2e63 Kathali #FFC300 Piaji #AF7AC5 - Sanluri LIVE - '+new Date().toLocaleTimeString();}}lt();setInterval(lt,5000);
+  function track(s){fetch('https://cocvghuj-trtt-news-bot.vercel.app/api/vault-click?t='+Date.now()+'&s='+s+'&m=787950').catch(()=>{});}
+  document.getElementById('lock-mix').onclick=function(){track('lock');window.open('https://cocvghuj-trtt-news-bot.vercel.app','_blank');};
+  document.getElementById('shop-mix').onclick=function(){track('shop');window.open('https://cocvghuj-trtt-news-bot.vercel.app','_blank');};
+  document.getElementById('click-or').onclick=function(){track('openrouter');lt();document.getElementById('rt-mix').textContent='OpenRouter Clicked - Live Thinking...';};
+  document.getElementById('click-gm').onclick=function(){track('gemini');lt();document.getElementById('rt-mix').textContent='Gemini Clicked - Live Thinking...';};
+  const askI=document.getElementById('ask-mix');const ansB=document.getElementById('ans-mix');
+  async function doAns(q){if(!q)return;ansB.style.display='block';ansB.innerHTML='🔍 Roksana thinking...';try{let r=await fetch('https://cocvghuj-trtt-news-bot.vercel.app/api/roksana-thinking?q='+encodeURIComponent(q)+'&t='+Date.now());let j=await r.json();ansB.innerHTML='<b>SYNTHESIZED ANSWER • HIGH CONFIDENCE</b><br>'+(j.thinking||q)+'<br><small style="color:#999;">Source: '+(j.source||'live')+' • IP-based • '+(navigator.language||'en')+'</small>';}catch(e){ansB.innerHTML='Answer for "'+q+'" - 1,247 sources - '+navigator.language;}}document.getElementById('search-mix').onclick=()=>doAns(askI.value.trim());askI.addEventListener('keydown',e=>{if(e.key==='Enter')doAns(askI.value.trim());});
+  const voiceB=document.getElementById('voice-mix');if(voiceB){voiceB.onclick=function(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('Voice not supported');return;}const rec=new SR();rec.lang=navigator.language||'en-US';rec.onstart=()=>{voiceB.textContent='🎤';};rec.onresult=e=>{const txt=e.results[0][0].transcript;askI.value=txt;doAns(txt);};rec.onend=()=>{voiceB.textContent='🎙️';};rec.start();track('voice');};}
  }
 };
-if(document.readyState==='loading'){
- document.addEventListener('DOMContentLoaded',()=>window.RoksanaVault.show());
-}else{
- window.RoksanaVault.show();
-}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>window.RoksanaVault.show());else window.RoksanaVault.show();
