@@ -57,7 +57,8 @@
         '</ul>' +
       '</div>';
 
-    document.body.insertBefore(menu, document.body.firstChild);\n    hideLegacyLeftMenu();
+    document.body.insertBefore(menu, document.body.firstChild);
+    hideLegacyLeftMenu();
 
     var toggle = menu.querySelector(".trtt-ham");
     function closeMenu() {
@@ -80,6 +81,10 @@
     document.addEventListener("click", function (event) {
       if (!menu.contains(event.target)) closeMenu();
     });
+    if (window.MutationObserver) {
+      var observer = new MutationObserver(function () { hideLegacyLeftMenu(); });
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
   }
 
   if (document.readyState === "loading") {
