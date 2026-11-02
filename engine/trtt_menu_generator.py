@@ -1,6 +1,6 @@
 # TRTT Python Love - 【entity-GitHub¦canonical_name=GitHub】 Style Menu Generator - Marker 787950 Locked
 # File: engine/trtt_menu_generator.py
-# Author: Abu Taher - Sanluri - Via Carlo Felice ARST 08:17
+# Author: TRTT project team
 # Love: Python + GitHub + Marker 787950
 
 import json
@@ -30,7 +30,7 @@ MENU_PYTHONIC = [
         "name": "🚀 Explore Your Life",
         "id": "explore_your_life",
         "url": f"{CONFIG['VERCEL']}/?marker={CONFIG['MARKER']}&sub_id=python_explore_{CONFIG['MARKER']}",
-        "description": "Super App - Map Via Carlo Felice ARST 08:17 + Buy What You Need - Flights + eSIM + Taxi + 【entity-Amazon¦canonical_name=Amazon】",
+        "description": "Super App - Travel planning + Buy What You Need - Flights + eSIM + Taxi + 【entity-Amazon¦canonical_name=Amazon】",
         "icon": "🚀",
         "python_code": "def explore_your_life():\n    return {\n        'flights': 'aviasales.tp.st/Fb8U9yav?marker=787950',\n        '【entity-airhelp¦canonical_name=AirHelp】': '【entity-airhelp¦canonical_name=AirHelp】.tp.st/3ItXS0E4?marker=787950 600€',\n        'esim': '【entity-airalo¦canonical_name=Airalo】.tp.st/ZZoQC7Mz?marker=787950',\n        'taxi': 'kiwitaxi.tp.st/tIZcbMOB?marker=787950 # Fixed tIZcbMOB',\n        '【entity-amazon¦canonical_name=Amazon】': 'amzn.to/4shg6Hn'\n    }",
         "marker_locked": True,
