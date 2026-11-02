@@ -655,7 +655,7 @@ EDITORIAL REQUIREMENTS (Google Helpful Content & E-E-A-T Standards):
 5. Do not claim facts are verified merely because they are generated. Avoid unsupported certainty. Do not present a source as supporting a claim unless you have checked the relevant page.
 6. Before the article HTML, output an [EVIDENCE] JSON block with this exact shape:
 [EVIDENCE]
-{"claims":[{"claim":"A concise factual claim from the article","source_urls":["https://official-source.example/page"]},{"claim":"Another factual claim","source_urls":["https://official-source.example/other-page"]}]}
+{{"claims":[{{"claim":"A concise factual claim from the article","source_urls":["https://official-source.example/page"]}},{{"claim":"Another factual claim","source_urls":["https://official-source.example/other-page"]}}]}}
 [/EVIDENCE]
 Include at least two material factual claims and map each claim to one or more exact URLs used inline in the article and listed in Sources. Do not mark claims as verified; all claims require human review.
 7. Also generate a JSON header block formatted as:
