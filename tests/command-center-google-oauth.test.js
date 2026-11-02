@@ -40,6 +40,12 @@ test("Google OAuth callback accepts matching state cookie and returns PKCE verif
   assert.equal(pending.redirectUri, env.GOOGLE_OAUTH_REDIRECT_URI);
 });
 
-test("Google OAuth scopes reject non-Google scope URLs", () => {
+test("Google OAuth defaults to identity plus Gmail compose only", () => {
+  assert.deepEqual(getScopes({}), ["openid", "email", "profile", "https://www.googleapis.com/auth/gmail.compose"]);
+});
+
+test("Google OAuth scopes reject non-Google and non-draft Google scopes", () => {
   assert.throws(() => getScopes({ GOOGLE_OAUTH_SCOPES: "https://evil.example/scope" }), /unsupported scope/);
+  assert.throws(() => getScopes({ GOOGLE_OAUTH_SCOPES: "openid email https://www.googleapis.com/auth/gmail.send" }), /unsupported scope/);
+  assert.throws(() => getScopes({ GOOGLE_OAUTH_SCOPES: "openid email https://www.googleapis.com/auth/calendar.events" }), /unsupported scope/);
 });
