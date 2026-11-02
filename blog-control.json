@@ -1,18 +1,19 @@
 {
-  "version": "v1.0 - 【entity-GitHub¦canonical_name=GitHub】 Control Active",
-  "logo": "TRTT VOYAGE",
   "theme": {
     "golapi": "#ff2e63",
     "kathali": "#FFC300",
     "piaji": "#AF7AC5",
-    "bodyBg": "#fff5f8"
+    "bg": "#fffafb",
+    "text": "#222222",
+    "font": "Hind Siliguri, sans-serif"
   },
   "menu": [
-    {"id":"home","label":"Home","href":"/","icon":"🏠","color":"#ff2e63"},
-    {"id":"esim","label":"eSIM Guide","href":"/search/label/eSIM","icon":"📱","color":"#FFC300"},
-    {"id":"flights","label":"Flights","href":"/search/label/Flights","icon":"✈️","color":"#AF7AC5"},
-    {"id":"explore","label":"Explore Life","href":"https://cocvghuj-trtt-news-bot.vercel.app/","icon":"🌍","color":"#ff2e63"},
-    {"id":"about","label":"About Us","href":"/p/about-us.html","icon":"ℹ️","color":"#FFC300"},
-    {"id":"contact","label":"Contact","href":"/p/contact.html","icon":"✉️","color":"#AF7AC5"}
-  ]
+    {"id": "home", "label": "Home", "href": "/", "icon": "🏠"},
+    {"id": "esim", "label": "eSIM Guide", "href": "/search/label/eSIM", "icon": "📱"},
+    {"id": "flights", "label": "Flights", "href": "/search/label/Flights", "icon": "✈️"},
+    {"id": "hotels", "label": "Hotels", "href": "/search/label/Hotels", "icon": "🏨"},
+    {"id": "explore", "label": "Explore Life", "href": "https://cocvghuj-trtt-news-bot.vercel.app/", "icon": "🌍"},
+    {"id": "contact", "label": "Contact", "href": "/p/contact.html", "icon": "✉️"}
+  ],
+  "customCSS": ".post-title{color:#ff2e63 !important} .post{border-radius:15px}"
 }
