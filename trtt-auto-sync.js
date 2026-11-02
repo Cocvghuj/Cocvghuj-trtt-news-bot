@@ -11,8 +11,7 @@
  *    - rel="sponsored nofollow noopener" on all commercial links.
  * 3. GOOGLE MATERIAL M3 + GITHUB DARK PRIMA DESIGN:
  *    - Glassmorphic top bar, M3 action pills, 3D Conic Gradient card.
- * 4. REAL-TIME GOOGLE IP & COUNTRY SYNC:
- *    - subid = 'trtt_lock_' + country_code | Kiwitaxi tIZcbMOB FIXED.
+ * 4. Affiliate attribution uses a non-personal default country code; no visitor IP lookup.
  */
 (function() {
   const CONFIG = {
@@ -177,25 +176,6 @@
     document.head.appendChild(style);
   }
 
-  // Real-Time IP Country Synchronization
-  function syncVisitorCountry() {
-    try {
-      fetch('https://ipapi.co/json/')
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.country_code) {
-            userCountry = data.country_code.toLowerCase();
-            const badge = document.getElementById('trtt-ip-country-badge');
-            if (badge) {
-              badge.textContent = 'IP: ' + userCountry.toUpperCase() + ' (Auto-Tracked)';
-            }
-            enforceGoogleCompliantLinks();
-          }
-        })
-        .catch(() => {});
-    } catch(e) {}
-  }
-
   // URL Tracker with Google-mandated tags
   function getTrackedUrl(rawUrl, category) {
     if (!rawUrl) return rawUrl;
@@ -221,7 +201,7 @@
       if (!img.hasAttribute('loading')) img.setAttribute('loading', 'lazy');
       if (!img.hasAttribute('decoding')) img.setAttribute('decoding', 'async');
       if (!img.hasAttribute('alt') || img.getAttribute('alt').trim() === '') {
-        img.setAttribute('alt', 'TRTT Verified Europe Travel & Logistics Guide');
+        img.setAttribute('alt', 'Travel information image');
       }
     });
 
@@ -258,7 +238,7 @@
     });
   }
 
-  // GDPR Cookie Banner
+  // Cookie notice; does not claim legal compliance or certify consent.
   function renderGDPRBanner() {
     if (localStorage.getItem('trtt_cookie_consent_esim') === 'accepted') return;
     if (document.getElementById('trtt-gdpr-banner')) return;
@@ -274,8 +254,8 @@
     `;
     banner.innerHTML = `
       <div style="max-width: 780px; line-height: 1.5;">
-        <strong>🍪 Google Search Transparency &amp; Cookie Notice:</strong>
-        TRTT News 24 BD participates in verified travel affiliate programs (Aviasales, Airalo, Kiwitaxi, Amazon) under <strong>Marker ${CONFIG.MARKER}</strong>. 100% Compliant with EU GDPR &amp; Italian Privacy Laws.
+        <strong>🍪 Affiliate &amp; Cookie Notice:</strong>
+        TRTT News 24 BD participates in verified travel affiliate programs (Aviasales, Airalo, Kiwitaxi, Amazon) under <strong>Marker ${CONFIG.MARKER}</strong>. Please review our Privacy Policy for details.
       </div>
       <div style="display:flex; gap:8px; align-items:center;">
         <a href="https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/privacy.html" target="_blank" style="color: #93c5fd; text-decoration: underline; font-size: 11px;">Privacy Policy</a>
@@ -343,7 +323,7 @@
         </div>
         <div style="display:flex; gap:8px; font-family:'JetBrains Mono', monospace; font-size:11px;">
           <span id="trtt-ip-country-badge" style="background:#010409; color:#00D26A; padding:3px 9px; border-radius:6px; border:1px solid #30363d;">
-            IP: IT (Auto-Tracked)
+            Affiliate region: IT
           </span>
           <span style="background:#010409; color:#58a6ff; padding:3px 9px; border-radius:6px; border:1px solid #30363d;">
           </span>
@@ -424,7 +404,7 @@
         <span>🔒 Travelpayouts Marker 787950 Locked</span>
         <span>Kiwitaxi tIZcbMOB Fixed</span>
         <span>Amazon 4shg6Hn Verified</span>
-        <span style="color:#00D26A;">Google Schema Graph 100% Valid ✓</span>
+        <span style="color:#00D26A;">Structured data enabled</span>
       </div>
     `;
 
@@ -439,8 +419,6 @@
     injectDesignSystemHub();
     enforceGoogleCompliantLinks();
   }
-
-  syncVisitorCountry();
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', loop);
