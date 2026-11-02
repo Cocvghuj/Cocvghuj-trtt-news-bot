@@ -3,13 +3,12 @@
 **Project:** TRTT VoyageHub & News 24 BD Network  
 **Author & Custodian:** Abu Taher  
 **Marker:** 787950 LOCKED • tIZcbMOB FIXED  
-**Location:** Sanluri, Sardinia, Italy (39.5613° N, 8.6332° E) & Dhaka, Bangladesh  
-**Family Dedication:** Roksana | Taifa | Tashrif (আমার পরিবারের জন্য উৎসর্গ)
+**Operating region:** Italy and Bangladesh  
 
 ---
 
 ## 1. GitHub Platform & Actions Compliance
-This repository and its automated workflows are strictly designed to operate within the official terms and conditions of GitHub Inc. and Microsoft Corporation.
+This repository aims to follow the applicable GitHub platform terms. This document is informational and is not a certification or legal guarantee.
 
 - **GitHub Terms of Service:**  
   [https://docs.github.com/en/site-policy/github-terms/github-terms-of-service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service)  
@@ -74,5 +73,4 @@ This project originates in Sanluri (Sardinia, Italy) and serves European and int
 ## Contact & Compliance Officer
 For legal inquiries, DMCA notices, or GDPR data requests, contact:  
 - **Email:** engrtaher2017@gmail.com  
-- **Postal Jurisdiction:** Via Carlo Felice, Sanluri (SU), Sardinia, Italy  
 - **GitHub Profile:** [@Cocvghuj](https://github.com/Cocvghuj)
