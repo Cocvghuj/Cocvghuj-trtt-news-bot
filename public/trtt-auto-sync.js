@@ -18,7 +18,6 @@
 (function() {
   const CONFIG = {
     MARKER: '787950',
-    PIN: '7879',
     BLOG_NAME: 'trttnews24bd',
     SUPERSTORE_URL: 'https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/?marker=787950',
     ROKSANA_FINAL: 'https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/roksana-boutique-final.html',
@@ -68,14 +67,6 @@
             "areaServed": ["IT", "EU", "BD", "QA"],
             "availableLanguage": ["English", "Bengali", "Italian"]
           },
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "Via Carlo Felice ARST 08:17",
-            "addressLocality": "Sanluri",
-            "addressRegion": "Sardinia",
-            "postalCode": "09025",
-            "addressCountry": "IT"
-          }
         },
 
         // Connected Partner Entity: FlightScoutPro
@@ -114,13 +105,6 @@
           "publisher": {
             "@id": CONFIG.BLOG_URL + "/#organization"
           },
-          "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.9",
-            "reviewCount": "1590",
-            "bestRating": "5",
-            "worstRating": "1"
-          }
         },
 
         // Google Search Rich Snippet FAQPage (Shows Dropdowns in Search Results)
@@ -462,7 +446,7 @@
             IP: IT (Auto-Tracked)
           </span>
           <span style="background:#010409; color:#58a6ff; padding:3px 9px; border-radius:6px; border:1px solid #30363d;">
-            Sanluri 39.5613,8.6332
+            Italy
           </span>
         </div>
       </div>
@@ -521,14 +505,12 @@
           <div style="width:100%; max-width:320px;">
             <div class="roksana-img-card">
               <div class="upvote-badge">
-                <span>▲ 24.5k</span> <span>Upvoted</span>
               </div>
               <a href="${CONFIG.GUIDE_URL}">
                 <img src="${CONFIG.HERO_IMAGE}" alt="European Airline Flight Transit and Airport Terminal High Resolution Photography" loading="lazy" decoding="async" />
               </a>
               <div style="position:absolute; bottom:4px; left:4px; right:4px; background:linear-gradient(to top, rgba(13,17,23,0.95), transparent); padding:12px 14px; border-radius:0 0 17px 17px; color:#ffffff; font-size:11px;">
-                <span style="color:#FFD700; font-weight:800;">Google Schema Active • Star Rating 4.9/5</span><br>
-                <span style="color:#8b949e; font-size:10px;">Via Carlo Felice ARST 08:17 Sanluri</span>
+                <span style="color:#FFD700; font-weight:800;">TRTT Travel Guide</span>
               </div>
             </div>
           </div>
