@@ -182,7 +182,8 @@ def record_topic_after_draft(topic: str, blog_outcomes: List[dict]) -> bool:
 def fetch_unsplash_photo(query: str) -> dict:
     fallback = {
         "url": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1200&q=80",
-        "author": "TRTT & FlightScout Travel Bureau",
+        "author": "Photographer attribution unavailable",
+        "attribution_status": "Fallback image; attribution not verified",
         "alt": f"Europe travel flight and journey: {query}"
     }
     if not UNSPLASH_ACCESS_KEY:
@@ -197,6 +198,7 @@ def fetch_unsplash_photo(query: str) -> dict:
             return {
                 "url": data["urls"]["regular"],
                 "author": data["user"]["name"],
+                "attribution_status": "Unsplash",
                 "alt": data.get("alt_description") or f"Europe Travel: {query}"
             }
     except Exception as exc:
@@ -863,7 +865,7 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
   <div style="position: relative; border-radius: 16px; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.12);">
     <img src="{photo['url']}" alt="{photo['alt']}" style="width: 100%; height: auto; max-height: 440px; object-fit: cover; display: block;" />
     <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(15,23,42,0.9) 0%, rgba(15,23,42,0.4) 60%, transparent 100%); padding: 14px 20px; color: #ffffff; font-size: 12px;">
-      <span>📸 Photography: <strong>{photo['author']}</strong> (Unsplash Verified)</span> &bull; <span>Marker {MARKER} Locked</span>
+      <span>📸 Photography: <strong>{photo['author']}</strong> ({photo.get('attribution_status', 'Attribution not verified')})</span> &bull; <span>Marker {MARKER} Locked</span>
     </div>
   </div>
 
