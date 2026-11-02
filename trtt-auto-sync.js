@@ -1,10 +1,8 @@
 /**
  * TRTT Enterprise Engine v19.0 (GOOGLE SEARCH RICH GRAPH & INTERNATIONAL LEGAL DATA)
  * 
- * 1. Structured data: organization and navigation entities only; no fabricated reviews or page-wide FAQ.
- *    - Injects dynamic <script type="application/ld+json"> into document head.
- *    - Connects TRTT News 24 BD & FlightScoutPro with bidirectional entity linking.
- *    - BreadcrumbList & Organization Schemas for instant sitelinks in search results.
+ * 1. Structured data: publisher organization entity only.
+ *    - Injects a JSON-LD NewsMediaOrganization entity into document head.
  * 2. INTERNATIONAL LEGAL & REGULATORY COMPLIANCE:
  *    - EU GDPR / Italian Garante Privacy compliance.
  *    - FTC & Google Webmaster Affiliate Transparency (Marker 787950 declaration).
@@ -315,7 +313,7 @@
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:20px; border-bottom:1px solid #30363d; padding-bottom:14px;">
         <div style="display:flex; align-items:center; gap:8px;">
           <span style="background:#FFD700; color:#000000; font-size:10.5px; font-weight:900; padding:3px 10px; border-radius:6px; text-transform:uppercase; font-family:'JetBrains Mono', monospace;">
-            GOOGLE KNOWLEDGE GRAPH ACTIVE
+            TRTT PUBLISHER INFORMATION
           </span>
           <span style="background:#21262d; border:1px solid #30363d; color:#e6edf3; font-size:11px; font-weight:700; padding:3px 10px; border-radius:6px;">
             FlightScoutPro × TRTT Bureau
@@ -384,7 +382,7 @@
           <div style="width:100%; max-width:320px;">
             <div class="roksana-img-card">
               <div class="upvote-badge">
-                <span>▲ 24.5k</span> <span>Upvoted</span>
+                <span>TRTT FEATURED</span>
               </div>
               <a href="${CONFIG.GUIDE_URL}">
                 <img src="${CONFIG.HERO_IMAGE}" alt="European Airline Flight Transit and Airport Terminal High Resolution Photography" loading="lazy" decoding="async" />
@@ -426,5 +424,4 @@
     loop();
   }
 
-  setInterval(loop, 400);
 })();
