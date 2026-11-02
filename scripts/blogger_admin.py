@@ -54,6 +54,8 @@ def audit(api):
         )
     )
     statuses = Counter((item.get("status") or "unknown").lower() for item in comments)
+    views_30d = api.pageViews().get(blogId=BLOG_ID, range="30DAYS").execute(num_retries=7)
+    views_all = api.pageViews().get(blogId=BLOG_ID, range="all").execute(num_retries=7)
     print("BLOGGER ADMIN AUDIT — READ ONLY")
     print(f"Blog: {blog.get('name')}")
     print(f"URL: {blog.get('url')}")
@@ -61,6 +63,8 @@ def audit(api):
     print(f"Posts visible to API: {len(posts)}")
     print(f"Pages visible to API: {len(pages)}")
     print(f"Comments visible to API: {len(comments)}")
+    print(f"Page views (30 days): {sum(int(x.get('count', 0)) for x in views_30d.get('counts', []))}")
+    print(f"Page views (all time): {sum(int(x.get('count', 0)) for x in views_all.get('counts', []))}")
     for status, count in sorted(statuses.items()):
         print(f"Comments [{status}]: {count}")
     print("No Blogger data was changed.")
