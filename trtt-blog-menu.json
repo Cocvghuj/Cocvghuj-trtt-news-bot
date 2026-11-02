@@ -1,0 +1,14 @@
+{
+  "brand": "TRTT VOYAGE",
+  "menuBackground": "#ff2e63",
+  "mobileBackground": "#ff5a8a",
+  "textColor": "#ffffff",
+  "links": [
+    { "label": "Home", "url": "/" },
+    { "label": "eSIM Guide", "url": "/search/label/eSIM" },
+    { "label": "Flights", "url": "/search/label/Flights" },
+    { "label": "Explore Life", "url": "https://cocvghuj-trtt-news-bot.vercel.app/" },
+    { "label": "About Us", "url": "/p/about-us.html" },
+    { "label": "Contact", "url": "/p/contact.html" }
+  ]
+}

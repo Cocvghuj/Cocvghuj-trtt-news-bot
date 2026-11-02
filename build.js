@@ -5,7 +5,7 @@ const root = __dirname;
 const dist = path.join(root, 'dist');
 
 // Only publish browser-facing assets. Never copy Python source, credentials/config
-// files, partner records, tests, package metadata, histories, or documentation.
+// files, partner records, tests, histories, or documentation.
 const PUBLIC_EXTENSIONS = new Set([
   '.html', '.css', '.js', '.mjs', '.svg',
   '.png', '.jpg', '.jpeg', '.webp', '.gif', '.ico',
@@ -14,15 +14,14 @@ const PUBLIC_EXTENSIONS = new Set([
 ]);
 const PUBLIC_JSON_FILES = new Set([
   'affiliate-services.json',
-  'manifest.json'
+  'manifest.json',
+  'trtt-blog-menu.json'
 ]);
 const PUBLIC_TEXT_FILES = new Set([
   'robots.txt',
   'sitemap.txt'
 ]);
-const PRIVATE_FILES = new Set([
-  'build.js'
-]);
+const PRIVATE_FILES = new Set(['build.js']);
 const IGNORED_DIRECTORIES = new Set([
   '.git', '.github', 'dist', 'node_modules',
   'tests', '__pycache__', '.venv', 'venv',
@@ -37,9 +36,7 @@ fs.mkdirSync(dist, { recursive: true });
 function isPublicAsset(filePath) {
   const filename = path.basename(filePath).toLowerCase();
   if (PRIVATE_FILES.has(filename)) return false;
-  if (PUBLIC_JSON_FILES.has(filename) || PUBLIC_TEXT_FILES.has(filename)) {
-    return true;
-  }
+  if (PUBLIC_JSON_FILES.has(filename) || PUBLIC_TEXT_FILES.has(filename)) return true;
   return PUBLIC_EXTENSIONS.has(path.extname(filename));
 }
 

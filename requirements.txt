@@ -3,3 +3,5 @@ requests
 python-slugify
 google-api-python-client
 google-auth-oauthlib
+Markdown>=3.6,<4
+PyYAML>=6.0,<7
