@@ -56,7 +56,7 @@ TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 
 BLOGGER_URL = "https://trttnews24bd.blogspot.com"
 FLIGHTSCOUTPRO_URL = "https://flightscoutpro.blogspot.com"
-PWA_URL = "https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950"
+PWA_URL = "https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/?marker=787950"
 
 HISTORY_FILE = "drafted_history.txt"
 HISTORY_MIGRATION_FILE = "history_migration_map.json"
