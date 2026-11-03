@@ -1,97 +1,195 @@
 /*!
- * ROKSANA NILA — MULTI-TRILLION VAULT
- * Signature colors preserved: Golapi #ff2e63 | Kathali #FFC300 | Piaji #AF7AC5
- * Interactive client-side rooms. No fabricated IP/API/verification claims.
+ * ROKSANA NILA / FUTURE VAULT
+ * Signature palette preserved: Golapi #ff2e63 · Kathali #FFC300 · Piaji #AF7AC5
+ * Interactive front-end experience. No false claims of authentication, AI, or visitor verification.
  */
 (function () {
   'use strict';
-  if (window.__ROKSANA_MULTI_TRILLION_VAULT__) return;
-  window.__ROKSANA_MULTI_TRILLION_VAULT__ = true;
-  var C = {g:'#ff2e63',k:'#FFC300',p:'#AF7AC5'};
+  if (window.__ROKSANA_FUTURE_VAULT__) return;
+  window.__ROKSANA_FUTURE_VAULT__ = true;
+
+  var palette = { golapi: '#ff2e63', kathali: '#FFC300', piaji: '#AF7AC5' };
   var rooms = [
-    ['✦','The Welcome Hall','WELCOME',C.k,'Welcome to Roksana Nila’s Vault — a personal, carefully curated space built around Golapi, Kathali and Piaji.'],
-    ['🌹','Golapi Archive','ROSE COLLECTION',C.g,'Golapi is the expressive heart of the Vault: bold, warm and unforgettable. Signature color: #ff2e63.'],
-    ['👑','Kathali Treasury','GOLD COLLECTION',C.k,'Kathali brings the golden signature: radiant, confident and timeless. Signature color: #FFC300.'],
-    ['💜','Piaji Gallery','VELVET COLLECTION',C.p,'Piaji adds the final note: elegant, imaginative and distinctive. Signature color: #AF7AC5.'],
-    ['💎','The Crown Room','HIGHLIGHTS',C.k,'A dedicated space for featured pieces, favorite moments and special highlights. Add your chosen photographs and stories here.'],
-    ['📖','Roksana’s Journal','STORIES',C.p,'A quiet corner for notes, memories, creative ideas and stories. New entries can be added to the blog whenever you choose.'],
-    ['🖼️','Memory Gallery','PHOTO COLLECTION',C.g,'A gallery concept for photographs and keepsakes. Connect real gallery links or images when ready.'],
-    ['✨','The Signature Edit','CURATED PICKS',C.k,'A curated collection where the three signature colors meet. Use it for featured designs, favorite posts or selected recommendations.'],
-    ['🗝️','The Secret Garden','PRIVATE SPACE',C.p,'A visual doorway reserved for future private content. This panel is not password protection; real private access requires secure authentication.'],
-    ['📝','Notes & Letters','MESSAGES',C.g,'A place for letters, notes and meaningful messages. Connect a real contact form or post link to receive messages.'],
-    ['❔','The Help Desk','GUIDE',C.k,'Choose any of the twelve rooms to explore. Use the search field to find a room by name, collection or keyword.'],
-    ['♡','The Heart of the Vault','ABOUT',C.p,'Made with care for the Roksana Nila identity. The three signature colors remain the foundation of the entire experience.']
+    {icon:'✦',name:'Welcome Studio',category:'START HERE',color:palette.kathali,desc:'Your entry point to the Roksana Nila universe. A calm, personal space shaped by three signature colors.'},
+    {icon:'🌹',name:'Golapi Archive',category:'COLLECTION',color:palette.golapi,desc:'The Golapi collection — expressive, warm and unmistakable. The signature rose tone is #ff2e63.'},
+    {icon:'👑',name:'Kathali Treasury',category:'COLLECTION',color:palette.kathali,desc:'The Kathali collection — radiant, confident and timeless. The signature golden tone is #FFC300.'},
+    {icon:'💜',name:'Piaji Gallery',category:'COLLECTION',color:palette.piaji,desc:'The Piaji collection — imaginative, elegant and distinctive. The signature violet tone is #AF7AC5.'},
+    {icon:'💎',name:'The Crown Room',category:'FEATURED',color:palette.kathali,desc:'A curated home for featured pieces, favorite moments and special highlights.'},
+    {icon:'📖',name:'Roksana Journal',category:'STORIES',color:palette.piaji,desc:'A quiet editorial space for notes, memories, creative ideas and stories.'},
+    {icon:'▧',name:'Memory Gallery',category:'GALLERY',color:palette.golapi,desc:'A visual gallery for photographs, keepsakes and moments worth revisiting.'},
+    {icon:'✧',name:'Signature Edit',category:'CURATED',color:palette.kathali,desc:'A considered mix of the three signature colors, selected stories and favorite details.'},
+    {icon:'⌘',name:'Secret Garden',category:'COMING SOON',color:palette.piaji,desc:'A reserved doorway for future private content. This visual room is not password protection; private access needs secure authentication.'},
+    {icon:'✉',name:'Notes & Letters',category:'MESSAGES',color:palette.golapi,desc:'A space for letters and thoughtful messages. Connect a real contact form to receive submissions.'},
+    {icon:'◈',name:'Help & Guide',category:'SUPPORT',color:palette.kathali,desc:'Explore the rooms, search collections and discover the meaning behind the Vault.'},
+    {icon:'♡',name:'About Roksana',category:'THE STORY',color:palette.piaji,desc:'The heart of the Vault: a personal identity built around Golapi, Kathali and Piaji.'}
   ];
-  var css = \`
-  #RoksanaFinalVault,#RoksanaFinalVault *{box-sizing:border-box}
-  #RoksanaFinalVault{--g:\${C.g};--k:\${C.k};--p:\${C.p};width:min(1080px,calc(100% - 24px));margin:28px auto 36px;color:#fff;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;isolation:isolate}
-  #RoksanaFinalVault .rv-shell{position:relative;overflow:hidden;border-radius:30px;padding:clamp(18px,4vw,42px);background:radial-gradient(ellipse at 12% 5%,rgba(255,46,99,.18),transparent 34%),radial-gradient(ellipse at 90% 12%,rgba(175,122,197,.2),transparent 35%),radial-gradient(ellipse at 50% 100%,rgba(255,195,0,.11),transparent 42%),linear-gradient(145deg,#0b0812,#15101e 52%,#090711);border:1px solid rgba(255,195,0,.55);box-shadow:0 28px 90px #0009,0 0 0 5px #af7ac514,0 0 55px #ff2e631f}
-  #RoksanaFinalVault .rv-shell:before{content:"";position:absolute;inset:9px;border:1px solid #ffffff14;border-radius:23px;pointer-events:none}
-  #RoksanaFinalVault .rv-topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;position:relative;z-index:1}
-  #RoksanaFinalVault .rv-brand{display:flex;align-items:center;gap:10px;color:#fff;font-size:11px;font-weight:900;letter-spacing:.22em}
-  #RoksanaFinalVault .rv-gem{width:12px;height:12px;transform:rotate(45deg);background:linear-gradient(135deg,var(--g),var(--k),var(--p));box-shadow:0 0 18px #ffc300a6}
-  #RoksanaFinalVault .rv-clock{font-size:11px;color:#c9c2d2;letter-spacing:.08em}
-  #RoksanaFinalVault .rv-hero{text-align:center;position:relative;z-index:1;padding:24px 0 10px}
-  #RoksanaFinalVault .rv-eyebrow{font-size:10px;letter-spacing:.34em;color:var(--k);font-weight:900;text-transform:uppercase}
-  #RoksanaFinalVault .rv-title{margin:12px 0 9px;font-family:Georgia,serif;font-size:clamp(28px,6vw,54px);line-height:1.04;background:linear-gradient(100deg,#fff2c0 5%,var(--k) 34%,#fff 52%,var(--p) 75%,#ffd3df);-webkit-background-clip:text;background-clip:text;color:transparent}
-  #RoksanaFinalVault .rv-sub{max-width:610px;margin:0 auto;color:#d5ccdc;font-size:13px;line-height:1.75}
-  #RoksanaFinalVault .rv-emblem{width:158px;height:158px;margin:24px auto 18px;display:grid;place-items:center;position:relative}
-  #RoksanaFinalVault .rv-orbit{position:absolute;inset:5px;border-radius:50%;border:1px solid #ffc3008c;box-shadow:0 0 28px #ffc3001f,inset 0 0 25px #af7ac71f}
-  #RoksanaFinalVault .rv-orbit:before,#RoksanaFinalVault .rv-orbit:after{content:"";position:absolute;inset:10px;border-radius:50%;border:1px dashed #af7ac78c}
-  #RoksanaFinalVault .rv-orbit:after{inset:19px;border-color:#ff2e6380;transform:rotate(35deg)}
-  #RoksanaFinalVault .rv-lock{width:92px;height:92px;border:1px solid #ffc300cc;border-radius:27px;background:linear-gradient(145deg,#ff2e633d,#ffc30029,#af7ac74d);box-shadow:0 0 35px #ffc3002e,inset 0 0 25px #ffffff0f;color:#ffe7a0;font-size:43px;cursor:pointer;display:grid;place-items:center;position:relative;z-index:2;transition:transform .25s,box-shadow .25s}
-  #RoksanaFinalVault .rv-lock:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 0 48px #ffc3004d}
-  #RoksanaFinalVault button:focus-visible,#RoksanaFinalVault input:focus-visible{outline:3px solid #fff;outline-offset:3px}
-  #RoksanaFinalVault .rv-triad{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:18px 0 28px}
-  #RoksanaFinalVault .rv-chip{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:#ffffff0b;border:1px solid #ffffff21;font-size:11px;font-weight:800;color:#f8f4fb}
-  #RoksanaFinalVault .rv-dot{width:9px;height:9px;border-radius:50%;box-shadow:0 0 12px currentColor}
-  #RoksanaFinalVault .rv-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:22px 0 14px}
-  #RoksanaFinalVault .rv-head h2{margin:0;color:#fff;font:700 20px Georgia,serif}
-  #RoksanaFinalVault .rv-head p{margin:4px 0 0;color:#a99fb4;font-size:11px}
-  #RoksanaFinalVault .rv-count{color:var(--k);font-size:10px;font-weight:900;letter-spacing:.16em}
-  #RoksanaFinalVault .rv-search{display:flex;gap:8px;max-width:520px;margin:0 auto 20px;padding:6px;border-radius:15px;background:#0006;border:1px solid #ffc30059}
-  #RoksanaFinalVault .rv-search input{min-width:0;flex:1;background:transparent;border:0;color:#fff;padding:9px 11px;font-size:13px}
-  #RoksanaFinalVault .rv-search input::placeholder{color:#8f859b}
-  #RoksanaFinalVault .rv-search button{border:0;border-radius:10px;padding:0 17px;background:linear-gradient(110deg,var(--g),#b84c9c);color:#fff;font-weight:900;font-size:11px;cursor:pointer}
-  #RoksanaFinalVault .rv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-  #RoksanaFinalVault .rv-room{min-height:130px;text-align:left;padding:16px 14px;border-radius:17px;position:relative;overflow:hidden;border:1px solid #ffffff21;background:linear-gradient(145deg,#ffffff13,#ffffff05);color:#fff;cursor:pointer;transition:transform .22s,border-color .22s,background .22s}
-  #RoksanaFinalVault .rv-room:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--room-color)}
-  #RoksanaFinalVault .rv-room:hover{transform:translateY(-4px);border-color:var(--room-color);background:linear-gradient(145deg,#ffffff1f,#ffffff09)}
-  #RoksanaFinalVault .rv-roomicon{display:block;font-size:23px;margin-bottom:13px}
-  #RoksanaFinalVault .rv-roomname{display:block;font-size:12px;font-weight:850;line-height:1.35}
-  #RoksanaFinalVault .rv-roomtag{display:block;margin-top:6px;color:#a99fb4;font-size:9px;letter-spacing:.13em;font-weight:800}
-  #RoksanaFinalVault .rv-room[hidden]{display:none}
-  #RoksanaFinalVault .rv-empty{display:none;text-align:center;padding:20px;color:#c9c2d2;font-size:12px}
-  #RoksanaFinalVault .rv-detail{display:none;margin:18px 0 0;padding:20px;border-radius:18px;background:linear-gradient(135deg,#ff2e631a,#af7ac71f,#ffc30014);border:1px solid #ffc30059;text-align:left}
-  #RoksanaFinalVault .rv-detail.is-open{display:block}
-  #RoksanaFinalVault .rv-detailtop{display:flex;justify-content:space-between;gap:12px;align-items:center}
-  #RoksanaFinalVault .rv-detail h3{margin:0;color:var(--k);font:700 19px Georgia,serif}
-  #RoksanaFinalVault .rv-detail p{margin:12px 0 0;color:#e6deeb;font-size:13px;line-height:1.75}
-  #RoksanaFinalVault .rv-close{background:#ffffff14;border:1px solid #ffffff2e;color:#fff;border-radius:9px;padding:7px 11px;cursor:pointer}
-  #RoksanaFinalVault .rv-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:26px;padding-top:16px;border-top:1px solid #ffffff1a;color:#968ba2;font-size:10px}
-  #RoksanaFinalVault .rv-footer strong{color:var(--k)}
-  @media(max-width:720px){#RoksanaFinalVault{width:calc(100% - 14px);margin:14px auto 24px}#RoksanaFinalVault .rv-shell{padding:17px 13px;border-radius:22px}#RoksanaFinalVault .rv-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#RoksanaFinalVault .rv-room{min-height:116px;padding:13px 11px}#RoksanaFinalVault .rv-roomicon{font-size:21px;margin-bottom:10px}#RoksanaFinalVault .rv-clock{font-size:9px}#RoksanaFinalVault .rv-emblem{width:138px;height:138px}#RoksanaFinalVault .rv-head h2{font-size:18px}#RoksanaFinalVault .rv-search button{padding:0 12px}}
-  @media(prefers-reduced-motion:reduce){#RoksanaFinalVault *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
-  \`;
-  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-  function markup(){
-    var cards=rooms.map(function(r,i){return '<button type="button" class="rv-room" data-room="'+i+'" style="--room-color:'+r[3]+'"><span class="rv-roomicon" aria-hidden="true">'+r[0]+'</span><span class="rv-roomname">'+esc(r[1])+'</span><span class="rv-roomtag">'+esc(r[2])+'</span></button>';}).join('');
-    return '<section id="RoksanaFinalVault" aria-label="Roksana Nila Multi-Trillion Vault"><div class="rv-shell"><div class="rv-topline"><div class="rv-brand"><span class="rv-gem"></span> ROKSANA NILA ✦ PRIVATE COLLECTION</div><div class="rv-clock">YOUR LOCAL TIME · <span id="rv-time">--:--</span></div></div><header class="rv-hero"><div class="rv-eyebrow">A signature world of three colors</div><h1 class="rv-title">THE MULTI-TRILLION VAULT</h1><p class="rv-sub">A royal little universe of beauty, stories and treasured moments.<br>Tomar Jonno — This Vault is for You… তোমার জন্য</p><div class="rv-emblem"><div class="rv-orbit"></div><button class="rv-lock" id="rv-main-lock" type="button" aria-label="Open welcome room">♛</button></div><div class="rv-triad"><span class="rv-chip"><i class="rv-dot" style="background:'+C.g+';color:'+C.g+'"></i> GOLAPI</span><span class="rv-chip"><i class="rv-dot" style="background:'+C.k+';color:'+C.k+'"></i> KATHALI</span><span class="rv-chip"><i class="rv-dot" style="background:'+C.p+';color:'+C.p+'"></i> PIAJI</span></div></header><div class="rv-head"><div><h2>Explore the Twelve Rooms</h2><p>Choose a room to reveal its story</p></div><span class="rv-count">12 ROOMS · 3 COLORS</span></div><div class="rv-search"><input id="rv-search-input" type="search" placeholder="Find a room or collection…" aria-label="Search vault rooms"><button id="rv-search-clear" type="button">CLEAR</button></div><div class="rv-grid" id="rv-room-grid">'+cards+'</div><div class="rv-empty" id="rv-empty">No matching room. Try another word.</div><section class="rv-detail" id="rv-detail" aria-live="polite"><div class="rv-detailtop"><h3 id="rv-detail-title">Welcome</h3><button class="rv-close" id="rv-detail-close" type="button">CLOSE ×</button></div><p id="rv-detail-body"></p></section><footer class="rv-footer"><span><strong>GOLAPI</strong> · <strong>KATHALI</strong> · <strong>PIAJI</strong></span><span>Crafted with care for Roksana Nila</span></footer></div></section>';
+
+  var css = [
+    '#RoksanaFinalVault{--rv-g:#ff2e63;--rv-k:#FFC300;--rv-p:#AF7AC5;color:#f8f5fb;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;width:min(1180px,calc(100% - 24px));margin:24px auto 40px;isolation:isolate}',
+    '#RoksanaFinalVault *{box-sizing:border-box}',
+    '#RoksanaFinalVault .rv-app{position:relative;overflow:hidden;border:1px solid rgba(175,122,197,.28);border-radius:26px;background:radial-gradient(ellipse at 8% 0%,rgba(255,46,99,.16),transparent 32%),radial-gradient(ellipse at 100% 12%,rgba(175,122,197,.16),transparent 30%),linear-gradient(145deg,#0b0911,#12101a 55%,#0a0810);box-shadow:0 30px 100px rgba(0,0,0,.48)}',
+    '#RoksanaFinalVault .rv-app:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.22;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(to bottom,black,transparent 78%)}',
+    '#RoksanaFinalVault .rv-top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 22px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(9,7,14,.64);backdrop-filter:blur(18px)}',
+    '#RoksanaFinalVault .rv-brand{display:flex;align-items:center;gap:11px;min-width:0;font-size:11px;font-weight:900;letter-spacing:.17em;color:#fff}',
+    '#RoksanaFinalVault .rv-mark{width:29px;height:29px;display:grid;place-items:center;flex:none;border-radius:10px;color:#1a1019;font-size:16px;background:linear-gradient(135deg,var(--rv-g),var(--rv-k) 52%,var(--rv-p));box-shadow:0 0 22px rgba(255,195,0,.2)}',
+    '#RoksanaFinalVault .rv-topright{display:flex;align-items:center;gap:12px;color:#aaa1b4;font-size:10px}',
+    '#RoksanaFinalVault .rv-live-dot{width:7px;height:7px;display:inline-block;border-radius:50%;background:var(--rv-p);box-shadow:0 0 12px var(--rv-p);margin-right:6px}',
+    '#RoksanaFinalVault .rv-layout{position:relative;z-index:1;display:grid;grid-template-columns:218px minmax(0,1fr);min-height:700px}',
+    '#RoksanaFinalVault .rv-side{padding:23px 14px;border-right:1px solid rgba(255,255,255,.075);background:rgba(8,7,13,.27)}',
+    '#RoksanaFinalVault .rv-side-label{padding:0 10px;margin:8px 0 10px;color:#82798e;font-size:9px;font-weight:900;letter-spacing:.18em}',
+    '#RoksanaFinalVault .rv-nav{display:grid;gap:5px}',
+    '#RoksanaFinalVault .rv-nav button{display:flex;align-items:center;gap:11px;width:100%;padding:11px 10px;border:1px solid transparent;border-radius:11px;background:transparent;color:#bcb4c7;text-align:left;font:600 11px inherit;cursor:pointer;transition:.2s}',
+    '#RoksanaFinalVault .rv-nav button:hover,#RoksanaFinalVault .rv-nav button.is-active{color:#fff;border-color:rgba(255,195,0,.19);background:linear-gradient(90deg,rgba(255,46,99,.13),rgba(175,122,197,.1))}',
+    '#RoksanaFinalVault .rv-nav-ico{width:22px;text-align:center;font-size:15px;color:var(--rv-k)}',
+    '#RoksanaFinalVault .rv-side-note{margin:28px 5px 0;padding:13px;border:1px solid rgba(175,122,197,.2);border-radius:13px;background:rgba(175,122,197,.07);color:#aaa1b4;font-size:10px;line-height:1.7}',
+    '#RoksanaFinalVault .rv-side-note strong{display:block;margin-bottom:4px;color:#e8d8f2;font-size:10px}',
+    '#RoksanaFinalVault .rv-main{min-width:0;padding:clamp(18px,3vw,34px)}',
+    '#RoksanaFinalVault .rv-welcome{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:4px 0 25px}',
+    '#RoksanaFinalVault .rv-kicker{color:var(--rv-k);font-size:9px;font-weight:900;letter-spacing:.24em;text-transform:uppercase}',
+    '#RoksanaFinalVault .rv-h1{margin:9px 0 8px;color:#fff;font:700 clamp(28px,4vw,43px)/1.05 Georgia,"Times New Roman",serif;letter-spacing:-.025em}',
+    '#RoksanaFinalVault .rv-gradient{background:linear-gradient(95deg,#fff,var(--rv-k) 38%,var(--rv-p) 72%,#ffc1d1);-webkit-background-clip:text;background-clip:text;color:transparent}',
+    '#RoksanaFinalVault .rv-intro{max-width:590px;margin:0;color:#aaa1b4;font-size:12px;line-height:1.8}',
+    '#RoksanaFinalVault .rv-crown{width:78px;height:78px;display:grid;place-items:center;flex:none;border:1px solid rgba(255,195,0,.32);border-radius:24px;background:linear-gradient(145deg,rgba(255,46,99,.15),rgba(255,195,0,.1),rgba(175,122,197,.17));color:var(--rv-k);font-size:35px;box-shadow:inset 0 0 25px rgba(255,255,255,.035),0 0 40px rgba(255,195,0,.07)}',
+    '#RoksanaFinalVault .rv-palette{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px}',
+    '#RoksanaFinalVault .rv-swatch{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid rgba(255,255,255,.1);border-radius:999px;background:rgba(255,255,255,.035);color:#d6cfdd;font-size:9px;font-weight:800;letter-spacing:.08em}',
+    '#RoksanaFinalVault .rv-swatch i{width:8px;height:8px;border-radius:50%;box-shadow:0 0 10px currentColor}',
+    '#RoksanaFinalVault .rv-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:24px 0 15px}',
+    '#RoksanaFinalVault .rv-toolbar h2{margin:0;color:#f7f2fa;font:700 18px Georgia,serif}',
+    '#RoksanaFinalVault .rv-toolbar p{margin:4px 0 0;color:#82798e;font-size:10px}',
+    '#RoksanaFinalVault .rv-search{width:min(270px,48%);display:flex;align-items:center;gap:8px;padding:9px 11px;border:1px solid rgba(255,255,255,.12);border-radius:11px;background:rgba(0,0,0,.22);color:#92899d}',
+    '#RoksanaFinalVault .rv-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#fff;font:11px inherit}',
+    '#RoksanaFinalVault .rv-search input::placeholder{color:#71697d}',
+    '#RoksanaFinalVault .rv-filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}',
+    '#RoksanaFinalVault .rv-filter{padding:7px 11px;border:1px solid rgba(255,255,255,.1);border-radius:999px;background:transparent;color:#a69daf;font-size:9px;font-weight:800;cursor:pointer}',
+    '#RoksanaFinalVault .rv-filter.is-active{border-color:rgba(255,195,0,.42);background:rgba(255,195,0,.09);color:var(--rv-k)}',
+    '#RoksanaFinalVault .rv-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}',
+    '#RoksanaFinalVault .rv-card{position:relative;min-height:132px;padding:15px 14px;border:1px solid rgba(255,255,255,.105);border-radius:15px;background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.018));color:#fff;text-align:left;cursor:pointer;overflow:hidden;transition:transform .2s,border-color .2s,background .2s}',
+    '#RoksanaFinalVault .rv-card:after{content:"";position:absolute;right:-27px;bottom:-39px;width:92px;height:92px;border-radius:50%;background:var(--room-color);opacity:.09;filter:blur(19px);transition:opacity .2s}',
+    '#RoksanaFinalVault .rv-card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--room-color),transparent 35%);background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.025))}',
+    '#RoksanaFinalVault .rv-card:hover:after{opacity:.22}',
+    '#RoksanaFinalVault .rv-card[hidden]{display:none}',
+    '#RoksanaFinalVault .rv-cardtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}',
+    '#RoksanaFinalVault .rv-icon{width:31px;height:31px;display:grid;place-items:center;border-radius:10px;background:color-mix(in srgb,var(--room-color),transparent 87%);color:var(--room-color);font-size:16px}',
+    '#RoksanaFinalVault .rv-arrow{color:#655d70;font-size:13px}',
+    '#RoksanaFinalVault .rv-cardname{display:block;color:#f5f0f8;font-size:11px;font-weight:800;line-height:1.35}',
+    '#RoksanaFinalVault .rv-cardcat{display:block;margin-top:5px;color:#81788d;font-size:8px;font-weight:900;letter-spacing:.15em}',
+    '#RoksanaFinalVault .rv-empty{display:none;padding:24px;text-align:center;color:#aaa1b4;font-size:11px}',
+    '#RoksanaFinalVault .rv-detail{display:none;margin-top:15px;padding:18px;border:1px solid rgba(255,195,0,.25);border-radius:15px;background:linear-gradient(110deg,rgba(255,46,99,.09),rgba(175,122,197,.1),rgba(255,195,0,.06))}',
+    '#RoksanaFinalVault .rv-detail.is-open{display:block}',
+    '#RoksanaFinalVault .rv-detailhead{display:flex;align-items:center;justify-content:space-between;gap:12px}',
+    '#RoksanaFinalVault .rv-detail h3{margin:0;color:var(--rv-k);font:700 18px Georgia,serif}',
+    '#RoksanaFinalVault .rv-detail p{margin:10px 0 0;color:#c9c0d1;font-size:11px;line-height:1.8}',
+    '#RoksanaFinalVault .rv-close{padding:7px 10px;border:1px solid rgba(255,255,255,.13);border-radius:9px;background:rgba(255,255,255,.05);color:#ddd5e5;font-size:9px;cursor:pointer}',
+    '#RoksanaFinalVault .rv-bottom{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:27px;padding-top:15px;border-top:1px solid rgba(255,255,255,.08);color:#766d81;font-size:9px}',
+    '#RoksanaFinalVault .rv-bottom b{color:var(--rv-k);font-weight:800}',
+    '#RoksanaFinalVault button:focus-visible,#RoksanaFinalVault input:focus-visible{outline:2px solid #fff;outline-offset:3px}',
+    '@media(max-width:820px){#RoksanaFinalVault .rv-layout{grid-template-columns:1fr}#RoksanaFinalVault .rv-side{display:none}#RoksanaFinalVault .rv-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}',
+    '@media(max-width:520px){#RoksanaFinalVault{width:calc(100% - 12px);margin:12px auto 24px}#RoksanaFinalVault .rv-app{border-radius:19px}#RoksanaFinalVault .rv-top{padding:13px 14px}#RoksanaFinalVault .rv-topright{font-size:9px}#RoksanaFinalVault .rv-main{padding:17px 13px}#RoksanaFinalVault .rv-crown{width:54px;height:54px;border-radius:17px;font-size:25px}#RoksanaFinalVault .rv-welcome{gap:8px}#RoksanaFinalVault .rv-toolbar{align-items:flex-start;flex-direction:column}#RoksanaFinalVault .rv-search{width:100%}#RoksanaFinalVault .rv-grid{gap:8px}#RoksanaFinalVault .rv-card{min-height:119px;padding:12px 10px}#RoksanaFinalVault .rv-cardtop{margin-bottom:12px}}',
+    '@media(prefers-reduced-motion:reduce){#RoksanaFinalVault *{scroll-behavior:auto!important;transition:none!important}}'
+  ].join('\n');
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
   }
-  function mount(){
-    if(!document.body||document.getElementById('RoksanaFinalVault'))return;
-    if(!document.getElementById('rv-multitrillion-style')){var st=document.createElement('style');st.id='rv-multitrillion-style';st.textContent=css;document.head.appendChild(st);}
-    var old=document.getElementById('RoksanaFinalVault'),html=markup();
-    if(old)old.outerHTML=html;
-    else{var menu=document.getElementById('trtt-final-menu');if(menu&&menu.parentNode)menu.insertAdjacentHTML('afterend',html);else document.body.insertAdjacentHTML('afterbegin',html);}
-    var root=document.getElementById('RoksanaFinalVault');if(!root)return;
-    var detail=root.querySelector('#rv-detail'),heading=root.querySelector('#rv-detail-title'),body=root.querySelector('#rv-detail-body'),search=root.querySelector('#rv-search-input'),empty=root.querySelector('#rv-empty');
-    function openRoom(i){var r=rooms[i];if(!r)return;heading.textContent=r[1];heading.style.color=r[3];body.textContent=r[4];detail.classList.add('is-open');detail.scrollIntoView({behavior:'smooth',block:'nearest'});}
-    function filter(q){q=q.toLowerCase().trim();var n=0;root.querySelectorAll('.rv-room').forEach(function(b){var r=rooms[Number(b.getAttribute('data-room'))],ok=!q||(r.join(' ').toLowerCase().indexOf(q)!==-1);b.hidden=!ok;if(ok)n++;});empty.style.display=n?'none':'block';}
-    root.addEventListener('click',function(e){var b=e.target.closest('[data-room]');if(b&&root.contains(b)){openRoom(Number(b.getAttribute('data-room')));return;}if(e.target.closest('#rv-main-lock')){openRoom(0);return;}if(e.target.closest('#rv-detail-close')){detail.classList.remove('is-open');return;}if(e.target.closest('#rv-search-clear')){search.value='';filter('');}});
-    search.addEventListener('input',function(){filter(search.value);});
-    function clock(){var el=root.querySelector('#rv-time');if(el)el.textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
-    clock();window.setInterval(clock,30000);
+
+  function render() {
+    var cards = rooms.map(function (r, i) {
+      return '<button type="button" class="rv-card" data-room="' + i + '" data-category="' + esc(r.category) + '" style="--room-color:' + r.color + '">' +
+        '<span class="rv-cardtop"><span class="rv-icon">' + r.icon + '</span><span class="rv-arrow">↗</span></span>' +
+        '<span class="rv-cardname">' + esc(r.name) + '</span><span class="rv-cardcat">' + esc(r.category) + '</span></button>';
+    }).join('');
+    return '<section id="RoksanaFinalVault" aria-label="Roksana Nila Future Vault">' +
+      '<div class="rv-app"><header class="rv-top"><div class="rv-brand"><span class="rv-mark">✦</span><span>ROKSANA NILA <span style="color:#AF7AC5">/</span> VAULT</span></div><div class="rv-topright"><span><i class="rv-live-dot"></i>YOUR PERSONAL SPACE</span><span id="rv-time">--:--</span></div></header>' +
+      '<div class="rv-layout"><aside class="rv-side"><div class="rv-side-label">WORKSPACE</div><nav class="rv-nav"><button type="button" class="is-active" data-filter="ALL"><span class="rv-nav-ico">⌂</span>Overview</button><button type="button" data-filter="COLLECTION"><span class="rv-nav-ico">◈</span>Collections</button><button type="button" data-filter="STORIES"><span class="rv-nav-ico">▤</span>Stories</button><button type="button" data-filter="GALLERY"><span class="rv-nav-ico">▧</span>Gallery</button><button type="button" data-filter="FEATURED"><span class="rv-nav-ico">✧</span>Featured</button></nav><div class="rv-side-label" style="margin-top:27px">SIGNATURE PALETTE</div><div class="rv-nav"><button type="button" data-palette="GOLAPI"><span class="rv-nav-ico" style="color:#ff2e63">●</span>Golapi</button><button type="button" data-palette="KATHALI"><span class="rv-nav-ico" style="color:#FFC300">●</span>Kathali</button><button type="button" data-palette="PIAJI"><span class="rv-nav-ico" style="color:#AF7AC5">●</span>Piaji</button></div><div class="rv-side-note"><strong>✦ THE ROksana SIGNATURE</strong>Three colors. One identity. A personal world designed to feel timeless.</div></aside>' +
+      '<main class="rv-main"><section class="rv-welcome"><div><div class="rv-kicker">THE NEXT CHAPTER · YOUR COLLECTION</div><h1 class="rv-h1">Welcome to the<br><span class="rv-gradient">Future Vault.</span></h1><p class="rv-intro">A refined digital home for stories, memories and signature collections. Explore the rooms and discover the world of Roksana Nila.</p><div class="rv-palette"><span class="rv-swatch"><i style="background:#ff2e63;color:#ff2e63"></i>GOLAPI</span><span class="rv-swatch"><i style="background:#FFC300;color:#FFC300"></i>KATHALI</span><span class="rv-swatch"><i style="background:#AF7AC5;color:#AF7AC5"></i>PIAJI</span></div></div><div class="rv-crown" aria-hidden="true">♛</div></section>' +
+      '<div class="rv-toolbar"><div><h2>Explore your space</h2><p>12 thoughtfully designed rooms · Choose one to open</p></div><label class="rv-search"><span>⌕</span><input id="rv-search" type="search" placeholder="Search your vault…" aria-label="Search vault rooms"></label></div>' +
+      '<div class="rv-filters"><button type="button" class="rv-filter is-active" data-filter="ALL">All rooms</button><button type="button" class="rv-filter" data-filter="COLLECTION">Collections</button><button type="button" class="rv-filter" data-filter="STORIES">Stories</button><button type="button" class="rv-filter" data-filter="GALLERY">Gallery</button><button type="button" class="rv-filter" data-filter="FEATURED">Featured</button></div>' +
+      '<div class="rv-grid" id="rv-grid">' + cards + '</div><div class="rv-empty" id="rv-empty">No rooms match your search. Try another word.</div>' +
+      '<section class="rv-detail" id="rv-detail" aria-live="polite"><div class="rv-detailhead"><h3 id="rv-detail-title"></h3><button class="rv-close" id="rv-close" type="button">CLOSE ×</button></div><p id="rv-detail-text"></p></section>' +
+      '<footer class="rv-bottom"><span>CRAFTED FOR <b>ROKSANA NILA</b></span><span>GOLAPI · KATHALI · PIAJI</span><span>YOUR SPACE, YOUR STORY.</span></footer></main></div></div></section>';
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
+
+  function mount() {
+    if (!document.body || document.getElementById('rv-future-vault-mounted')) return;
+    if (!document.getElementById('rv-future-vault-style')) {
+      var style = document.createElement('style');
+      style.id = 'rv-future-vault-style';
+      style.textContent = css;
+      document.head.appendChild(style);
+    }
+    var existing = document.getElementById('RoksanaFinalVault');
+    var html = render();
+    if (existing) existing.outerHTML = html;
+    else {
+      var menu = document.getElementById('trtt-final-menu');
+      if (menu && menu.parentNode) menu.insertAdjacentHTML('afterend', html);
+      else document.body.insertAdjacentHTML('afterbegin', html);
+    }
+    var root = document.getElementById('RoksanaFinalVault');
+    if (!root) return;
+    root.id = 'rv-future-vault-mounted';
+    var search = root.querySelector('#rv-search');
+    var empty = root.querySelector('#rv-empty');
+    var detail = root.querySelector('#rv-detail');
+    var activeFilter = 'ALL';
+
+    function filterRooms() {
+      var q = search.value.toLowerCase().trim();
+      var count = 0;
+      root.querySelectorAll('.rv-card').forEach(function (card) {
+        var r = rooms[Number(card.getAttribute('data-room'))];
+        var categoryMatch = activeFilter === 'ALL' || r.category === activeFilter ||
+          (activeFilter === 'COLLECTION' && r.category === 'COLLECTION');
+        var searchMatch = !q || (r.name + ' ' + r.category + ' ' + r.desc).toLowerCase().indexOf(q) !== -1;
+        card.hidden = !(categoryMatch && searchMatch);
+        if (!card.hidden) count++;
+      });
+      empty.style.display = count ? 'none' : 'block';
+    }
+
+    function setFilter(value) {
+      activeFilter = value;
+      root.querySelectorAll('[data-filter]').forEach(function (b) {
+        b.classList.toggle('is-active', b.getAttribute('data-filter') === value);
+      });
+      filterRooms();
+    }
+
+    root.addEventListener('click', function (event) {
+      var card = event.target.closest('[data-room]');
+      if (card && root.contains(card)) {
+        var room = rooms[Number(card.getAttribute('data-room'))];
+        if (!room) return;
+        root.querySelector('#rv-detail-title').textContent = room.name;
+        root.querySelector('#rv-detail-title').style.color = room.color;
+        root.querySelector('#rv-detail-text').textContent = room.desc;
+        detail.classList.add('is-open');
+        detail.scrollIntoView({behavior:'smooth',block:'nearest'});
+        return;
+      }
+      var filter = event.target.closest('[data-filter]');
+      if (filter && root.contains(filter)) { setFilter(filter.getAttribute('data-filter')); return; }
+      var paletteButton = event.target.closest('[data-palette]');
+      if (paletteButton && root.contains(paletteButton)) {
+        var key = paletteButton.getAttribute('data-palette');
+        search.value = key.toLowerCase();
+        setFilter('ALL');
+        filterRooms();
+        return;
+      }
+      if (event.target.closest('#rv-close')) detail.classList.remove('is-open');
+    });
+    search.addEventListener('input', filterRooms);
+    function updateClock() {
+      var node = root.querySelector('#rv-time');
+      if (node) node.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    }
+    updateClock();
+    window.setInterval(updateClock, 30000);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount, {once:true});
+  else mount();
 })();
