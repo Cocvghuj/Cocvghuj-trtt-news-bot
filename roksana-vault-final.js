@@ -155,7 +155,10 @@ aiButton.disabled=true;aiResults.replaceChildren();aiStatus.textContent='Gemini 
 try{
 var response=await fetch('https://cocvghuj-trtt-news-bot.vercel.app/api/answer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:question})});
 var payload=await response.json().catch(function(){return {};});
-if(!response.ok||!payload.ok)throw new Error(payload.error||('HTTP '+response.status));
+if(!response.ok||!payload.ok){
+if(payload.errors){renderProvider('Gemini · Google Search grounding',payload.results&&payload.results.gemini,payload.errors.gemini);renderProvider('OpenRouter · Web Search',payload.results&&payload.results.openrouter,payload.errors.openrouter);aiStatus.textContent=payload.error||'One or more AI providers failed. See details below.';return;}
+throw new Error(payload.error||('HTTP '+response.status));
+}
 renderProvider('Gemini · Google Search grounding',payload.results&&payload.results.gemini,payload.errors&&payload.errors.gemini);
 renderProvider('OpenRouter · Web Search',payload.results&&payload.results.openrouter,payload.errors&&payload.errors.openrouter);
 aiStatus.textContent='Request complete. Check each answer and its source links before relying on it.';
