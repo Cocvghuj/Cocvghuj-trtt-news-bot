@@ -18,6 +18,12 @@ on:
       - "tests/**"
       - ".github/workflows/article-validation-tests.yml"
       - ".github/workflows/trtt-unified-autopilot.yml"
+      - "api/answer.js"
+      - "trtt-all-in-one.js"
+      - "public/trtt-all-in-one.js"
+      - "roksana-vault.js"
+      - "roksana-vault-final.js"
+      - "scripts/validate-answer-engine.js"
   pull_request:
     branches: [main]
     paths:
@@ -34,6 +40,12 @@ on:
       - "tests/**"
       - ".github/workflows/article-validation-tests.yml"
       - ".github/workflows/trtt-unified-autopilot.yml"
+      - "api/answer.js"
+      - "trtt-all-in-one.js"
+      - "public/trtt-all-in-one.js"
+      - "roksana-vault.js"
+      - "roksana-vault-final.js"
+      - "scripts/validate-answer-engine.js"
 
 permissions:
   contents: read
@@ -65,6 +77,14 @@ jobs:
       - name: Verify Vercel build configuration
         run: |
           python -c "import json; c=json.load(open('vercel.json', encoding='utf-8')); assert c['buildCommand'] == 'npm run build'; assert c['outputDirectory'] == 'dist'"
+      - name: Validate secure dual-AI Answer Engine and Vault
+        run: |
+          npm test
+          node --check api/answer.js
+          node --check trtt-all-in-one.js
+          node --check public/trtt-all-in-one.js
+          node --check roksana-vault.js
+          node --check roksana-vault-final.js
       - name: Build Vercel static output
         run: npm run build
       - name: Verify affiliate assets in Vercel output
