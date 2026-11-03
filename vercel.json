@@ -6,8 +6,17 @@
     {
       "source": "/(.*)\\.(js|css|json)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=60, stale-while-revalidate=300" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=60, stale-while-revalidate=300"
+        }
       ]
     }
-  ]
+  ],
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/answer.js": {
+      "maxDuration": 30
+    }
+  }
 }
