@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TRTT Lumina - Glassmorphism TravelTech</title>
+<style>
+body{margin:0;min-height:100vh;background:linear-gradient(135deg,#0d001a,#001a33,#ff2e63);display:flex;justify-content:center;align-items:center;font-family:system-ui}
+.glass{width:90%;max-width:420px;background:rgba(255,255,255,0.1);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.2);border-radius:24px;padding:20px;box-shadow:0 20px 40px rgba(0,0,0,0.3);color:#fff}
+.btn{display:block;margin:8px 0;padding:12px;border-radius:14px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:#fff;text-decoration:none;text-align:center;font-weight:600;transition:0.3s}
+.btn:hover{background:rgba(255,195,0,0.9);color:#000;transform:translateY(-2px)}
+.tag{font-size:10px;letter-spacing:2px;opacity:0.7}
+</style>
+</head>
+<body>
+<div class="glass">
+  <div class="tag">TRTT • TRAVELTECH • LUMINA</div>
+  <h2 style="margin:8px 0">✈️ Sanluri to World</h2>
+  <p style="font-size:12px;opacity:0.8">Marker 787950 LOCKED • tp.st PRO • Glassmorphism UI</p>
+  <a class="btn" id="flight" href="#">✈️ Cheap Flights - Aviasales</a>
+  <a class="btn" id="esim" href="#">📱 eSIM Airalo - No Roaming</a>
+  <a class="btn" id="taxi" href="#">🚕 Kiwitaxi tIZcbMOB FIXED</a>
+  <a class="btn" id="tours" href="#">🎫 Tours Klook + Tiqets</a>
+  <p style="font-size:9px;text-align:center;margin-top:12px">#webdesign #uidesign #glassmorphism #codepen #frontend #TRTT #traveltech #lumina #htmlcssjs</p>
+</div>
+<script>
+(async()=>{
+  const MARKER="787950";
+  let r=await fetch("https://ipapi.co/json/").catch(()=>null);
+  let d=r?await r.json():{country_code:"IT"};
+  const c = d.country_code.toLowerCase();
+  const set=(id,base)=>{ let u=new URL(base); u.searchParams.set('subid','trtt_lock_'+c); document.getElementById(id).href=u; };
+  set('flight',`https://aviasales.tp.st/Fb8U9yav?marker=${MARKER}`);
+  set('esim',`https://airalo.tp.st/ZZoQC7Mz?marker=${MARKER}`);
+  set('taxi',`https://kiwitaxi.tp.st/tIZcbMOB?marker=${MARKER}`);
+  set('tours',`https://klook.tp.st/TWKnemhz?marker=${MARKER}`);
+})();
+</script>
+</body>
+</html>
