@@ -52,8 +52,8 @@ jobs:
             process.exit(1);
           }
 
-          if (!BLOG_ID || !API_KEY || !ACCESS_TOKEN) {
-            fail('Missing one or more GitHub Secrets: BLOGGER_BLOG_ID, BLOGGER_API_KEY, BLOGGER_ACCESS_TOKEN.');
+          if (!BLOG_ID || !ACCESS_TOKEN) {
+            fail('Missing required GitHub Secrets: BLOGGER_BLOG_ID and/or BLOGGER_ACCESS_TOKEN. BLOGGER_API_KEY is optional for OAuth-authenticated Blogger API calls.');
           }
 
           async function api(path, options = {}) {
