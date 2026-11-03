@@ -1,10 +1,8 @@
 name: TRTT TRAFFIC + NEWS - 3x DAILY
 on:
   schedule:
-    - cron: '0 7,13,19 * * *'  # দিনে 3 টা - Italy 9AM, 3PM, 9PM
+    - cron: '30 7,13,19 * * *'  # 3x DAILY - Italy 9:30 AM, 3:30 PM, 9:30 PM (Staggered by 30 mins)
   workflow_dispatch:
-  push:
-    branches: [main]
 
 permissions:
   contents: write
@@ -109,4 +107,5 @@ jobs:
           git config user.email "engrtaher2017@gmail.com"
           git add .
           git commit -m "Traffic News $NEXT - $DATE $TIME - Marker $MARKER LOCKED - Real .it - tp.st - SEO E-E-A-T" || true
-          git push || true
+          git pull --rebase origin main || true
+          git push origin main || true
