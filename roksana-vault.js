@@ -146,7 +146,7 @@
 
     var footer = document.createElement("p");
     footer.className = "rv-footer";
-    footer.textContent = "ROKSANA VAULT • 12-COLOR COLLECTION • TRTT VOYAGE";
+    footer.textContent = "🔒 Strict Locked • 3 Approved Domains • ROKSANA VAULT • TRTT VOYAGE";
 
     inner.appendChild(head);
     inner.appendChild(grid);
