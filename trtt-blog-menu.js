@@ -73,7 +73,7 @@
       "#trtt-final-menu .trtt-links li:last-child a:hover{background:#d93660;color:#fff!important}",
       "@media(max-width:900px){#trtt-final-menu .trtt-bar{padding:8px 16px}#trtt-final-menu .trtt-ham{display:block}#trtt-final-menu .trtt-links{display:none;position:absolute;left:0;right:0;top:100%;width:100%;padding:10px 14px 16px;flex-direction:column;align-items:stretch;flex-wrap:nowrap;background:#172b52;box-shadow:0 14px 22px rgba(15,23,42,.2)}#trtt-final-menu.open .trtt-links{display:flex}#trtt-final-menu .trtt-links a{padding:13px 14px;border-radius:9px;border-top:1px solid rgba(255,255,255,.08)}}",
       "@media(prefers-reduced-motion:reduce){#trtt-final-menu *{transition:none!important}}"
-    ].join("\\n");
+    ].join("\n");
     document.head.appendChild(style);
 
     var menu = document.createElement("nav");
