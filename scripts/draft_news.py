@@ -3,7 +3,7 @@
 import os, sys, unicodedata
 from urllib.parse import urlparse
 
-DEFAULT_PWA_URL = "https://cocvghuj-trtt-news-bot.vercel.app"
+DEFAULT_PWA_URL = "https://cocvghuj.github.io/Cocvghuj-trtt-news-bot"
 MARKER = os.environ.get("TRAVEL_PAYOUT_MARKER") or os.environ.get("MARKER_LOCKED") or "787950"
 FIXED = "tIZcbMOB"
 
