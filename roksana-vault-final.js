@@ -1,6 +1,25 @@
 /* Roksana Nila Future Vault — Golapi #ff2e63 / Kathali #FFC300 / Piaji #AF7AC5 */
 (function(){
 'use strict';
+var RV_ALLOWED_HOSTS=Object.freeze({
+  'trttnews24bd.blogspot.com':true,
+  'trttnews24bd.com':true,
+  'www.trttnews24bd.com':true
+});
+var RV_CURRENT_HOST=String(window.location.hostname||'').toLowerCase();
+if(!Object.prototype.hasOwnProperty.call(RV_ALLOWED_HOSTS,RV_CURRENT_HOST)){
+  var rvExisting=document.getElementById('rv-future-mounted')||document.getElementById('RoksanaFinalVault');
+  if(rvExisting)rvExisting.remove();
+  var rvExistingStyle=document.getElementById('rv-future-style');
+  if(rvExistingStyle)rvExistingStyle.remove();
+  var rvLockWarning=document.createElement('div');
+  rvLockWarning.id='rv-domain-lock';
+  rvLockWarning.textContent='🔒 Strict Locked — this Vault is unavailable on this domain.';
+  rvLockWarning.setAttribute('role','alert');
+  rvLockWarning.style.cssText='margin:16px auto;padding:14px 18px;max-width:680px;border:1px solid #AF7AC5;border-radius:12px;background:#15111e;color:#fff;font:600 13px system-ui,sans-serif;text-align:center';
+  (document.body||document.documentElement).appendChild(rvLockWarning);
+  return;
+}
 if(window.__ROKSANA_FUTURE_VAULT__)return;
 window.__ROKSANA_FUTURE_VAULT__=true;
 var C={g:'#ff2e63',k:'#FFC300',p:'#AF7AC5'};
@@ -27,6 +46,7 @@ var R=[
 ['♡','About Roksana','THE STORY',C.p,'A personal identity built around Golapi, Kathali and Piaji.']
 ];
 var css=[
+'#rv-future-mounted .rv-lock-status{display:inline-block;margin-left:8px;padding:4px 7px;border:1px solid #AF7AC5;border-radius:999px;color:#fff;font-size:9px;font-weight:800;letter-spacing:.04em;vertical-align:middle}',
 '#rv-future-mounted{--g:#ff2e63;--k:#FFC300;--p:#AF7AC5;width:min(1180px,calc(100% - 20px));margin:22px auto 36px;color:#f8f5fb;font-family:Inter,system-ui,sans-serif}',
 '#rv-future-mounted *{box-sizing:border-box}',
 '#rv-future-mounted .app{overflow:hidden;border:1px solid #af7ac744;border-radius:25px;background:radial-gradient(ellipse at 8% 0%,#ff2e632b,transparent 34%),radial-gradient(ellipse at 100% 10%,#af7ac72b,transparent 32%),linear-gradient(145deg,#0b0911,#15111e 55%,#090710);box-shadow:0 28px 90px #0009}',
@@ -92,7 +112,7 @@ var css=[
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function markup(){
 var cards=R.map(function(r,i){return '<button class="room" type="button" data-room="'+i+'" data-cat="'+r[2]+'" style="--rc:'+r[3]+'"><span class="ico">'+r[0]+'</span><b>'+esc(r[1])+'</b><small>'+esc(r[2])+'</small></button>';}).join('');
-return '<section id="RoksanaFinalVault" aria-label="Roksana Nila Future Vault"><div class="app"><header class="top"><div class="brand"><span class="gem">✦</span>ROKSANA NILA / VAULT</div><div class="time">LIVE THEME · 10 SEC · <span id="rv-clock">--:--</span></div></header><div class="layout"><aside class="side"><small>WORKSPACE</small><nav class="nav"><button class="active" data-filter="ALL">⌂　Overview</button><button data-filter="COLLECTION">◈　Collections</button><button data-filter="STORIES">▤　Stories</button><button data-filter="GALLERY">▧　Gallery</button><button data-filter="FEATURED">✧　Featured</button></nav><small style="margin-top:25px">THE SIGNATURE</small><div class="note">GOLAPI · KATHALI · PIAJI<br>Three colors. One identity. A personal world designed to feel timeless.</div></aside><main class="main"><div class="hero"><div><div class="eyebrow">THE NEXT CHAPTER · YOUR COLLECTION</div><h1>Welcome to the<br><span class="gradient">Future Vault.</span></h1><div class="intro">A refined digital home for stories, memories and signature collections. Explore the rooms and discover the world of Roksana Nila.</div><div class="swatches"><span class="swatch">● GOLAPI</span><span class="swatch">● KATHALI</span><span class="swatch">● PIAJI</span></div></div><div class="crown">♛</div></div><div class="toolbar"><div><h2>Explore your space</h2><div class="hint">12 thoughtfully designed rooms · Choose one to open</div></div><label class="search">⌕ <input id="rv-search" type="search" placeholder="Search your vault…"></label></div><div class="filters"><button class="filter active" data-filter="ALL">All rooms</button><button class="filter" data-filter="COLLECTION">Collections</button><button class="filter" data-filter="STORIES">Stories</button><button class="filter" data-filter="GALLERY">Gallery</button><button class="filter" data-filter="FEATURED">Featured</button></div><div class="grid">'+cards+'</div><div class="detail" id="rv-detail" aria-live="polite"><button class="close" id="rv-close">CLOSE ×</button><h3 id="rv-title"></h3><p id="rv-desc"></p></div><footer class="foot"><span>CRAFTED FOR ROKSANA NILA</span><span>GOLAPI · KATHALI · PIAJI</span><span>YOUR SPACE, YOUR STORY.</span></footer></main></div></div></section>';
+return '<section id="RoksanaFinalVault" aria-label="Roksana Nila Future Vault"><div class="app"><header class="top"><div class="brand"><span class="gem">✦</span>ROKSANA NILA / VAULT <span class="rv-lock-status">🔒 Strict Locked</span></div><div class="time">LIVE THEME · 10 SEC · <span id="rv-clock">--:--</span></div></header><div class="layout"><aside class="side"><small>WORKSPACE</small><nav class="nav"><button class="active" data-filter="ALL">⌂　Overview</button><button data-filter="COLLECTION">◈　Collections</button><button data-filter="STORIES">▤　Stories</button><button data-filter="GALLERY">▧　Gallery</button><button data-filter="FEATURED">✧　Featured</button></nav><small style="margin-top:25px">THE SIGNATURE</small><div class="note">GOLAPI · KATHALI · PIAJI<br>Three colors. One identity. A personal world designed to feel timeless.</div></aside><main class="main"><div class="hero"><div><div class="eyebrow">THE NEXT CHAPTER · YOUR COLLECTION</div><h1>Welcome to the<br><span class="gradient">Future Vault.</span></h1><div class="intro">A refined digital home for stories, memories and signature collections. Explore the rooms and discover the world of Roksana Nila.</div><div class="swatches"><span class="swatch">● GOLAPI</span><span class="swatch">● KATHALI</span><span class="swatch">● PIAJI</span></div></div><div class="crown">♛</div></div><div class="toolbar"><div><h2>Explore your space</h2><div class="hint">12 thoughtfully designed rooms · Choose one to open</div></div><label class="search">⌕ <input id="rv-search" type="search" placeholder="Search your vault…"></label></div><div class="filters"><button class="filter active" data-filter="ALL">All rooms</button><button class="filter" data-filter="COLLECTION">Collections</button><button class="filter" data-filter="STORIES">Stories</button><button class="filter" data-filter="GALLERY">Gallery</button><button class="filter" data-filter="FEATURED">Featured</button></div><div class="grid">'+cards+'</div><div class="detail" id="rv-detail" aria-live="polite"><button class="close" id="rv-close">CLOSE ×</button><h3 id="rv-title"></h3><p id="rv-desc"></p></div><footer class="foot"><span>CRAFTED FOR ROKSANA NILA</span><span>GOLAPI · KATHALI · PIAJI</span><span>YOUR SPACE, YOUR STORY.</span></footer></main></div></div></section>';
 }
 function mount(){
 if(!document.body||document.getElementById('rv-future-mounted'))return;
