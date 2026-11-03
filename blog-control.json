@@ -1,5 +1,5 @@
 {
-  "brand": "TRTT VOYAGEHUB",
+  "brand": "TRTT VOYAGE",
   "tagline": "Open Travel Intelligence",
   "theme": {
     "primary": "#241B2F",
@@ -15,15 +15,55 @@
     "menuText": "#ffffff"
   },
   "menu": [
-    {"id":"home","label":"Home","href":"/"},
-    {"id":"news","label":"Latest News","href":"/search/label/TRTT%20News"},
-    {"id":"europe","label":"Europe Travel","href":"/search/label/Europe%20Travel"},
-    {"id":"flights","label":"Flights","href":"/search/label/Flights"},
-    {"id":"esim","label":"eSIM","href":"/search/label/eSIM"},
-    {"id":"tools","label":"Travel Tools","href":"https://cocvghuj-trtt-news-bot.vercel.app/super-app.html"},
-    {"id":"ask","label":"Ask Roksana","href":"https://trttnews24bd.blogspot.com/"},
-    {"id":"about","label":"About","href":"/p/about-us.html"},
-    {"id":"contact","label":"Contact","href":"/p/contact-us.html"},
-    {"id":"hub","label":"Open VoyageHub ↗","href":"https://cocvghuj-trtt-news-bot.vercel.app/"}
+    {
+      "id": "home",
+      "label": "Home",
+      "href": "/"
+    },
+    {
+      "id": "news",
+      "label": "Latest News",
+      "href": "/search/label/TRTT%20News"
+    },
+    {
+      "id": "europe",
+      "label": "Europe Travel",
+      "href": "/search/label/Europe%20Travel"
+    },
+    {
+      "id": "flights",
+      "label": "Flights",
+      "href": "/search/label/Flights"
+    },
+    {
+      "id": "esim",
+      "label": "eSIM",
+      "href": "/search/label/eSIM"
+    },
+    {
+      "id": "tools",
+      "label": "Travel Tools",
+      "href": "https://cocvghuj-trtt-news-bot.vercel.app/super-app.html"
+    },
+    {
+      "id": "ask",
+      "label": "Ask Roksana",
+      "href": "https://trttnews24bd.blogspot.com/"
+    },
+    {
+      "id": "about",
+      "label": "About",
+      "href": "/p/about-us.html"
+    },
+    {
+      "id": "contact",
+      "label": "Contact",
+      "href": "/p/contact-us.html"
+    },
+    {
+      "id": "hub",
+      "label": "Open TRTT Voyage ↗",
+      "href": "https://cocvghuj-trtt-news-bot.vercel.app/"
+    }
   ]
 }
