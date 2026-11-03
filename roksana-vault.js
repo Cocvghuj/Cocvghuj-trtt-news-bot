@@ -203,3 +203,5 @@
     mount();
   }
 })();
+
+// Source entry for roksana-final-no-secret.yml; deploy output is generated from this file.
