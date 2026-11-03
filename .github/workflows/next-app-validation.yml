@@ -1,0 +1,27 @@
+name: Next.js app validation
+on:
+  pull_request:
+    branches: [main]
+    paths: ["next-app/**", ".github/workflows/next-app-validation.yml"]
+  push:
+    branches: ["design/open-intelligence-v1"]
+    paths: ["next-app/**", ".github/workflows/next-app-validation.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: next-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: next-app/package-lock.json
+      - run: npm install --no-audit --no-fund
+      - run: npm run lint
+      - run: npm run build
