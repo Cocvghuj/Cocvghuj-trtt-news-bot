@@ -627,6 +627,89 @@ class DraftRecoveryTests(unittest.TestCase):
         )
 
 
+    def test_partial_multi_blog_failure_recovers_without_duplicate_on_successful_blog(self):
+        class PerBlogPosts:
+            def __init__(self):
+                self.items = {}
+                self.insert_attempts = []
+                self.fail_partner_once = True
+
+            def list(self, **kwargs):
+                return DraftRecoveryTests.FakeRequest({
+                    "items": list(self.items.get(kwargs["blogId"], []))
+                })
+
+            def insert(self, blogId, body, isDraft):
+                self.insert_attempts.append(blogId)
+                if blogId == "blog-2" and self.fail_partner_once:
+                    self.fail_partner_once = False
+                    raise OSError("temporary partner API outage")
+                post = {
+                    "id": blogId + "-draft-" + str(len(self.items.get(blogId, [])) + 1),
+                    "title": body["title"],
+                    "content": body["content"],
+                }
+                self.items.setdefault(blogId, []).append(post)
+                return DraftRecoveryTests.FakeRequest(post)
+
+        class PerBlogService:
+            def __init__(self):
+                self.posts_api = PerBlogPosts()
+
+            def posts(self):
+                return self.posts_api
+
+        service = PerBlogService()
+        topic = "Partial multi-blog recovery topic"
+        photo = {"url": "https://example.test/photo.jpg"}
+        meta = {"labels": ["Travel"]}
+
+        with tempfile.TemporaryDirectory() as directory:
+            history_path = os.path.join(directory, "drafted_history.txt")
+            with (
+                mock.patch.object(main, "BLOGGER_CLIENT_ID", "client"),
+                mock.patch.object(main, "BLOGGER_CLIENT_SECRET", "secret"),
+                mock.patch.object(main, "BLOGGER_REFRESH_TOKEN", "refresh"),
+                mock.patch.object(main, "BLOGGER_BLOG_ID", "blog-1"),
+                mock.patch.object(main, "FLIGHTSCOUTPRO_BLOG_ID", "blog-2"),
+                mock.patch.object(main, "PARTNER_BLOG_IDS", ""),
+                mock.patch.object(main.os.path, "exists", return_value=False),
+                mock.patch.object(main, "Credentials", return_value=object()),
+                mock.patch.object(main, "build", return_value=service),
+                mock.patch.object(main, "get_blog_profile", return_value={"author_location": "Europe"}),
+                mock.patch.object(
+                    main, "build_enterprise_html",
+                    side_effect=[
+                        "<article>main first</article>",
+                        "<article>partner first</article>",
+                        "<article>main regenerated</article>",
+                        "<article>partner regenerated</article>",
+                    ],
+                ),
+                mock.patch.object(main, "HISTORY_FILE", history_path),
+            ):
+                first = main.create_drafts_on_blogs(
+                    "First title", "<p>fallback</p>", meta,
+                    article_data={"content": "First article body"}, photo=photo, topic=topic,
+                )
+                self.assertFalse(main.record_topic_after_draft(topic, first))
+
+                second = main.create_drafts_on_blogs(
+                    "Regenerated title", "<p>new fallback</p>", meta,
+                    article_data={"content": "Regenerated article body"}, photo=photo, topic=topic,
+                )
+                self.assertTrue(main.record_topic_after_draft(topic, second))
+
+            self.assertEqual([item["status"] for item in first], ["created", "failed"])
+            self.assertEqual([item["status"] for item in second], ["already_exists", "created"])
+            self.assertEqual(second[0]["post_id"], "blog-1-draft-1")
+            self.assertEqual(len(service.posts_api.items["blog-1"]), 1)
+            self.assertEqual(len(service.posts_api.items["blog-2"]), 1)
+            self.assertEqual(service.posts_api.insert_attempts, ["blog-1", "blog-2", "blog-2"])
+            with open(history_path, "r", encoding="utf-8") as handle:
+                self.assertEqual(handle.read(), main.topic_history_key(topic) + "\\n")
+
+
 class DraftWorkflowFailClosedTests(unittest.TestCase):
     def test_missing_blogger_oauth_credentials_raise_instead_of_successful_skip(self):
         with (
