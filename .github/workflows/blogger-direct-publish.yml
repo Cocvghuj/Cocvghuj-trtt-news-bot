@@ -6,37 +6,171 @@ on:
       - main
     paths:
       - 'roksana-vault-final.js'
+      - '.github/workflows/blogger-direct-publish.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: roksana-vault-blogger-publish
+  cancel-in-progress: false
 
 jobs:
   publish-to-blogger:
+    name: Publish Vault page through Blogger API v3
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - name: Checkout Code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Set up Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Publish to Blogger
+      - name: Publish or update the live Blogger page
         env:
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
           BLOGGER_API_KEY: ${{ secrets.BLOGGER_API_KEY }}
           BLOGGER_ACCESS_TOKEN: ${{ secrets.BLOGGER_ACCESS_TOKEN }}
         run: |
-          node - << 'EOF'
-          const fs = require('fs');
-          const vaultCode = fs.readFileSync('roksana-vault-final.js', 'utf8');
-          
-          // তোমার Blogger Post এর HTML বানানো
-          const htmlContent = `
-          <h2>ROKSANA NILLA'S FINAL VAULT - LIVE</h2>
-          <p>Updated: ${new Date().toISOString()}</p>
-          <p>Strict 3 Domain Lock: trttnews24bd.blogspot.com, trttnews24bd.com, www.trttnews24bd.com</p>
-          <script>${vaultCode}</script>
-          `;
+          node <<'NODE'
+          const fs = require('node:fs');
 
-          console.log("Publishing to Blogger Blog ID:", process.env.BLOGGER_BLOG_ID);
-          // এখানে Blogger API v3 দিয়ে POST হবে
-          EOF
+          const BLOG_ID = process.env.BLOGGER_BLOG_ID;
+          const API_KEY = process.env.BLOGGER_API_KEY;
+          const ACCESS_TOKEN = process.env.BLOGGER_ACCESS_TOKEN;
+          const PAGE_TITLE = 'Roksana Nila Final Vault';
+          const MARKER = '<!-- ROKSANA_NILA_FUTURE_VAULT_MANAGED -->';
+          const EXPECTED_HOST = 'trttnews24bd.blogspot.com';
+          const API_ROOT = 'https://www.googleapis.com/blogger/v3/blogs/' + encodeURIComponent(BLOG_ID || '');
+
+          function fail(message) {
+            console.error('PUBLISH FAILED: ' + message);
+            process.exit(1);
+          }
+
+          if (!BLOG_ID || !API_KEY || !ACCESS_TOKEN) {
+            fail('Missing one or more GitHub Secrets: BLOGGER_BLOG_ID, BLOGGER_API_KEY, BLOGGER_ACCESS_TOKEN.');
+          }
+
+          async function api(path, options = {}) {
+            const url = new URL(API_ROOT + path);
+            url.searchParams.set('key', API_KEY);
+
+            const response = await fetch(url, {
+              method: options.method || 'GET',
+              headers: {
+                'Authorization': 'Bearer ' + ACCESS_TOKEN,
+                'Accept': 'application/json',
+                ...(options.body ? { 'Content-Type': 'application/json' } : {})
+              },
+              body: options.body ? JSON.stringify(options.body) : undefined,
+              signal: AbortSignal.timeout(30000)
+            });
+
+            const raw = await response.text();
+            let data;
+            try { data = raw ? JSON.parse(raw) : {}; }
+            catch { data = { raw: raw.slice(0, 500) }; }
+
+            if (!response.ok) {
+              if (response.status === 401) {
+                fail('Blogger returned HTTP 401. BLOGGER_ACCESS_TOKEN is expired/invalid or lacks the Blogger OAuth scope https://www.googleapis.com/auth/blogger.');
+              }
+              if (response.status === 403) {
+                fail('Blogger returned HTTP 403. Check Blogger API enablement, account access, OAuth scope, and API-key restrictions. Google message: ' + (data.error?.message || 'permission denied'));
+              }
+              fail('Blogger API HTTP ' + response.status + ': ' + (data.error?.message || raw.slice(0, 500)));
+            }
+            return data;
+          }
+
+          async function main() {
+            const vaultPath = 'roksana-vault-final.js';
+            if (!fs.existsSync(vaultPath)) fail('Missing ' + vaultPath + ' in the checked-out repository.');
+
+            const vaultCode = fs.readFileSync(vaultPath, 'utf8');
+            if (!vaultCode.trim()) fail('Vault JavaScript file is empty.');
+
+            const requiredChecks = [
+              ['Golapi', '#ff2e63'],
+              ['Kathali', '#FFC300'],
+              ['Piaji', '#AF7AC5'],
+              ['blogspot domain lock', 'trttnews24bd.blogspot.com'],
+              ['root domain lock', 'trttnews24bd.com'],
+              ['www domain lock', 'www.trttnews24bd.com']
+            ];
+            for (const [label, value] of requiredChecks) {
+              if (!vaultCode.includes(value)) fail('Vault source check failed: missing ' + label + ' value (' + value + ').');
+            }
+
+            console.log('Checking Blogger blog identity...');
+            const blog = await api('');
+            const blogUrl = blog.url ? new URL(blog.url) : null;
+            if (!blogUrl || blogUrl.hostname.toLowerCase() !== EXPECTED_HOST) {
+              fail('BLOGGER_BLOG_ID does not resolve to the expected blog host ' + EXPECTED_HOST + '. No page was changed.');
+            }
+            console.log('Target blog verified: ' + EXPECTED_HOST);
+
+            const htmlContent = MARKER + '\n' +
+              '<div id="roksana-vault-loading" style="padding:16px;text-align:center">Loading Roksana Nila Vault…</div>\n' +
+              '<script type="text/javascript">\n' + vaultCode + '\n</script>';
+
+            console.log('Looking for an existing managed Vault page...');
+            let pageToken;
+            let existingPage = null;
+            do {
+              const query = new URLSearchParams({ maxResults: '100', fetchBodies: 'true' });
+              if (pageToken) query.set('pageToken', pageToken);
+              const pageList = await api('/pages?' + query.toString());
+              const items = Array.isArray(pageList.items) ? pageList.items : [];
+              existingPage = items.find(page =>
+                page.title === PAGE_TITLE || (typeof page.content === 'string' && page.content.includes(MARKER))
+              ) || null;
+              pageToken = pageList.nextPageToken || undefined;
+            } while (!existingPage && pageToken);
+
+            let publishedPage;
+            if (existingPage) {
+              console.log('Updating existing managed page (ID hidden).');
+              publishedPage = await api('/pages/' + encodeURIComponent(existingPage.id) + '?publish=true', {
+                method: 'PUT',
+                body: { id: existingPage.id, title: PAGE_TITLE, content: htmlContent }
+              });
+            } else {
+              console.log('Creating the Vault page...');
+              publishedPage = await api('/pages?isDraft=false', {
+                method: 'POST',
+                body: { title: PAGE_TITLE, content: htmlContent }
+              });
+            }
+
+            if (!publishedPage.id || publishedPage.status !== 'LIVE' || !publishedPage.url) {
+              fail('Blogger API did not confirm a LIVE page with a public URL. Check the page status in Blogger.');
+            }
+
+            console.log('Blogger API confirmed page status: ' + publishedPage.status);
+            console.log('Published page URL: ' + publishedPage.url);
+
+            const publicResponse = await fetch(publishedPage.url, {
+              headers: { 'User-Agent': 'RoksanaVault-GitHubActions/1.0' },
+              redirect: 'follow',
+              signal: AbortSignal.timeout(30000)
+            });
+            if (!publicResponse.ok) {
+              fail('Page was marked LIVE by Blogger, but public URL check returned HTTP ' + publicResponse.status + '.');
+            }
+            const publicHtml = await publicResponse.text();
+            if (!publicHtml.includes('Roksana Nila') && !publicHtml.includes('roksana-vault-loading')) {
+              console.warn('Public page returned HTTP 200, but the Vault marker was not visible in the response HTML. Review the live page rendering.');
+            } else {
+              console.log('Public page HTTP check passed.');
+            }
+            console.log('SUCCESS: Roksana Nila Final Vault is published on Blogger.');
+          }
+
+          main().catch(error => fail(error.message || String(error)));
+          NODE
