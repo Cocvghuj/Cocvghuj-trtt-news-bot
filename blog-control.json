@@ -1,66 +1,29 @@
 {
-  "brand": "TRTT NEWS 24 BD",
+  "brand": "TRTT VOYAGEHUB",
+  "tagline": "Open Travel Intelligence",
   "theme": {
-    "primary": "#14213d",
-    "accent": "#ef476f",
-    "background": "#f5f7fb",
+    "primary": "#241B2F",
+    "accent": "#ff2e63",
+    "kathali": "#FFC300",
+    "piaji": "#AF7AC5",
+    "background": "#fbf9fc",
     "surface": "#ffffff",
-    "text": "#172033",
-    "muted": "#64748b",
-    "menuBackground": "#101b36",
-    "mobileBackground": "#172b52",
+    "text": "#2b2533",
+    "muted": "#756b7d",
+    "menuBackground": "#241B2F",
+    "mobileBackground": "#33233f",
     "menuText": "#ffffff"
   },
   "menu": [
-    {
-      "id": "home",
-      "label": "Home",
-      "href": "/"
-    },
-    {
-      "id": "news",
-      "label": "Latest News",
-      "href": "/search/label/TRTT%20News"
-    },
-    {
-      "id": "europe",
-      "label": "Europe Travel",
-      "href": "/search/label/Europe%20Travel"
-    },
-    {
-      "id": "flights",
-      "label": "Flights",
-      "href": "/search/label/Flights"
-    },
-    {
-      "id": "esim",
-      "label": "eSIM",
-      "href": "/search/label/eSIM"
-    },
-    {
-      "id": "hotels",
-      "label": "Hotels",
-      "href": "/search/label/Hotels"
-    },
-    {
-      "id": "roksana",
-      "label": "Roksana Vault",
-      "href": "/p/roksana-vault.html"
-    },
-    {
-      "id": "tools",
-      "label": "Travel Tools",
-      "href": "https://cocvghuj-trtt-news-bot.vercel.app/"
-    },
-    {
-      "id": "about",
-      "label": "About",
-      "href": "/p/about-us.html"
-    },
-    {
-      "id": "contact",
-      "label": "Contact",
-      "href": "/p/contact.html"
-    }
+    {"id":"home","label":"Home","href":"/"},
+    {"id":"news","label":"Latest News","href":"/search/label/TRTT%20News"},
+    {"id":"europe","label":"Europe Travel","href":"/search/label/Europe%20Travel"},
+    {"id":"flights","label":"Flights","href":"/search/label/Flights"},
+    {"id":"esim","label":"eSIM","href":"/search/label/eSIM"},
+    {"id":"tools","label":"Travel Tools","href":"https://cocvghuj-trtt-news-bot.vercel.app/super-app.html"},
+    {"id":"ask","label":"Ask Roksana","href":"https://trttnews24bd.blogspot.com/"},
+    {"id":"about","label":"About","href":"/p/about-us.html"},
+    {"id":"contact","label":"Contact","href":"/p/contact-us.html"},
+    {"id":"hub","label":"Open VoyageHub ↗","href":"https://cocvghuj-trtt-news-bot.vercel.app/"}
   ]
 }
