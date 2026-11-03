@@ -1,3 +1,19 @@
+# Repository-wide architecture and safety (read first)
+
+This repository is multi-component; it is not only a static PWA. For the Roksana Nila Answer Engine, the current architecture is:
+- Blogger-facing UI: `trtt-all-in-one.js` (mirrored byte-for-byte at `public/trtt-all-in-one.js`).
+- Server-side provider API: `api/answer.js` (Gemini and OpenRouter secrets are server-side only).
+- Static asset build: `build.js`, with `api/` excluded from `dist/`.
+- Vercel deployment configuration: `vercel.json`.
+- Copilot-specific safety and architecture rules: `.github/copilot-instructions.md`.
+- One-shot Copilot handoff prompt: `COPILOT_ONE_SHOT_PROMPT.md`.
+
+The Base44/nginx notes below apply only to the legacy static-PWA preview and its `index.html`/Leaflet app. They do not describe the Answer Engine runtime or the repository's full build/deployment architecture. Do not run content-generation scripts to validate the Answer Engine.
+
+Never deploy to Vercel or publish to Blogger unless the repository owner explicitly authorizes that action in the current task. Never run Blogger publishing workflows as a side effect of an Answer Engine change.
+
+---
+
 # AGENTS.md
 
 ## What this repo is
