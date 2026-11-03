@@ -35,7 +35,7 @@ async function callGemini(question) {
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      signal: AbortSignal.timeout(8500),
+      signal: AbortSignal.timeout(25000),
       body: JSON.stringify({
         systemInstruction: { parts: [{ text:
           "You are the TRTT evidence-first answer assistant. Answer in the user's language. Use Google Search grounding for current or factual claims. Prefer primary and official sources. Separate verified facts from uncertainty. Never invent citations, prices, schedules, laws, names, statistics, or live status. If reliable evidence is unavailable or sources conflict, say so clearly and do not guess. Do not claim that a fact is verified merely because you generated it. Give a concise useful answer and state dates where relevant."
@@ -78,7 +78,7 @@ async function callOpenRouter(question) {
       "HTTP-Referer": "https://trttnews24bd.blogspot.com/",
       "X-OpenRouter-Title": "TRTT Vault Evidence Answer Engine"
     },
-    signal: AbortSignal.timeout(8500),
+    signal: AbortSignal.timeout(25000),
     body: JSON.stringify({
       model: "openai/gpt-5.2",
       messages: [
@@ -162,3 +162,5 @@ module.exports = async function handler(req, res) {
     note: "AI output can still be wrong. Check the linked sources, especially for legal, medical, financial, travel and other high-impact decisions."
   });
 };
+
+module.exports.config = { maxDuration: 30 };
