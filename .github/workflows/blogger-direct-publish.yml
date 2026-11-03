@@ -164,9 +164,9 @@ jobs:
             }
             console.log('Target blog verified: ' + EXPECTED_HOST);
 
-            const htmlContent = MARKER + '\\n' +
-              '<div id="roksana-vault-loading" style="padding:16px;text-align:center">Loading Roksana Nila Vault…</div>\\n' +
-              '<script type="text/javascript">\\n' + vaultCode + '\\n</script>';
+            const htmlContent = MARKER + '\n' +
+              '<div id="roksana-vault-loading" style="padding:16px;text-align:center">Loading Roksana Nila Vault…</div>\n' +
+              '<script type="text/javascript">\n' + vaultCode + '\n</script>';
 
             console.log('Searching for an existing managed Vault page...');
             let pageToken;
