@@ -1,0 +1,78 @@
+name: TRTT MILLION DOLLAR - English News Drafts - GOOGLE + TRAFFIC + DRAFT
+
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "English news angle or headline to research and draft"
+        required: true
+        type: string
+      official_source_url:
+        description: "HTTPS link to the official primary source"
+        required: true
+        type: string
+  schedule:
+    - cron: '0 7,13,19 * * *' # 9AM,3PM,9PM Italy - Auto Start Tomorrow
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: trtt-news-drafts
+  cancel-in-progress: false
+
+jobs:
+  draft:
+    name: Google Compliant Draft + Traffic + Vercel Ref
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Validate Tests - No Bug Allowed
+        run: python -m unittest discover -s tests -v
+
+      - name: Generate English Drafts - GOOGLE COMPLIANT - MILLION DOLLAR
+        env:
+          TRTT_NEWS_TOPIC: ${{ inputs.topic }}
+          TRTT_OFFICIAL_SOURCE_URL: ${{ inputs.official_source_url }}
+          PWA_REFERENCE_URL: ${{ vars.PWA_REFERENCE_URL || 'https://cocvghuj-trtt-news-bot.vercel.app' }}
+          TRAVEL_PAYOUT_MARKER: ${{ secrets.TRAVEL_PAYOUT_MARKER || vars.TRAVEL_PAYOUT_MARKER || '787950' }}
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID || vars.BLOGGER_BLOG_ID }}
+          FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.FLIGHTSCOUTPRO_BLOG_ID || vars.FLIGHTSCOUTPRO_BLOG_ID }}
+          PARTNER_BLOG_IDS: ${{ secrets.PARTNER_BLOG_IDS || vars.PARTNER_BLOG_IDS }}
+          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
+          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
+          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          AMAZON_LINK: ${{ secrets.AMAZON_LINK || vars.AMAZON_LINK }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          MARKER_LOCKED: "787950"
+          FIXED_ID: "tIZcbMOB"
+        run: python scripts/draft_news.py
+
+      - name: Save Draft History - No Duplicate
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add drafted.txt
+          git commit -m "Million Dollar - Record draft - Marker 787950 LOCKED tp.st tIZcbMOB FIXED - Google Title 1-100 Desc 120-160 - Vercel Ref - No Duplicate [skip ci]" || echo "No changes"
+          git push origin HEAD:main || true
