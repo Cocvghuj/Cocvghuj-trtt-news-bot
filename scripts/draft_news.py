@@ -1,6 +1,5 @@
 # MILLION DOLLAR - GOOGLE COMPLIANT - ENGLISH ONLY - NO DUPLICATE
 # Title 1-100, Search Desc 120-160, Labels max 5 x 50, English Latin Only, Secrets+Vars, Vercel Ref, Draft
-
 import os, sys, unicodedata
 from urllib.parse import urlparse
 
@@ -49,8 +48,7 @@ def add_vercel_reference(content: str, url: str):
         return content
     subid = "trtt_lock_it"
     # MILLION DOLLAR TRAFFIC BLOCK - GOOGLE E-E-A-T + REAL .IT + GDPR + GLASSMORPHISM
-    block = f"""
-<aside class="trtt-voyagehub-reference glassmorphism" style="background:rgba(255,255,255,0.1);backdrop-filter:blur(20px);border-radius:20px;padding:15px;border:1px solid rgba(255,255,255,0.2)">
+    block = f'''<aside class="trtt-voyagehub-reference glassmorphism" style="background:rgba(255,255,255,0.1);backdrop-filter:blur(20px);border-radius:20px;padding:15px;border:1px solid rgba(255,255,255,0.2)">
 <h2>Plan Your Trip From Sanluri - Real Italian Experience</h2>
 <p><strong>Google E-E-A-T:</strong> I live in Sanluri, Sardinia. I travel from Cagliari Airport CAG. This is real experience.</p>
 <script type="application/ld+json">{{"@context":"https://schema.org","@type":"Article","author":{{"@type":"Person","name":"Roksana Nilla"}}}}</script>
@@ -63,8 +61,7 @@ def add_vercel_reference(content: str, url: str):
 </ul>
 <p><small>Live Reference: {url}/?marker={MARKER} | GitHub: github.com/Cocvghuj/Cocvghuj-trtt-news-bot | GDPR: trtt_cookie_consent_esim | Open Source | #webdesign #uidesign #glassmorphism #TRTT #traveltech #lumina</small></p>
 </aside>
-<!-- Vercel Ref: {url} -->
-"""
+<!-- Vercel Ref: {url} -->'''
     return content.rstrip() + "\n\n" + block
 
 def main():
