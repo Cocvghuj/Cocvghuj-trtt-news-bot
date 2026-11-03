@@ -31,7 +31,7 @@ async function callGemini(question) {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error("Gemini is not configured");
   const response = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + encodeURIComponent(key),
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" + encodeURIComponent(key),
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -59,7 +59,7 @@ async function callGemini(question) {
     url: chunk.web && chunk.web.uri
   })));
   return {
-    model: "Gemini 2.5 Flash",
+    model: "Gemini 3.8 Flash",
     answer,
     sources,
     searchQueries: (grounding.webSearchQueries || []).slice(0, 5),
