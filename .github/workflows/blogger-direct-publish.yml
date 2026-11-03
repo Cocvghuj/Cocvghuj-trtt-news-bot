@@ -125,12 +125,16 @@ jobs:
               ['Piaji', '#AF7AC5'],
               ['blogspot domain lock', 'trttnews24bd.blogspot.com'],
               ['root domain lock', 'trttnews24bd.com'],
-              ['www domain lock', 'www.trttnews24bd.com']
+              ['www domain lock', 'www.trttnews24bd.com'],
+              ['Answer Engine input', 'rv-ai-question'],
+              ['Answer Engine submit control', 'rv-ai-ask'],
+              ['Production Answer API endpoint', 'https://cocvghuj-trtt-news-bot.vercel.app/api/answer']
             ];
             for (const [label, value] of requiredChecks) {
               if (!vaultCode.includes(value)) fail('Vault source check failed: missing ' + label + ' value (' + value + ').');
             }
-            console.log('Vault source and signature-color checks passed; source file will not be modified.');
+            if (/AIza[0-9A-Za-z_-]{20,}|sk-or-v1-[0-9a-f]{20,}/.test(vaultCode)) fail('A provider secret appears in the browser Vault source.');
+            console.log('Vault source, signature colors, strict domain lock and dual-AI interface checks passed; source file will not be modified.');
 
             const accessToken = await getAccessToken();
 
@@ -228,8 +232,18 @@ jobs:
             if (!publicResponse.ok) {
               fail('Blogger reports LIVE, but public URL check returned HTTP ' + publicResponse.status + '.');
             }
-            console.log('Public page returned HTTP ' + publicResponse.status + '.');
-            console.log('SUCCESS: Roksana Nila Final Vault is published on Blogger.');
+            const finalHost = new URL(publicResponse.url || page.url).hostname.toLowerCase();
+            const allowedPublicHosts = new Set(['trttnews24bd.blogspot.com', 'trttnews24bd.com', 'www.trttnews24bd.com']);
+            if (!allowedPublicHosts.has(finalHost)) {
+              fail('Published page redirected outside the approved Blogger domains to ' + finalHost + '. Check Blogger custom-domain/DNS redirect settings.');
+            }
+            const publicHtml = await publicResponse.text();
+            if (!publicHtml.includes('rv-ai-question')) {
+              fail('Public page returned HTTP 200 but the published dual-AI question interface was not found in its HTML.');
+            }
+            console.log('Public page returned HTTP ' + publicResponse.status + ' on approved host ' + finalHost + '.');
+            console.log('Public HTML contains the dual-AI question interface.');
+            console.log('SUCCESS: Roksana Nila Final Vault is published on Blogger and the Answer Engine UI is present.');
           }
 
           main().catch(error => fail(error.message || String(error)));
