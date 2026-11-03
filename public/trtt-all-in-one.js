@@ -298,17 +298,26 @@
   }
   .rv-search-btn:hover { opacity: 0.9; }
   .rv-answer-res {
-    background: rgba(22, 27, 34, 0.95);
-    border: 1px solid #30363d;
+    background: rgba(22, 27, 34, 0.98);
+    border: 1px solid #AF7AC5;
     border-radius: 12px;
-    padding: 12px 16px;
+    padding: 14px 16px;
     margin-top: 10px;
-    color: #58a6ff;
+    color: #e6edf3;
     font-size: 12.5px;
     text-align: left;
-    line-height: 1.5;
+    line-height: 1.6;
     display: none;
+    max-height: 440px;
+    overflow: auto;
   }
+  .rv-ai-section { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.12); }
+  .rv-ai-section:last-child { border-bottom: 0; }
+  .rv-ai-heading { color: #FFC300; font-weight: 800; margin: 0 0 8px; }
+  .rv-ai-answer { color: #e6edf3; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .rv-ai-sources { margin: 8px 0 0; padding-left: 18px; }
+  .rv-ai-sources a { color: #ff8fab; text-decoration: underline; overflow-wrap: anywhere; }
+  .rv-ai-note { color: #FFC300; font-size: 11px; margin-top: 10px; }
 
   /* LIVE TICKER DISPLAY */
   .rv-ae {
@@ -423,7 +432,7 @@
   <div id="RoksanaFinalVault" data-marker="${CFG.marker}">
     <div class="rvf">
       <div class="rv-think">
-        <span class="blink">●</span> Roksana is thinking — OpenRouter & Gemini Live True News — <span id="rv-time">--:--:--</span>
+        <span class="blink">●</span> Roksana is thinking — Gemini + OpenRouter Source Search — <span id="rv-time">--:--:--</span>
       </div>
       <h1 class="rv-title">${CFG.brand}</h1>
       <div class="rv-sub">${CFG.sub}</div>
@@ -451,7 +460,7 @@
       <!-- ANSWER ENGINE SEARCH BOX -->
       <div class="rv-search-wrap">
         <div class="rv-search-box">
-          <input type="text" id="rvSearchInput" class="rv-search-input" placeholder="Ask Gemini Live: flight delay, eSIM, ARST bus, saree..." />
+          <input type="text" id="rvSearchInput" class="rv-search-input" placeholder="Ask a question — current information, facts, travel, news..." />
           <button id="rvSearchBtn" class="rv-search-btn">Ask Engine</button>
         </div>
         <div id="rvAnswerRes" class="rv-answer-res"></div>
@@ -459,8 +468,8 @@
 
       <!-- ROTATING TICKER & E-E-A-T METADATA -->
       <div class="rv-ae">
-        <div class="rv-ah">Bou's Choice Answer Engine — SECURE • AUTHENTIC • VERIFIED</div>
-        <div id="rv-live" class="rv-al">Loading LIVE True News...</div>
+        <div class="rv-ah">Answer Engine — Dual AI • Web Sources • Transparent Results</div>
+        <div id="rv-live" class="rv-al">Ask a question to search current web sources...</div>
         <div class="rv-af">
           <span>📍 ${CFG.loc} (${CFG.coords})</span>
           <span id="rv-ip">IP: Detecting...</span>
@@ -524,20 +533,78 @@
     var sBtn = document.getElementById('rvSearchBtn');
     var sRes = document.getElementById('rvAnswerRes');
 
-    function executeQuery() {
-      if (!sInput || !sRes) return;
-      var q = sInput.value.toLowerCase().trim();
-      if (!q) return;
+    function appendText(parent, tag, value, className) {
+      var node = document.createElement(tag);
+      node.textContent = String(value || '');
+      if (className) node.className = className;
+      parent.appendChild(node);
+      return node;
+    }
 
-      var reply = CFG.qa["default"];
-      for (var key in CFG.qa) {
-        if (q.indexOf(key) !== -1) {
-          reply = CFG.qa[key];
-          break;
+    function appendModelResult(label, result, error) {
+      var section = document.createElement('section');
+      section.className = 'rv-ai-section';
+      appendText(section, 'div', label, 'rv-ai-heading');
+      if (result && result.answer) {
+        appendText(section, 'div', result.answer, 'rv-ai-answer');
+        if (result.model) appendText(section, 'small', 'Model: ' + result.model, '');
+        if (result.sources && result.sources.length) {
+          var list = document.createElement('ul');
+          list.className = 'rv-ai-sources';
+          result.sources.forEach(function(source) {
+            try {
+              var url = new URL(source.url);
+              if (url.protocol !== 'https:') return;
+              var item = document.createElement('li');
+              var link = document.createElement('a');
+              link.href = url.href;
+              link.target = '_blank';
+              link.rel = 'noopener noreferrer';
+              link.textContent = source.title || url.hostname;
+              item.appendChild(link);
+              list.appendChild(item);
+            } catch (e) {}
+          });
+          if (list.children.length) section.appendChild(list);
+        } else {
+          appendText(section, 'div', 'এই উত্তরের সঙ্গে কোনো যাচাইযোগ্য source link ফেরত আসেনি। তথ্যটি নিশ্চিত ধরে নেবেন না।', 'rv-ai-note');
         }
+      } else {
+        appendText(section, 'div', error || 'এই AI উত্তর দিতে পারেনি।', 'rv-ai-note');
       }
-      sRes.innerHTML = '<strong>Gemini Live Grounding:</strong> ' + reply;
+      sRes.appendChild(section);
+    }
+
+    async function executeQuery() {
+      if (!sInput || !sRes || !sBtn) return;
+      var question = sInput.value.trim();
+      if (!question) return;
+      sBtn.disabled = true;
+      sBtn.textContent = 'Searching...';
+      sRes.replaceChildren();
       sRes.style.display = 'block';
+      appendText(sRes, 'div', 'Gemini ও OpenRouter-এ প্রশ্ন পাঠানো হচ্ছে; ওয়েবের উৎস খোঁজা হচ্ছে...', 'rv-ai-note');
+      try {
+        var response = await fetch('https://cocvghuj-trtt-news-bot.vercel.app/api/answer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: question })
+        });
+        var payload = await response.json().catch(function() { return {}; });
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Answer Engine সাময়িকভাবে কাজ করছে না।');
+        }
+        sRes.replaceChildren();
+        appendModelResult('Gemini — Google Search grounding', payload.results.gemini, payload.errors && payload.errors.gemini);
+        appendModelResult('OpenRouter — Independent web-search check', payload.results.openrouter, payload.errors && payload.errors.openrouter);
+        appendText(sRes, 'div', payload.note || 'উত্তর AI তৈরি করেছে; গুরুত্বপূর্ণ সিদ্ধান্তের আগে উৎস যাচাই করুন।', 'rv-ai-note');
+      } catch (error) {
+        sRes.replaceChildren();
+        appendText(sRes, 'div', error && error.message ? error.message : 'সংযোগ ব্যর্থ হয়েছে। পরে আবার চেষ্টা করুন।', 'rv-ai-note');
+      } finally {
+        sBtn.disabled = false;
+        sBtn.textContent = 'Ask Engine';
+      }
     }
 
     if (sBtn) sBtn.onclick = executeQuery;
