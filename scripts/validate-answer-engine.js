@@ -27,7 +27,8 @@ assert.ok(api.includes('process.env.GEMINI_API_KEY'), 'Gemini key must be server
 assert.ok(api.includes('process.env.OPENROUTER_API_KEY'), 'OpenRouter key must be server-side.');
 assert.ok(!/AIza[0-9A-Za-z_-]{20,}|sk-or-v1-[0-9a-f]{20,}/.test(api + browser), 'A provider secret appears hard-coded.');
 assert.ok(api.includes('max_tool_calls: 3'), 'OpenRouter web-search tool-call limit is missing.');
-assert.ok(api.includes('max_total_results: 10'), 'OpenRouter result limit is missing.');
+assert.ok(api.includes('max_results: 5') && api.includes('max_uses: 3'), 'OpenRouter web-search result and use limits are missing.');
+assert.ok(!api.includes('temperature: 0.2') && !api.includes('max_tokens: 900'), 'Provider request includes unsupported legacy generation parameters.');
 assert.ok(browser.includes('/api/answer'), 'Browser client must call the Answer Engine API.');
 assert.ok(browser.includes('https://cocvghuj-trtt-news-bot.vercel.app/api/answer'), 'Browser API endpoint changed; review before changing it.');
 assert.ok(build.includes("'api'"), 'Static build must exclude server-only API source.');
