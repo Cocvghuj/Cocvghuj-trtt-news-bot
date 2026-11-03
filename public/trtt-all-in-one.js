@@ -39,20 +39,12 @@
       "Golapi #ff2e63 — ROSE PIAJI — VERIFIED ✓ — Bou's Choice",
       "Kathali #FFC300 — GOLDEN PIAJI — AUTHENTIC ✓ — Sanluri Italy",
       "Piaji #AF7AC5 — VELVET PIAJI — SECURE ✓ — Final Vault 2026",
-      "Roksana is thinking — OpenRouter & Gemini Live True News",
+      "Dual AI source-assisted answers are available",
       "Bou's Choice Final Vault — 12 Vaults — 3 Colors — 1 Love",
       "IP-based personalization ACTIVE — Your Vault is LIVE",
       "Answer Engine — Real Information Grounded in Sanluri & CAG Airport",
       "This Vault is for You... — 8.4TB Verified Memory — Sanluri Italy"
     ],
-    qa: {
-      "default": "TRTT Answer Engine: European flight logistics, 600€ EC 261 claims, 5G eSIMs, and direct transfers from Cagliari (CAG) to Sanluri, Sardinia.",
-      "cagliari": "Cagliari Elmas Airport (CAG) to Sanluri: ARST Bus line 110/118 takes 45 mins (~€5), or Kiwitaxi fixed pre-booked airport ride.",
-      "flight": "Flight delays over 3 hours within Europe qualify for up to 600€ under EC 261 regulation via AirHelp (Marker 787950 verified).",
-      "esim": "Airalo & Saily provide instant 5G data across 39 European countries without roaming charges.",
-      "saree": "Roksana Boutique House Vault: Crown Jewel 'Golapi Kathali Piaji' handwoven Jamdani & Silk collection. From Sanluri to Dhaka.",
-      "hotel": "Hotel Bernini direct booking model (hotel-bernini.it) saves 15-20% compared to standard OTA commissions."
-    }
   };
 
   var CSS = `
