@@ -86,7 +86,7 @@
     var brand = document.createElement("a");
     brand.className = "trtt-logo-txt";
     brand.href = "/";
-    brand.textContent = typeof config.brand === "string" ? config.brand : "TRTT VOYAGEHUB";
+    brand.textContent = typeof config.brand === "string" ? config.brand : "TRTT VOYAGE";
     bar.appendChild(brand);
 
     var toggle = document.createElement("button");
