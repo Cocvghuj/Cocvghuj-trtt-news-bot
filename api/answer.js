@@ -47,7 +47,10 @@ async function callGemini(question) {
     }
   );
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error("Gemini request failed (" + response.status + ")");
+  if (!response.ok) {
+    const detail = data.error && data.error.message ? String(data.error.message) : "Provider returned an error";
+    throw new Error("HTTP " + response.status + ": " + detail.slice(0, 220));
+  }
   const candidate = data.candidates && data.candidates[0];
   const answer = candidate && candidate.content && candidate.content.parts
     ? candidate.content.parts.map((part) => part.text || "").join("").trim()
@@ -95,7 +98,10 @@ async function callOpenRouter(question) {
     })
   });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error("OpenRouter request failed (" + response.status + ")");
+  if (!response.ok) {
+    const detail = data.error && data.error.message ? String(data.error.message) : (data.message ? String(data.message) : "Provider returned an error");
+    throw new Error("HTTP " + response.status + ": " + detail.slice(0, 220));
+  }
   const message = data.choices && data.choices[0] && data.choices[0].message;
   const answer = message && typeof message.content === "string" ? message.content.trim() : "";
   if (!answer) throw new Error("OpenRouter returned no answer");
@@ -110,6 +116,16 @@ async function callOpenRouter(question) {
     sources,
     grounded: sources.length > 0
   };
+}
+
+function safeProviderError(reason, provider) {
+  let message = reason && reason.message ? String(reason.message) : "Request failed";
+  message = message
+    .replace(/AIza[0-9A-Za-z_-]{20,}/g, "[redacted]")
+    .replace(/sk-or-v1-[0-9a-f]{20,}/gi, "[redacted]")
+    .replace(/Bearer\\s+[^\\s]+/gi, "Bearer [redacted]")
+    .slice(0, 260);
+  return provider + ": " + message;
 }
 
 module.exports = async function handler(req, res) {
@@ -150,11 +166,12 @@ module.exports = async function handler(req, res) {
   const gemini = results[0].status === "fulfilled" ? results[0].value : null;
   const openrouter = results[1].status === "fulfilled" ? results[1].value : null;
   const errors = {
-    gemini: gemini ? null : "Gemini could not complete this request.",
-    openrouter: openrouter ? null : "OpenRouter could not complete this request."
+    gemini: gemini ? null : safeProviderError(results[0].reason, "Gemini"),
+    openrouter: openrouter ? null : safeProviderError(results[1].reason, "OpenRouter")
   };
   if (!gemini && !openrouter) {
-    return res.status(502).json({ ok: false, error: "Both AI services are temporarily unavailable. Please try again later.", errors });
+    console.error("Answer Engine provider failures:", JSON.stringify(errors));
+    return res.status(502).json({ ok: false, error: "Both AI providers failed. See the provider-specific errors.", errors });
   }
   return res.status(200).json({
     ok: true,
