@@ -12,7 +12,7 @@ on:
         required: true
         type: string
   schedule:
-    - cron: '0 7,13,19 * * *' # 9AM,3PM,9PM Italy - Auto Start Tomorrow
+    - cron: '0 7,13,19 * * *' # 3x DAILY - 9AM, 3PM, 9PM Italy Time
   push:
     branches: [main]
 
@@ -26,15 +26,18 @@ concurrency:
 jobs:
   draft:
     name: Google Compliant Draft + Traffic + Vercel Ref
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 20
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
           persist-credentials: true
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python Runtime
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
@@ -42,7 +45,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt || pip install google-genai google-auth google-api-python-client requests python-slugify
 
       - name: Validate Tests - No Bug Allowed
         run: python -m unittest discover -s tests -v
@@ -73,6 +76,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add drafted.txt
+          git add drafted.txt || true
           git commit -m "Million Dollar - Record draft - Marker 787950 LOCKED tp.st tIZcbMOB FIXED - Google Title 1-100 Desc 120-160 - Vercel Ref - No Duplicate [skip ci]" || echo "No changes"
           git push origin HEAD:main || true
