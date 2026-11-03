@@ -707,7 +707,7 @@ class DraftRecoveryTests(unittest.TestCase):
             self.assertEqual(len(service.posts_api.items["blog-2"]), 1)
             self.assertEqual(service.posts_api.insert_attempts, ["blog-1", "blog-2", "blog-2"])
             with open(history_path, "r", encoding="utf-8") as handle:
-                self.assertEqual(handle.read(), main.topic_history_key(topic) + "\\n")
+                self.assertEqual(handle.read(), main.topic_history_key(topic) + "\n")
 
 
 class DraftWorkflowFailClosedTests(unittest.TestCase):
