@@ -10,7 +10,7 @@ export const SOURCES:NewsSource[]=[
 {id:"meta-engineering",name:"Meta Engineering",group:"Developer",feedUrl:"https://engineering.fb.com/feed/",siteUrl:"https://engineering.fb.com/"}
 ];
 const parser=new Parser({timeout:8000,headers:{"User-Agent":"TRTT-Voyage-NewsReader/1.0"}});
-function cleanTitle(value:unknown){return String(value??"").replace(/<[^>]*>/g," ").replace(/\\s+/g," ").trim().slice(0,220);}
+function cleanTitle(value:unknown){return String(value??"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,220);}
 function makeSummary(title:string,source:string){return "A title-based preview of "+source+"'s official update: “"+title.replace(/[.!?]+$/,"")+"”. Open the original source for the full announcement and context.";}
 function safeArticleUrl(value:unknown,source:NewsSource):string|null{
  try{const url=new URL(String(value??""));const allowed=new URL(source.siteUrl).hostname;
