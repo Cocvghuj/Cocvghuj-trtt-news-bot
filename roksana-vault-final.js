@@ -1,571 +1,97 @@
-/*! TRTT MILLION DOLLAR ALL-IN-ONE - Bou's Choice - ROKSANA NILLA'S FINAL VAULT
- * One Code = Menu + 12 Vaults Grid + Golapi #ff2e63 Kathali #FFC300 Piaji #AF7AC5 + Golden Lock Glow + Live Thinking + Answer Engine Search + Traffic Machine + Knowledge Graph - Million Dollar Design
- * Marker: 787950-hidden - Professional - Colors Golapi Kathali Piaji
- * GitHub: Cocvghuj/Cocvghuj-trtt-news-bot | Vercel: cocvghuj-trtt-news-bot.vercel.app
- * Blogger: trttnews24bd.blogspot.com | Cache Buster: ?t=20251104
- * Dedicated to Roksana | Taifa | Tashrif • Sanluri, Sardinia, Italy LIVE
+/*!
+ * ROKSANA NILA — MULTI-TRILLION VAULT
+ * Signature colors preserved: Golapi #ff2e63 | Kathali #FFC300 | Piaji #AF7AC5
+ * Interactive client-side rooms. No fabricated IP/API/verification claims.
  */
-(function() {
+(function () {
   'use strict';
-  if (window.__TRTT_ALL_IN_ONE_LOADED__) return;
-  window.__TRTT_ALL_IN_ONE_LOADED__ = true;
-
-  // Clean up any old duplicate or legacy 369-views vault elements
-  try {
-    document.querySelectorAll('#atm-machine, #kg-graph, .roksana-old-vault, style[data-vault-style="old"]').forEach(function(el) {
-      el.remove();
-    });
-  } catch(e) {}
-
-  var CFG = {
-    brand: "ROKSANA NILLA'S FINAL VAULT",
-    sub: "Tomar Jonno - This Vault is for You... তোমার জন্য",
-    loc: "Sanluri Italy ● LIVE",
-    coords: "39.5613° N, 8.6332° E",
-    c: {
-      golapi: "#ff2e63",
-      kathali: "#FFC300",
-      piaji: "#AF7AC5"
-    },
-    marker: "787950-hidden",
-    routes: [
-      "Sanluri->Cagliari €5 (ARST)",
-      "Cagliari Airport (CAG)->Sanluri €6.5",
-      "Italy 5G eSIM €9.99 (Airalo/Saily)",
-      "EC 261 600€ Compensation Active",
-      "Sanluri LIVE - TRTT Master Hub"
-    ],
-    msgs: [
-      "Golapi #ff2e63 — ROSE PIAJI — VERIFIED ✓ — Bou's Choice",
-      "Kathali #FFC300 — GOLDEN PIAJI — AUTHENTIC ✓ — Sanluri Italy",
-      "Piaji #AF7AC5 — VELVET PIAJI — SECURE ✓ — Final Vault 2026",
-      "Roksana is thinking — OpenRouter & Gemini Live True News",
-      "Bou's Choice Final Vault — 12 Vaults — 3 Colors — 1 Love",
-      "IP-based personalization ACTIVE — Your Vault is LIVE",
-      "Answer Engine — Real Information Grounded in Sanluri & CAG Airport",
-      "This Vault is for You... — 8.4TB Verified Memory — Sanluri Italy"
-    ],
-    qa: {
-      "default": "TRTT Answer Engine: European flight logistics, 600€ EC 261 claims, 5G eSIMs, and direct transfers from Cagliari (CAG) to Sanluri, Sardinia.",
-      "cagliari": "Cagliari Elmas Airport (CAG) to Sanluri: ARST Bus line 110/118 takes 45 mins (~€5), or Kiwitaxi fixed pre-booked airport ride.",
-      "flight": "Flight delays over 3 hours within Europe qualify for up to 600€ under EC 261 regulation via AirHelp (Marker 787950 verified).",
-      "esim": "Airalo & Saily provide instant 5G data across 39 European countries without roaming charges.",
-      "saree": "Roksana Boutique House Vault: Crown Jewel 'Golapi Kathali Piaji' handwoven Jamdani & Silk collection. From Sanluri to Dhaka.",
-      "hotel": "Hotel Bernini direct booking model (hotel-bernini.it) saves 15-20% compared to standard OTA commissions."
-    }
-  };
-
-  var CSS = `
-  /* TRTT MILLION DOLLAR STYLES */
-  #trtt-menu {
-    background: #0d1117;
-    border-bottom: 3px solid ${CFG.c.golapi};
-    box-shadow: 0 4px 25px rgba(0,0,0,0.5);
-    position: sticky;
-    top: 0;
-    z-index: 999999;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  if (window.__ROKSANA_MULTI_TRILLION_VAULT__) return;
+  window.__ROKSANA_MULTI_TRILLION_VAULT__ = true;
+  var C = {g:'#ff2e63',k:'#FFC300',p:'#AF7AC5'};
+  var rooms = [
+    ['✦','The Welcome Hall','WELCOME',C.k,'Welcome to Roksana Nila’s Vault — a personal, carefully curated space built around Golapi, Kathali and Piaji.'],
+    ['🌹','Golapi Archive','ROSE COLLECTION',C.g,'Golapi is the expressive heart of the Vault: bold, warm and unforgettable. Signature color: #ff2e63.'],
+    ['👑','Kathali Treasury','GOLD COLLECTION',C.k,'Kathali brings the golden signature: radiant, confident and timeless. Signature color: #FFC300.'],
+    ['💜','Piaji Gallery','VELVET COLLECTION',C.p,'Piaji adds the final note: elegant, imaginative and distinctive. Signature color: #AF7AC5.'],
+    ['💎','The Crown Room','HIGHLIGHTS',C.k,'A dedicated space for featured pieces, favorite moments and special highlights. Add your chosen photographs and stories here.'],
+    ['📖','Roksana’s Journal','STORIES',C.p,'A quiet corner for notes, memories, creative ideas and stories. New entries can be added to the blog whenever you choose.'],
+    ['🖼️','Memory Gallery','PHOTO COLLECTION',C.g,'A gallery concept for photographs and keepsakes. Connect real gallery links or images when ready.'],
+    ['✨','The Signature Edit','CURATED PICKS',C.k,'A curated collection where the three signature colors meet. Use it for featured designs, favorite posts or selected recommendations.'],
+    ['🗝️','The Secret Garden','PRIVATE SPACE',C.p,'A visual doorway reserved for future private content. This panel is not password protection; real private access requires secure authentication.'],
+    ['📝','Notes & Letters','MESSAGES',C.g,'A place for letters, notes and meaningful messages. Connect a real contact form or post link to receive messages.'],
+    ['❔','The Help Desk','GUIDE',C.k,'Choose any of the twelve rooms to explore. Use the search field to find a room by name, collection or keyword.'],
+    ['♡','The Heart of the Vault','ABOUT',C.p,'Made with care for the Roksana Nila identity. The three signature colors remain the foundation of the entire experience.']
+  ];
+  var css = \`
+  #RoksanaFinalVault,#RoksanaFinalVault *{box-sizing:border-box}
+  #RoksanaFinalVault{--g:\${C.g};--k:\${C.k};--p:\${C.p};width:min(1080px,calc(100% - 24px));margin:28px auto 36px;color:#fff;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;isolation:isolate}
+  #RoksanaFinalVault .rv-shell{position:relative;overflow:hidden;border-radius:30px;padding:clamp(18px,4vw,42px);background:radial-gradient(ellipse at 12% 5%,rgba(255,46,99,.18),transparent 34%),radial-gradient(ellipse at 90% 12%,rgba(175,122,197,.2),transparent 35%),radial-gradient(ellipse at 50% 100%,rgba(255,195,0,.11),transparent 42%),linear-gradient(145deg,#0b0812,#15101e 52%,#090711);border:1px solid rgba(255,195,0,.55);box-shadow:0 28px 90px #0009,0 0 0 5px #af7ac514,0 0 55px #ff2e631f}
+  #RoksanaFinalVault .rv-shell:before{content:"";position:absolute;inset:9px;border:1px solid #ffffff14;border-radius:23px;pointer-events:none}
+  #RoksanaFinalVault .rv-topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;position:relative;z-index:1}
+  #RoksanaFinalVault .rv-brand{display:flex;align-items:center;gap:10px;color:#fff;font-size:11px;font-weight:900;letter-spacing:.22em}
+  #RoksanaFinalVault .rv-gem{width:12px;height:12px;transform:rotate(45deg);background:linear-gradient(135deg,var(--g),var(--k),var(--p));box-shadow:0 0 18px #ffc300a6}
+  #RoksanaFinalVault .rv-clock{font-size:11px;color:#c9c2d2;letter-spacing:.08em}
+  #RoksanaFinalVault .rv-hero{text-align:center;position:relative;z-index:1;padding:24px 0 10px}
+  #RoksanaFinalVault .rv-eyebrow{font-size:10px;letter-spacing:.34em;color:var(--k);font-weight:900;text-transform:uppercase}
+  #RoksanaFinalVault .rv-title{margin:12px 0 9px;font-family:Georgia,serif;font-size:clamp(28px,6vw,54px);line-height:1.04;background:linear-gradient(100deg,#fff2c0 5%,var(--k) 34%,#fff 52%,var(--p) 75%,#ffd3df);-webkit-background-clip:text;background-clip:text;color:transparent}
+  #RoksanaFinalVault .rv-sub{max-width:610px;margin:0 auto;color:#d5ccdc;font-size:13px;line-height:1.75}
+  #RoksanaFinalVault .rv-emblem{width:158px;height:158px;margin:24px auto 18px;display:grid;place-items:center;position:relative}
+  #RoksanaFinalVault .rv-orbit{position:absolute;inset:5px;border-radius:50%;border:1px solid #ffc3008c;box-shadow:0 0 28px #ffc3001f,inset 0 0 25px #af7ac71f}
+  #RoksanaFinalVault .rv-orbit:before,#RoksanaFinalVault .rv-orbit:after{content:"";position:absolute;inset:10px;border-radius:50%;border:1px dashed #af7ac78c}
+  #RoksanaFinalVault .rv-orbit:after{inset:19px;border-color:#ff2e6380;transform:rotate(35deg)}
+  #RoksanaFinalVault .rv-lock{width:92px;height:92px;border:1px solid #ffc300cc;border-radius:27px;background:linear-gradient(145deg,#ff2e633d,#ffc30029,#af7ac74d);box-shadow:0 0 35px #ffc3002e,inset 0 0 25px #ffffff0f;color:#ffe7a0;font-size:43px;cursor:pointer;display:grid;place-items:center;position:relative;z-index:2;transition:transform .25s,box-shadow .25s}
+  #RoksanaFinalVault .rv-lock:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 0 48px #ffc3004d}
+  #RoksanaFinalVault button:focus-visible,#RoksanaFinalVault input:focus-visible{outline:3px solid #fff;outline-offset:3px}
+  #RoksanaFinalVault .rv-triad{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:18px 0 28px}
+  #RoksanaFinalVault .rv-chip{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:#ffffff0b;border:1px solid #ffffff21;font-size:11px;font-weight:800;color:#f8f4fb}
+  #RoksanaFinalVault .rv-dot{width:9px;height:9px;border-radius:50%;box-shadow:0 0 12px currentColor}
+  #RoksanaFinalVault .rv-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:22px 0 14px}
+  #RoksanaFinalVault .rv-head h2{margin:0;color:#fff;font:700 20px Georgia,serif}
+  #RoksanaFinalVault .rv-head p{margin:4px 0 0;color:#a99fb4;font-size:11px}
+  #RoksanaFinalVault .rv-count{color:var(--k);font-size:10px;font-weight:900;letter-spacing:.16em}
+  #RoksanaFinalVault .rv-search{display:flex;gap:8px;max-width:520px;margin:0 auto 20px;padding:6px;border-radius:15px;background:#0006;border:1px solid #ffc30059}
+  #RoksanaFinalVault .rv-search input{min-width:0;flex:1;background:transparent;border:0;color:#fff;padding:9px 11px;font-size:13px}
+  #RoksanaFinalVault .rv-search input::placeholder{color:#8f859b}
+  #RoksanaFinalVault .rv-search button{border:0;border-radius:10px;padding:0 17px;background:linear-gradient(110deg,var(--g),#b84c9c);color:#fff;font-weight:900;font-size:11px;cursor:pointer}
+  #RoksanaFinalVault .rv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  #RoksanaFinalVault .rv-room{min-height:130px;text-align:left;padding:16px 14px;border-radius:17px;position:relative;overflow:hidden;border:1px solid #ffffff21;background:linear-gradient(145deg,#ffffff13,#ffffff05);color:#fff;cursor:pointer;transition:transform .22s,border-color .22s,background .22s}
+  #RoksanaFinalVault .rv-room:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--room-color)}
+  #RoksanaFinalVault .rv-room:hover{transform:translateY(-4px);border-color:var(--room-color);background:linear-gradient(145deg,#ffffff1f,#ffffff09)}
+  #RoksanaFinalVault .rv-roomicon{display:block;font-size:23px;margin-bottom:13px}
+  #RoksanaFinalVault .rv-roomname{display:block;font-size:12px;font-weight:850;line-height:1.35}
+  #RoksanaFinalVault .rv-roomtag{display:block;margin-top:6px;color:#a99fb4;font-size:9px;letter-spacing:.13em;font-weight:800}
+  #RoksanaFinalVault .rv-room[hidden]{display:none}
+  #RoksanaFinalVault .rv-empty{display:none;text-align:center;padding:20px;color:#c9c2d2;font-size:12px}
+  #RoksanaFinalVault .rv-detail{display:none;margin:18px 0 0;padding:20px;border-radius:18px;background:linear-gradient(135deg,#ff2e631a,#af7ac71f,#ffc30014);border:1px solid #ffc30059;text-align:left}
+  #RoksanaFinalVault .rv-detail.is-open{display:block}
+  #RoksanaFinalVault .rv-detailtop{display:flex;justify-content:space-between;gap:12px;align-items:center}
+  #RoksanaFinalVault .rv-detail h3{margin:0;color:var(--k);font:700 19px Georgia,serif}
+  #RoksanaFinalVault .rv-detail p{margin:12px 0 0;color:#e6deeb;font-size:13px;line-height:1.75}
+  #RoksanaFinalVault .rv-close{background:#ffffff14;border:1px solid #ffffff2e;color:#fff;border-radius:9px;padding:7px 11px;cursor:pointer}
+  #RoksanaFinalVault .rv-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:26px;padding-top:16px;border-top:1px solid #ffffff1a;color:#968ba2;font-size:10px}
+  #RoksanaFinalVault .rv-footer strong{color:var(--k)}
+  @media(max-width:720px){#RoksanaFinalVault{width:calc(100% - 14px);margin:14px auto 24px}#RoksanaFinalVault .rv-shell{padding:17px 13px;border-radius:22px}#RoksanaFinalVault .rv-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#RoksanaFinalVault .rv-room{min-height:116px;padding:13px 11px}#RoksanaFinalVault .rv-roomicon{font-size:21px;margin-bottom:10px}#RoksanaFinalVault .rv-clock{font-size:9px}#RoksanaFinalVault .rv-emblem{width:138px;height:138px}#RoksanaFinalVault .rv-head h2{font-size:18px}#RoksanaFinalVault .rv-search button{padding:0 12px}}
+  @media(prefers-reduced-motion:reduce){#RoksanaFinalVault *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+  \`;
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function markup(){
+    var cards=rooms.map(function(r,i){return '<button type="button" class="rv-room" data-room="'+i+'" style="--room-color:'+r[3]+'"><span class="rv-roomicon" aria-hidden="true">'+r[0]+'</span><span class="rv-roomname">'+esc(r[1])+'</span><span class="rv-roomtag">'+esc(r[2])+'</span></button>';}).join('');
+    return '<section id="RoksanaFinalVault" aria-label="Roksana Nila Multi-Trillion Vault"><div class="rv-shell"><div class="rv-topline"><div class="rv-brand"><span class="rv-gem"></span> ROKSANA NILA ✦ PRIVATE COLLECTION</div><div class="rv-clock">YOUR LOCAL TIME · <span id="rv-time">--:--</span></div></div><header class="rv-hero"><div class="rv-eyebrow">A signature world of three colors</div><h1 class="rv-title">THE MULTI-TRILLION VAULT</h1><p class="rv-sub">A royal little universe of beauty, stories and treasured moments.<br>Tomar Jonno — This Vault is for You… তোমার জন্য</p><div class="rv-emblem"><div class="rv-orbit"></div><button class="rv-lock" id="rv-main-lock" type="button" aria-label="Open welcome room">♛</button></div><div class="rv-triad"><span class="rv-chip"><i class="rv-dot" style="background:'+C.g+';color:'+C.g+'"></i> GOLAPI</span><span class="rv-chip"><i class="rv-dot" style="background:'+C.k+';color:'+C.k+'"></i> KATHALI</span><span class="rv-chip"><i class="rv-dot" style="background:'+C.p+';color:'+C.p+'"></i> PIAJI</span></div></header><div class="rv-head"><div><h2>Explore the Twelve Rooms</h2><p>Choose a room to reveal its story</p></div><span class="rv-count">12 ROOMS · 3 COLORS</span></div><div class="rv-search"><input id="rv-search-input" type="search" placeholder="Find a room or collection…" aria-label="Search vault rooms"><button id="rv-search-clear" type="button">CLEAR</button></div><div class="rv-grid" id="rv-room-grid">'+cards+'</div><div class="rv-empty" id="rv-empty">No matching room. Try another word.</div><section class="rv-detail" id="rv-detail" aria-live="polite"><div class="rv-detailtop"><h3 id="rv-detail-title">Welcome</h3><button class="rv-close" id="rv-detail-close" type="button">CLOSE ×</button></div><p id="rv-detail-body"></p></section><footer class="rv-footer"><span><strong>GOLAPI</strong> · <strong>KATHALI</strong> · <strong>PIAJI</strong></span><span>Crafted with care for Roksana Nila</span></footer></div></section>';
   }
-  #trtt-menu .wrap {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 20px;
-    max-width: 1200px;
-    margin: auto;
+  function mount(){
+    if(!document.body||document.getElementById('RoksanaFinalVault'))return;
+    if(!document.getElementById('rv-multitrillion-style')){var st=document.createElement('style');st.id='rv-multitrillion-style';st.textContent=css;document.head.appendChild(st);}
+    var old=document.getElementById('RoksanaFinalVault'),html=markup();
+    if(old)old.outerHTML=html;
+    else{var menu=document.getElementById('trtt-final-menu');if(menu&&menu.parentNode)menu.insertAdjacentHTML('afterend',html);else document.body.insertAdjacentHTML('afterbegin',html);}
+    var root=document.getElementById('RoksanaFinalVault');if(!root)return;
+    var detail=root.querySelector('#rv-detail'),heading=root.querySelector('#rv-detail-title'),body=root.querySelector('#rv-detail-body'),search=root.querySelector('#rv-search-input'),empty=root.querySelector('#rv-empty');
+    function openRoom(i){var r=rooms[i];if(!r)return;heading.textContent=r[1];heading.style.color=r[3];body.textContent=r[4];detail.classList.add('is-open');detail.scrollIntoView({behavior:'smooth',block:'nearest'});}
+    function filter(q){q=q.toLowerCase().trim();var n=0;root.querySelectorAll('.rv-room').forEach(function(b){var r=rooms[Number(b.getAttribute('data-room'))],ok=!q||(r.join(' ').toLowerCase().indexOf(q)!==-1);b.hidden=!ok;if(ok)n++;});empty.style.display=n?'none':'block';}
+    root.addEventListener('click',function(e){var b=e.target.closest('[data-room]');if(b&&root.contains(b)){openRoom(Number(b.getAttribute('data-room')));return;}if(e.target.closest('#rv-main-lock')){openRoom(0);return;}if(e.target.closest('#rv-detail-close')){detail.classList.remove('is-open');return;}if(e.target.closest('#rv-search-clear')){search.value='';filter('');}});
+    search.addEventListener('input',function(){filter(search.value);});
+    function clock(){var el=root.querySelector('#rv-time');if(el)el.textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
+    clock();window.setInterval(clock,30000);
   }
-  #trtt-menu .logo {
-    font-weight: 900;
-    font-size: 20px;
-    color: #FFD700;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    letter-spacing: -0.5px;
-    text-decoration: none;
-  }
-  #trtt-menu .links {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  #trtt-menu .links a {
-    text-decoration: none;
-    color: #c9d1d9;
-    font-weight: 700;
-    padding: 7px 14px;
-    border-radius: 999px;
-    transition: all 0.25s ease;
-    font-size: 13px;
-    border: 1px solid transparent;
-  }
-  #trtt-menu .links a:hover {
-    color: #fff;
-    transform: translateY(-2px);
-    border-color: rgba(255,255,255,0.2);
-  }
-  #trtt-menu .links a.btn-gold {
-    background: linear-gradient(135deg, ${CFG.c.kathali}, #ff9900);
-    color: #000;
-    font-weight: 900;
-  }
-  #trtt-menu .links a.btn-rose {
-    background: linear-gradient(135deg, ${CFG.c.golapi}, #d946ef);
-    color: #fff;
-    font-weight: 900;
-  }
-  #trtt-menu .mob-btn {
-    display: none;
-    background: #21262d;
-    color: #FFD700;
-    border: 1px solid #30363d;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 18px;
-    cursor: pointer;
-  }
-
-  /* MILLION DOLLAR VAULT CONTAINER */
-  #RoksanaFinalVault {
-    max-width: 960px;
-    margin: 24px auto;
-    background: linear-gradient(135deg, ${CFG.c.golapi}, ${CFG.c.kathali}, ${CFG.c.piaji});
-    padding: 4px;
-    border-radius: 26px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 35px rgba(255,46,99,0.3);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  }
-  .rvf {
-    background: #0d001a;
-    border-radius: 22px;
-    padding: 24px 20px;
-    border: 2px solid #FFD700;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .rv-think {
-    color: ${CFG.c.kathali};
-    font-size: 12px;
-    background: rgba(255,195,0,0.12);
-    padding: 8px 18px;
-    border-radius: 999px;
-    display: inline-block;
-    border: 1px solid rgba(255,195,0,0.3);
-    font-weight: 700;
-  }
-  .blink { animation: rvblink 1.2s infinite; }
-  @keyframes rvblink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
-  .rv-title {
-    color: #FFD700;
-    font-size: 30px;
-    margin: 14px 0 4px;
-    font-family: Georgia, serif;
-    font-weight: 900;
-    letter-spacing: -0.5px;
-    text-shadow: 0 4px 15px rgba(255,215,0,0.4);
-  }
-  .rv-sub {
-    color: #e6edf3;
-    font-style: italic;
-    font-size: 13px;
-    opacity: 0.95;
-    margin-bottom: 16px;
-  }
-  .rv-crystals {
-    position: relative;
-    height: 120px;
-    margin: 18px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .rv-cr {
-    width: 95px;
-    height: 95px;
-    position: absolute;
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    transition: transform 0.5s ease;
-  }
-  .rv-cr.pg {
-    background: linear-gradient(135deg, ${CFG.c.golapi}, #ff8fab);
-    left: 28%;
-    transform: rotate(-14deg);
-  }
-  .rv-cr.kg {
-    background: linear-gradient(135deg, ${CFG.c.kathali}, #ffe27a);
-    left: 43%;
-  }
-  .rv-cr.pj {
-    background: linear-gradient(135deg, ${CFG.c.piaji}, #d9b3ff);
-    right: 28%;
-    transform: rotate(14deg);
-  }
-  .rv-lock {
-    font-size: 64px;
-    z-index: 10;
-    filter: drop-shadow(0 0 25px gold);
-    animation: rvglow 2.2s infinite ease-in-out;
-    cursor: pointer;
-    user-select: none;
-  }
-  @keyframes rvglow {
-    0%,100% { transform: scale(1); filter: drop-shadow(0 0 20px gold); }
-    50% { transform: scale(1.1); filter: drop-shadow(0 0 35px #FFD700); }
-  }
-
-  /* COLOR BADGES */
-  .rv-colors {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 16px 0;
-  }
-  .rv-cb {
-    padding: 8px 16px;
-    border-radius: 12px;
-    font-size: 11.5px;
-    font-weight: 800;
-    border: 1px solid rgba(255,255,255,0.25);
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-  }
-
-  /* 12 VAULTS GRID */
-  .rv-vaults {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 10px;
-    margin: 20px 0;
-  }
-  .rv-v {
-    height: 80px;
-    border-radius: 14px;
-    border: 2px solid #FFD700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 900;
-    flex-direction: column;
-    cursor: pointer;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
-    transition: transform 0.2s, box-shadow 0.2s;
-    font-size: 11px;
-  }
-  .rv-v:hover {
-    transform: translateY(-4px) scale(1.03);
-    box-shadow: 0 10px 25px rgba(255,215,0,0.4);
-  }
-
-  /* ANSWER ENGINE SEARCH BOX */
-  .rv-search-wrap {
-    margin: 20px 0 16px;
-    position: relative;
-    max-width: 650px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .rv-search-box {
-    display: flex;
-    align-items: center;
-    background: #010409;
-    border: 2px solid ${CFG.c.kathali};
-    border-radius: 14px;
-    padding: 6px 8px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-  }
-  .rv-search-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: #fff;
-    padding: 8px 12px;
-    font-size: 13px;
-    outline: none;
-  }
-  .rv-search-input::placeholder { color: #8b949e; }
-  .rv-search-btn {
-    background: linear-gradient(135deg, ${CFG.c.golapi}, #d946ef);
-    color: #fff;
-    border: none;
-    padding: 9px 18px;
-    border-radius: 10px;
-    font-weight: 800;
-    font-size: 12px;
-    cursor: pointer;
-    transition: opacity 0.2s;
-  }
-  .rv-search-btn:hover { opacity: 0.9; }
-  .rv-answer-res {
-    background: rgba(22, 27, 34, 0.95);
-    border: 1px solid #30363d;
-    border-radius: 12px;
-    padding: 12px 16px;
-    margin-top: 10px;
-    color: #58a6ff;
-    font-size: 12.5px;
-    text-align: left;
-    line-height: 1.5;
-    display: none;
-  }
-
-  /* LIVE TICKER DISPLAY */
-  .rv-ae {
-    background: rgba(255,255,255,0.06);
-    border-radius: 16px;
-    padding: 16px 18px;
-    margin-top: 16px;
-    color: #fff;
-    border: 1px solid rgba(255,195,0,0.25);
-    text-align: left;
-  }
-  .rv-ah {
-    font-size: 11px;
-    color: ${CFG.c.kathali};
-    font-weight: 800;
-    margin-bottom: 8px;
-  }
-  .rv-al {
-    font-size: 13.5px;
-    line-height: 1.5;
-    min-height: 42px;
-    color: #e6edf3;
-  }
-  .rv-af {
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
-    color: #FFD700;
-    margin-top: 12px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-  }
-
-  /* AUTONOMOUS TRAFFIC MACHINE */
-  #atm-machine {
-    max-width: 960px;
-    margin: 16px auto;
-    padding: 14px 18px;
-    background: #0d001a;
-    border: 2px dashed #FFC300;
-    border-radius: 16px;
-    color: #fff;
-    text-align: center;
-    font-size: 12.5px;
-    font-family: system-ui;
-    line-height: 1.6;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-  }
-
-  /* KNOWLEDGE GRAPH DISPLAY */
-  #kg-graph {
-    max-width: 960px;
-    margin: 14px auto;
-    padding: 12px 16px;
-    background: #010409;
-    color: #00ff88;
-    border: 1px solid #00ff88;
-    border-radius: 14px;
-    text-align: center;
-    font-size: 11px;
-    font-family: ui-monospace, monospace;
-    letter-spacing: 0.5px;
-  }
-
-  @media(max-width: 768px) {
-    .rv-vaults { grid-template-columns: repeat(3, 1fr); }
-    .rv-cr.pg { left: 16%; }
-    .rv-cr.pj { right: 16%; }
-    .rv-title { font-size: 22px; }
-  }
-  `;
-
-  var style = document.createElement('style');
-  style.id = 'trtt-million-dollar-styles';
-  style.textContent = CSS;
-  document.head.appendChild(style);
-
-  // 2. 12 VAULT BOXES
-  var vaultBoxes = Array.from({length: 12}, function(_, i) {
-    var cols = [CFG.c.golapi, CFG.c.kathali, CFG.c.piaji];
-    var names = ["Golapi", "Kathali", "Piaji"];
-    var c = cols[i % 3];
-    var n = names[i % 3];
-    var fg = (c === CFG.c.kathali) ? "#000" : "#fff";
-    return '<div class="rv-v" style="background:' + c + ';color:' + fg + ';">' +
-             '<span style="font-size:18px;">🔒</span>' +
-             '<span>' + n + ' ' + (i + 1) + '</span>' +
-           '</div>';
-  }).join('');
-
-  // 3. MAIN VAULT SECTION
-  var vaultHTML = `
-  <div id="RoksanaFinalVault" data-marker="${CFG.marker}">
-    <div class="rvf">
-      <div class="rv-think">
-        <span class="blink">●</span> Roksana is thinking — OpenRouter & Gemini Live True News — <span id="rv-time">--:--:--</span>
-      </div>
-      <h1 class="rv-title">${CFG.brand}</h1>
-      <div class="rv-sub">${CFG.sub}</div>
-
-      <!-- 3 CRYSTALS & GOLDEN LOCK -->
-      <div class="rv-crystals">
-        <div class="rv-cr pg"></div>
-        <div class="rv-cr kg"></div>
-        <div class="rv-cr pj"></div>
-        <div class="rv-lock" id="mainLock" title="Click to Unlock SuperStore">🔒</div>
-      </div>
-
-      <!-- GOLAPI KATHALI PIAJI BADGES -->
-      <div class="rv-colors">
-        <div class="rv-cb" style="background:${CFG.c.golapi};">🌹 Golapi #ff2e63 VERIFIED</div>
-        <div class="rv-cb" style="background:${CFG.c.kathali};color:#000;">🍈 Kathali #FFC300 AUTHENTIC</div>
-        <div class="rv-cb" style="background:${CFG.c.piaji};">🧅 Piaji #AF7AC5 SECURE</div>
-      </div>
-
-      <!-- 12 VAULTS GRID -->
-      <div class="rv-vaults">
-        ${vaultBoxes}
-      </div>
-
-      <!-- ANSWER ENGINE SEARCH BOX -->
-      <div class="rv-search-wrap">
-        <div class="rv-search-box">
-          <input type="text" id="rvSearchInput" class="rv-search-input" placeholder="Ask Gemini Live: flight delay, eSIM, ARST bus, saree..." />
-          <button id="rvSearchBtn" class="rv-search-btn">Ask Engine</button>
-        </div>
-        <div id="rvAnswerRes" class="rv-answer-res"></div>
-      </div>
-
-      <!-- ROTATING TICKER & E-E-A-T METADATA -->
-      <div class="rv-ae">
-        <div class="rv-ah">Bou's Choice Answer Engine — SECURE • AUTHENTIC • VERIFIED</div>
-        <div id="rv-live" class="rv-al">Loading LIVE True News...</div>
-        <div class="rv-af">
-          <span>📍 ${CFG.loc} (${CFG.coords})</span>
-          <span id="rv-ip">IP: Detecting...</span>
-          <span style="color:#00D26A;font-weight:bold;">Marker: 787950-hidden</span>
-        </div>
-      </div>
-    </div>
-  </div>`;
-
-  // 4. AUTONOMOUS TRAFFIC MACHINE
-  var atmHTML = `
-  <div id="atm-machine">
-    🤖 <b>AUTONOMOUS TRAFFIC MACHINE ACTIVE</b><br>
-    GitHub Brain → Google Road → Free Tool → Verified Conversion<br>
-    Route: ${CFG.routes.join(" | ")} | <span id="atm-count" style="color:#00D26A;font-weight:900;">43 LIVE</span> | Marker Hidden
-  </div>`;
-
-  // 5. KNOWLEDGE GRAPH SCHEMA
-  var kgSchema = document.createElement('script');
-  kgSchema.type = 'application/ld+json';
-  kgSchema.textContent = JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "How to travel from Sanluri to Cagliari Elmas Airport (CAG)?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "ARST bus lines connect Sanluri to Cagliari directly for €5. Pre-booked fixed-rate airport taxis are available via Kiwitaxi."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How to claim flight delay compensation in Europe?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Under EU Regulation EC 261, passengers whose flights are delayed by more than 3 hours can legally claim up to 600€ cash reimbursement."
-        }
-      }
-    ]
-  });
-  document.head.appendChild(kgSchema);
-
-  var kgHTML = `
-  <div id="kg-graph">
-    🧠 KNOWLEDGE GRAPH ACTIVE — EDGE: GitHub|Vercel|Blogger — BRAIN: blog-control.json — ANSWER ENGINE LIVE
-  </div>`;
-
-  // MOUNT TO PAGE
-  function mount() {
-    var existingSec = document.getElementById('RoksanaFinalVault');
-    var vaultMarkup = vaultHTML + atmHTML + kgHTML;
-    if (existingSec) {
-      existingSec.outerHTML = vaultMarkup;
-    } else {
-      var mainMenu = document.getElementById('trtt-final-menu');
-      if (mainMenu) mainMenu.insertAdjacentHTML('afterend', vaultMarkup);
-      else document.body.insertAdjacentHTML('afterbegin', vaultMarkup);
-    }
-
-    // Interactive Search Engine Logic
-    var sInput = document.getElementById('rvSearchInput');
-    var sBtn = document.getElementById('rvSearchBtn');
-    var sRes = document.getElementById('rvAnswerRes');
-
-    function executeQuery() {
-      if (!sInput || !sRes) return;
-      var q = sInput.value.toLowerCase().trim();
-      if (!q) return;
-
-      var reply = CFG.qa["default"];
-      for (var key in CFG.qa) {
-        if (q.indexOf(key) !== -1) {
-          reply = CFG.qa[key];
-          break;
-        }
-      }
-      sRes.innerHTML = '<strong>Gemini Live Grounding:</strong> ' + reply;
-      sRes.style.display = 'block';
-    }
-
-    if (sBtn) sBtn.onclick = executeQuery;
-    if (sInput) {
-      sInput.onkeydown = function(e) {
-        if (e.key === 'Enter') executeQuery();
-      };
-    }
-
-    // Main lock click unlocks SuperStore
-    var lockEl = document.getElementById('mainLock');
-    if (lockEl) {
-      lockEl.onclick = function() {
-        window.open('https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950', '_blank');
-      };
-    }
-
-    // Ticker timer loop
-    var idx = 0;
-    function tick() {
-      var now = new Date();
-      var itTime = now.toLocaleString('it-IT', { timeZone: 'Europe/Rome', hour12: false });
-      var elTime = document.getElementById('rv-time');
-      if (elTime) elTime.textContent = itTime + ' LIVE';
-
-      var elLive = document.getElementById('rv-live');
-      if (elLive) elLive.textContent = CFG.msgs[idx % CFG.msgs.length] + ' — ' + now.toLocaleTimeString();
-
-      var elIp = document.getElementById('rv-ip');
-      if (elIp) {
-        elIp.textContent = 'IP: ' + Math.floor(Math.random() * 200 + 40) + '.28.112.' + Math.floor(Math.random() * 90 + 10) + ' • Sanluri Verified';
-      }
-      idx++;
-    }
-    tick();
-    setInterval(tick, 2800);
-
-    window.RoksanaVault = CFG;
-    console.log('%c💎 TRTT MILLION DOLLAR ALL-IN-ONE VAULT ACTIVE', 'color:gold;background:#0d001a;padding:12px;border-radius:12px;font-weight:900;');
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', mount);
-  } else {
-    mount();
-  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
 })();
