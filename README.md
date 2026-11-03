@@ -57,6 +57,17 @@ python -m unittest discover -s tests -v
 npm run build
 ```
 
+
+## Roksana Nila Answer Engine
+
+The Answer Engine uses the Blogger-facing UI in `trtt-all-in-one.js` and the server-only Vercel function in `api/answer.js`. The browser asset mirror at `public/trtt-all-in-one.js` must remain identical. Provider secrets are server-side Vercel environment variables only: `GEMINI_API_KEY` and `OPENROUTER_API_KEY`.
+
+- Architecture and owner-side deployment steps: [ANSWER-ENGINE-DEPLOYMENT.md](./ANSWER-ENGINE-DEPLOYMENT.md)
+- One-shot Copilot task prompt: [COPILOT_ONE_SHOT_PROMPT.md](./COPILOT_ONE_SHOT_PROMPT.md)
+- Repository Copilot rules: [.github/copilot-instructions.md](./.github/copilot-instructions.md)
+
+Run `npm test` and `npm run build` before deployment. These checks are offline and do not consume AI API quota. The Answer Engine source is prepared in GitHub only; a Vercel deployment and one-time Blogger Layout gadget installation are separate owner-side steps. No GitHub push alone proves the live Blogger page changed.
+
 ## Security
 
 Blogger OAuth credentials belong only in GitHub Actions secrets. Never commit refresh tokens, client secrets, access tokens, or deployment credentials. Public Vercel assets must contain presentation code only.
