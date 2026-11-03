@@ -23,7 +23,7 @@ const PUBLIC_TEXT_FILES = new Set([
 ]);
 const PRIVATE_FILES = new Set(['build.js']);
 const IGNORED_DIRECTORIES = new Set([
-  '.git', '.github', 'dist', 'node_modules',
+  '.git', '.github', 'api', 'dist', 'node_modules',
   'tests', '__pycache__', '.venv', 'venv',
   'logs', 'private', 'data'
 ]);
