@@ -42,7 +42,7 @@ async function callGemini(question) {
         }] },
         contents: [{ role: "user", parts: [{ text: question }] }],
         tools: [{ google_search: {} }],
-        generationConfig: { temperature: 0.2, maxOutputTokens: 900 }
+        generationConfig: { maxOutputTokens: 900 }
       })
     }
   );
@@ -91,10 +91,9 @@ async function callOpenRouter(question) {
         },
         { role: "user", content: question }
       ],
-      tools: [{ type: "openrouter:web_search", parameters: { max_results: 5, max_total_results: 10 } }],
+      tools: [{ type: "openrouter:web_search", parameters: { max_results: 5, max_uses: 3 } }],
       max_tool_calls: 3,
-      temperature: 0.2,
-      max_tokens: 900
+      max_completion_tokens: 900
     })
   });
   const data = await response.json().catch(() => ({}));
