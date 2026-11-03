@@ -584,6 +584,13 @@
         });
         var payload = await response.json().catch(function() { return {}; });
         if (!response.ok || !payload.ok) {
+          if (payload.errors) {
+            sRes.replaceChildren();
+            appendModelResult('Gemini — Google Search grounding', payload.results && payload.results.gemini, payload.errors.gemini);
+            appendModelResult('OpenRouter — Independent web-search check', payload.results && payload.results.openrouter, payload.errors.openrouter);
+            appendText(sRes, 'div', payload.error || 'One or more AI providers failed. See details above.', 'rv-ai-note');
+            return;
+          }
           throw new Error(payload.error || 'Answer Engine সাময়িকভাবে কাজ করছে না।');
         }
         sRes.replaceChildren();
