@@ -65,6 +65,9 @@ def add_vercel_reference(content: str, url: str):
     return content.rstrip() + "\n\n" + block
 
 def main():
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
     import main as engine
     topic = os.environ.get("TRTT_NEWS_TOPIC","").strip()
     source_raw = os.environ.get("TRTT_OFFICIAL_SOURCE_URL","").strip()
