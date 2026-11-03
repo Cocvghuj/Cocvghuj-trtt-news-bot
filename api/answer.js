@@ -123,7 +123,7 @@ function safeProviderError(reason, provider) {
   message = message
     .replace(/AIza[0-9A-Za-z_-]{20,}/g, "[redacted]")
     .replace(/sk-or-v1-[0-9a-f]{20,}/gi, "[redacted]")
-    .replace(/Bearer\\s+[^\\s]+/gi, "Bearer [redacted]")
+    .replace(/Bearer\s+[^\s]+/gi, "Bearer [redacted]")
     .slice(0, 260);
   return provider + ": " + message;
 }
