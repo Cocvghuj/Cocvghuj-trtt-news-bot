@@ -1,0 +1,25 @@
+{
+  "brand": "FLIGHTSCOUT PRO",
+  "tagline": "Aviation & Flight Intelligence",
+  "theme": {
+    "primary": "#122b45",
+    "accent": "#f28c28",
+    "cyan": "#23b6c7",
+    "gold": "#f5c451",
+    "background": "#f6f9fc",
+    "surface": "#ffffff",
+    "text": "#26384b",
+    "muted": "#66788b"
+  },
+  "menu": [
+    {"id":"home","label":"Home","href":"/"},
+    {"id":"search","label":"Flight Search","href":"https://cocvghuj-trtt-news-bot.vercel.app/tools/flight-search.html"},
+    {"id":"deals","label":"Flight Deals","href":"/search/label/Flight%20Deals"},
+    {"id":"rights","label":"Passenger Rights","href":"/search/label/Passenger%20Rights"},
+    {"id":"airport","label":"Airport & Transit","href":"/search/label/Airport%20Transit"},
+    {"id":"guides","label":"Travel Guides","href":"/search/label/Europe%20Travel"},
+    {"id":"esim","label":"eSIM & Connectivity","href":"/search/label/eSIM"},
+    {"id":"about","label":"About","href":"/p/about-us.html"},
+    {"id":"contact","label":"Contact","href":"/p/contact-us.html"}
+  ]
+}
