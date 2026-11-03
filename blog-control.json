@@ -16,6 +16,7 @@
     { "id": "esim", "label": "eSIM Guide", "href": "/search/label/eSIM" },
     { "id": "flights", "label": "Flights", "href": "/search/label/Flights" },
     { "id": "hotels", "label": "Hotels", "href": "/search/label/Hotels" },
+    { "id": "baggage-checker", "label": "Baggage Size Checker", "href": "https://cocvghuj-trtt-news-bot.vercel.app/tools/baggage-size-checker.html" },
     { "id": "about", "label": "About Us", "href": "/p/about-us.html" },
     { "id": "contact", "label": "Contact", "href": "/p/contact.html" }
   ]

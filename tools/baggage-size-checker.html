@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#052962">
+  <meta name="description" content="Compare your cabin bag measurements with the size and weight allowance shown by your airline. Enter your own limits for a practical pre-flight check.">
+  <title>Cabin Bag Size Checker | TRTT VoyageHub</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #052962;
+      --blue: #00a8e8;
+      --ink: #172033;
+      --muted: #596579;
+      --line: #dbe3ee;
+      --surface: #fff;
+      --page: #f3f7fc;
+      --good: #087443;
+      --bad: #a32929;
+      --notice: #775300;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font: 16px/1.6 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: #075da8; }
+    .topbar { background: var(--navy); color: #fff; padding: 14px 20px; }
+    .topbar-inner, main, footer { width: min(820px, calc(100% - 32px)); margin-inline: auto; }
+    .topbar-inner { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .brand { color: #fff; font-weight: 850; text-decoration: none; letter-spacing: .02em; }
+    .topbar a:not(.brand) { color: #d8f3ff; font-size: .9rem; }
+    main { padding: 38px 0 52px; }
+    .intro { margin-bottom: 24px; }
+    .eyebrow { color: #075da8; font-size: .78rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+    h1 { margin: 8px 0 10px; color: var(--navy); font-size: clamp(2rem, 5vw, 3rem); line-height: 1.12; }
+    .intro p { max-width: 700px; margin: 0; color: var(--muted); }
+    .card { padding: clamp(20px, 4vw, 32px); background: var(--surface); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 12px 32px rgba(5, 41, 98, .07); }
+    .notice { margin: 0 0 22px; padding: 13px 15px; border-left: 4px solid #e2a900; border-radius: 8px; background: #fff8df; color: #493900; font-size: .92rem; }
+    fieldset { margin: 0; padding: 0; border: 0; }
+    fieldset + fieldset { margin-top: 26px; padding-top: 23px; border-top: 1px solid var(--line); }
+    legend { margin-bottom: 13px; color: var(--navy); font-size: 1.1rem; font-weight: 800; }
+    .help { margin: -7px 0 16px; color: var(--muted); font-size: .9rem; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+    .weight-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; margin-top: 18px; }
+    label { display: block; color: #344158; font-size: .88rem; font-weight: 700; }
+    input { display: block; width: 100%; margin-top: 6px; padding: 12px; border: 1px solid #aebbd0; border-radius: 10px; background: #fff; color: var(--ink); font: inherit; }
+    input:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #72cef3; outline-offset: 2px; }
+    .unit { margin: 10px 0 0; color: var(--muted); font-size: .82rem; }
+    button { width: 100%; margin-top: 24px; padding: 14px 18px; border: 0; border-radius: 11px; background: var(--navy); color: #fff; font: inherit; font-weight: 800; cursor: pointer; }
+    button:hover { background: #093b7a; }
+    #result { margin-top: 20px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #f8fafc; }
+    #result[hidden] { display: none; }
+    #result h2 { margin: 0 0 6px; font-size: 1.12rem; }
+    #result p { margin: 0 0 10px; }
+    #result ul { margin: 8px 0 0; padding-left: 22px; }
+    #result li + li { margin-top: 5px; }
+    #result.good { border-color: #9bd5b8; background: #effaf3; color: var(--good); }
+    #result.bad { border-color: #e7aaaa; background: #fff4f3; color: var(--bad); }
+    #result.partial { border-color: #e9d48c; background: #fffbea; color: var(--notice); }
+    .fine-print { margin: 18px 0 0; color: var(--muted); font-size: .86rem; }
+    .next { margin-top: 20px; padding: 16px; border-radius: 12px; background: #eaf5ff; }
+    .next p { margin: 0; }
+    footer { padding: 0 0 28px; color: var(--muted); font-size: .86rem; }
+    @media (max-width: 560px) {
+      .grid, .weight-grid { grid-template-columns: 1fr; }
+      .topbar-inner { align-items: flex-start; flex-direction: column; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="/">TRTT VOYAGEHUB</a>
+      <a href="/tools/flight-search.html">Flight search</a>
+    </div>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <span class="eyebrow">Free travel tool</span>
+      <h1 id="page-title">Cabin bag size checker</h1>
+      <p>Measure your packed bag, enter the cabin-bag limits shown for your airline and fare, and compare them before you leave for the airport.</p>
+    </section>
+
+    <section class="card" aria-label="Baggage comparison form">
+      <p class="notice"><strong>Use your airline's current allowance.</strong> There is no single cabin-bag size that applies to every airline or ticket. Check your booking or the airline's official baggage page and enter those limits below.</p>
+      <form id="checker-form">
+        <fieldset>
+          <legend>1. Your bag</legend>
+          <p class="help">Measure the outside of the packed bag, including wheels, handles and other protrusions.</p>
+          <div class="grid">
+            <label for="bag-length">Length (cm)
+              <input id="bag-length" name="bag-length" type="number" min="0.1" max="300" step="0.1" inputmode="decimal" required>
+            </label>
+            <label for="bag-width">Width (cm)
+              <input id="bag-width" name="bag-width" type="number" min="0.1" max="300" step="0.1" inputmode="decimal" required>
+            </label>
+            <label for="bag-height">Height (cm)
+              <input id="bag-height" name="bag-height" type="number" min="0.1" max="300" step="0.1" inputmode="decimal" required>
+            </label>
+          </div>
+          <div class="weight-grid">
+            <label for="bag-weight">Packed bag weight (kg, optional)
+              <input id="bag-weight" name="bag-weight" type="number" min="0" max="300" step="0.1" inputmode="decimal">
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>2. Allowance from your airline or booking</legend>
+          <p class="help">Enter the maximum dimensions exactly as provided. The checker compares the three sides in any orientation.</p>
+          <div class="grid">
+            <label for="limit-length">Maximum length (cm)
+              <input id="limit-length" name="limit-length" type="number" min="0.1" max="300" step="0.1" inputmode="decimal" required>
+            </label>
+            <label for="limit-width">Maximum width (cm)
+              <input id="limit-width" name="limit-width" type="number" min="0.1" max="300" step="0.1" inputmode="decimal" required>
+            </label>
+            <label for="limit-height">Maximum height (cm)
+              <input id="limit-height" name="limit-height" type="number" min="0.1" max="300" step="0.1" inputmode="decimal" required>
+            </label>
+          </div>
+          <div class="weight-grid">
+            <label for="limit-weight">Maximum weight (kg, optional)
+              <input id="limit-weight" name="limit-weight" type="number" min="0.1" max="300" step="0.1" inputmode="decimal">
+            </label>
+          </div>
+          <p class="unit">Leave both weight fields blank if your allowance does not specify a weight limit. If you enter one, enter the other too.</p>
+        </fieldset>
+
+        <button type="submit">Compare bag with entered limits</button>
+      </form>
+
+      <section id="result" aria-live="polite" aria-atomic="true" hidden>
+        <h2 id="result-title"></h2>
+        <p id="result-summary"></p>
+        <ul id="result-details"></ul>
+      </section>
+      <p class="fine-print">This is a measurement aid, not an airline approval or guarantee of carriage. Allowances can vary by airline, route, fare, and booking; staff may measure bags at the airport. Always confirm the current rule with your airline.</p>
+    </section>
+
+    <aside class="next">
+      <p>Need to plan your route too? <a href="/tools/flight-search.html">Compare available flights</a> on TRTT VoyageHub.</p>
+    </aside>
+  </main>
+  <footer>TRTT VoyageHub • This checker does not collect or transmit your measurements.</footer>
+
+  <script>
+    (function () {
+      "use strict";
+      var form = document.getElementById("checker-form");
+      var result = document.getElementById("result");
+      var title = document.getElementById("result-title");
+      var summary = document.getElementById("result-summary");
+      var details = document.getElementById("result-details");
+
+      function value(id) {
+        return Number(document.getElementById(id).value);
+      }
+
+      function addDetail(message) {
+        var item = document.createElement("li");
+        item.textContent = message;
+        details.appendChild(item);
+      }
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        if (!form.reportValidity()) return;
+
+        var bag = [value("bag-length"), value("bag-width"), value("bag-height")].sort(function (a, b) { return a - b; });
+        var limit = [value("limit-length"), value("limit-width"), value("limit-height")].sort(function (a, b) { return a - b; });
+        var dimensionFits = bag.every(function (side, index) { return side <= limit[index] + 0.000001; });
+        var bagWeightInput = document.getElementById("bag-weight").value.trim();
+        var limitWeightInput = document.getElementById("limit-weight").value.trim();
+
+        if (Boolean(bagWeightInput) !== Boolean(limitWeightInput)) {
+          result.hidden = true;
+          document.getElementById(bagWeightInput ? "limit-weight" : "bag-weight").setCustomValidity("Enter both weight values, or leave both blank.");
+          document.getElementById(bagWeightInput ? "limit-weight" : "bag-weight").reportValidity();
+          document.getElementById("bag-weight").addEventListener("input", function clearWeightError() {
+            document.getElementById("limit-weight").setCustomValidity("");
+            document.getElementById("bag-weight").setCustomValidity("");
+          }, { once: true });
+          document.getElementById("limit-weight").addEventListener("input", function clearWeightError() {
+            document.getElementById("limit-weight").setCustomValidity("");
+            document.getElementById("bag-weight").setCustomValidity("");
+          }, { once: true });
+          return;
+        }
+
+        var weightChecked = Boolean(bagWeightInput && limitWeightInput);
+        var weightFits = weightChecked ? value("bag-weight") <= value("limit-weight") + 0.000001 : null;
+        var failed = !dimensionFits || weightFits === false;
+
+        result.className = failed ? "bad" : (weightChecked ? "good" : "partial");
+        title.textContent = failed ? "The bag exceeds one or more entered limits" : (weightChecked ? "The bag fits the limits you entered" : "The dimensions fit; weight was not checked");
+        summary.textContent = failed
+          ? "Review the measurements below and the allowance shown in your airline booking."
+          : (weightChecked ? "Your entered dimensions and weight are within the limits you provided." : "Your entered dimensions are within the limits you provided. Add both weight values if you want to check weight too.");
+        details.replaceChildren();
+        addDetail("Bag sides (sorted): " + bag.map(function (n) { return n.toFixed(1); }).join(" × ") + " cm; entered maximum sides: " + limit.map(function (n) { return n.toFixed(1); }).join(" × ") + " cm — " + (dimensionFits ? "within limits" : "over at least one limit"));
+        if (weightChecked) {
+          addDetail("Bag weight: " + value("bag-weight").toFixed(1) + " kg; entered maximum: " + value("limit-weight").toFixed(1) + " kg — " + (weightFits ? "within limit" : "over the limit"));
+        } else {
+          addDetail("Weight: not checked because no weight limit was entered.");
+        }
+        result.hidden = false;
+      });
+    }());
+  </script>
+</body>
+</html>
