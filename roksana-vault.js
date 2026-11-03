@@ -1,7 +1,6 @@
 /* =========================================================
    ROKSANA NILLA — TRTT FINAL VAULT
-   Strict 3-domain allowlist | 12-color rotation
-   12 responsive cards | Live local clock | Duplicate protection
+   STRICT 3-DOMAIN LOCK | 12-COLOR ROTATION | 12 CARDS
    ========================================================= */
 (function () {
   "use strict";
@@ -18,7 +17,7 @@
   if (ALLOWED.indexOf(host) === -1) {
     var blocked = document.getElementById(ROOT_ID);
     if (blocked) blocked.remove();
-    console.warn("[Roksana Vault] Domain not allowed:", host);
+    console.warn("[Roksana Vault] Strict domain lock: blocked host", host);
     return;
   }
 
@@ -59,7 +58,6 @@
 
   function addStyles() {
     if (document.getElementById(STYLE_ID)) return;
-
     var style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = [
@@ -70,9 +68,10 @@
       "#" + ROOT_ID + " .rv-kicker{margin:0 0 7px;color:#f7c8d6;font-size:10px;letter-spacing:3px;text-transform:uppercase}",
       "#" + ROOT_ID + " .rv-title{margin:0;color:#ff8cad;font-size:clamp(21px,4vw,32px);line-height:1.2;font-weight:900;letter-spacing:.4px}",
       "#" + ROOT_ID + " .rv-sub{margin:8px 0 0;color:#f1dce8;font-size:13px;line-height:1.6}",
-      "#" + ROOT_ID + " .rv-clock{display:inline-block;margin-top:11px;padding:6px 11px;border:1px solid rgba(255,255,255,.2);border-radius:99px;color:#fce7ef;font-size:11px;letter-spacing:.5px}",
+      "#" + ROOT_ID + " .rv-lock{display:inline-block;margin-top:10px;padding:6px 12px;border:1px solid #69e6a5;border-radius:99px;background:rgba(30,150,90,.12);color:#8ff0b8;font-size:11px;font-weight:700;letter-spacing:.3px}",
+      "#" + ROOT_ID + " .rv-clock{display:block;margin-top:9px;color:#fce7ef;font-size:11px;letter-spacing:.5px}",
       "#" + ROOT_ID + " .rv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}",
-      "#" + ROOT_ID + " .rv-card{display:flex;min-width:0;min-height:88px;flex-direction:column;justify-content:center;gap:6px;padding:12px 9px;border:1px solid var(--rv-color);border-radius:13px;background:linear-gradient(145deg,var(--rv-tint,#292033),#171522 78%);color:#fff;text-align:center;text-decoration:none;transition:transform .2s ease,box-shadow .2s ease}",
+      "#" + ROOT_ID + " .rv-card{display:flex;min-width:0;min-height:88px;flex-direction:column;justify-content:center;gap:6px;padding:12px 9px;border:1px solid var(--rv-color);border-radius:13px;background:#211b2b;color:#fff;text-align:center;text-decoration:none;transition:transform .2s ease,box-shadow .2s ease}",
       "#" + ROOT_ID + " .rv-card:hover,#" + ROOT_ID + " .rv-card:focus-visible{transform:translateY(-3px);box-shadow:0 5px 16px rgba(255,46,99,.22);outline:2px solid var(--rv-color);outline-offset:2px}",
       "#" + ROOT_ID + " .rv-card strong{color:var(--rv-color);font-size:13px;line-height:1.3}",
       "#" + ROOT_ID + " .rv-card span{color:#eee6f0;font-size:10px;line-height:1.4}",
@@ -110,6 +109,10 @@
     subtitle.className = "rv-sub";
     subtitle.textContent = "Tomar Jonno — This Vault is for You | TRTT VOYAGE";
 
+    var lock = document.createElement("div");
+    lock.className = "rv-lock";
+    lock.textContent = "🔒 Strict Locked — TRTT Only • 3 Approved Domains";
+
     var clock = document.createElement("div");
     clock.className = "rv-clock";
     clock.id = "rv-clock";
@@ -118,6 +121,7 @@
     head.appendChild(kicker);
     head.appendChild(title);
     head.appendChild(subtitle);
+    head.appendChild(lock);
     head.appendChild(clock);
 
     var grid = document.createElement("div");
@@ -155,7 +159,7 @@
     var header = document.querySelector(
       "#header, .header-outer, .header-inner, header#header, .blog-header, [role='banner']"
     );
-    if (header && header !== root && !root.contains(header)) {
+    if (header && header !== root && !root.contains(header) && header.parentNode) {
       return { parent: header.parentNode, before: header.nextSibling };
     }
 
@@ -181,13 +185,9 @@
   function placeVault() {
     var root = document.getElementById(ROOT_ID);
     if (!root || !document.body) return false;
-
     var target = findInsertionPoint(root);
     if (!target || !target.parent) return false;
-
-    if (root.parentNode === target.parent && root.nextSibling === target.before) {
-      return true;
-    }
+    if (root.parentNode === target.parent && root.nextSibling === target.before) return true;
     target.parent.insertBefore(root, target.before || null);
     return true;
   }
@@ -212,11 +212,10 @@
 
   function mount() {
     if (!document.body || !document.head) return;
-
     addStyles();
+
     var root = createVault();
     if (!root.parentNode) document.body.appendChild(root);
-
     placeVault();
     updateClock();
     rotateColors();
@@ -245,7 +244,8 @@
       name: "ROKSANA NILLA'S FINAL VAULT",
       allowedDomains: ALLOWED.slice(),
       colors: COLORS.slice(),
-      cards: ITEMS.length
+      cards: ITEMS.length,
+      strictDomainLock: true
     };
   }
 
