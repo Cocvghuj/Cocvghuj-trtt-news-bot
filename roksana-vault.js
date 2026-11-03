@@ -23,14 +23,7 @@ if(!Object.prototype.hasOwnProperty.call(RV_ALLOWED_HOSTS,RV_CURRENT_HOST)){
 if(window.__ROKSANA_FUTURE_VAULT__)return;
 window.__ROKSANA_FUTURE_VAULT__=true;
 var C={g:'#ff2e63',k:'#FFC300',p:'#AF7AC5'};
-var THEMES=[
-{name:'Signature',g:'#ff2e63',k:'#FFC300',p:'#AF7AC5'},
-{name:'Rose Glow',g:'#FF4F86',k:'#FFD166',p:'#B99AEF'},
-{name:'Sunset Pop',g:'#F43F75',k:'#F6C453',p:'#C4A1FF'},
-{name:'Orchid Light',g:'#E94B8B',k:'#E8B84A',p:'#A78BFA'},
-{name:'Candy Bloom',g:'#FF6B9A',k:'#FFC857',p:'#C084FC'},
-{name:'Royal Petal',g:'#F05291',k:'#F4D06F',p:'#B49AF5'}
-];
+var THEMES=[{name:'Signature',g:'#ff2e63',k:'#FFC300',p:'#AF7AC5'}];
 var R=[
 ['✦','Welcome Studio','START HERE',C.k,'Your entry point to the Roksana Nila universe.'],
 ['🌹','Golapi Archive','COLLECTION',C.g,'Bold, warm and unmistakable. Golapi signature: #ff2e63.'],
@@ -107,12 +100,27 @@ var css=[
 '#rv-future-mounted .room,.#rv-future-mounted .ico{transition:color .9s ease,border-color .9s ease,background-color .9s ease,background .9s ease,box-shadow .9s ease,transform .2s ease}',
 '#rv-future-mounted .gem,#rv-future-mounted .eyebrow,#rv-future-mounted .gradient,#rv-future-mounted .crown,#rv-future-mounted .swatch,#rv-future-mounted .filter,#rv-future-mounted .detail,#rv-future-mounted .detail h3{transition:color .9s ease,border-color .9s ease,background .9s ease,background-color .9s ease}',
 '#rv-future-mounted .detail{border-color:color-mix(in srgb,var(--k),transparent 48%);background:linear-gradient(100deg,color-mix(in srgb,var(--g),transparent 89%),color-mix(in srgb,var(--p),transparent 88%),color-mix(in srgb,var(--k),transparent 91%))}',
-'#rv-future-mounted .detail h3{color:var(--k)}'
+'#rv-future-mounted .detail h3{color:var(--k)}',
+'#rv-future-mounted .ai-panel{margin-top:28px;padding:20px;border:1px solid #AF7AC5;border-radius:17px;background:linear-gradient(135deg,#ff2e6314,#FFC3000d,#AF7AC514)}',
+'#rv-future-mounted .ai-panel h2{margin:0 0 7px;color:#FFC300;font:700 20px Georgia,serif}',
+'#rv-future-mounted .ai-panel .ai-intro{margin:0 0 14px;color:#aaa1b4;font-size:11px;line-height:1.7}',
+'#rv-future-mounted .ai-form{display:flex;gap:8px;align-items:stretch}',
+'#rv-future-mounted .ai-question{flex:1;min-width:0;padding:12px;border:1px solid #AF7AC7;border-radius:10px;background:#08070d;color:#fff;font:12px system-ui,sans-serif;outline:none}',
+'#rv-future-mounted .ai-ask{padding:0 17px;border:0;border-radius:10px;background:linear-gradient(120deg,#ff2e63,#AF7AC5);color:#fff;font-weight:900;cursor:pointer}',
+'#rv-future-mounted .ai-ask:disabled{opacity:.55;cursor:wait}',
+'#rv-future-mounted .ai-status{min-height:18px;margin:10px 0;color:#FFC300;font-size:10px}',
+'#rv-future-mounted .ai-results{display:grid;gap:10px}',
+'#rv-future-mounted .ai-result{padding:13px;border:1px solid #ffffff20;border-radius:12px;background:#08070d;color:#e8e1ed}',
+'#rv-future-mounted .ai-result h3{margin:0 0 8px;color:#FFC300;font:700 13px system-ui,sans-serif}',
+'#rv-future-mounted .ai-result p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;line-height:1.75}',
+'#rv-future-mounted .ai-result ul{margin:9px 0 0;padding-left:18px}',
+'#rv-future-mounted .ai-result a{color:#ff8fab;font-size:10px;overflow-wrap:anywhere}',
+'@media(max-width:520px){#rv-future-mounted .ai-form{flex-direction:column}#rv-future-mounted .ai-ask{min-height:42px}}'
 ].join('\n');
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function markup(){
 var cards=R.map(function(r,i){return '<button class="room" type="button" data-room="'+i+'" data-cat="'+r[2]+'" style="--rc:'+r[3]+'"><span class="ico">'+r[0]+'</span><b>'+esc(r[1])+'</b><small>'+esc(r[2])+'</small></button>';}).join('');
-return '<section id="RoksanaFinalVault" aria-label="Roksana Nila Future Vault"><div class="app"><header class="top"><div class="brand"><span class="gem">✦</span>ROKSANA NILA / VAULT <span class="rv-lock-status">🔒 Strict Locked</span></div><div class="time">LIVE THEME · 10 SEC · <span id="rv-clock">--:--</span></div></header><div class="layout"><aside class="side"><small>WORKSPACE</small><nav class="nav"><button class="active" data-filter="ALL">⌂　Overview</button><button data-filter="COLLECTION">◈　Collections</button><button data-filter="STORIES">▤　Stories</button><button data-filter="GALLERY">▧　Gallery</button><button data-filter="FEATURED">✧　Featured</button></nav><small style="margin-top:25px">THE SIGNATURE</small><div class="note">GOLAPI · KATHALI · PIAJI<br>Three colors. One identity. A personal world designed to feel timeless.</div></aside><main class="main"><div class="hero"><div><div class="eyebrow">THE NEXT CHAPTER · YOUR COLLECTION</div><h1>Welcome to the<br><span class="gradient">Future Vault.</span></h1><div class="intro">A refined digital home for stories, memories and signature collections. Explore the rooms and discover the world of Roksana Nila.</div><div class="swatches"><span class="swatch">● GOLAPI</span><span class="swatch">● KATHALI</span><span class="swatch">● PIAJI</span></div></div><div class="crown">♛</div></div><div class="toolbar"><div><h2>Explore your space</h2><div class="hint">12 thoughtfully designed rooms · Choose one to open</div></div><label class="search">⌕ <input id="rv-search" type="search" placeholder="Search your vault…"></label></div><div class="filters"><button class="filter active" data-filter="ALL">All rooms</button><button class="filter" data-filter="COLLECTION">Collections</button><button class="filter" data-filter="STORIES">Stories</button><button class="filter" data-filter="GALLERY">Gallery</button><button class="filter" data-filter="FEATURED">Featured</button></div><div class="grid">'+cards+'</div><div class="detail" id="rv-detail" aria-live="polite"><button class="close" id="rv-close">CLOSE ×</button><h3 id="rv-title"></h3><p id="rv-desc"></p></div><footer class="foot"><span>CRAFTED FOR ROKSANA NILA</span><span>GOLAPI · KATHALI · PIAJI</span><span>YOUR SPACE, YOUR STORY.</span></footer></main></div></div></section>';
+return '<section id="RoksanaFinalVault" aria-label="Roksana Nila Future Vault"><div class="app"><header class="top"><div class="brand"><span class="gem">✦</span>ROKSANA NILA / VAULT <span class="rv-lock-status">🔒 Strict Locked</span></div><div class="time">LIVE THEME · 10 SEC · <span id="rv-clock">--:--</span></div></header><div class="layout"><aside class="side"><small>WORKSPACE</small><nav class="nav"><button class="active" data-filter="ALL">⌂　Overview</button><button data-filter="COLLECTION">◈　Collections</button><button data-filter="STORIES">▤　Stories</button><button data-filter="GALLERY">▧　Gallery</button><button data-filter="FEATURED">✧　Featured</button></nav><small style="margin-top:25px">THE SIGNATURE</small><div class="note">GOLAPI · KATHALI · PIAJI<br>Three colors. One identity. A personal world designed to feel timeless.</div></aside><main class="main"><div class="hero"><div><div class="eyebrow">THE NEXT CHAPTER · YOUR COLLECTION</div><h1>Welcome to the<br><span class="gradient">Future Vault.</span></h1><div class="intro">A refined digital home for stories, memories and signature collections. Explore the rooms and discover the world of Roksana Nila.</div><div class="swatches"><span class="swatch">● GOLAPI</span><span class="swatch">● KATHALI</span><span class="swatch">● PIAJI</span></div></div><div class="crown">♛</div></div><div class="toolbar"><div><h2>Explore your space</h2><div class="hint">12 thoughtfully designed rooms · Choose one to open</div></div><label class="search">⌕ <input id="rv-search" type="search" placeholder="Search your vault…"></label></div><div class="filters"><button class="filter active" data-filter="ALL">All rooms</button><button class="filter" data-filter="COLLECTION">Collections</button><button class="filter" data-filter="STORIES">Stories</button><button class="filter" data-filter="GALLERY">Gallery</button><button class="filter" data-filter="FEATURED">Featured</button></div><div class="grid">'+cards+'</div><div class="detail" id="rv-detail" aria-live="polite"><button class="close" id="rv-close">CLOSE ×</button><h3 id="rv-title"></h3><p id="rv-desc"></p></div><section class="ai-panel" aria-labelledby="rv-ai-heading"><h2 id="rv-ai-heading">Evidence Answer Engine</h2><p class="ai-intro">One question · Gemini Google Search + OpenRouter web search · independent answers with source links.</p><div class="ai-form"><input class="ai-question" id="rv-ai-question" type="text" maxlength="2000" autocomplete="off" placeholder="Ask a question in any language…" aria-label="Ask the AI Answer Engine"><button class="ai-ask" id="rv-ai-ask" type="button">ASK BOTH AI</button></div><div class="ai-status" id="rv-ai-status" role="status" aria-live="polite">Ready. Your question is sent securely; provider keys stay on the server.</div><div class="ai-results" id="rv-ai-results"></div></section><footer class="foot"><span>CRAFTED FOR ROKSANA NILA</span><span>GOLAPI · KATHALI · PIAJI</span><span>YOUR SPACE, YOUR STORY.</span></footer></main></div></div></section>';
 }
 function mount(){
 if(!document.body||document.getElementById('rv-future-mounted'))return;
@@ -127,6 +135,35 @@ applyTheme();window.setInterval(applyTheme,10000);
 function filter(){var q=search.value.toLowerCase().trim(),n=0;root.querySelectorAll('.room').forEach(function(b){var r=R[+b.dataset.room],ok=(active==='ALL'||r[2]===active||(active==='COLLECTION'&&r[2]==='COLLECTION'))&&(!q||(r.join(' ').toLowerCase().indexOf(q)>-1));b.hidden=!ok;if(ok)n++;});}
 root.addEventListener('click',function(e){var card=e.target.closest('[data-room]');if(card){var r=R[+card.dataset.room];root.querySelector('#rv-title').textContent=r[1];root.querySelector('#rv-title').style.color=r[3];root.querySelector('#rv-desc').textContent=r[4];detail.classList.add('open');return;}var f=e.target.closest('[data-filter]');if(f){active=f.dataset.filter;root.querySelectorAll('[data-filter]').forEach(function(x){x.classList.toggle('active',x.dataset.filter===active);});filter();return;}if(e.target.closest('#rv-close'))detail.classList.remove('open');});
 search.addEventListener('input',filter);
+var aiInput=root.querySelector('#rv-ai-question'),aiButton=root.querySelector('#rv-ai-ask'),aiStatus=root.querySelector('#rv-ai-status'),aiResults=root.querySelector('#rv-ai-results');
+function addText(parent,tag,text,className){var el=document.createElement(tag);if(className)el.className=className;el.textContent=String(text||'');parent.appendChild(el);return el;}
+function renderProvider(label,result,error){
+var card=document.createElement('section');card.className='ai-result';addText(card,'h3',label+(result&&result.model?' · '+result.model:''));
+if(result&&result.answer){addText(card,'p',result.answer);}
+else{addText(card,'p',error||'এই provider থেকে উত্তর পাওয়া যায়নি।');}
+if(result&&Array.isArray(result.sources)&&result.sources.length){
+var list=document.createElement('ul');
+result.sources.forEach(function(source){try{var u=new URL(source.url);if(u.protocol!=='https:')return;var li=document.createElement('li'),a=document.createElement('a');a.href=u.href;a.target='_blank';a.rel='noopener noreferrer';a.textContent=source.title||u.hostname;li.appendChild(a);list.appendChild(li);}catch(_e){}});
+if(list.children.length){addText(card,'h3','Sources');card.appendChild(list);}
+}
+aiResults.appendChild(card);
+}
+async function askBoth(){
+var question=aiInput.value.trim();if(!question){aiStatus.textContent='Please enter a question.';aiInput.focus();return;}
+if(question.length>2000){aiStatus.textContent='Maximum 2,000 characters.';return;}
+aiButton.disabled=true;aiResults.replaceChildren();aiStatus.textContent='Gemini ও OpenRouter-এ প্রশ্ন পাঠানো হচ্ছে…';
+try{
+var response=await fetch('https://cocvghuj-trtt-news-bot.vercel.app/api/answer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:question})});
+var payload=await response.json().catch(function(){return {};});
+if(!response.ok||!payload.ok)throw new Error(payload.error||('HTTP '+response.status));
+renderProvider('Gemini · Google Search grounding',payload.results&&payload.results.gemini,payload.errors&&payload.errors.gemini);
+renderProvider('OpenRouter · Web Search',payload.results&&payload.results.openrouter,payload.errors&&payload.errors.openrouter);
+aiStatus.textContent='Request complete. Check each answer and its source links before relying on it.';
+}catch(error){aiStatus.textContent='Answer Engine error: '+(error&&error.message?error.message:'Request failed');}
+finally{aiButton.disabled=false;}
+}
+aiButton.addEventListener('click',askBoth);
+aiInput.addEventListener('keydown',function(event){if(event.key==='Enter'){event.preventDefault();askBoth();}});
 var clock=root.querySelector('#rv-clock');function tick(){clock.textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}tick();window.setInterval(tick,30000);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
