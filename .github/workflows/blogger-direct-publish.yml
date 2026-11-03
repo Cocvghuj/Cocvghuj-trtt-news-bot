@@ -1,0 +1,42 @@
+name: ROKSANA VAULT - Direct Blogger Publish
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'roksana-vault-final.js'
+
+jobs:
+  publish-to-blogger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Publish to Blogger
+        env:
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          BLOGGER_API_KEY: ${{ secrets.BLOGGER_API_KEY }}
+          BLOGGER_ACCESS_TOKEN: ${{ secrets.BLOGGER_ACCESS_TOKEN }}
+        run: |
+          node - << 'EOF'
+          const fs = require('fs');
+          const vaultCode = fs.readFileSync('roksana-vault-final.js', 'utf8');
+          
+          // তোমার Blogger Post এর HTML বানানো
+          const htmlContent = `
+          <h2>ROKSANA NILLA'S FINAL VAULT - LIVE</h2>
+          <p>Updated: ${new Date().toISOString()}</p>
+          <p>Strict 3 Domain Lock: trttnews24bd.blogspot.com, trttnews24bd.com, www.trttnews24bd.com</p>
+          <script>${vaultCode}</script>
+          `;
+
+          console.log("Publishing to Blogger Blog ID:", process.env.BLOGGER_BLOG_ID);
+          // এখানে Blogger API v3 দিয়ে POST হবে
+          EOF
