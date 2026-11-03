@@ -58,7 +58,7 @@ jobs:
 
           async function api(path, options = {}) {
             const url = new URL(API_ROOT + path);
-            url.searchParams.set('key', API_KEY);
+            if (API_KEY) url.searchParams.set('key', API_KEY);
 
             const response = await fetch(url, {
               method: options.method || 'GET',
