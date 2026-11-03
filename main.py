@@ -806,7 +806,8 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
     kiwitaxi_link = affiliate_service_url("kiwitaxi")
 
     now_iso = datetime.utcnow().isoformat()
-    canonical_url = f"{blog_profile['url']}/{datetime.utcnow():%Y/%m}/{meta['permalink_slug']}.html"
+    permalink_slug = meta.get("permalink_slug") or slugify(title)
+    canonical_url = f"{blog_profile['url']}/{datetime.utcnow():%Y/%m}/{permalink_slug}.html"
 
     schema_json = {
         "@context": "https://schema.org",
@@ -842,6 +843,9 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
 
     html = f"""<!-- Google Search Console & SEO Meta Header -->
 <meta name="description" content="{search_desc}">
+<link rel="canonical" href="{canonical_url}">
+<!-- Blogger Search Description: {search_desc} -->
+<!-- Blogger Custom Permalink: {permalink_slug} -->
 <meta name="keywords" content="{tags_str}">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{search_desc}">
@@ -1196,10 +1200,14 @@ def create_drafts_on_blogs(
                 else:
                     tailored_html = html_content
 
+                search_desc = meta.get("search_description", "")
+                permalink_slug = meta.get("permalink_slug") or slugify(title)
+
                 body = {
                     "title": title,
                     "content": add_topic_draft_marker(tailored_html, topic_key),
-                    "labels": meta["labels"],
+                    "labels": meta.get("labels", []),
+                    "customMetaData": search_desc,
                     "location": {"name": blog_profile["author_location"]}
                 }
 
