@@ -12,7 +12,7 @@
 
   // Clean up any old duplicate or legacy 369-views vault elements
   try {
-    document.querySelectorAll('#trtt-menu, #RoksanaFinalVault, #atm-machine, #kg-graph, .roksana-old-vault, style[data-vault-style="old"]').forEach(function(el) {
+    document.querySelectorAll('#atm-machine, #kg-graph, .roksana-old-vault, style[data-vault-style="old"]').forEach(function(el) {
       el.remove();
     });
   } catch(e) {}
@@ -374,9 +374,6 @@
   }
 
   @media(max-width: 768px) {
-    #trtt-menu .links { display: none; flex-direction: column; width: 100%; margin-top: 12px; }
-    #trtt-menu .links.show { display: flex; }
-    #trtt-menu .mob-btn { display: block; }
     .rv-vaults { grid-template-columns: repeat(3, 1fr); }
     .rv-cr.pg { left: 16%; }
     .rv-cr.pj { right: 16%; }
@@ -388,22 +385,6 @@
   style.id = 'trtt-million-dollar-styles';
   style.textContent = CSS;
   document.head.appendChild(style);
-
-  // 1. TOP MENU
-  var menuHTML = `
-  <div id="trtt-menu">
-    <div class="wrap">
-      <a href="/" class="logo">✨ TRTT VOYAGE</a>
-      <div class="links" id="trttLinks">
-        <a href="/">Home</a>
-        <a href="/search/label/TRTT%20News">TRTT News</a>
-        <a href="/search/label/Europe%20Travel">Europe Travel</a>
-        <a href="/roksana-nila-cloths-store.html" class="btn-rose">🌸 Golapi Kathali Piaji</a>
-        <a href="https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950" target="_blank" rel="noopener" class="btn-gold">🚀 SuperStore (21 Tools)</a>
-      </div>
-      <button class="mob-btn" onclick="document.getElementById('trttLinks').classList.toggle('show')">☰</button>
-    </div>
-  </div>`;
 
   // 2. 12 VAULT BOXES
   var vaultBoxes = Array.from({length: 12}, function(_, i) {
@@ -513,10 +494,13 @@
   // MOUNT TO PAGE
   function mount() {
     var existingSec = document.getElementById('RoksanaFinalVault');
+    var vaultMarkup = vaultHTML + atmHTML + kgHTML;
     if (existingSec) {
-      existingSec.outerHTML = menuHTML + vaultHTML + atmHTML + kgHTML;
+      existingSec.outerHTML = vaultMarkup;
     } else {
-      document.body.insertAdjacentHTML('afterbegin', menuHTML + vaultHTML + atmHTML + kgHTML);
+      var mainMenu = document.getElementById('trtt-final-menu');
+      if (mainMenu) mainMenu.insertAdjacentHTML('afterend', vaultMarkup);
+      else document.body.insertAdjacentHTML('afterbegin', vaultMarkup);
     }
 
     // Interactive Search Engine Logic
