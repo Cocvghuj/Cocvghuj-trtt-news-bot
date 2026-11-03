@@ -13,8 +13,6 @@ on:
         type: string
   schedule:
     - cron: '0 7,13,19 * * *' # 3x DAILY - 9AM, 3PM, 9PM Italy Time
-  push:
-    branches: [main]
 
 permissions:
   contents: write
