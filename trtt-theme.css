@@ -1,105 +1,54 @@
 :root {
-  --trtt-brand-primary: #052962;
-  --trtt-brand-accent: #00A8E8;
-  --trtt-page-bg: #f8fafc;
-  --trtt-text: #1e293b;
+  --trtt-brand-primary:#14213d;
+  --trtt-brand-accent:#ef476f;
+  --trtt-page-bg:#f5f7fb;
+  --trtt-text:#172033;
+  --trtt-muted:#64748b;
 }
-
-/* ==========================================================================
-   TRTT NEWS 24 BD OVERHAUL CSS (For Blogger Themes)
-   Author: Abu Taher (engrtaher2017@gmail.com | Sanluri, South Sardinia, Italy)
-   How to apply:
-   Blogger Dashboard -> Theme -> Customize -> Advanced -> Add CSS -> Paste -> Save
-   ========================================================================== */
-
-body, html {
-  background-color: var(--trtt-page-bg, #f8fafc) !important;
-  color: var(--trtt-text, #1e293b) !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
-  font-size: 16px !important;
-  line-height: 1.75 !important;
+html,body {
+  background:var(--trtt-page-bg)!important;
+  color:var(--trtt-text)!important;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif!important;
+  font-size:16px!important;
+  line-height:1.7!important;
 }
-
-.main-container,
-.centered-top,
-.centered-bottom,
-.page_body {
-  max-width: 1140px !important;
-  margin: 0 auto !important;
-  padding: 16px !important;
-  background: transparent !important;
+body{margin:0!important}
+a{color:#d93660}
+a:hover{color:#a91f47}
+.main-container,.centered-top,.centered-bottom,.page_body {
+  max-width:1200px!important;margin:0 auto!important;padding:20px!important;background:transparent!important;
 }
-
-.header-widget,
-header#header {
-  background: linear-gradient(135deg, var(--trtt-brand-primary, #052962) 0%, #004b99 100%) !important;
-  border-radius: 16px !important;
-  box-shadow: 0 4px 20px -2px rgba(5, 41, 98, 0.15) !important;
-  padding: 24px 32px !important;
-  margin-bottom: 28px !important;
-  border: 1px solid var(--trtt-brand-accent, #00A8E8) !important;
-  text-align: left !important;
+.header-widget,header#header {
+  background:linear-gradient(120deg,#14213d 0%,#203b68 72%,#365b8c 100%)!important;
+  border:0!important;border-bottom:4px solid var(--trtt-brand-accent)!important;
+  border-radius:0 0 20px 20px!important;box-shadow:0 12px 30px rgba(20,33,61,.16)!important;
+  padding:30px 34px!important;margin:0 auto 30px!important;text-align:left!important;
 }
-
-.header-widget h1,
-.header-widget .title,
-header h1.title {
-  font-size: 28px !important;
-  font-weight: 900 !important;
-  color: #ffffff !important;
-  letter-spacing: -0.02em !important;
-  margin: 0 !important;
+.header-widget h1,.header-widget .title,header h1.title {
+  color:#fff!important;font-size:clamp(24px,3vw,34px)!important;font-weight:900!important;
+  letter-spacing:-.035em!important;line-height:1.15!important;margin:0!important;
 }
-
-.header-widget .description,
-header .description {
-  font-size: 14px !important;
-  color: #e2e8f0 !important;
-  margin-top: 6px !important;
+.header-widget .description,header .description {
+  color:#dbe7f7!important;font-size:14px!important;margin-top:9px!important;
 }
-
-.post-outer-container,
-.post-outer,
-article.post {
-  background: #ffffff !important;
-  border-radius: 16px !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 4px 15px -3px rgba(15, 23, 42, 0.05) !important;
-  padding: 32px !important;
-  margin-bottom: 32px !important;
+.post-outer-container,.post-outer,article.post {
+  background:#fff!important;border:1px solid #e7ebf2!important;border-radius:18px!important;
+  box-shadow:0 8px 26px rgba(20,33,61,.055)!important;padding:clamp(20px,3vw,34px)!important;
+  margin:0 0 24px!important;
 }
-
-h1.post-title,
-.post-title a {
-  font-size: 26px !important;
-  font-weight: 800 !important;
-  color: #0f172a !important;
-  line-height: 1.3 !important;
-  text-decoration: none !important;
+h1.post-title,.post-title a {
+  color:#14213d!important;font-size:clamp(23px,2.5vw,30px)!important;font-weight:850!important;
+  line-height:1.25!important;text-decoration:none!important;letter-spacing:-.025em!important;
 }
-
-.post-title a:hover {
-  color: var(--trtt-brand-accent, #00A8E8) !important;
-}
-
-.post-body {
-  font-size: 16.5px !important;
-  line-height: 1.8 !important;
-  color: #334155 !important;
-}
-
-.widget.ReportAbuse,
-.widget.Attribution,
-.widget.Profile,
-.post-feeds,
-.feed-links {
-  display: none !important;
-}
-
-@media (max-width: 768px) {
-  .post-outer-container,
-  .post-outer,
-  article.post {
-    padding: 20px 16px !important;
-  }
+.post-title a:hover{color:var(--trtt-brand-accent)!important}
+.post-body{color:#344054!important;font-size:16.5px!important;line-height:1.85!important}
+.post-body img{max-width:100%!important;height:auto!important;border-radius:14px!important}
+.widget h2,.widget-title{color:#14213d!important;font-weight:800!important}
+.widget.ReportAbuse,.widget.Attribution,.widget.Profile,.post-feeds,.feed-links{display:none!important}
+#sidebar-wrapper .widget,.sidebar .widget{background:#fff!important;border:1px solid #e7ebf2!important;border-radius:14px!important;padding:16px!important;margin-bottom:16px!important}
+@media(max-width:768px){
+ .main-container,.centered-top,.centered-bottom,.page_body{padding:12px!important}
+ .header-widget,header#header{padding:22px 18px!important;border-radius:0 0 16px 16px!important}
+ .post-outer-container,.post-outer,article.post{padding:20px 16px!important;border-radius:14px!important}
+ .post-body{font-size:16px!important}
 }
