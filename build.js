@@ -15,7 +15,8 @@ const PUBLIC_EXTENSIONS = new Set([
 const PUBLIC_JSON_FILES = new Set([
   'affiliate-services.json',
   'manifest.json',
-  'blog-control.json'
+  'blog-control.json',
+  'flightscoutpro-control.json'
 ]);
 const PUBLIC_TEXT_FILES = new Set([
   'robots.txt',
