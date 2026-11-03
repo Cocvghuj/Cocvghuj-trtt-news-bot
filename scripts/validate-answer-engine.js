@@ -32,7 +32,7 @@ const allowedOrigins = [
   'https://www.trttnews24bd.com'
 ];
 for (const origin of allowedOrigins) assert.ok(api.includes(origin), 'Missing allowed origin: ' + origin);
-const configuredOrigins = [...api.matchAll(/"https:\/\/trttnews24bd(?:\.blogspot)?\.com"/g)].map((m) => m[0]);
+const configuredOrigins = [...api.matchAll(/"https:\/\/(?:www\.)?trttnews24bd(?:\.blogspot)?\.com"/g)].map((m) => m[0]);
 assert.equal(configuredOrigins.length, 3, 'The API must retain exactly the approved three-origin allowlist.');
 
 for (const [file, source] of [['api/answer.js', api], ['trtt-all-in-one.js', browser]]) {
