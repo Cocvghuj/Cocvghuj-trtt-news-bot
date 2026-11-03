@@ -1,23 +1,66 @@
 {
   "brand": "TRTT NEWS 24 BD",
   "theme": {
-    "primary": "#052962",
-    "accent": "#00A8E8",
-    "background": "#f8fafc",
+    "primary": "#14213d",
+    "accent": "#ef476f",
+    "background": "#f5f7fb",
     "surface": "#ffffff",
-    "text": "#1e293b",
+    "text": "#172033",
     "muted": "#64748b",
-    "menuBackground": "#052962",
-    "mobileBackground": "#093b7a",
+    "menuBackground": "#101b36",
+    "mobileBackground": "#172b52",
     "menuText": "#ffffff"
   },
   "menu": [
-    { "id": "home", "label": "Home", "href": "/" },
-    { "id": "esim", "label": "eSIM Guide", "href": "/search/label/eSIM" },
-    { "id": "flights", "label": "Flights", "href": "/search/label/Flights" },
-    { "id": "hotels", "label": "Hotels", "href": "/search/label/Hotels" },
-    { "id": "baggage-checker", "label": "Baggage Size Checker", "href": "https://cocvghuj-trtt-news-bot.vercel.app/tools/baggage-size-checker.html" },
-    { "id": "about", "label": "About Us", "href": "/p/about-us.html" },
-    { "id": "contact", "label": "Contact", "href": "/p/contact.html" }
+    {
+      "id": "home",
+      "label": "Home",
+      "href": "/"
+    },
+    {
+      "id": "news",
+      "label": "Latest News",
+      "href": "/search/label/TRTT%20News"
+    },
+    {
+      "id": "europe",
+      "label": "Europe Travel",
+      "href": "/search/label/Europe%20Travel"
+    },
+    {
+      "id": "flights",
+      "label": "Flights",
+      "href": "/search/label/Flights"
+    },
+    {
+      "id": "esim",
+      "label": "eSIM",
+      "href": "/search/label/eSIM"
+    },
+    {
+      "id": "hotels",
+      "label": "Hotels",
+      "href": "/search/label/Hotels"
+    },
+    {
+      "id": "roksana",
+      "label": "Roksana Vault",
+      "href": "/p/roksana-vault.html"
+    },
+    {
+      "id": "tools",
+      "label": "Travel Tools",
+      "href": "https://cocvghuj-trtt-news-bot.vercel.app/"
+    },
+    {
+      "id": "about",
+      "label": "About",
+      "href": "/p/about-us.html"
+    },
+    {
+      "id": "contact",
+      "label": "Contact",
+      "href": "/p/contact.html"
+    }
   ]
 }
