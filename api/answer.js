@@ -88,7 +88,8 @@ async function callOpenRouter(question) {
         },
         { role: "user", content: question }
       ],
-      tools: [{ type: "openrouter:web_search", parameters: { max_results: 5 } }],
+      tools: [{ type: "openrouter:web_search", parameters: { max_results: 5, max_total_results: 10 } }],
+      max_tool_calls: 3,
       temperature: 0.2,
       max_tokens: 900
     })
