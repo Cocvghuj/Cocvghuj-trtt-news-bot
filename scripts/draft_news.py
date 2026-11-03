@@ -34,7 +34,14 @@ def validate_metadata(meta: dict):
         labels.append(l); seen.add(k)
         if len(labels) == 5: break
     if not labels: raise ValueError("At least 1 English label required")
-    m = dict(meta); m.update(title=title, search_description=desc, labels=labels); return m
+    slug = str(meta.get("permalink_slug", "")).strip()
+    if not slug:
+        import re
+        slug = re.sub(r'[^\w\s-]', '', title.lower())
+        slug = re.sub(r'[-\s]+', '-', slug).strip('-')
+    m = dict(meta)
+    m.update(title=title, search_description=desc, labels=labels, permalink_slug=slug)
+    return m
 
 def validate_source_url(v: str):
     p = urlparse(v.strip())
