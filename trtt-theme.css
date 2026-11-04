@@ -196,3 +196,23 @@ h1.post-title,.post-title a{
 @media(prefers-reduced-motion:reduce){
   *,*:before,*:after{scroll-behavior:auto!important;transition:none!important}
 }
+/* TRTT Voyage editorial refresh — cleaner navigation, calmer surfaces, stronger hierarchy */
+:root{--trtt-brand-primary:#14263F;--trtt-brand-accent:#0F9DA8;--trtt-brand-kathali:#F2B45B;--trtt-brand-piaji:#B58BD0;--trtt-page-bg:#F5F8FB;--trtt-text:#172B40;--trtt-muted:#66788B;--trtt-line:#E0E8EF}
+body{background:var(--trtt-page-bg)!important;color:var(--trtt-text)!important}
+a{color:#087f8b}
+a:hover{color:#0b5963}
+.header-widget,header#header{background:linear-gradient(115deg,#14263F 0%,#1d4562 70%,#167e88 100%)!important;border-bottom:4px solid var(--trtt-brand-kathali)!important;border-radius:0 0 20px 20px!important}
+.post-outer-container,.post-outer,article.post{border-color:#e0e8ef!important;border-radius:18px!important;box-shadow:0 10px 28px rgba(20,38,63,.055)!important}
+.post-outer-container:hover,.post-outer:hover{border-color:#0f9da866!important}
+h1.post-title,.post-title a{color:#14263F!important}
+.post-title a:hover{color:#0F9DA8!important}
+.post-body h2{color:#14263F!important;border-color:#e7edf2!important}
+.post-body h2:after{background:linear-gradient(90deg,#0F9DA8,#F2B45B)!important}
+.post-body h3{color:#17677b!important}
+.post-body blockquote{background:#eaf5f6!important;border-left-color:#0F9DA8!important;color:#28495a!important}
+.post-body th{background:#eaf2f7!important;color:#14263F!important}
+#sidebar-wrapper .widget,.sidebar .widget{border-color:#e0e8ef!important;border-radius:14px!important}
+.tabs-inner,nav.navigation{border-color:#e0e8ef!important;border-radius:13px!important}
+.tabs-inner .widget ul li a,nav.navigation a{color:#36536b!important}
+.tabs-inner .widget ul li a:hover,nav.navigation a:hover{background:#eaf5f6!important;color:#087f8b!important}
+.blog-pager a,.blog-pager-older-link,.blog-pager-newer-link{background:#14263F!important}
