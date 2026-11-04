@@ -224,11 +224,16 @@ jobs:
             console.log('Blogger API confirmed status: ' + page.status);
             console.log('Published page URL: ' + page.url);
 
-            const publicResponse = await fetch(page.url, {
-              headers: { 'User-Agent': 'RoksanaVault-GitHubActions/1.0' },
-              redirect: 'follow',
-              signal: AbortSignal.timeout(30000)
-            });
+            let publicResponse;
+            for (let attempt = 0; attempt < 3; attempt++) {
+              if (attempt > 0) await new Promise(r => setTimeout(r, 5000));
+              publicResponse = await fetch(page.url, {
+                headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+                redirect: 'follow',
+                signal: AbortSignal.timeout(30000)
+              });
+              if (publicResponse.ok || publicResponse.status !== 429) break;
+            }
             if (!publicResponse.ok) {
               fail('Blogger reports LIVE, but public URL check returned HTTP ' + publicResponse.status + '.');
             }
