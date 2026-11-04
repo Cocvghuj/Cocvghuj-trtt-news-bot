@@ -1,0 +1,55 @@
+/* FlightScout Pro — independent aviation & flight research publication.
+   Student-friendly, fast, accessible and mobile-first. */
+:root{
+  --fsp-ink:#102033;--fsp-navy:#122b45;--fsp-blue:#1769aa;--fsp-sky:#eaf5fc;
+  --fsp-cyan:#23b6c7;--fsp-orange:#f28c28;--fsp-gold:#f5c451;
+  --fsp-paper:#f6f9fc;--fsp-white:#fff;--fsp-text:#26384b;--fsp-muted:#66788b;
+  --fsp-line:#dce6ef;--fsp-shadow:0 12px 34px rgba(16,42,67,.08);
+}
+html,body{background:var(--fsp-paper)!important;color:var(--fsp-text)!important;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif!important;font-size:16px!important;line-height:1.75!important;-webkit-font-smoothing:antialiased}
+body{margin:0!important}
+a{color:var(--fsp-blue);text-underline-offset:3px}
+a:hover{color:#0b4f86}
+.main-container,.centered-top,.centered-bottom,.page_body{max-width:1220px!important;margin:0 auto!important;padding:clamp(12px,2.4vw,28px)!important;background:transparent!important}
+.header-widget,header#header{position:relative;overflow:hidden;background:linear-gradient(115deg,var(--fsp-navy),#174b73 72%,#167c91)!important;border:0!important;border-bottom:4px solid var(--fsp-orange)!important;border-radius:0 0 22px 22px!important;box-shadow:0 14px 36px rgba(16,42,67,.16)!important;padding:clamp(23px,3.4vw,38px)!important;margin:0 auto 28px!important;text-align:left!important}
+.header-widget:after,header#header:after{content:"✈";position:absolute;right:5%;top:50%;transform:translateY(-50%) rotate(-12deg);font-size:clamp(55px,9vw,110px);color:#ffffff18;pointer-events:none}
+.header-widget h1,.header-widget .title,header h1.title{position:relative;z-index:1;color:#fff!important;font-size:clamp(25px,3vw,38px)!important;font-weight:900!important;letter-spacing:-.04em!important;line-height:1.15!important;margin:0!important}
+.header-widget .description,header .description{position:relative;z-index:1;color:#d5eaf7!important;font-size:13px!important;margin-top:9px!important;max-width:620px}
+.post-outer-container,.post-outer,article.post{background:var(--fsp-white)!important;border:1px solid var(--fsp-line)!important;border-radius:19px!important;box-shadow:var(--fsp-shadow)!important;padding:clamp(19px,3vw,34px)!important;margin:0 0 23px!important;transition:box-shadow .2s ease,border-color .2s ease}
+.post-outer-container:hover,.post-outer:hover{border-color:#23b6c766!important;box-shadow:0 16px 38px rgba(16,42,67,.11)!important}
+h1.post-title,.post-title a{color:var(--fsp-ink)!important;font-size:clamp(22px,2.4vw,31px)!important;font-weight:850!important;line-height:1.28!important;letter-spacing:-.03em!important;text-decoration:none!important}
+.post-title a:hover{color:var(--fsp-blue)!important}
+.post-header,.post-meta,.post-timestamp,.byline{color:var(--fsp-muted)!important;font-size:12px!important}
+.post-body{color:#33475c!important;font-size:16px!important;line-height:1.9!important;overflow-wrap:anywhere}
+.post-body h2{color:var(--fsp-ink)!important;font-size:clamp(21px,2.1vw,27px)!important;font-weight:850!important;line-height:1.3!important;margin:35px 0 14px!important;padding-bottom:10px!important;border-bottom:2px solid var(--fsp-line)!important}
+.post-body h2:after{content:"";display:block;width:58px;height:3px;margin-top:10px;border-radius:4px;background:linear-gradient(90deg,var(--fsp-cyan),var(--fsp-orange))}
+.post-body h3{color:#174b73!important;font-size:19px!important;font-weight:800!important;margin:25px 0 10px!important}
+.post-body p{margin:0 0 18px!important}
+.post-body img{max-width:100%!important;height:auto!important;border-radius:15px!important;box-shadow:0 8px 24px rgba(16,42,67,.12)!important}
+.post-body blockquote{margin:24px 0!important;padding:17px 20px!important;background:var(--fsp-sky)!important;border-left:4px solid var(--fsp-cyan)!important;border-radius:0 12px 12px 0!important;color:#29445d!important}
+.post-body table{display:block;max-width:100%;overflow-x:auto;border-collapse:collapse}
+.post-body th{background:#e8f3fa!important;color:var(--fsp-ink)!important}
+.post-body th,.post-body td{padding:10px 12px!important;border:1px solid var(--fsp-line)!important}
+.post-body ul,.post-body ol{padding-left:25px!important}.post-body li{margin:0 0 9px!important}
+.post-body a{color:#075f9e!important;text-decoration:underline!important;text-decoration-color:#23b6c777!important;text-underline-offset:3px!important}
+.widget h2,.widget-title{color:var(--fsp-ink)!important;font-weight:850!important}
+#sidebar-wrapper .widget,.sidebar .widget{background:#fff!important;border:1px solid var(--fsp-line)!important;border-radius:15px!important;padding:17px!important;margin-bottom:17px!important;box-shadow:0 7px 22px rgba(16,42,67,.045)!important}
+.tabs-inner,nav.navigation{background:#fff!important;border:1px solid var(--fsp-line)!important;border-radius:13px!important;padding:8px 12px!important;margin-bottom:22px!important}
+.tabs-inner .widget ul li a,nav.navigation a{color:#35536d!important;font-size:13px!important;font-weight:750!important;padding:9px 12px!important;border-radius:9px!important}
+.tabs-inner .widget ul li a:hover,nav.navigation a:hover{background:var(--fsp-sky)!important;color:var(--fsp-blue)!important}
+.widget.ReportAbuse,.widget.Attribution,.widget.Profile,.post-feeds,.feed-links{display:none!important}
+.blog-pager a,.blog-pager-older-link,.blog-pager-newer-link{display:inline-block!important;background:var(--fsp-navy)!important;color:#fff!important;border-radius:10px!important;padding:10px 16px!important;font-weight:800!important}
+@media(max-width:768px){.main-container,.centered-top,.centered-bottom,.page_body{padding:11px!important}.header-widget,header#header{padding:23px 18px!important;border-radius:0 0 16px 16px!important}.post-outer-container,.post-outer,article.post{padding:19px 15px!important;border-radius:15px!important}.post-body{font-size:15.5px!important}h1.post-title,.post-title a{font-size:22px!important}#sidebar-wrapper .widget,.sidebar .widget{padding:14px!important}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+
+/* FlightScoutPro navigation and editorial finish */
+.header-widget,header#header{background:linear-gradient(115deg,#10263d 0%,#17476b 66%,#126879 100%)!important;border-bottom:4px solid #f5c451!important}
+.tabs-inner,nav.navigation{position:sticky!important;top:0!important;z-index:80!important;display:block!important;background:#fff!important;border:1px solid #dce6ef!important;border-radius:13px!important;box-shadow:0 8px 24px rgba(16,42,67,.07)!important}
+.tabs-inner .widget ul,nav.navigation ul{display:flex!important;align-items:center!important;gap:5px!important;flex-wrap:wrap!important}
+.tabs-inner .widget ul li a,nav.navigation a{display:inline-flex!important;align-items:center!important;border-radius:9px!important;padding:10px 13px!important;color:#35536d!important;font-weight:800!important}
+.tabs-inner .widget ul li a:hover,nav.navigation a:hover{background:#eaf5fc!important;color:#087d92!important}
+.post-body h2:after{background:linear-gradient(90deg,#23b6c7,#f5c451)!important}
+.post-body a{color:#075f9e!important}
+.post-body blockquote{background:#eaf5fc!important;border-left-color:#23b6c7!important}
+.blog-pager a,.blog-pager-older-link,.blog-pager-newer-link{background:#10263d!important}
+@media(max-width:768px){.tabs-inner,nav.navigation{overflow-x:auto!important;white-space:nowrap!important}.tabs-inner .widget ul,nav.navigation ul{flex-wrap:nowrap!important;width:max-content!important}}
