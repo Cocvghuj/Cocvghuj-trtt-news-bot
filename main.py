@@ -6,7 +6,9 @@ Strictly compliant with Google Search, Google Search Console, and GitHub Rules.
 Automated Multi-Blog Publishing for TRTT News 24 BD & FlightScoutPro.
 """
 
-import json\nimport time\n
+import json
+import time
+
 def retry_generate_content(client, model, prompt, retries=3, delay=10):
     for i in range(retries):
         try:
