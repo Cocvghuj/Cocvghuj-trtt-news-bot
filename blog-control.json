@@ -2,23 +2,33 @@
   "brand": "TRTT VOYAGE",
   "tagline": "Open Travel Intelligence",
   "theme": {
-    "primary": "#241B2F",
-    "accent": "#ff2e63",
-    "kathali": "#FFC300",
-    "piaji": "#AF7AC5",
-    "background": "#fbf9fc",
-    "surface": "#ffffff",
-    "text": "#2b2533",
-    "muted": "#756b7d",
-    "menuBackground": "#241B2F",
-    "mobileBackground": "#33233f",
-    "menuText": "#ffffff"
+    "primary": "#14263F",
+    "accent": "#0F9DA8",
+    "kathali": "#F2B45B",
+    "piaji": "#B58BD0",
+    "background": "#F5F8FB",
+    "surface": "#FFFFFF",
+    "text": "#172B40",
+    "muted": "#66788B",
+    "menuBackground": "#14263F",
+    "mobileBackground": "#10243A",
+    "menuText": "#FFFFFF"
   },
   "menu": [
     {
       "id": "home",
       "label": "Home",
       "href": "/"
+    },
+    {
+      "id": "marketplace",
+      "label": "Travel Marketplace",
+      "href": "https://cocvghuj-trtt-news-bot.vercel.app/#marketplace"
+    },
+    {
+      "id": "flight-scout",
+      "label": "Flight Scout Pro",
+      "href": "https://cocvghuj-trtt-news-bot.vercel.app/flight-scout-pro"
     },
     {
       "id": "news",
@@ -41,9 +51,14 @@
       "href": "/search/label/eSIM"
     },
     {
+      "id": "rights",
+      "label": "Passenger Rights",
+      "href": "/search/label/Passenger%20Rights"
+    },
+    {
       "id": "tools",
       "label": "Travel Tools",
-      "href": "https://cocvghuj-trtt-news-bot.vercel.app/super-app.html"
+      "href": "https://cocvghuj-trtt-news-bot.vercel.app/#travel-tools"
     },
     {
       "id": "ask",
