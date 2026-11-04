@@ -1,173 +1,95 @@
-/* Roksana Nila Future Vault — Golapi #ff2e63 / Kathali #FFC300 / Piaji #AF7AC5 */
+/* Roksana Nila Vault — compact, private-feeling personal collection UI.
+   The signature palette is expressed visually; color values are never printed in the interface. */
 (function(){
-'use strict';
-var RV_ALLOWED_HOSTS=Object.freeze({
-  'trttnews24bd.blogspot.com':true,
-  'trttnews24bd.com':true,
-  'www.trttnews24bd.com':true
-});
-var RV_CURRENT_HOST=String(window.location.hostname||'').toLowerCase();
-if(!Object.prototype.hasOwnProperty.call(RV_ALLOWED_HOSTS,RV_CURRENT_HOST)){
-  var rvExisting=document.getElementById('rv-future-mounted')||document.getElementById('RoksanaFinalVault');
-  if(rvExisting)rvExisting.remove();
-  var rvExistingStyle=document.getElementById('rv-future-style');
-  if(rvExistingStyle)rvExistingStyle.remove();
-  var rvLockWarning=document.createElement('div');
-  rvLockWarning.id='rv-domain-lock';
-  rvLockWarning.textContent='♡ PERSONAL STORY — this Vault is unavailable on this domain.';
-  rvLockWarning.setAttribute('role','alert');
-  rvLockWarning.style.cssText='margin:16px auto;padding:14px 18px;max-width:680px;border:1px solid #AF7AC5;border-radius:12px;background:#15111e;color:#fff;font:600 13px system-ui,sans-serif;text-align:center';
-  (document.body||document.documentElement).appendChild(rvLockWarning);
-  return;
-}
-if(window.__ROKSANA_FUTURE_VAULT__)return;
-window.__ROKSANA_FUTURE_VAULT__=true;
-var C={g:'#ff2e63',k:'#FFC300',p:'#AF7AC5'};
-var THEMES=[{name:'Signature',g:'#ff2e63',k:'#FFC300',p:'#AF7AC5'}];
-var R=[
-['✦','Welcome Studio','START HERE',C.k,'Your entry point to the Roksana Nila universe.'],
-['🌹','Golapi Archive','COLLECTION',C.g,'Bold, warm and unmistakable. Golapi signature: #ff2e63.'],
-['👑','Kathali Treasury','COLLECTION',C.k,'Radiant, confident and timeless. Kathali signature: #FFC300.'],
-['💜','Piaji Gallery','COLLECTION',C.p,'Elegant, imaginative and distinctive. Piaji signature: #AF7AC5.'],
-['💎','The Crown Room','FEATURED',C.k,'A curated home for featured pieces and favorite moments.'],
-['📖','Roksana Journal','STORIES',C.p,'A quiet editorial space for notes, memories and stories.'],
-['▧','Memory Gallery','GALLERY',C.g,'A visual gallery for photographs and keepsakes.'],
-['✧','Signature Edit','CURATED',C.k,'A considered mix of the three signature colors.'],
-['⌘','Secret Garden','COMING SOON',C.p,'Reserved for future private content. This is not password protection.'],
-['✉','Notes & Letters','MESSAGES',C.g,'A space for letters and thoughtful messages.'],
-['◈','Help & Guide','SUPPORT',C.k,'Explore rooms and discover the meaning behind the Vault.'],
-['♡','About Roksana','THE STORY',C.p,'A personal identity built around Golapi, Kathali and Piaji.']
+"use strict";
+var allowed={"trttnews24bd.blogspot.com":1,"trttnews24bd.com":1,"www.trttnews24bd.com":1};
+if(!allowed[String(location.hostname||"").toLowerCase()])return;
+if(window.__ROKSANA_COMPACT_VAULT__)return;
+window.__ROKSANA_COMPACT_VAULT__=true;
+var rooms=[
+{icon:"✦",name:"Welcome Studio",type:"START HERE",color:"var(--rv-gold)",desc:"A calm entry point to the Roksana Nila collection."},
+{icon:"🌹",name:"Golapi Archive",type:"COLLECTION",color:"var(--rv-rose)",desc:"A bold, warm collection of signature moments."},
+{icon:"👑",name:"Kathali Treasury",type:"COLLECTION",color:"var(--rv-gold)",desc:"Radiant keepsakes and timeless favorites."},
+{icon:"💜",name:"Piaji Gallery",type:"COLLECTION",color:"var(--rv-lilac)",desc:"An elegant gallery for creative memories."},
+{icon:"💎",name:"The Crown Room",type:"FEATURED",color:"var(--rv-gold)",desc:"A curated home for featured pieces."},
+{icon:"📖",name:"Roksana Journal",type:"STORIES",color:"var(--rv-lilac)",desc:"Notes, memories and stories."},
+{icon:"▧",name:"Memory Gallery",type:"GALLERY",color:"var(--rv-rose)",desc:"A visual home for photographs and keepsakes."},
+{icon:"✧",name:"Signature Edit",type:"FEATURED",color:"var(--rv-gold)",desc:"A considered mix of the three signature colors."},
+{icon:"⌘",name:"Secret Garden",type:"COMING SOON",color:"var(--rv-lilac)",desc:"Reserved for future private content. This is not password protection."},
+{icon:"✉",name:"Notes & Letters",type:"MESSAGES",color:"var(--rv-rose)",desc:"A space for thoughtful messages."},
+{icon:"◈",name:"Help & Guide",type:"SUPPORT",color:"var(--rv-gold)",desc:"A short guide to the rooms in this Vault."},
+{icon:"♡",name:"About Roksana",type:"THE STORY",color:"var(--rv-lilac)",desc:"The story behind this personal collection."}
 ];
-var css=[
-'#rv-future-mounted .rv-lock-status{display:inline-block;margin-left:8px;padding:4px 7px;border:1px solid #AF7AC5;border-radius:999px;color:#fff;font-size:9px;font-weight:800;letter-spacing:.04em;vertical-align:middle}',
-'#rv-future-mounted{--g:#ff2e63;--k:#FFC300;--p:#AF7AC5;width:min(1180px,calc(100% - 20px));margin:22px auto 36px;color:#f8f5fb;font-family:Inter,system-ui,sans-serif}',
-'#rv-future-mounted *{box-sizing:border-box}',
-'#rv-future-mounted .app{overflow:hidden;border:1px solid #af7ac744;border-radius:25px;background:radial-gradient(ellipse at 8% 0%,#ff2e632b,transparent 34%),radial-gradient(ellipse at 100% 10%,#af7ac72b,transparent 32%),linear-gradient(145deg,#0b0911,#15111e 55%,#090710);box-shadow:0 28px 90px #0009}',
-'#rv-future-mounted .top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 21px;border-bottom:1px solid #ffffff14;background:#090710aa}',
-'#rv-future-mounted .brand{font-size:11px;font-weight:900;letter-spacing:.17em;color:#fff}',
-'#rv-future-mounted .gem{display:inline-grid;place-items:center;width:28px;height:28px;margin-right:9px;border-radius:9px;background:linear-gradient(135deg,var(--g),var(--k),var(--p));color:#160e19}',
-'#rv-future-mounted .time{font-size:10px;color:#a99fb4}',
-'#rv-future-mounted .layout{display:grid;grid-template-columns:205px 1fr;min-height:650px}',
-'#rv-future-mounted .side{padding:23px 13px;border-right:1px solid #ffffff12;background:#08070d66}',
-'#rv-future-mounted .side small{display:block;padding:0 10px 10px;color:#81778d;font-size:9px;font-weight:900;letter-spacing:.2em}',
-'#rv-future-mounted .nav{display:grid;gap:5px}',
-'#rv-future-mounted .nav button{padding:11px 10px;border:1px solid transparent;border-radius:10px;background:transparent;color:#bdb4c8;text-align:left;font-size:11px;cursor:pointer}',
-'#rv-future-mounted .nav button:hover,#rv-future-mounted .nav button.active{border-color:#ffc30044;background:#af7ac71c;color:#fff}',
-'#rv-future-mounted .side .note{margin:25px 4px;padding:13px;border:1px solid #af7ac744;border-radius:12px;color:#aaa1b4;font-size:10px;line-height:1.7}',
-'#rv-future-mounted .main{min-width:0;padding:clamp(17px,3vw,34px)}',
-'#rv-future-mounted .hero{display:flex;justify-content:space-between;gap:15px;margin:4px 0 25px}',
-'#rv-future-mounted .eyebrow{color:var(--k);font-size:9px;font-weight:900;letter-spacing:.23em}',
-'#rv-future-mounted h1{margin:10px 0;color:#fff;font:700 clamp(29px,4vw,45px)/1.05 Georgia,serif}',
-'#rv-future-mounted .gradient{background:linear-gradient(95deg,#fff,var(--k),var(--p),#ffc1d1);-webkit-background-clip:text;background-clip:text;color:transparent}',
-'#rv-future-mounted .intro{max-width:590px;color:#aaa1b4;font-size:12px;line-height:1.8}',
-'#rv-future-mounted .crown{width:76px;height:76px;flex:none;display:grid;place-items:center;border:1px solid #ffc30055;border-radius:23px;background:linear-gradient(145deg,#ff2e6325,#ffc30020,#af7ac72b);color:var(--k);font-size:34px}',
-'#rv-future-mounted .swatches{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px}',
-'#rv-future-mounted .swatch{padding:7px 10px;border:1px solid #ffffff1c;border-radius:99px;color:#d6cfdd;font-size:9px;font-weight:800;letter-spacing:.08em}',
-'#rv-future-mounted .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:22px 0 13px}',
-'#rv-future-mounted h2{margin:0;color:#f7f2fa;font:700 18px Georgia,serif}',
-'#rv-future-mounted .hint{margin-top:4px;color:#82798e;font-size:10px}',
-'#rv-future-mounted .search{width:min(260px,48%);padding:10px 12px;border:1px solid #ffffff20;border-radius:10px;background:#0005;color:#fff}',
-'#rv-future-mounted .search input{width:90%;border:0;outline:0;background:transparent;color:#fff;font-size:11px}',
-'#rv-future-mounted .filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px}',
-'#rv-future-mounted .filter{padding:7px 11px;border:1px solid #ffffff1c;border-radius:99px;background:transparent;color:#aaa1b4;font-size:9px;cursor:pointer}',
-'#rv-future-mounted .filter.active{border-color:#ffc30066;background:#ffc30016;color:var(--k)}',
-'#rv-future-mounted .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}',
-'#rv-future-mounted .room{min-height:125px;padding:14px;border:1px solid #ffffff1b;border-radius:14px;background:linear-gradient(145deg,#ffffff12,#ffffff04);color:#fff;text-align:left;cursor:pointer;transition:.2s}',
-'#rv-future-mounted .room:hover{transform:translateY(-3px);border-color:var(--rc);background:#ffffff16}',
-'#rv-future-mounted .room[hidden]{display:none}',
-'#rv-future-mounted .ico{display:grid;place-items:center;width:31px;height:31px;margin-bottom:13px;border-radius:9px;background:color-mix(in srgb,var(--rc),transparent 84%);color:var(--rc);font-size:16px}',
-'#rv-future-mounted .room b{display:block;font-size:11px}',
-'#rv-future-mounted .room small{display:block;margin-top:6px;color:#82798e;font-size:8px;font-weight:900;letter-spacing:.15em}',
-'#rv-future-mounted .detail{display:none;margin-top:15px;padding:18px;border:1px solid #ffc30055;border-radius:14px;background:linear-gradient(100deg,#ff2e6318,#af7ac71c,#ffc30012)}',
-'#rv-future-mounted .detail.open{display:block}',
-'#rv-future-mounted .detail h3{margin:0;color:var(--k);font:700 18px Georgia,serif}',
-'#rv-future-mounted .detail p{color:#c9c0d1;font-size:11px;line-height:1.8}',
-'#rv-future-mounted .close{float:right;border:1px solid #ffffff22;border-radius:8px;background:#ffffff0c;color:#fff;padding:6px 9px;cursor:pointer}',
-'#rv-future-mounted .foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:25px;padding-top:14px;border-top:1px solid #ffffff14;color:#766d81;font-size:9px}',
-'@media(max-width:780px){#rv-future-mounted .layout{grid-template-columns:1fr}#rv-future-mounted .side{display:none}#rv-future-mounted .grid{grid-template-columns:repeat(2,minmax(0,1fr))}}',
-'@media(max-width:520px){#rv-future-mounted{width:calc(100% - 10px)}#rv-future-mounted .top{padding:13px}#rv-future-mounted .main{padding:16px 12px}#rv-future-mounted .crown{width:53px;height:53px;font-size:24px}#rv-future-mounted .toolbar{align-items:stretch;flex-direction:column}#rv-future-mounted .search{width:100%}#rv-future-mounted .room{min-height:116px;padding:11px}}',
-'@media(prefers-reduced-motion:reduce){#rv-future-mounted *{transition:none!important}}'
-].join('\n') + '\n' + [
-'#rv-future-mounted .app{background:radial-gradient(ellipse at 8% 0%,color-mix(in srgb,var(--g),transparent 82%),transparent 34%),radial-gradient(ellipse at 100% 10%,color-mix(in srgb,var(--p),transparent 80%),transparent 32%),linear-gradient(145deg,#0b0911,#15111e 55%,#090710)}',
-'#rv-future-mounted .gem{background:linear-gradient(135deg,var(--g),var(--k),var(--p))}',
-'#rv-future-mounted .eyebrow{color:var(--k)}',
-'#rv-future-mounted .gradient{background-image:linear-gradient(95deg,#fff,var(--k),var(--p),var(--g));-webkit-background-clip:text;background-clip:text;color:transparent}',
-'#rv-future-mounted .crown{border-color:color-mix(in srgb,var(--k),transparent 45%);background:linear-gradient(145deg,color-mix(in srgb,var(--g),transparent 84%),color-mix(in srgb,var(--k),transparent 86%),color-mix(in srgb,var(--p),transparent 82%));color:var(--k)}',
-'#rv-future-mounted .swatch:nth-child(1){color:var(--g)}#rv-future-mounted .swatch:nth-child(2){color:var(--k)}#rv-future-mounted .swatch:nth-child(3){color:var(--p)}',
-'#rv-future-mounted .nav button:hover,#rv-future-mounted .nav button.active{border-color:color-mix(in srgb,var(--k),transparent 55%);background:color-mix(in srgb,var(--p),transparent 87%)}',
-'#rv-future-mounted .side .note{border-color:color-mix(in srgb,var(--p),transparent 55%)}',
-'#rv-future-mounted .filter.active{border-color:color-mix(in srgb,var(--k),transparent 35%);background:color-mix(in srgb,var(--k),transparent 88%);color:var(--k)}',
-'#rv-future-mounted .room,.#rv-future-mounted .ico{transition:color .9s ease,border-color .9s ease,background-color .9s ease,background .9s ease,box-shadow .9s ease,transform .2s ease}',
-'#rv-future-mounted .gem,#rv-future-mounted .eyebrow,#rv-future-mounted .gradient,#rv-future-mounted .crown,#rv-future-mounted .swatch,#rv-future-mounted .filter,#rv-future-mounted .detail,#rv-future-mounted .detail h3{transition:color .9s ease,border-color .9s ease,background .9s ease,background-color .9s ease}',
-'#rv-future-mounted .detail{border-color:color-mix(in srgb,var(--k),transparent 48%);background:linear-gradient(100deg,color-mix(in srgb,var(--g),transparent 89%),color-mix(in srgb,var(--p),transparent 88%),color-mix(in srgb,var(--k),transparent 91%))}',
-'#rv-future-mounted .detail h3{color:var(--k)}',
-'#rv-future-mounted .ai-panel{margin-top:28px;padding:20px;border:1px solid #AF7AC5;border-radius:17px;background:linear-gradient(135deg,#ff2e6314,#FFC3000d,#AF7AC514)}',
-'#rv-future-mounted .ai-panel h2{margin:0 0 7px;color:#FFC300;font:700 20px Georgia,serif}',
-'#rv-future-mounted .ai-panel .ai-intro{margin:0 0 14px;color:#aaa1b4;font-size:11px;line-height:1.7}',
-'#rv-future-mounted .ai-form{display:flex;gap:8px;align-items:stretch}',
-'#rv-future-mounted .ai-question{flex:1;min-width:0;padding:12px;border:1px solid #AF7AC7;border-radius:10px;background:#08070d;color:#fff;font:12px system-ui,sans-serif;outline:none}',
-'#rv-future-mounted .ai-ask{padding:0 17px;border:0;border-radius:10px;background:linear-gradient(120deg,#ff2e63,#AF7AC5);color:#fff;font-weight:900;cursor:pointer}',
-'#rv-future-mounted .ai-ask:disabled{opacity:.55;cursor:wait}',
-'#rv-future-mounted .ai-status{min-height:18px;margin:10px 0;color:#FFC300;font-size:10px}',
-'#rv-future-mounted .ai-results{display:grid;gap:10px}',
-'#rv-future-mounted .ai-result{padding:13px;border:1px solid #ffffff20;border-radius:12px;background:#08070d;color:#e8e1ed}',
-'#rv-future-mounted .ai-result h3{margin:0 0 8px;color:#FFC300;font:700 13px system-ui,sans-serif}',
-'#rv-future-mounted .ai-result p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;line-height:1.75}',
-'#rv-future-mounted .ai-result ul{margin:9px 0 0;padding-left:18px}',
-'#rv-future-mounted .ai-result a{color:#ff8fab;font-size:10px;overflow-wrap:anywhere}',
-'@media(max-width:520px){#rv-future-mounted .ai-form{flex-direction:column}#rv-future-mounted .ai-ask{min-height:42px}}'
-].join('\n') + '\n' + "\n#rv-future-mounted .love-note{margin:4px 0 26px;padding:clamp(18px,3vw,27px);border:1px solid #AF7AC755;border-radius:18px;background:linear-gradient(115deg,#ff2e6317,#AF7AC71b,#FFC30012);box-shadow:inset 0 1px #ffffff12}\n#rv-future-mounted .love-kicker{color:#FFC300;font-size:9px;font-weight:900;letter-spacing:.2em}\n#rv-future-mounted .love-note h2{margin:10px 0 12px;color:#fff;font:700 clamp(20px,2.8vw,27px)/1.25 Georgia,serif}\n#rv-future-mounted .love-note p{max-width:760px;margin:0 0 11px;color:#d3cbd9;font-size:12px;line-height:1.9}\n#rv-future-mounted .love-note span{display:block;margin-top:15px;color:#ff9ab4;font-size:10px;font-weight:800;letter-spacing:.06em}\n#rv-future-mounted .rv-lock-status{border-color:#AF7AC7;color:#f8eaf1}\n";
-function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-function markup(){
-var cards=R.map(function(r,i){return '<button class="room" type="button" data-room="'+i+'" data-cat="'+r[2]+'" style="--rc:'+r[3]+'"><span class="ico">'+r[0]+'</span><b>'+esc(r[1])+'</b><small>'+esc(r[2])+'</small></button>';}).join('');
-return '<section id="RoksanaFinalVault" aria-label="Roksana Nila Future Vault"><div class="app"><header class="top"><div class="brand"><span class="gem">✦</span>ROKSANA NILA / VAULT <span class="rv-lock-status">🔒 Strict Locked</span></div><div class="time">LIVE THEME · 10 SEC · <span id="rv-clock">--:--</span></div></header><div class="layout"><aside class="side"><small>WORKSPACE</small><nav class="nav"><button class="active" data-filter="ALL">⌂　Overview</button><button data-filter="COLLECTION">◈　Collections</button><button data-filter="STORIES">▤　Stories</button><button data-filter="GALLERY">▧　Gallery</button><button data-filter="FEATURED">✧　Featured</button></nav><small style="margin-top:25px">THE SIGNATURE</small><div class="note">GOLAPI · KATHALI · PIAJI<br>Three colors. One identity. A personal world designed to feel timeless.</div></aside><main class="main"><div class="hero"><div><div class="eyebrow">THE NEXT CHAPTER · YOUR COLLECTION</div><h1>Welcome to the<br><span class="gradient">Future Vault.</span></h1><div class="intro">A little digital home for the person I love most. These rooms hold memories, words and colors chosen with care—made to bring a family closer, even when miles lie between us.</div><div class="swatches"><span class="swatch">● GOLAPI</span><span class="swatch">● KATHALI</span><span class="swatch">● PIAJI</span></div></div><div class="crown">♛</div></div><section class="love-note" aria-label="A letter to Roksana Nila"><div class="love-kicker">A LETTER ACROSS DISTANCE</div><h2>To Roksana, my home beyond distance.</h2><p>Five years in Europe have taught me how far a person can travel—and how close the heart can remain. This little corner of the internet is my way of saying that you are part of every journey I take.</p><p>I may not be able to return to Bangladesh right now, but distance cannot make my love smaller. I built this Vault as a digital letter: a place where our family can see the love behind the work, the hope behind the dream, and the person who gives it meaning.</p><p lang="bn">রোকসানা, দূরত্ব আমাদের আলাদা জায়গায় রাখলেও তুমি আমার হৃদয়ের খুব কাছে। এই ছোট্ট Vault তোমার জন্য—আমার ভালোবাসা, স্মৃতি আর পরিবারের প্রতি টান পৃথিবীর সঙ্গে ভাগ করে নেওয়ার একটি ঠিকানা।</p><span>— With love, from Sanluri, Italy</span></section><div class="toolbar"><div><h2>Explore your space</h2><div class="hint">12 thoughtfully designed rooms · Choose one to open</div></div><label class="search">⌕ <input id="rv-search" type="search" placeholder="Search your vault…"></label></div><div class="filters"><button class="filter active" data-filter="ALL">All rooms</button><button class="filter" data-filter="COLLECTION">Collections</button><button class="filter" data-filter="STORIES">Stories</button><button class="filter" data-filter="GALLERY">Gallery</button><button class="filter" data-filter="FEATURED">Featured</button></div><div class="grid">'+cards+'</div><div class="detail" id="rv-detail" aria-live="polite"><button class="close" id="rv-close">CLOSE ×</button><h3 id="rv-title"></h3><p id="rv-desc"></p></div><section class="ai-panel" aria-labelledby="rv-ai-heading"><h2 id="rv-ai-heading">Evidence Answer Engine</h2><p class="ai-intro">One question · Gemini Google Search + OpenRouter web search · independent answers with source links.</p><div class="ai-form"><input class="ai-question" id="rv-ai-question" type="text" maxlength="2000" autocomplete="off" placeholder="Ask a question in any language…" aria-label="Ask the AI Answer Engine"><button class="ai-ask" id="rv-ai-ask" type="button">ASK BOTH AI</button></div><div class="ai-status" id="rv-ai-status" role="status" aria-live="polite">Ready. Your question is sent securely; provider keys stay on the server.</div><div class="ai-results" id="rv-ai-results"></div></section><footer class="foot"><span>CRAFTED FOR ROKSANA NILA</span><span>GOLAPI · KATHALI · PIAJI</span><span>YOUR SPACE, YOUR STORY.</span></footer></main></div></div></section>';
-}
-function mount(){
-if(!document.body||document.getElementById('rv-future-mounted'))return;
-if(!document.getElementById('rv-future-style')){var st=document.createElement('style');st.id='rv-future-style';st.textContent=css;document.head.appendChild(st);}
-var old=document.getElementById('RoksanaFinalVault'),html=markup();
-if(old)old.outerHTML=html;else{var menu=document.getElementById('trtt-final-menu');if(menu&&menu.parentNode)menu.insertAdjacentHTML('afterend',html);else document.body.insertAdjacentHTML('afterbegin',html);}
-var root=document.getElementById('RoksanaFinalVault');if(!root)return;root.id='rv-future-mounted';
-var search=root.querySelector('#rv-search'),detail=root.querySelector('#rv-detail'),active='ALL';
-var themeIndex=0;
-function applyTheme(){var t=THEMES[themeIndex];root.style.setProperty('--g',t.g);root.style.setProperty('--k',t.k);root.style.setProperty('--p',t.p);root.setAttribute('data-theme',t.name);root.querySelectorAll('.room').forEach(function(card,i){card.style.setProperty('--rc',[t.g,t.k,t.p][i%3]);});themeIndex=(themeIndex+1)%THEMES.length;}
-applyTheme();window.setInterval(applyTheme,10000);
-function filter(){var q=search.value.toLowerCase().trim(),n=0;root.querySelectorAll('.room').forEach(function(b){var r=R[+b.dataset.room],ok=(active==='ALL'||r[2]===active||(active==='COLLECTION'&&r[2]==='COLLECTION'))&&(!q||(r.join(' ').toLowerCase().indexOf(q)>-1));b.hidden=!ok;if(ok)n++;});}
-root.addEventListener('click',function(e){var card=e.target.closest('[data-room]');if(card){var r=R[+card.dataset.room];root.querySelector('#rv-title').textContent=r[1];root.querySelector('#rv-title').style.color=r[3];root.querySelector('#rv-desc').textContent=r[4];detail.classList.add('open');return;}var f=e.target.closest('[data-filter]');if(f){active=f.dataset.filter;root.querySelectorAll('[data-filter]').forEach(function(x){x.classList.toggle('active',x.dataset.filter===active);});filter();return;}if(e.target.closest('#rv-close'))detail.classList.remove('open');});
-search.addEventListener('input',filter);
-var aiInput=root.querySelector('#rv-ai-question'),aiButton=root.querySelector('#rv-ai-ask'),aiStatus=root.querySelector('#rv-ai-status'),aiResults=root.querySelector('#rv-ai-results');
-function addText(parent,tag,text,className){var el=document.createElement(tag);if(className)el.className=className;el.textContent=String(text||'');parent.appendChild(el);return el;}
-function renderProvider(label,result,error){
-var card=document.createElement('section');card.className='ai-result';addText(card,'h3',label+(result&&result.model?' · '+result.model:''));
-if(result&&result.answer){addText(card,'p',result.answer);}
-else{addText(card,'p',error||'এই provider থেকে উত্তর পাওয়া যায়নি।');}
-if(result&&Array.isArray(result.sources)&&result.sources.length){
-var list=document.createElement('ul');
-result.sources.forEach(function(source){try{var u=new URL(source.url);if(u.protocol!=='https:')return;var li=document.createElement('li'),a=document.createElement('a');a.href=u.href;a.target='_blank';a.rel='noopener noreferrer';a.textContent=source.title||u.hostname;li.appendChild(a);list.appendChild(li);}catch(_e){}});
-if(list.children.length){addText(card,'h3','Sources');card.appendChild(list);}
-}
-aiResults.appendChild(card);
-}
-async function askBoth(){
-var question=aiInput.value.trim();if(!question){aiStatus.textContent='Please enter a question.';aiInput.focus();return;}
-if(question.length>2000){aiStatus.textContent='Maximum 2,000 characters.';return;}
-aiButton.disabled=true;aiResults.replaceChildren();aiStatus.textContent='Gemini ও OpenRouter-এ প্রশ্ন পাঠানো হচ্ছে…';
-try{
-var response=await fetch('https://cocvghuj-trtt-news-bot.vercel.app/api/answer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:question})});
-var payload=await response.json().catch(function(){return {};});
-if(!response.ok||!payload.ok){
-if(payload.errors){renderProvider('Gemini · Google Search grounding',payload.results&&payload.results.gemini,payload.errors.gemini);renderProvider('OpenRouter · Web Search',payload.results&&payload.results.openrouter,payload.errors.openrouter);aiStatus.textContent=payload.error||'One or more AI providers failed. See details below.';return;}
-throw new Error(payload.error||('HTTP '+response.status));
-}
-renderProvider('Gemini · Google Search grounding',payload.results&&payload.results.gemini,payload.errors&&payload.errors.gemini);
-renderProvider('OpenRouter · Web Search',payload.results&&payload.results.openrouter,payload.errors&&payload.errors.openrouter);
-aiStatus.textContent='Request complete. Check each answer and its source links before relying on it.';
-}catch(error){aiStatus.textContent='Answer Engine error: '+(error&&error.message?error.message:'Request failed');}
-finally{aiButton.disabled=false;}
-}
-aiButton.addEventListener('click',askBoth);
-aiInput.addEventListener('keydown',function(event){if(event.key==='Enter'){event.preventDefault();askBoth();}});
-var clock=root.querySelector('#rv-clock');function tick(){clock.textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}tick();window.setInterval(tick,30000);
-}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
+var style=document.createElement("style");
+style.id="rv-compact-style";
+style.textContent=`
+:root{--rv-rose:#ff4778;--rv-gold:#f5c95b;--rv-lilac:#b58bd0}
+#rv-launcher{position:fixed;right:18px;bottom:18px;z-index:99990;border:1px solid #ffffff40;border-radius:999px;padding:11px 16px;background:linear-gradient(115deg,#24152e,#493057);color:#fff;box-shadow:0 10px 32px #100b1d55;font:800 12px Inter,system-ui,sans-serif;cursor:pointer}
+#rv-launcher span{color:var(--rv-gold);margin-right:7px}
+#rv-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:16px;background:#090711c9;backdrop-filter:blur(8px)}
+#rv-overlay.open{display:flex}
+#rv-dialog{width:min(920px,100%);max-height:min(88vh,820px);overflow:auto;border:1px solid #b58bd055;border-radius:22px;background:radial-gradient(ellipse at 0 0,#ff47781e,transparent 34%),radial-gradient(ellipse at 100% 0,#b58bd022,transparent 35%),#120e1a;color:#f7f2fa;box-shadow:0 30px 100px #000a;font-family:Inter,system-ui,sans-serif}
+#rv-dialog *{box-sizing:border-box}
+#rv-dialog .rv-head{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;background:#120e1af2;border-bottom:1px solid #ffffff17}
+#rv-dialog .rv-brand{font-size:11px;font-weight:950;letter-spacing:.14em}
+#rv-dialog .rv-brand i{display:inline-grid;place-items:center;width:30px;height:30px;margin-right:9px;border-radius:10px;background:linear-gradient(135deg,var(--rv-rose),var(--rv-gold),var(--rv-lilac));color:#201429;font-style:normal}
+#rv-dialog .rv-close{border:1px solid #ffffff30;border-radius:10px;padding:8px 11px;background:#ffffff0c;color:#fff;font-weight:800;cursor:pointer}
+#rv-dialog .rv-content{padding:clamp(17px,3vw,28px)}
+#rv-dialog .rv-kicker{font-size:9px;font-weight:900;letter-spacing:.2em;color:var(--rv-gold)}
+#rv-dialog h2{margin:9px 0 10px;color:#fff;font:700 clamp(25px,4vw,38px)/1.1 Georgia,serif}
+#rv-dialog .rv-lede{max-width:680px;color:#bdb2c7;font-size:12px;line-height:1.8;margin:0}
+#rv-dialog .rv-swatches{display:flex;gap:7px;margin:14px 0 20px;flex-wrap:wrap}
+#rv-dialog .rv-swatches span{padding:6px 10px;border:1px solid #ffffff20;border-radius:30px;color:#e7ddeb;font-size:9px;font-weight:800;letter-spacing:.1em}
+#rv-dialog .rv-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:22px 0 12px}
+#rv-dialog .rv-toolbar strong{font:700 17px Georgia,serif}
+#rv-dialog .rv-search{width:min(250px,50%);padding:10px 12px;border:1px solid #ffffff25;border-radius:10px;background:#08070d;color:#fff;font:12px Inter,system-ui,sans-serif}
+#rv-dialog .rv-filters{display:flex;gap:7px;overflow:auto;padding:2px 0 12px}
+#rv-dialog .rv-filter{flex:none;padding:7px 11px;border:1px solid #ffffff22;border-radius:30px;background:transparent;color:#bdb2c7;font-size:9px;font-weight:800;cursor:pointer}
+#rv-dialog .rv-filter.active{background:#b58bd026;border-color:#b58bd0;color:#fff}
+#rv-dialog .rv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+#rv-dialog .rv-room{min-height:112px;padding:13px;border:1px solid #ffffff20;border-radius:13px;background:#ffffff08;color:#fff;text-align:left;cursor:pointer;transition:transform .18s,border-color .18s,background .18s}
+#rv-dialog .rv-room:hover{transform:translateY(-2px);border-color:#f5c95b88;background:#ffffff12}
+#rv-dialog .rv-room[hidden]{display:none}
+#rv-dialog .rv-icon{display:block;margin-bottom:10px;font-size:19px}
+#rv-dialog .rv-room b{display:block;font-size:11px}
+#rv-dialog .rv-room small{display:block;margin-top:5px;color:#978ba3;font-size:8px;font-weight:900;letter-spacing:.13em}
+#rv-dialog .rv-detail{display:none;margin-top:12px;padding:15px;border:1px solid #f5c95b55;border-radius:13px;background:#f5c95b0c}
+#rv-dialog .rv-detail.open{display:block}
+#rv-dialog .rv-detail h3{margin:0 0 6px;color:var(--rv-gold);font:700 17px Georgia,serif}
+#rv-dialog .rv-detail p{margin:0;color:#c9bfd1;font-size:11px;line-height:1.8}
+#rv-dialog .rv-letter{margin:20px 0;padding:17px;border:1px solid #b58bd044;border-radius:14px;background:linear-gradient(110deg,#ff477810,#b58bd010,#f5c95b0a)}
+#rv-dialog .rv-letter p{margin:7px 0;color:#d5ccdc;font-size:11px;line-height:1.8}
+#rv-dialog .rv-ai{margin-top:20px;padding:17px;border:1px solid #b58bd055;border-radius:14px;background:#ffffff06}
+#rv-dialog .rv-ai h3{margin:0 0 6px;color:var(--rv-gold);font:700 17px Georgia,serif}
+#rv-dialog .rv-ai p{margin:0 0 12px;color:#a99eb3;font-size:10px;line-height:1.7}
+#rv-dialog .rv-ai-form{display:flex;gap:8px}
+#rv-dialog .rv-ai-input{flex:1;min-width:0;padding:11px 12px;border:1px solid #ffffff2c;border-radius:10px;background:#08070d;color:#fff;font:12px Inter,system-ui,sans-serif}
+#rv-dialog .rv-ai-button{padding:0 15px;border:0;border-radius:10px;background:linear-gradient(120deg,var(--rv-rose),var(--rv-lilac));color:#fff;font-size:10px;font-weight:950;cursor:pointer}
+#rv-dialog .rv-ai-button:disabled{opacity:.55;cursor:wait}
+#rv-dialog .rv-ai-status{min-height:16px;margin:9px 0;color:var(--rv-gold);font-size:10px}
+#rv-dialog .rv-ai-result{margin-top:9px;padding:12px;border:1px solid #ffffff20;border-radius:11px;background:#08070d}
+#rv-dialog .rv-ai-result b{display:block;margin-bottom:7px;color:var(--rv-gold);font-size:11px}
+#rv-dialog .rv-ai-result p{margin:0;color:#e4dce9;font-size:11px;white-space:pre-wrap;overflow-wrap:anywhere}
+#rv-dialog .rv-ai-result a{color:#ff9bb6;font-size:10px;overflow-wrap:anywhere}
+#rv-dialog .rv-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:18px;padding-top:13px;border-top:1px solid #ffffff18;color:#8e8398;font-size:9px;letter-spacing:.08em}
+@media(max-width:700px){#rv-dialog .rv-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#rv-dialog .rv-content{padding:16px}}
+@media(max-width:460px){#rv-launcher{right:12px;bottom:12px;padding:10px 13px}#rv-dialog .rv-head{padding:12px 14px}#rv-dialog .rv-toolbar{align-items:stretch;flex-direction:column}#rv-dialog .rv-search{width:100%}#rv-dialog .rv-ai-form{flex-direction:column}#rv-dialog .rv-ai-button{min-height:40px}}
+@media(prefers-reduced-motion:reduce){#rv-dialog *{transition:none!important}}
+`;
+document.head.appendChild(style);
+var launcher=document.createElement("button");launcher.id="rv-launcher";launcher.type="button";launcher.innerHTML="<span>✦</span> Roksana Vault";launcher.setAttribute("aria-haspopup","dialog");
+var overlay=document.createElement("div");overlay.id="rv-overlay";overlay.innerHTML='<section id="rv-dialog" role="dialog" aria-modal="true" aria-labelledby="rv-title"><header class="rv-head"><div class="rv-brand"><i>R</i>ROKSANA NILA · PERSONAL VAULT</div><button class="rv-close" type="button" aria-label="Close vault">Close ×</button></header><div class="rv-content"><div class="rv-kicker">A SMALL DIGITAL HOME · MADE WITH LOVE</div><h2 id="rv-title">A world of memories,<br>wrapped in three colors.</h2><p class="rv-lede">A personal collection for stories, keepsakes and the little details that make a family feel close, wherever life takes us.</p><div class="rv-swatches"><span>● GOLAPI</span><span>● KATHALI</span><span>● PIAJI</span></div><div class="rv-toolbar"><strong>Explore the Vault</strong><input class="rv-search" type="search" placeholder="Search rooms…" aria-label="Search Vault rooms"></div><div class="rv-filters"><button class="rv-filter active" data-filter="ALL">All rooms</button><button class="rv-filter" data-filter="COLLECTION">Collections</button><button class="rv-filter" data-filter="STORIES">Stories</button><button class="rv-filter" data-filter="GALLERY">Gallery</button><button class="rv-filter" data-filter="FEATURED">Featured</button></div><div class="rv-grid"></div><div class="rv-detail" aria-live="polite"><h3></h3><p></p></div><section class="rv-letter"><div class="rv-kicker">A LETTER ACROSS DISTANCE</div><p>রোকসানা, দূরত্ব আমাদের আলাদা জায়গায় রাখলেও তুমি আমার হৃদয়ের খুব কাছে। এই ছোট্ট Vault তোমার জন্য—আমার ভালোবাসা, স্মৃতি আর পরিবারের প্রতি টান ভাগ করে নেওয়ার একটি ঠিকানা।</p><p>With love, from Italy.</p></section><section class="rv-ai"><h3>Evidence Answer Engine</h3><p>Ask a question. Gemini and OpenRouter can return independent answers with source links when their services are configured and available.</p><div class="rv-ai-form"><input class="rv-ai-input" type="text" maxlength="2000" placeholder="Ask in any language…" aria-label="Ask the Answer Engine"><button class="rv-ai-button" type="button">ASK AI</button></div><div class="rv-ai-status" role="status" aria-live="polite">Ready. Provider keys stay on the server.</div><div class="rv-ai-results"></div></section><footer class="rv-footer"><span>ROKSANA NILA</span><span>GOLAPI · KATHALI · PIAJI</span><span>YOUR SPACE, YOUR STORY.</span></footer></div></section>';
+document.body.appendChild(launcher);document.body.appendChild(overlay);
+var dialog=overlay.querySelector("#rv-dialog"),grid=dialog.querySelector(".rv-grid"),search=dialog.querySelector(".rv-search"),detail=dialog.querySelector(".rv-detail"),active="ALL";
+rooms.forEach(function(room,index){var b=document.createElement("button");b.type="button";b.className="rv-room";b.dataset.index=String(index);b.dataset.type=room.type;b.innerHTML='<span class="rv-icon">'+room.icon+'</span><b></b><small></small>';b.querySelector("b").textContent=room.name;b.querySelector("small").textContent=room.type;grid.appendChild(b);});
+function filter(){var q=search.value.trim().toLowerCase();grid.querySelectorAll(".rv-room").forEach(function(b){var r=rooms[Number(b.dataset.index)];b.hidden=!(active==="ALL"||(active==="COLLECTION"&&r.type==="COLLECTION")||r.type===active)&&!(q&&((r.name+" "+r.type+" "+r.desc).toLowerCase().includes(q)));if(q)b.hidden=!(r.name+" "+r.type+" "+r.desc).toLowerCase().includes(q);});}
+dialog.addEventListener("click",function(e){var b=e.target.closest(".rv-room");if(b){var r=rooms[Number(b.dataset.index)];detail.querySelector("h3").textContent=r.name;detail.querySelector("h3").style.color=r.color;detail.querySelector("p").textContent=r.desc;detail.classList.add("open");return;}var f=e.target.closest("[data-filter]");if(f){active=f.dataset.filter;dialog.querySelectorAll(".rv-filter").forEach(function(x){x.classList.toggle("active",x===f);});filter();return;}if(e.target.closest(".rv-close"))close();});
+search.addEventListener("input",filter);
+function open(){overlay.classList.add("open");document.body.style.overflow="hidden";launcher.setAttribute("aria-expanded","true");dialog.querySelector(".rv-close").focus();}
+function close(){overlay.classList.remove("open");document.body.style.overflow="";launcher.setAttribute("aria-expanded","false");launcher.focus();}
+launcher.addEventListener("click",open);overlay.addEventListener("click",function(e){if(e.target===overlay)close();});document.addEventListener("keydown",function(e){if(e.key==="Escape"&&overlay.classList.contains("open"))close();});
+var input=dialog.querySelector(".rv-ai-input"),button=dialog.querySelector(".rv-ai-button"),status=dialog.querySelector(".rv-ai-status"),results=dialog.querySelector(".rv-ai-results");
+function addResult(name,result,error){var box=document.createElement("div");box.className="rv-ai-result";var title=document.createElement("b");title.textContent=name+(result&&result.model?" · "+result.model:"");box.appendChild(title);var p=document.createElement("p");p.textContent=result&&result.answer?result.answer:(error||"No answer returned.");box.appendChild(p);if(result&&Array.isArray(result.sources)){result.sources.forEach(function(s){try{var u=new URL(s.url);if(u.protocol!=="https:")return;var a=document.createElement("a");a.href=u.href;a.target="_blank";a.rel="noopener noreferrer";a.textContent=s.title||u.hostname;box.appendChild(a);}catch(_){}});}results.appendChild(box);}
+async function ask(){var question=input.value.trim();if(!question){status.textContent="Please enter a question.";input.focus();return;}button.disabled=true;results.replaceChildren();status.textContent="Sending question to the available AI providers…";try{var response=await fetch("https://cocvghuj-trtt-news-bot.vercel.app/api/answer",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:question})});var data=await response.json().catch(function(){return {};});if(!response.ok||!data.ok){if(data.errors){addResult("Gemini",data.results&&data.results.gemini,data.errors.gemini);addResult("OpenRouter",data.results&&data.results.openrouter,data.errors.openrouter);status.textContent=data.error||"Provider error; details shown below.";return;}throw new Error(data.error||("HTTP "+response.status));}addResult("Gemini",data.results&&data.results.gemini,data.errors&&data.errors.gemini);addResult("OpenRouter",data.results&&data.results.openrouter,data.errors&&data.errors.openrouter);status.textContent="Completed. Check source links before relying on the answers.";}catch(e){status.textContent="Answer Engine unavailable: "+(e&&e.message?e.message:"request failed");}finally{button.disabled=false;}}
+button.addEventListener("click",ask);input.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();ask();}});
 })();
