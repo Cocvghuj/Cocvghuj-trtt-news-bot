@@ -30,7 +30,7 @@ jobs:
       - name: Run TRTT Master 787950 - Marker Hidden
         env:
           TRAVEL_MARKER: ${{ secrets.TRAVEL_MARKER }} # 787950 - Secret এ রাখো
-          BLOGGER_TOKEN: ${{ secrets.BLOGGER_TOKEN }}
+          BLOGGER_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           echo "Running with hidden marker..."
