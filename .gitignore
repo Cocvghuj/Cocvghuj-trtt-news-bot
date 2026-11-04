@@ -1,7 +1,15 @@
 .env
-.env.local
+.env.*
+!.env.example
 *.log
+*.pem
+*.key
+credentials.json
+client_secret*.json
+service-account*.json
+token*.json
 dist/
 drafted_history.txt
 news/queue/
 __pycache__/
+*.py[cod]
