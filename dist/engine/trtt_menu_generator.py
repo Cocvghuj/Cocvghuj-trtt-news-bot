@@ -39,7 +39,7 @@ MENU_PYTHONIC = [
             {"name": "💸 【entity-AirHelp¦canonical_name=AirHelp】 3ItXS0E4 600€", "url": f"https://airhelp.tp.st/3ItXS0E4?marker={CONFIG['MARKER']}&sub_id=python_airhelp_{CONFIG['MARKER']}"},
             {"name": "📱 【entity-Airalo¦canonical_name=Airalo】 ZZoQC7Mz", "url": f"https://airalo.tp.st/ZZoQC7Mz?marker={CONFIG['MARKER']}&sub_id=python_airalo_{CONFIG['MARKER']}"},
             {"name": "🚕 Kiwitaxi tIZcbMOB Fixed", "url": f"https://kiwitaxi.tp.st/tIZcbMOB?marker={CONFIG['MARKER']}&sub_id=python_kiwitaxi_{CONFIG['MARKER']}"},
-            {"name": "🎒 Amazon 4shg6Hn", "url": CONFIG['AMAZON']}
+            {"name": "🎒 Amazon 4shg6Hn", "url": "https://amzn.to/4shg6Gn"}
         ]
     }
 ]
