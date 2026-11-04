@@ -1,6 +1,6 @@
 {
   "brand": "TRTT VOYAGE",
-  "tagline": "Open Travel Intelligence",
+  "tagline": "Travel. Discover. Connect.",
   "theme": {
     "primary": "#14263F",
     "accent": "#0F9DA8",
@@ -26,6 +26,11 @@
       "href": "https://cocvghuj-trtt-news-bot.vercel.app/#marketplace"
     },
     {
+      "id": "map",
+      "label": "Map Explorer",
+      "href": "https://cocvghuj-trtt-news-bot.vercel.app/#marketplace"
+    },
+    {
       "id": "flight-scout",
       "label": "Flight Scout Pro",
       "href": "https://cocvghuj-trtt-news-bot.vercel.app/flight-scout-pro"
@@ -41,24 +46,9 @@
       "href": "/search/label/Europe%20Travel"
     },
     {
-      "id": "flights",
-      "label": "Flights",
-      "href": "/search/label/Flights"
-    },
-    {
-      "id": "esim",
-      "label": "eSIM",
-      "href": "/search/label/eSIM"
-    },
-    {
       "id": "rights",
       "label": "Passenger Rights",
       "href": "/search/label/Passenger%20Rights"
-    },
-    {
-      "id": "tools",
-      "label": "Travel Tools",
-      "href": "https://cocvghuj-trtt-news-bot.vercel.app/#travel-tools"
     },
     {
       "id": "ask",
@@ -66,19 +56,9 @@
       "href": "https://trttnews24bd.blogspot.com/"
     },
     {
-      "id": "about",
-      "label": "About",
-      "href": "/p/about-us.html"
-    },
-    {
       "id": "contact",
       "label": "Contact",
       "href": "/p/contact-us.html"
-    },
-    {
-      "id": "hub",
-      "label": "Open TRTT Voyage ↗",
-      "href": "https://cocvghuj-trtt-news-bot.vercel.app/"
     }
   ]
 }
