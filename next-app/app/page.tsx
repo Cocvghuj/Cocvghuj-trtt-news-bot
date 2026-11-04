@@ -8,7 +8,7 @@ export default async function HomePage(){
  return <main>
  <header className="topbar">
   <Link className="brand" href="/" aria-label="TRTT Voyage home"><span className="brand-symbol">T</span><span><strong>TRTT <b>VOYAGE</b></strong><small>OPEN TRAVEL INTELLIGENCE</small></span></Link>
-  <nav aria-label="Main navigation"><a href="#marketplace">Marketplace</a><a href="/flight-scout-pro">Flight Scout Pro</a><a href="#tech-desk">Tech desk</a><a href="https://trttnews24bd.blogspot.com/" target="_blank" rel="noreferrer">Travel journal ↗</a></nav>
+  <nav aria-label="Main navigation"><a href="#marketplace">Marketplace</a><a href="/flight-scout-pro">Flight Scout Pro</a><a href="#tech-desk">Tech desk</a><a href="https://trttnews24bd.blogspot.com/" target="_blank" rel="noreferrer">Roksana Vault ↗</a></nav>
   <a className="top-cta" href="#tech-desk">Explore updates <span>↗</span></a>
  </header>
  <section className="hero"><div className="hero-copy">
