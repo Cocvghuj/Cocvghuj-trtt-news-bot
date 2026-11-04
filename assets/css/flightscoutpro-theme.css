@@ -41,3 +41,15 @@ h1.post-title,.post-title a{color:var(--fsp-ink)!important;font-size:clamp(22px,
 .blog-pager a,.blog-pager-older-link,.blog-pager-newer-link{display:inline-block!important;background:var(--fsp-navy)!important;color:#fff!important;border-radius:10px!important;padding:10px 16px!important;font-weight:800!important}
 @media(max-width:768px){.main-container,.centered-top,.centered-bottom,.page_body{padding:11px!important}.header-widget,header#header{padding:23px 18px!important;border-radius:0 0 16px 16px!important}.post-outer-container,.post-outer,article.post{padding:19px 15px!important;border-radius:15px!important}.post-body{font-size:15.5px!important}h1.post-title,.post-title a{font-size:22px!important}#sidebar-wrapper .widget,.sidebar .widget{padding:14px!important}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+
+/* FlightScoutPro navigation and editorial finish */
+.header-widget,header#header{background:linear-gradient(115deg,#10263d 0%,#17476b 66%,#126879 100%)!important;border-bottom:4px solid #f5c451!important}
+.tabs-inner,nav.navigation{position:sticky!important;top:0!important;z-index:80!important;display:block!important;background:#fff!important;border:1px solid #dce6ef!important;border-radius:13px!important;box-shadow:0 8px 24px rgba(16,42,67,.07)!important}
+.tabs-inner .widget ul,nav.navigation ul{display:flex!important;align-items:center!important;gap:5px!important;flex-wrap:wrap!important}
+.tabs-inner .widget ul li a,nav.navigation a{display:inline-flex!important;align-items:center!important;border-radius:9px!important;padding:10px 13px!important;color:#35536d!important;font-weight:800!important}
+.tabs-inner .widget ul li a:hover,nav.navigation a:hover{background:#eaf5fc!important;color:#087d92!important}
+.post-body h2:after{background:linear-gradient(90deg,#23b6c7,#f5c451)!important}
+.post-body a{color:#075f9e!important}
+.post-body blockquote{background:#eaf5fc!important;border-left-color:#23b6c7!important}
+.blog-pager a,.blog-pager-older-link,.blog-pager-newer-link{background:#10263d!important}
+@media(max-width:768px){.tabs-inner,nav.navigation{overflow-x:auto!important;white-space:nowrap!important}.tabs-inner .widget ul,nav.navigation ul{flex-wrap:nowrap!important;width:max-content!important}}
