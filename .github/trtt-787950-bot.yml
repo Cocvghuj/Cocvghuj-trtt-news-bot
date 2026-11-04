@@ -1,0 +1,46 @@
+name: TRTT 787950 Auto Draft - Locked
+
+on:
+  schedule:
+    - cron: '0 7,13,19,23 * * *' # Sanluri 8AM, 2PM, 8PM, 12AM (Winter 7,13,19,23) - 4 bar
+  workflow_dispatch:
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    # একসাথে 2টা run হলে একটা বন্ধ হবে - duplicate vault এর মতো
+    concurrency:
+      group: trtt-787950
+      cancel-in-progress: false
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+          
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install deps
+        run: |
+          pip install requests google-api-python-client google-auth-oauthlib 2>/dev/null || pip install requests
+          
+      - name: Run TRTT Master 787950 - Marker Hidden
+        env:
+          TRAVEL_MARKER: ${{ secrets.TRAVEL_MARKER }} # 787950 - Secret এ রাখো
+          BLOGGER_TOKEN: ${{ secrets.BLOGGER_TOKEN }}
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          echo "Running with hidden marker..."
+          python trtt_787950_master.py
+          
+      - name: Save History
+        if: always()
+        run: |
+          git config user.name "TRTT Bot"
+          git config user.email "bot@trttnews24bd.com"
+          git add drafted_history.txt news/queue/ || true
+          git commit -m "TRTT 787950 Batch - $(date)" || echo "No changes"
+          git push || echo "Push failed - check GH_PAT"
