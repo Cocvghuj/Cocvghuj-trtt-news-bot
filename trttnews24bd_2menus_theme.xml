@@ -6377,7 +6377,7 @@ $("#main-wrapper").each(function() {
 });
 //]]>
 </script>
-<!-- TRTT VOYAGE ALL MENUS & ALL TOOLS INSIDE (GITHUB CDN) -->
-<script src='https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@main/trtt-all-menus-inside.js'></script>
+<!-- TRTT VOYAGE FINAL MENU VALID (ALL MENUS + ALL TOOLS + VERCEL CONNECTED) -->
+<script src='https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@main/trtt-final-menu-valid.js'></script>
 </body>
 </html>
