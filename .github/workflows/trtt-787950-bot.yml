@@ -2,7 +2,7 @@ name: TRTT 787950 Auto Draft - Locked
 
 on:
   schedule:
-    - cron: '0 7,13,19,23 * * *' # Sanluri 8AM, 2PM, 8PM, 12AM (Winter 7,13,19,23) - 4 bar
+        - cron: '0 7 * * *' # Runs at 07:00 only - Free Tier 20 RPD Fix # Sanluri 8AM
   workflow_dispatch:
 
 jobs:
