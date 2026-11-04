@@ -1,4 +1,7 @@
-archive/
-mkdir.
+.env
+.env.local
+*.log
+dist/
+drafted_history.txt
+news/queue/
 __pycache__/
-*.pyc
