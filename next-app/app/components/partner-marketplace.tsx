@@ -31,6 +31,8 @@ const categories=["All services","Flights","Tours & tickets","eSIM & connectivit
 export default function PartnerMarketplace({initialCategory="All services"}:{initialCategory?:string}){
  const [category,setCategory]=useState(initialCategory);
  const [query,setQuery]=useState("");
+ const [mapQuery,setMapQuery]=useState("Rome, Italy");
+ const [mapOpen,setMapOpen]=useState(false);
  const visible=useMemo(()=>partners.filter(p=>(category==="All services"||p.category===category)&&(`${p.name} ${p.category} ${p.description}`.toLowerCase().includes(query.toLowerCase()))),[category,query]);
  return <section className="marketplace-section" id="marketplace">
   <div className="marketplace-head">
@@ -39,8 +41,16 @@ export default function PartnerMarketplace({initialCategory="All services"}:{ini
   </div>
   <div className="market-tools">
    <label className="market-search"><span aria-hidden="true">⌕</span><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search flights, eSIM, transfers, tickets…" aria-label="Search travel services"/></label>
-   <a className="market-map-link" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">Explore maps ↗</a>
+   <a className="market-map-link" href="https://www.google.com/maps/search/?api=1&query=world+travel" target="_blank" rel="noopener noreferrer">Open Google Maps ↗</a>
   </div>
+  <section className="market-map-explorer" aria-label="Destination map explorer">
+   <div className="market-map-copy"><span>DESTINATION EXPLORER</span><h3>See where your journey takes you.</h3><p>Search a city, airport or landmark to preview it on the map.</p></div>
+   <form className="market-map-form" onSubmit={e=>{e.preventDefault();if(mapQuery.trim())setMapOpen(true);}}>
+    <input value={mapQuery} onChange={e=>setMapQuery(e.target.value)} aria-label="Destination or landmark" placeholder="e.g. Cagliari, Italy"/>
+    <button type="submit">Show map ↗</button>
+   </form>
+   {mapOpen&&<div className="market-map-frame"><iframe title={"Map of "+mapQuery} src={"https://www.google.com/maps?q="+encodeURIComponent(mapQuery)+"&output=embed"} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen/></div>}
+  </section>
   <div className="market-filters" role="group" aria-label="Filter travel services">
    {categories.map(c=><button type="button" key={c} onClick={()=>setCategory(c)} className={category===c?"active":""} aria-pressed={category===c}>{c}</button>)}
   </div>
