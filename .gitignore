@@ -9,7 +9,6 @@ client_secret*.json
 service-account*.json
 token*.json
 dist/
-drafted_history.txt
 news/queue/
 __pycache__/
 *.py[cod]
