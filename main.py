@@ -6,7 +6,19 @@ Strictly compliant with Google Search, Google Search Console, and GitHub Rules.
 Automated Multi-Blog Publishing for TRTT News 24 BD & FlightScoutPro.
 """
 
-import json
+import json\nimport time\n
+def retry_generate_content(client, model, prompt, retries=3, delay=10):
+    for i in range(retries):
+        try:
+            return client.models.generate_content(model=model, contents=prompt)
+        except Exception as e:
+            if i < retries - 1:
+                print(f"Rate limit hit or error, retrying in {delay}s...")
+                time.sleep(delay)
+                delay *= 2
+            else:
+                raise e
+
 import os
 import re
 import difflib
@@ -685,7 +697,7 @@ Followed by the complete HTML article."""
             ]
             for model_name in candidate_models:
                 try:
-                    response = client.models.generate_content(model=model_name, contents=prompt)
+                    response = retry_generate_content(client, model_name, prompt)
                     res_text = getattr(response, "text", str(response)).strip()
                     if res_text and len(res_text) > 300:
                         text = res_text
