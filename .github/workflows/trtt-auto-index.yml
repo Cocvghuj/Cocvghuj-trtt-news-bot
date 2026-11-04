@@ -1,21 +1,18 @@
-name: TRTT Auto Google Index - Permanent Links
+name: TRTT Auto Google Index
 on:
   schedule:
-    - cron: '0 * * * *' # প্রতি ঘণ্টায় Sanluri Time
+    - cron: '0 * * * *'
   workflow_dispatch:
 jobs:
-  index:
+  auto-index:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install
-        run: pip install requests feedparser google-api-python-client
-      - name: Run Auto Index
+      - run: pip install feedparser requests
+      - run: python trtt_auto_google_index.py
         env:
-          BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
-          BLOGGER_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
-          GOOGLE_INDEX_KEY: ${{ secrets.GOOGLE_INDEX_KEY }}
-        run: python trtt_auto_google_index.py
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.FLIGHTSCOUTPRO_BLOG_ID }}
