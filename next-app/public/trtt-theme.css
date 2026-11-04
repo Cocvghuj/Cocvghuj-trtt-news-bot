@@ -1,0 +1,218 @@
+/* TRTT VoyageHub — Blogger presentation layer
+   Brand palette: Golapi #ff2e63 · Kathali #FFC300 · Piaji #AF7AC5
+   Loaded by the GitHub-managed Blogger gadget; does not replace Blogger Theme XML. */
+:root{
+  --trtt-brand-primary:#241B2F;
+  --trtt-brand-accent:#ff2e63;
+  --trtt-brand-kathali:#FFC300;
+  --trtt-brand-piaji:#AF7AC5;
+  --trtt-page-bg:#fbf9fc;
+  --trtt-surface:#ffffff;
+  --trtt-text:#2b2533;
+  --trtt-muted:#756b7d;
+  --trtt-line:#ece6ef;
+}
+html,body{
+  background:var(--trtt-page-bg)!important;
+  color:var(--trtt-text)!important;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif!important;
+  font-size:16px!important;
+  line-height:1.75!important;
+  -webkit-font-smoothing:antialiased;
+}
+body{margin:0!important}
+a{color:var(--trtt-brand-accent)}
+a:hover{color:#c91f4c}
+.main-container,.centered-top,.centered-bottom,.page_body{
+  max-width:1220px!important;
+  margin:0 auto!important;
+  padding:clamp(12px,2.5vw,28px)!important;
+  background:transparent!important;
+}
+.header-widget,header#header{
+  background:linear-gradient(120deg,#241B2F 0%,#392844 72%,#51365b 100%)!important;
+  border:0!important;
+  border-bottom:4px solid var(--trtt-brand-accent)!important;
+  border-radius:0 0 22px 22px!important;
+  box-shadow:0 14px 34px rgba(36,27,47,.15)!important;
+  padding:clamp(22px,3vw,34px)!important;
+  margin:0 auto 28px!important;
+  text-align:left!important;
+}
+.header-widget h1,.header-widget .title,header h1.title{
+  color:#fff!important;
+  font-size:clamp(24px,3vw,36px)!important;
+  font-weight:900!important;
+  letter-spacing:-.035em!important;
+  line-height:1.15!important;
+  margin:0!important;
+}
+.header-widget .description,header .description{
+  color:#e6dce9!important;
+  font-size:13px!important;
+  margin-top:9px!important;
+}
+.post-outer-container,.post-outer,article.post{
+  background:var(--trtt-surface)!important;
+  border:1px solid var(--trtt-line)!important;
+  border-radius:20px!important;
+  box-shadow:0 8px 28px rgba(36,27,47,.055)!important;
+  padding:clamp(20px,3vw,36px)!important;
+  margin:0 0 24px!important;
+  transition:box-shadow .2s ease,border-color .2s ease;
+}
+.post-outer-container:hover,.post-outer:hover{
+  border-color:#af7ac555!important;
+  box-shadow:0 14px 36px rgba(36,27,47,.09)!important;
+}
+h1.post-title,.post-title a{
+  color:var(--trtt-brand-primary)!important;
+  font-size:clamp(23px,2.5vw,31px)!important;
+  font-weight:850!important;
+  line-height:1.27!important;
+  letter-spacing:-.025em!important;
+  text-decoration:none!important;
+}
+.post-title a:hover{color:var(--trtt-brand-accent)!important}
+.post-header,.post-meta,.post-timestamp,.byline{
+  color:#93889a!important;
+  font-size:12px!important;
+}
+.post-body{
+  color:#403747!important;
+  font-size:16px!important;
+  line-height:1.9!important;
+  overflow-wrap:anywhere;
+}
+.post-body h2{
+  color:var(--trtt-brand-primary)!important;
+  font-size:clamp(21px,2.2vw,26px)!important;
+  font-weight:850!important;
+  line-height:1.3!important;
+  margin:38px 0 15px!important;
+  padding-bottom:10px!important;
+  border-bottom:2px solid #f1eaf3!important;
+}
+.post-body h2:after{
+  content:"";
+  display:block;
+  width:54px;
+  height:3px;
+  margin-top:10px;
+  border-radius:4px;
+  background:linear-gradient(90deg,var(--trtt-brand-accent),var(--trtt-brand-kathali),var(--trtt-brand-piaji));
+}
+.post-body h3{
+  color:#493452!important;
+  font-size:19px!important;
+  font-weight:800!important;
+  margin:27px 0 10px!important;
+}
+.post-body p{margin:0 0 18px!important}
+.post-body img{
+  max-width:100%!important;
+  height:auto!important;
+  border-radius:16px!important;
+  box-shadow:0 8px 22px rgba(36,27,47,.1)!important;
+}
+.post-body blockquote{
+  margin:24px 0!important;
+  padding:17px 20px!important;
+  background:#f7f0f8!important;
+  border-left:4px solid var(--trtt-brand-piaji)!important;
+  border-radius:0 12px 12px 0!important;
+  color:#51445a!important;
+}
+.post-body table{
+  display:block;
+  max-width:100%;
+  overflow-x:auto;
+  border-collapse:collapse;
+}
+.post-body th{
+  background:#f5edf7!important;
+  color:var(--trtt-brand-primary)!important;
+}
+.post-body th,.post-body td{
+  padding:10px 12px!important;
+  border:1px solid var(--trtt-line)!important;
+}
+.post-body ul,.post-body ol{padding-left:25px!important}
+.post-body li{margin:0 0 9px!important}
+.post-body a{
+  color:#c91f4c!important;
+  text-decoration:underline!important;
+  text-decoration-color:#ff2e6366!important;
+  text-underline-offset:3px!important;
+}
+.post-body a:hover{color:#87549f!important}
+.widget h2,.widget-title{
+  color:var(--trtt-brand-primary)!important;
+  font-weight:850!important;
+}
+#sidebar-wrapper .widget,.sidebar .widget{
+  background:#fff!important;
+  border:1px solid var(--trtt-line)!important;
+  border-radius:16px!important;
+  padding:18px!important;
+  margin-bottom:18px!important;
+  box-shadow:0 7px 22px rgba(36,27,47,.04)!important;
+}
+.tabs-inner,nav.navigation{
+  background:#fff!important;
+  border:1px solid var(--trtt-line)!important;
+  border-radius:14px!important;
+  padding:8px 12px!important;
+  margin-bottom:22px!important;
+}
+.tabs-inner .widget ul li a,nav.navigation a{
+  color:#574b60!important;
+  font-size:13px!important;
+  font-weight:750!important;
+  padding:9px 13px!important;
+  border-radius:9px!important;
+}
+.tabs-inner .widget ul li a:hover,nav.navigation a:hover{
+  background:#fff0f4!important;
+  color:var(--trtt-brand-accent)!important;
+}
+.widget.ReportAbuse,.widget.Attribution,.widget.Profile,.post-feeds,.feed-links{display:none!important}
+.blog-pager a,.blog-pager-older-link,.blog-pager-newer-link{
+  display:inline-block!important;
+  background:var(--trtt-brand-primary)!important;
+  color:#fff!important;
+  border-radius:10px!important;
+  padding:10px 16px!important;
+  font-weight:800!important;
+}
+@media(max-width:768px){
+  .main-container,.centered-top,.centered-bottom,.page_body{padding:12px!important}
+  .header-widget,header#header{padding:22px 18px!important;border-radius:0 0 16px 16px!important}
+  .post-outer-container,.post-outer,article.post{padding:20px 16px!important;border-radius:15px!important}
+  .post-body{font-size:15.5px!important}
+  h1.post-title,.post-title a{font-size:22px!important}
+  #sidebar-wrapper .widget,.sidebar .widget{padding:15px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{scroll-behavior:auto!important;transition:none!important}
+}
+/* TRTT Voyage editorial refresh — cleaner navigation, calmer surfaces, stronger hierarchy */
+:root{--trtt-brand-primary:#14263F;--trtt-brand-accent:#0F9DA8;--trtt-brand-kathali:#F2B45B;--trtt-brand-piaji:#B58BD0;--trtt-page-bg:#F5F8FB;--trtt-text:#172B40;--trtt-muted:#66788B;--trtt-line:#E0E8EF}
+body{background:var(--trtt-page-bg)!important;color:var(--trtt-text)!important}
+a{color:#087f8b}
+a:hover{color:#0b5963}
+.header-widget,header#header{background:linear-gradient(115deg,#14263F 0%,#1d4562 70%,#167e88 100%)!important;border-bottom:4px solid var(--trtt-brand-kathali)!important;border-radius:0 0 20px 20px!important}
+.post-outer-container,.post-outer,article.post{border-color:#e0e8ef!important;border-radius:18px!important;box-shadow:0 10px 28px rgba(20,38,63,.055)!important}
+.post-outer-container:hover,.post-outer:hover{border-color:#0f9da866!important}
+h1.post-title,.post-title a{color:#14263F!important}
+.post-title a:hover{color:#0F9DA8!important}
+.post-body h2{color:#14263F!important;border-color:#e7edf2!important}
+.post-body h2:after{background:linear-gradient(90deg,#0F9DA8,#F2B45B)!important}
+.post-body h3{color:#17677b!important}
+.post-body blockquote{background:#eaf5f6!important;border-left-color:#0F9DA8!important;color:#28495a!important}
+.post-body th{background:#eaf2f7!important;color:#14263F!important}
+#sidebar-wrapper .widget,.sidebar .widget{border-color:#e0e8ef!important;border-radius:14px!important}
+.tabs-inner,nav.navigation{border-color:#e0e8ef!important;border-radius:13px!important}
+.tabs-inner .widget ul li a,nav.navigation a{color:#36536b!important}
+.tabs-inner .widget ul li a:hover,nav.navigation a:hover{background:#eaf5f6!important;color:#087f8b!important}
+.blog-pager a,.blog-pager-older-link,.blog-pager-newer-link{background:#14263F!important}
