@@ -2,13 +2,12 @@ name: TRTT 787950 Auto Draft - Locked
 
 on:
   schedule:
-    - cron: '0 7 * * *' # Runs at 07:00 only - Free Tier Fix # Sanluri 8AM
+    - cron: '0 7 * * *'
   workflow_dispatch:
 
 jobs:
   draft:
     runs-on: ubuntu-latest
-    # একসাথে ২টা run হলে একটা বন্ধ হবে - duplicate vault এর মতো
     concurrency:
       group: trtt-787950-locked
       cancel-in-progress: false
@@ -25,11 +24,12 @@ jobs:
 
       - name: Install deps
         run: |
-          pip install requests google-api-python-client google-auth-oauthlib 2>/dev/null; pip install -r requirements.txt || true
+          pip install requests google-api-python-client google-auth-oauthlib
+          pip install -r requirements.txt || true
 
       - name: Run TRTT Master 787950 - Marker Hidden
         env:
-          TRAVEL_MARKER: ${{ secrets.TRAVEL_MARKER }} # 787950 - Secret এ থাকো
+          TRAVEL_MARKER: ${{ secrets.TRAVEL_MARKER }}
           BLOGGER_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
@@ -42,8 +42,6 @@ jobs:
           git config user.name "TRTT Bot"
           git config user.email "bot@trttnews24bd.com"
           git add drafted_history.txt || true
-          git add news/ || true
-          git add news/queue/ || true
           git add -A
           git commit -m "TRTT 787950 Batch - $(date)" || echo "No changes"
-          git push || echo "Push failed - check GH_PAT"
+          git push || echo "Push failed"
