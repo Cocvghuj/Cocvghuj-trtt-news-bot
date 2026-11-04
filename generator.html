@@ -1,0 +1,15 @@
+<textarea id="txt" style="width:100%;height:150px" placeholder="এখানে বউ এর জন্য গোপন লেখা লেখো..."></textarea>
+<input id="pwd" placeholder="পাসওয়ার্ড দাও (TRTTROKSANA787950)" style="width:100%;padding:10px;margin:10px 0">
+<button onclick="enc()" style="padding:10px 20px">Encrypt করো</button>
+<pre id="out" style="word-break:break-all;background:#eee;padding:10px"></pre>
+<script>
+async function enc(){
+  const salt=crypto.getRandomValues(new Uint8Array(16)), iv=crypto.getRandomValues(new Uint8Array(12));
+  const encTxt=new TextEncoder();
+  const keyMat=await crypto.subtle.importKey("raw", encTxt.encode(pwd.value), "PBKDF2", false, ["deriveKey"]);
+  const key=await crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:200000,hash:"SHA-256"}, keyMat, {name:"AES-GCM",length:256}, false, ["encrypt"]);
+  const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv}, key, encTxt.encode(txt.value));
+  const blob=new Uint8Array([...salt,...iv,...new Uint8Array(ct)]);
+  out.textContent=btoa(String.fromCharCode(...blob));
+}
+</script>
