@@ -3,6 +3,11 @@ name: TRTT Auto Google Index
 on:
   workflow_dispatch:
     inputs:
+      reviewed_and_published:
+        description: "Confirm that the supplied public post URLs were reviewed and manually published"
+        required: true
+        default: false
+        type: boolean
       reviewed_post_urls:
         description: "HTTPS public post URLs already reviewed and manually published (one URL per line)"
         required: true
@@ -14,7 +19,7 @@ permissions:
 jobs:
   notify-reviewed:
     name: Notify discovery only for explicitly reviewed public URLs
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && inputs.reviewed_and_published == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

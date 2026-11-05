@@ -50,6 +50,17 @@ def route_context(city: str) -> tuple[str, str]:
     return ("Sanluri, Sardinia", "Confirm the airport codes, terminal, ground transport and airline check-in deadline. Compare the complete trip cost rather than the headline fare.")
 
 
+def daily_focus(day: int) -> tuple[str, str]:
+    focuses = [
+        ("Compare the real fare", "Add baggage, seat selection, payment charges and airport transfers before comparing totals. A lower headline fare is not necessarily the lower-cost journey."),
+        ("Plan the airport transfer", "Check the first and last practical ground-transport options, parking arrangements and the time needed to reach the terminal. Keep a buffer for traffic and queues."),
+        ("Check baggage rules", "Read the operating airline's current cabin-bag dimensions and weight limits. If the trip uses more than one carrier, check each carrier's rules rather than assuming they match."),
+        ("Keep passenger-rights records", "Save the booking confirmation, boarding pass, airline messages and receipts. These records help establish what happened if a delay or cancellation affects the journey."),
+        ("Protect connection time", "For separate tickets, allow extra time to collect baggage, clear any required checks and re-check in. A self-transfer is not the same protection as a single through-ticket."),
+    ]
+    return focuses[day % len(focuses)]
+
+
 def _tool_links(city: str) -> str:
     labels = [("Find cheapest flights", LINKS["aviasales"]), ("Plan activities with Klook", LINKS["klook"]),
               ("Compare travel eSIMs with Airalo", LINKS["airalo"]),
@@ -63,11 +74,13 @@ def _tool_links(city: str) -> str:
 
 
 def build_content(city: str, date_label: str | None = None) -> str:
+    """Build a locally grounded editorial draft without invented first-person claims."""
     now = publish_date()
     published = date_label or now.strftime("%-d %B %Y")
     updated = now.strftime("%-d %B %Y")
     safe_city = html.escape(city)
     local_start, route_note = route_context(city)
+    focus_title, focus_note = daily_focus(now.day)
     paragraph_one = (
         f"For {safe_city}, plan the ground journey as carefully as the flight. From {local_start}, "
         f"check the airport code and terminal printed on the booking. {route_note} Compare suitable "
@@ -85,12 +98,13 @@ def build_content(city: str, date_label: str | None = None) -> str:
         "Check the official rules and the facts of your own flight before making a claim."
     )
     tips = (
+        f"<h2>Today's planning focus: {html.escape(focus_title)}</h2><p>{html.escape(focus_note)}</p>"
         "<h2>Before you book</h2><ul>"
         "<li>Confirm departure and arrival airport codes and terminals.</li>"
         "<li>Compare the total fare after adding the baggage and seat options you need.</li>"
         "<li>Allow time for the airport transfer, check-in and security queue.</li>"
         "<li>Save airline notices, booking confirmations and receipts if disruption occurs.</li>"
-        "<li>Recheck the carrier's schedule and current travel requirements before departure.</li>"
+        "<li>Read the <a href='https://europa.eu/youreurope/citizens/travel/passenger-rights/air/index_en.htm'>official EU air-passenger rights guidance</a>.</li>"
         "</ul>"
     )
     footer = (
@@ -102,7 +116,6 @@ def build_content(city: str, date_label: str | None = None) -> str:
         f'<p><strong>Published:</strong> {html.escape(published)} · <strong>Updated:</strong> {html.escape(updated)}</p>'
         '</div>'
     )
-    # This link is intentionally the final footer item.
     live_app = (
         f'<p class="trtt-live-app">Live App: <a href="{LIVE_APP}">{LIVE_APP}</a> - '
         'TRTT VoyageHub - Make every journey feel effortless.</p>'
@@ -167,7 +180,7 @@ def find_duplicate_post(service: Any, blog_id: str, title: str, content: str,
 
 def publish_or_confirm_live(service: Any, blog_id: str, title: str, content: str,
                             topic_key: str | None = None) -> dict[str, Any]:
-    """Compatibility name retained for callers; this function ONLY creates/confirms drafts."""
+    """Legacy function name; it can ONLY create or confirm DRAFT posts."""
     existing = find_duplicate_post(service, blog_id, title, content, topic_key)
     if existing:
         status = str(existing.get("status", "")).upper()
@@ -190,8 +203,8 @@ def run_batch() -> int:
     if not path.exists():
         raise RuntimeError(f"Daily route queue missing: {QUEUE_FILE}")
     queue = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(queue, list) or len(queue) != 1:
-        raise ValueError(f"{QUEUE_FILE} must contain exactly one route.")
+    if not isinstance(queue, list) or len(queue) != BATCH_SIZE:
+        raise ValueError(f"{QUEUE_FILE} must contain exactly {BATCH_SIZE} route.")
     item = queue[0]
     city = str(item.get("city") or item.get("route") or "").strip() if isinstance(item, dict) else str(item).strip()
     if not city:
