@@ -1,8 +1,6 @@
 # Marker: 787950 LOCKED
-name: TRTT Master Servant - 3x DAILY
+name: TRTT Master Servant - MANUAL ONLY (Google quality gate)
 on:
-  schedule:
-    - cron: '0 6,14,22 * * *'
   workflow_dispatch:
 
 permissions:
