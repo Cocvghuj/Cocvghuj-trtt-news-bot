@@ -63,4 +63,9 @@ fs.readdirSync(root).forEach(file => {
   copyRecursive(path.join(root, file), path.join(dist, file));
 });
 
-console.log('Build complete: browser-facing assets copied to dist/ only.');
+const builtIndex = path.join(dist, 'index.html');
+if (!fs.existsSync(builtIndex)) throw new Error('Build failed: dist/index.html was not created.');
+const builtHtml = fs.readFileSync(builtIndex, 'utf8');
+if (!builtHtml.includes('TRTT') || !builtHtml.includes('VOYAGEHUB')) throw new Error('Build failed: TRTT VOYAGEHUB branding missing from dist/index.html.');
+if (!builtHtml.includes('787950 LOCKED')) throw new Error('Build failed: marker 787950 LOCKED missing from dist/index.html.');
+console.log('Build verified: dist/index.html contains TRTT VOYAGEHUB and marker 787950 LOCKED.');
