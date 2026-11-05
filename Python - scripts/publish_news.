@@ -1,0 +1,24 @@
+# Add this logic inside publish_news.py after loading queue
+import datetime
+import pytz
+
+italy_tz = pytz.timezone('Europe/Rome')
+today_italy = datetime.datetime.now(italy_tz).strftime('%Y-%m-%d')
+
+# Rotation: Find route matching today's Italy date
+today_route = None
+for r in latestQueue.get('routes', []):
+    if r.get('date') == today_italy:
+        today_route = r
+        break
+
+if not today_route:
+    # Fallback - Use first route with today's date override
+    today_route = latestQueue['routes'][0]
+    today_route['date'] = today_italy
+    print(f"[TRTT AUDIT] Republish allowed - today's date override - {today_italy}")
+
+# Then use today_route for build_content
+# Real Blogger API call
+# service.posts().insert(blogId=BLOG_ID, body=post_body, isDraft=True).execute()
+# After 2 drafts verified, then update drafted_history.txt
