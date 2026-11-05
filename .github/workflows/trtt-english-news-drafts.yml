@@ -12,7 +12,7 @@ on:
         required: true
         type: string
   schedule:
-    - cron: '0 7,13,19 * * *' # 3x DAILY - 9AM, 3PM, 9PM Italy Time
+    - cron: '0 7,13,19 * * *' # UTC; Italy local time is UTC+1 in winter and UTC+2 in summer
 
 permissions:
   contents: write
@@ -23,7 +23,7 @@ concurrency:
 
 jobs:
   draft:
-    name: Google Compliant Draft + Traffic + Vercel Ref
+    name: Generate and deliver Blogger drafts to both blogs
     if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -45,10 +45,38 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt || pip install google-genai google-auth google-api-python-client requests python-slugify
 
-      - name: Validate Tests - No Bug Allowed
+      - name: Validate Tests
         run: python -m unittest discover -s tests -v
 
-      - name: Generate English Drafts - GOOGLE COMPLIANT - MILLION DOLLAR
+      - name: Verify both Blogger targets and API credentials
+        env:
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID || vars.BLOGGER_BLOG_ID }}
+          FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.FLIGHTSCOUTPRO_BLOG_ID || vars.FLIGHTSCOUTPRO_BLOG_ID }}
+          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
+          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
+          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$BLOGGER_BLOG_ID" || -z "$FLIGHTSCOUTPRO_BLOG_ID" ]]; then
+            echo "::error::Configure BLOGGER_BLOG_ID and FLIGHTSCOUTPRO_BLOG_ID as repository secrets or variables. Both Blogger blogs are required."
+            exit 1
+          fi
+          if [[ "$BLOGGER_BLOG_ID" == "$FLIGHTSCOUTPRO_BLOG_ID" ]]; then
+            echo "::error::The two Blogger blog IDs must be different."
+            exit 1
+          fi
+          if [[ -z "$BLOGGER_CLIENT_ID" || -z "$BLOGGER_CLIENT_SECRET" || -z "$BLOGGER_REFRESH_TOKEN" ]]; then
+            echo "::error::Configure BLOGGER_CLIENT_ID, BLOGGER_CLIENT_SECRET, and BLOGGER_REFRESH_TOKEN repository secrets."
+            exit 1
+          fi
+          if [[ -z "$GEMINI_API_KEY" && -z "$OPENROUTER_API_KEY" ]]; then
+            echo "::error::Configure GEMINI_API_KEY or OPENROUTER_API_KEY to generate the article."
+            exit 1
+          fi
+
+      - name: Generate English article and create drafts on both blogs
         env:
           TRTT_NEWS_TOPIC: ${{ inputs.topic }}
           TRTT_OFFICIAL_SOURCE_URL: ${{ inputs.official_source_url }}
@@ -70,10 +98,15 @@ jobs:
           FIXED_ID: "tIZcbMOB"
         run: python scripts/draft_news.py
 
-      - name: Save Draft History - No Duplicate
+      - name: Save Blogger draft history
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add drafted.txt || true
-          git commit -m "Million Dollar - Record draft - Marker 787950 LOCKED tp.st tIZcbMOB FIXED - Google Title 1-100 Desc 120-160 - Vercel Ref - No Duplicate [skip ci]" || echo "No changes"
-          git push origin HEAD:main || true
+          git add drafted_history.txt
+          if git diff --cached --quiet; then
+            echo "No draft history changes to save."
+          else
+            git commit -m "Record Blogger draft history [skip ci]"
+            git push origin HEAD:main
+          fi
