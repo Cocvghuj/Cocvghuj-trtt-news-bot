@@ -11,10 +11,10 @@
     allowedDomains: ["trttnews24bd.blogspot.com", "trttnews24bd.com", "www.trttnews24bd.com", "cocvghuj-trtt-news-bot.vercel.app"],
     affiliate: {
       marker: 787950,
-      aviasales: "https://aviasales.tp.st/xxxxx?marker=787950",
-      klook: "https://klook.tp.st/xxxxx?marker=787950",
-      airalo: "https://airalo.tp.st/xxxxx?marker=787950",
-      gettransfer: "https://gettransfer.tp.st/xxxxx?marker=787950",
+      aviasales: "https://aviasales.tpo.lv/Fb8U9yav?marker=787950",
+      klook: "https://klook.tpo.lv/TWKnemhz?marker=787950",
+      airalo: "https://airalo.tpo.lv/ZZoQC7Mz?marker=787950",
+      gettransfer: "https://gettransfer.tpo.lv/1u8zRU5s?marker=787950",
       amazon: "https://amzn.to/4shg6Hn"
     },
     signature: { name:'Signature',g:'#ff2e63',k:'#FFC300',p:'#AF7AC5' },
