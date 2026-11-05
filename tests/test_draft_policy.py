@@ -31,8 +31,8 @@ class DraftOnlyPolicyTests(unittest.TestCase):
         content = engine.build_content("Rome to Cagliari", "5 November 2026")
         for required in (
             "ghost-esim", "787950", "photo-1501785888041-af3ef285b470",
-            "aviasales.tp.st", "klook.tp.st", "airalo.tp.st",
-            "gettransfer.tp.st", "amzn.to/4shg6Hn", "EC Regulation 261/2004",
+            "aviasales.tpo.lv", "klook.tpo.lv", "airalo.tpo.lv",
+            "gettransfer.tpo.lv", "amzn.to/4shg6Hn", "EC Regulation 261/2004",
             "Published:", "Updated:", "Sanluri, Sardinia, Italy",
             "Live App:", "Make every journey feel effortless.", "editorial planning guide",
         ):
