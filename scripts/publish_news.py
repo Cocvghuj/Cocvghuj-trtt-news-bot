@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Generate and publish verified travel articles to both configured Blogger blogs.
+"""Publish the generated article to both configured Blogger blogs.
 
-This entry point is intentionally separate from scripts/draft_news.py: scheduled
-runs publish immediately, while review-first workflows can continue creating drafts.
+This entry point is intentionally separate from scripts/draft_news.py, which
+remains a review-first draft workflow. Publishing requires explicit Blogger
+configuration and verifies Blogger's LIVE status before reporting success.
 """
 from __future__ import annotations
 
@@ -38,12 +39,23 @@ class _PostsProxy:
         return self._posts.list(**kwargs)
 
     def insert(self, **kwargs):
-        # Blogger publishes immediately unless isDraft is true.
+        # Blogger creates a LIVE post when isDraft is false.
         kwargs["isDraft"] = False
-        return self._posts.insert(**kwargs)
+        response = self._posts.insert(**kwargs).execute()
+        if str(response.get("status", "")).upper() != "LIVE":
+            raise RuntimeError("Blogger did not confirm the new post is LIVE.")
+        return _ImmediateResult(response)
 
     def publish(self, **kwargs):
         return self._posts.publish(**kwargs)
+
+
+class _ImmediateResult:
+    def __init__(self, value):
+        self._value = value
+
+    def execute(self):
+        return self._value
 
 
 class _BloggerServiceProxy:
@@ -65,28 +77,33 @@ def main() -> int:
     def publishing_build(*args, **kwargs):
         return _BloggerServiceProxy(original_build(*args, **kwargs))
 
-    def publish_matching_draft(service, blog_id, title, content, topic_key=None):
+    def publish_or_confirm_live(service, blog_id, title, content, topic_key=None):
         existing = original_find_duplicate(
             service, blog_id, title, content, topic_key=topic_key
         )
-        if existing and str(existing.get("status", "")).upper() == "DRAFT":
-            post_id = existing.get("id")
-            if not post_id:
-                raise RuntimeError(
-                    "A matching Blogger draft has no post ID; refusing to report publication success."
-                )
-            published = service.posts().publish(
-                blogId=blog_id, postId=str(post_id)
-            ).execute()
-            if str(published.get("status", "")).upper() != "LIVE":
-                raise RuntimeError(
-                    "Blogger did not confirm the existing matching draft is LIVE."
-                )
-            existing.update(published)
-        return existing
+        if not existing:
+            return None
+
+        status = str(existing.get("status", "")).upper()
+        if status == "LIVE":
+            return existing
+        if status != "DRAFT":
+            raise RuntimeError(
+                "Matching Blogger post has no confirmed LIVE or DRAFT status; refusing success."
+            )
+
+        post_id = existing.get("id")
+        if not post_id:
+            raise RuntimeError("Matching Blogger draft has no post ID; refusing success.")
+        published = service.posts().publish(
+            blogId=blog_id, postId=str(post_id)
+        ).execute()
+        if str(published.get("status", "")).upper() != "LIVE":
+            raise RuntimeError("Blogger did not confirm the existing draft is LIVE.")
+        return published
 
     def report_published(title, outcomes, excerpt):
-        print("Blogger publication results for: " + title)
+        print("Blogger publication confirmed for: " + title)
         for outcome in outcomes:
             print(
                 "- " + str(outcome.get("blog_name", "Blogger blog")) + ": "
@@ -94,7 +111,7 @@ def main() -> int:
             )
 
     engine.build = publishing_build
-    engine.find_duplicate_post = publish_matching_draft
+    engine.find_duplicate_post = publish_or_confirm_live
     engine.send_draft_notification = report_published
     try:
         engine.main()
