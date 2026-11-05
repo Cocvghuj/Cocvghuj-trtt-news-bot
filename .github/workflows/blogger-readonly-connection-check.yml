@@ -1,22 +1,12 @@
 name: Blogger Read-only OAuth Check
-
 on:
   workflow_dispatch:
-    # DISABLED backup - kept for future
-
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/blogger-readonly-connection-check.yml'
 
 permissions:
   contents: read
 
 jobs:
   verify-blogger-oauth:
-    if: false
     name: Verify Blogger OAuth without changing the blog
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -25,12 +15,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install Blogger API client
         run: |
           python -m pip install --upgrade pip
-          pip install google-api-python-client google-auth google-auth-httplib2
-
+          pip install google-api-python-client google-auth
       - name: Read-only Blogger API verification
         env:
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
@@ -40,22 +28,13 @@ jobs:
         run: |
           python - <<'PY'
           import os
-          import sys
           from google.oauth2.credentials import Credentials
           from googleapiclient.discovery import build
           from googleapiclient.errors import HttpError
-
-          names = (
-              "BLOGGER_BLOG_ID",
-              "BLOGGER_CLIENT_ID",
-              "BLOGGER_CLIENT_SECRET",
-              "BLOGGER_REFRESH_TOKEN",
-          )
+          names = ("BLOGGER_BLOG_ID", "BLOGGER_CLIENT_ID", "BLOGGER_CLIENT_SECRET", "BLOGGER_REFRESH_TOKEN")
           missing = [name for name in names if not os.environ.get(name, "").strip()]
           if missing:
-              print("FAILED: Missing GitHub Actions secret(s): " + ", ".join(missing))
-              sys.exit(1)
-
+              raise SystemExit("Missing required Blogger settings: " + ", ".join(missing))
           try:
               credentials = Credentials(
                   token=None,
@@ -65,26 +44,13 @@ jobs:
                   client_secret=os.environ["BLOGGER_CLIENT_SECRET"],
                   scopes=["https://www.googleapis.com/auth/blogger"],
               )
-              service = build(
-                  "blogger", "v3", credentials=credentials,
-                  cache_discovery=False,
-              )
-              blog = service.blogs().get(
-                  blogId=os.environ["BLOGGER_BLOG_ID"]
-              ).execute()
-              print("SUCCESS: Blogger OAuth authenticated and read-only blogs.get succeeded.")
-              print("Blog name: " + str(blog.get("name", "(not returned)")))
-              print("Blog ID: " + str(blog.get("id", "(not returned)")))
-              print("Blog URL: " + str(blog.get("url", "(not returned)")))
-              print("No posts, pages, settings, or theme were changed.")
-          except HttpError as exc:
-              print("FAILED: Blogger API returned HTTP " + str(exc.resp.status))
-              print(str(exc)[:1200])
-              sys.exit(1)
-          except Exception as exc:
-              print("FAILED: OAuth/API verification error: " + type(exc).__name__)
-              print(str(exc)[:1200])
-              sys.exit(1)
+              service = build("blogger", "v3", credentials=credentials, cache_discovery=False)
+              blog = service.blogs().get(blogId=os.environ["BLOGGER_BLOG_ID"]).execute()
+              print("CONFIRMED: Blogger OAuth read-only blogs.get succeeded.")
+              print("Blog ID: " + str(blog.get("id", "")))
+              print("Blog name: " + str(blog.get("name", "")))
+              print("No posts or pages were changed.")
+          except HttpError as error:
+              print("Blogger API HTTP error: " + str(error.resp.status))
+              raise
           PY
-
-# Read-only OAuth verification trigger: no Blogger content or settings are modified.

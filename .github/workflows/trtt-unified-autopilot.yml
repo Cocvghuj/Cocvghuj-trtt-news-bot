@@ -1,75 +1,16 @@
-name: TRTT Unified Enterprise Autopilot (Google & Blogger)
-
+name: Retired legacy workflow - use TRTT News Blogger Drafts
 on:
-  workflow_dispatch:
-    # DISABLED backup - kept for future
-
-  schedule:
-    # Creates two reviewable drafts per day (06:17 and 18:17 UTC).
-    - cron: '17 6,18 * * *'
   workflow_dispatch:
 
 permissions:
-  contents: write
-
-concurrency:
-  group: trtt-single-autopilot
-  cancel-in-progress: false
+  contents: read
 
 jobs:
-  autopilot:
-    if: false
-    name: Generate Blogger Draft for Human Review
-    if: github.ref == 'refs/heads/main'
+  retired:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-
     steps:
-      - name: Checkout Codebase
-        uses: actions/checkout@v4
-
-      - name: Set up Python Runtime
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Google & AI Dependencies
+      - name: Explain retirement
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Run safe article validation tests
-        run: |
-          python -m unittest discover -s tests -v
-
-      - name: Generate Reviewable Blogger Drafts
-        env:
-          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
-          FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.FLIGHTSCOUTPRO_BLOG_ID }}
-          PARTNER_BLOG_IDS: ${{ secrets.PARTNER_BLOG_IDS }}
-          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
-          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
-          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
-          AMAZON_LINK: ${{ secrets.AMAZON_LINK }}
-          TRAVEL_PAYOUT_MARKER: ${{ secrets.TRAVEL_PAYOUT_MARKER }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
-          python main.py
-
-      - name: Record Draft History Back to GitHub
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add drafted_history.txt
-          if git diff --cached --quiet; then
-            echo "No draft history changes to commit."
-            exit 0
-          fi
-          git commit -m "Record drafted article history [skip ci]"
-          git fetch origin "$GITHUB_REF_NAME"
-          git rebase "origin/$GITHUB_REF_NAME"
-          git push origin "HEAD:$GITHUB_REF_NAME"
+          echo "::error::This legacy workflow is retired to prevent duplicate publishers, live publishing, and untracked pushes."
+          echo "Use .github/workflows/trtt-english-news-drafts.yml for the single verified DRAFT-only workflow."
+          exit 1

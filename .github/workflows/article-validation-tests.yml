@@ -93,10 +93,13 @@ jobs:
           assert "787950 LOCKED" in content
           assert "https://cocvghuj-trtt-news-bot.vercel.app" in content
           assert "amzn.to/4shg6Hn?marker=787950" in content
-          assert engine._plain_word_count(content) >= 100
+          assert engine._plain_word_count(content) >= 800
           assert Path("roksana-vault.js").read_bytes() == Path("roksana-vault-final.js").read_bytes()
-          assert b"xxxxx" not in Path("roksana-vault.js").read_bytes()
-          print("PASS: exact EC 261/2004, image, marker, showroom, affiliate, 100+ words and byte-identical Vault.")
+          vault = Path("roksana-vault.js").read_bytes()
+          assert b"xxxxx" not in vault.lower()
+          assert b"Object.freeze(" in vault
+          assert b'markerHex: "373837393530"' in vault
+          print("PASS: exact EC 261/2004, image, marker, showroom, affiliate, 800+ words and byte-identical frozen hex-marker Vault.")
           PY
       - name: Run tests (no Blogger publishing)
         run: python -m unittest discover -s tests -v

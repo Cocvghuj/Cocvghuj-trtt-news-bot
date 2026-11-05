@@ -1,51 +1,16 @@
-name: TRTT 787950 Auto Draft - Locked
-
+name: Retired legacy workflow - use TRTT News Blogger Drafts
 on:
   workflow_dispatch:
-    # DISABLED backup - kept for future
 
-  schedule:
-    - cron: '0 7 * * *'
-  workflow_dispatch:
+permissions:
+  contents: read
 
 jobs:
-  draft:
-    if: false
+  retired:
     runs-on: ubuntu-latest
-    concurrency:
-      group: trtt-787950-locked
-      cancel-in-progress: false
-
     steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GH_PAT }}
-
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install deps
+      - name: Explain retirement
         run: |
-          pip install requests google-api-python-client google-auth-oauthlib
-          pip install -r requirements.txt || true
-
-      - name: Run TRTT Master 787950 - Marker Hidden
-        env:
-          TRAVEL_MARKER: ${{ secrets.TRAVEL_MARKER }}
-          BLOGGER_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
-          GH_PAT: ${{ secrets.GH_PAT }}
-        run: |
-          echo "Running with hidden marker..."
-          python trtt_787950_master.py
-
-      - name: Save History
-        if: always()
-        run: |
-          git config user.name "TRTT Bot"
-          git config user.email "bot@trttnews24bd.com"
-          git add drafted_history.txt || true
-          git add -A
-          git commit -m "TRTT 787950 Batch - $(date)" || echo "No changes"
-          git push || echo "Push failed"
+          echo "::error::This legacy workflow is retired to prevent duplicate publishers, live publishing, and untracked pushes."
+          echo "Use .github/workflows/trtt-english-news-drafts.yml for the single verified DRAFT-only workflow."
+          exit 1

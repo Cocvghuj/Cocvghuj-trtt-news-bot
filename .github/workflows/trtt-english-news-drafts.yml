@@ -43,12 +43,14 @@ jobs:
           assert route["date"] == "2026-11-06" and route["isDraft"] is True
           content = build_content(route, "6 November 2026")
           assert "EC 261/2004" in content and "EC Regulation 261/2004" not in content
-          assert _plain_word_count(content) >= 400
+          assert _plain_word_count(content) >= 800
           assert "<img src=\"https://images.unsplash.com/" in content
           assert "787950 LOCKED" in content
           assert "TRTT VoyageHub Showroom" in content
           assert "amzn.to/4shg6Hn?marker=787950" in content
-          print("Draft content validation passed: one dated route, 400+ words, image, rights, marker, showroom and affiliate tracking.")
+          assert "https://cocvghuj-trtt-news-bot.vercel.app" in content
+          assert "amzn.to/4shg6Hn?marker=787950" in content
+          print("CONTENT-ONLY CHECK PASSED: one dated route, 800+ words, image, EC 261/2004, marker, Vercel link and affiliate. No Blogger API call was made in this validation step.")
           PY
       - name: Require both Blogger accounts
         env:
@@ -71,7 +73,9 @@ jobs:
           BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
           TRAVEL_PAYOUT_MARKER: '787950'
-        run: python scripts/publish_news.py
+        run: |
+          set -euo pipefail
+          python scripts/publish_news.py
       - name: Save daily draft history
         run: |
           set -euo pipefail

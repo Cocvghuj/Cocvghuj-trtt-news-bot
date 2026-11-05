@@ -51,8 +51,16 @@ class DraftOnlyPolicyTests(unittest.TestCase):
         self.assertNotIn("EC Regulation 261/2004", content)
         self.assertIn("TRTT VoyageHub Showroom", content)
         self.assertGreater(content.index("TRTT VoyageHub Showroom"), content.index("Useful travel tools"))
-        self.assertGreaterEqual(engine._plain_word_count(content), 400)
+        self.assertGreaterEqual(engine._plain_word_count(content), 800)
         self.assertNotIn("xxxxx", content)
+
+    def test_vaults_are_frozen_hex_encoded_and_byte_identical(self):
+        source = Path("roksana-vault.js").read_text(encoding="utf-8")
+        final = Path("roksana-vault-final.js").read_text(encoding="utf-8")
+        self.assertEqual(source.encode("utf-8"), final.encode("utf-8"))
+        self.assertIn("Object.freeze(", source)
+        self.assertIn('markerHex: "373837393530"', source)
+        self.assertNotIn("xxxxx", source.lower())
 
     def test_daily_route_queue_has_one_dated_draft_route(self):
         queue = json.loads(Path("news/queue/latest.json").read_text(encoding="utf-8"))

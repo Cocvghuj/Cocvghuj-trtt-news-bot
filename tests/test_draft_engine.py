@@ -40,6 +40,10 @@ class FakePosts:
         self.items.setdefault(blogId, []).append(post)
         return FakeRequest(post)
 
+    def get(self, blogId, postId):
+        post = next(item for item in self.items.get(blogId, []) if item["id"] == postId)
+        return FakeRequest(dict(post))
+
 
 class FakeService:
     def __init__(self):
@@ -57,19 +61,38 @@ class DraftEngineRegressionTests(unittest.TestCase):
         self.assertTrue(callable(status_api.find_duplicate_post))
         self.assertTrue(callable(status_api.main))
 
-    def test_empty_queue_fails_closed_instead_of_successful_skip(self):
+    def test_empty_queue_generates_today_fallback_instead_of_zero_skip(self):
         with tempfile.TemporaryDirectory() as directory:
             queue_path = Path(directory) / "latest.json"
             queue_path.write_text(json.dumps({
                 "version": "2026-11-06",
                 "batch_size": 1,
                 "isDraft": True,
+                "require_image": True,
                 "require_marker": "787950 LOCKED",
                 "routes": [],
             }), encoding="utf-8")
-            with mock.patch.object(engine, "QUEUE_FILE", queue_path):
-                with self.assertRaisesRegex(AssertionError, "Queue is empty"):
-                    engine._load_today_route()
+            fixed_now = datetime(2026, 11, 6, 0, 1, tzinfo=ZoneInfo("Europe/Rome"))
+            with (
+                mock.patch.object(engine, "QUEUE_FILE", queue_path),
+                mock.patch.object(engine, "publish_date", return_value=fixed_now),
+            ):
+                _, route = engine._load_today_route()
+            self.assertEqual(route["from"], "Cagliari")
+            self.assertEqual(route["to"], "Bergamo")
+            self.assertEqual(route["date"], "2026-11-06")
+            self.assertIs(route["isDraft"], True)
+
+    def test_history_keeps_latest_12_and_shifts_oldest(self):
+        with tempfile.TemporaryDirectory() as directory:
+            history_path = Path(directory) / "drafted_history.txt"
+            initial = [f"route-{index}" for index in range(12)]
+            history_path.write_text("\n".join(initial) + "\n", encoding="utf-8")
+            with mock.patch.object(engine, "HISTORY_FILE", history_path):
+                engine.append_history("new-route")
+                result = engine.load_history()
+            self.assertEqual(result, initial[1:] + ["new-route"])
+            self.assertEqual(len(result), 12)
 
     def test_today_override_ignores_history_and_creates_both_drafts(self):
         route = {
@@ -112,6 +135,8 @@ class DraftEngineRegressionTests(unittest.TestCase):
                 with redirect_stdout(output):
                     self.assertEqual(engine.main(), 0)
             self.assertIn("Republish allowed - today's date override", output.getvalue())
+            self.assertIn("SUCCESS: Draft created - trttnews24bd - Post ID: main-blog-draft-1", output.getvalue())
+            self.assertIn("SUCCESS: Draft created - flightscoutpro - Post ID: partner-blog-draft-1", output.getvalue())
             self.assertEqual(len(service.posts_api.insert_calls), 2)
             self.assertTrue(all(call["isDraft"] is True for call in service.posts_api.insert_calls))
             self.assertEqual(

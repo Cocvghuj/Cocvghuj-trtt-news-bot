@@ -2,26 +2,32 @@
 // Browser-safe classic script shared by the website and Blogger publication.
 (function (global) {
   'use strict';
-  var ROKSANA_VAULT_FINAL = {
-    marker: "787950 LOCKED",
+  var MARKER_BYTES = Object.freeze([0x37, 0x38, 0x37, 0x39, 0x35, 0x30]);
+  var MARKER_NUMBER = MARKER_BYTES.map(function (byte) {
+    return String.fromCharCode(byte);
+  }).join('');
+  var MARKER = MARKER_NUMBER + ' LOCKED';
+  var ROKSANA_VAULT_FINAL = Object.freeze({
+    marker: MARKER,
+    markerHex: "373837393530",
     version: "FINAL",
     blog1: "trttnews24bd.blogspot.com",
     blog2: "flightscoutpro.blogspot.com",
     showroom: "cocvghuj-trtt-news-bot.vercel.app",
-    allowedDomains: ["trttnews24bd.blogspot.com", "trttnews24bd.com", "www.trttnews24bd.com", "cocvghuj-trtt-news-bot.vercel.app"],
-    affiliate: {
-      marker: 787950,
+    allowedDomains: Object.freeze(["trttnews24bd.blogspot.com", "trttnews24bd.com", "www.trttnews24bd.com", "cocvghuj-trtt-news-bot.vercel.app"]),
+    affiliate: Object.freeze({
+      marker: Number(MARKER_NUMBER),
       aviasales: "https://aviasales.tpo.lv/Fb8U9yav?marker=787950",
       klook: "https://klook.tpo.lv/TWKnemhz?marker=787950",
       airalo: "https://airalo.tpo.lv/ZZoQC7Mz?marker=787950",
       gettransfer: "https://gettransfer.tpo.lv/1u8zRU5s?marker=787950",
       amazon: "https://amzn.to/4shg6Hn?marker=787950"
-    },
-    signature: { name:'Signature',g:'#ff2e63',k:'#FFC300',p:'#AF7AC5' },
+    }),
+    signature: Object.freeze({ name:'Signature',g:'#ff2e63',k:'#FFC300',p:'#AF7AC5' }),
     status: "ACTIVE",
     validated: true,
     answerApi: "https://cocvghuj-trtt-news-bot.vercel.app/api/answer"
-  };
+  });
   global.ROKSANA_VAULT_FINAL = ROKSANA_VAULT_FINAL;
   global.ROKSANA_VAULT = ROKSANA_VAULT_FINAL;
 

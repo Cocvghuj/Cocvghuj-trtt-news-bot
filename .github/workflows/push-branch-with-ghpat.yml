@@ -1,25 +1,16 @@
-name: Push Branch with GH_PAT
+name: Retired legacy workflow - use TRTT News Blogger Drafts
 on:
   workflow_dispatch:
-    # DISABLED backup - kept for future
 
+permissions:
+  contents: read
 
 jobs:
-  push:
-    if: false
+  retired:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout with GH_PAT
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GH_PAT }}
-          fetch-depth: 0
-          
-      - name: Push copilot branch
+      - name: Explain retirement
         run: |
-          git config user.name "Cocvghuj"
-          git config user.email "Cocvghuj@github.com"
-          git checkout -B copilot/english-news-drafts-hardening
-          git add -A
-          git commit -m "feat: english news drafts hardening million dollar" || echo "nothing to commit"
-          git push -f origin copilot/english-news-drafts-hardening
+          echo "::error::This legacy workflow is retired to prevent duplicate publishers, live publishing, and untracked pushes."
+          echo "Use .github/workflows/trtt-english-news-drafts.yml for the single verified DRAFT-only workflow."
+          exit 1
