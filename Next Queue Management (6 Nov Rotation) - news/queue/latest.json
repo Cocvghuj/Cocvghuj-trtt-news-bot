@@ -1,0 +1,42 @@
+{
+  "version": "2026-11-07",
+  "generated_at": "2026-11-06T00:00:00+01:00",
+  "timezone": "Europe/Rome",
+  "rotation": "daily",
+  "batch_size": 1,
+  "isDraft": true,
+  "require_image": true,
+  "require_marker": "787950 LOCKED",
+  "routes": [
+    {
+      "from": "Cagliari",
+      "to": "Bergamo",
+      "iata_from": "CAG",
+      "iata_to": "BGY",
+      "date": "2026-11-06",
+      "price": "€19",
+      "airline": "【entity-Ryanair¦canonical_name=Ryanair】",
+      "isDraft": true
+    },
+    {
+      "from": "Cagliari",
+      "to": "Rome",
+      "iata_from": "CAG",
+      "iata_to": "ROM",
+      "date": "2026-11-07",
+      "price": "€24",
+      "airline": "【entity-ITA Airways¦canonical_name=ITA Airways】",
+      "isDraft": true
+    },
+    {
+      "from": "Milan",
+      "to": "Cagliari",
+      "iata_from": "MIL",
+      "iata_to": "CAG",
+      "date": "2026-11-08",
+      "price": "€21",
+      "airline": "【entity-Wizz Air¦canonical_name=Wizz Air】",
+      "isDraft": true
+    }
+  ]
+}
