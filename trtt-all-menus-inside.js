@@ -1,109 +1,140 @@
-// TRTT VOYAGE FINAL MENU - ALL MENUS INSIDE - ALL TOOLS INSIDE - American Market - No Confusion - Single File
-// All previous menus combined: GitHub Style + 3 Dot Golden Animated + Full Screen Overlay + Vercel Inside + Auto Marker 787950 + Telegram + 5 Tools + Extra Tools
-// For trttnews24bd.blogspot.com - Final - Based on screenshot
+/* TRTT VoyageHub — responsive all-menus panel */
+(function () {
+  "use strict";
+  if (window.__TRTT_ALL_MENU_V2__) return;
+  window.__TRTT_ALL_MENU_V2__ = true;
 
-(function(){
-  if(window.__TRTT_ALL_MENU_DONE__) return;
-  window.__TRTT_ALL_MENU_DONE__ = true;
-  
-  const CFG = {
-    vercel: "https://cocvghuj-trtt-news-bot.vercel.app",
-    marker: "787950",
+  var CFG = {
     telegram: "https://t.me/trttnews24bd",
-    allMenus: [
-      { name: "Dashboard", icon: "📊", link: "#dashboard" },
-      { name: "Blog Stories", icon: "📝", link: "#blog", active: true },
-      { name: "Flights", icon: "✈️", link: "#flights" },
-      { name: "Analytics", icon: "📈", link: "#analytics" },
-      { name: "Tracking Logs", icon: "📋", link: "#logs" },
-      { name: "Settings", icon: "⚙️", link: "#settings" },
-      { name: "Travel Guides", icon: "🗺️", link: "#travel" },
-      { name: "Visa Info", icon: "🛂", link: "#visa" },
-      { name: "eSIM Store", icon: "📱", link: "#esim" },
-      { name: "News", icon: "📰", link: "#news" }
+    menus: [
+      { name: "Home", icon: "⌂", href: "/" },
+      { name: "Blog Stories", icon: "▤", href: "/blog/" },
+      { name: "Flights", icon: "✈", href: "/tools/flight-search.html" },
+      { name: "Travel Guides", icon: "⌖", href: "/travel-guide.html" },
+      { name: "Destinations", icon: "◎", href: "/destinations/" },
+      { name: "eSIM Guide", icon: "▣", href: "/tools/esim-compare.html" },
+      { name: "News", icon: "✦", href: "/latest_travel_news.html" },
+      { name: "About", icon: "i", href: "/about.html" }
     ],
-    allTools: [
-      // Core 5 Tools from user
-      { id: "flight", name: "Flight Tracker", desc: "New York → Rome • $549 • Biman", price: "$549", badge: "Best Price", icon: "✈️", cat: "Travel" },
-      { id: "visa", name: "Visa Checker", desc: "USA → Italy • Visa Free", price: "free", badge: "Free", icon: "🛂", cat: "Travel" },
-      { id: "esim", name: "eSIM Comparator", desc: "Italy • $9.99 data plan", price: "$9.99", badge: "Best Price", icon: "📱", cat: "Travel" },
-      { id: "cost", name: "Cost Calculator", desc: "7 Days Rome • Est. $1309 total", price: "$1309", badge: "Est.", icon: "🧮", cat: "Travel" },
-      { id: "weather", name: "Weather & News", desc: "Live from Europe • Updated now", price: "free", badge: "Live", icon: "⛅", cat: "Travel" },
-      // Extra Tools from user list - American biggest market
-      { id: "mortgage", name: "Mortgage Calculator", desc: "Home buying calculation", price: "free", badge: "US Market", icon: "🏠", cat: "Calculator" },
-      { id: "age", name: "Age Calculator", desc: "Calculate age accurately", price: "free", badge: "Popular", icon: "🎂", cat: "Calculator" },
-      { id: "bmi", name: "BMI Calculator", desc: "Body Mass Index", price: "free", badge: "Health", icon: "⚖️", cat: "Calculator" },
-      { id: "gpa", name: "GPA Calculator", desc: "Grade Point Average", price: "free", badge: "Student", icon: "🎓", cat: "Calculator" },
-      { id: "love", name: "Love Calculator", desc: "American teenagers crazy", price: "free", badge: "Fun", icon: "❤️", cat: "Calculator" },
-      { id: "pdf", name: "PDF Tools", desc: "Merge, Split, Compress PDF", price: "free", badge: "Office", icon: "📄", cat: "PDF" },
-      { id: "qr", name: "QR Code Generator", desc: "Generate QR for links", price: "free", badge: "Tool", icon: "🔳", cat: "Image" },
-      { id: "bgremove", name: "Background Remover", desc: "Remove image background", price: "free", badge: "Image", icon: "🖼️", cat: "Image" },
-      { id: "compress", name: "Image Compressor", desc: "Compress images fast", price: "free", badge: "Image", icon: "🗜️", cat: "Image" },
-      { id: "thumbnail", name: "YouTube Thumbnail Downloader", desc: "Download YT thumbnails", price: "free", badge: "Video", icon: "🎬", cat: "Image" },
-      { id: "myip", name: "What is my IP", desc: "980K searches/month in US", price: "free", badge: "980K/mo", icon: "🌐", cat: "Network" },
-      { id: "wordcount", name: "Word Counter", desc: "Count words, chars", price: "free", badge: "Text", icon: "📝", cat: "Text" },
-      { id: "plagiarism", name: "Plagiarism Checker", desc: "Check plagiarism", price: "free", badge: "Text", icon: "🔍", cat: "Text" },
-      { id: "grammar", name: "Grammar Checker", desc: "After Canva, ChatGPT", price: "free", badge: "Text", icon: "✏️", cat: "Text" }
+    tools: [
+      { name: "Flight Search", desc: "Explore routes and compare flight options", icon: "✈", href: "/tools/flight-search.html", tag: "FLIGHTS" },
+      { name: "Baggage Checker", desc: "Check cabin-bag dimensions", icon: "▣", href: "/tools/baggage-size-checker.html", tag: "BAGGAGE" },
+      { name: "Delay Calculator", desc: "Review possible EU delay compensation", icon: "◷", href: "/tools/delay-calculator.html", tag: "FLIGHT RIGHTS" },
+      { name: "eSIM Comparison", desc: "Compare travel connectivity options", icon: "◉", href: "/tools/esim-compare.html", tag: "CONNECTIVITY" },
+      { name: "Taxi Calculator", desc: "Estimate local transfer costs", icon: "⌁", href: "/tools/taxi-calculator.html", tag: "TRANSFERS" },
+      { name: "Travel Map", desc: "Explore travel locations and references", icon: "◎", href: "/app.html", tag: "DISCOVER" }
     ]
   };
-  
-  function injectCSS(){
-    if(document.getElementById("trtt-all-menu-style")) return;
-    const s=document.createElement("style"); s.id="trtt-all-menu-style";
-    s.textContent=`
-      #trtt-all-overlay{position:fixed;inset:0;z-index:2147483647;background:#0a0a12;color:#fff;font-family:Inter,sans-serif;display:none;overflow:auto}
-      #trtt-all-overlay.open{display:block;animation:fadeIn .3s}
-      @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-      .trtt-top{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:linear-gradient(90deg,rgba(212,175,55,.12),rgba(255,46,99,.08));border-bottom:1.5px solid #d4af37;backdrop-filter:blur(12px)}
-      .trtt-3dot{display:flex;gap:6px;align-items:center;filter:drop-shadow(0 0 12px gold);animation:pulse 2s infinite}
-      @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-      .trtt-dot{width:14px;height:14px;border-radius:50%}.trtt-dot:nth-child(1){background:#ff2e63}.trtt-dot:nth-child(2){background:#FFC300}.trtt-dot:nth-child(3){background:#AF7AC5}
-      .trtt-grid{display:grid;grid-template-columns:240px 1fr 380px;gap:14px;padding:14px}
-      @media(max-width:1100px){.trtt-grid{grid-template-columns:1fr}}
-      .trtt-box{background:#12121c;border:1.5px solid #d4af37;border-radius:14px;padding:12px;box-shadow:0 0 16px rgba(212,175,55,.15)}
-      .trtt-nav-item{display:flex;gap:10px;padding:9px 10px;border-radius:10px;margin:5px 0;cursor:pointer;color:#cbd5e1;font-size:12px;font-weight:600}
-      .trtt-nav-item.active{background:linear-gradient(90deg,#ff2e63,#FFC300);color:#000}
-      .trtt-tool{display:flex;justify-content:space-between;align-items:center;background:#0f0f17;border:1px solid #2a2a3a;border-radius:10px;padding:8px 10px;margin:6px 0}
-      .trtt-tool:hover{border-color:#d4af37}
-      .trtt-price{background:#FFC300;color:#000;padding:3px 7px;border-radius:7px;font-weight:800;font-size:11px}
-      .trtt-select{background:#d4af37;color:#000;border:none;padding:6px 12px;border-radius:8px;font-weight:800;cursor:pointer;font-size:11px}
-      .trtt-telegram{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(90deg,#0a84ff,#1e90ff);border-radius:12px;padding:10px 14px;margin:14px;box-shadow:0 6px 20px rgba(10,132,255,.4)}
-      #trtt-all-fab{position:fixed;left:12px;bottom:12px;z-index:2147483646;width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#FFD86A,#FFC300 45%,#ff2e63 85%);border:2px solid #fff3;box-shadow:0 8px 28px rgba(212,175,55,.6);display:grid;place-items:center;cursor:pointer;animation:pulse 2.5s infinite}
-    `;
-    document.head.appendChild(s);
+
+  function addStyles() {
+    if (document.getElementById("trtt-all-menu-style-v2")) return;
+    var style = document.createElement("style");
+    style.id = "trtt-all-menu-style-v2";
+    style.textContent = [
+      "#trtt-all-overlay{position:fixed;inset:0;z-index:2147483645;display:none;overflow-y:auto;overscroll-behavior:contain;background:#f6f7fb;color:#17233d;font-family:Arial,sans-serif}",
+      "#trtt-all-overlay.open{display:block;animation:trttMenuFade .18s ease-out}",
+      "@keyframes trttMenuFade{from{opacity:0}to{opacity:1}}",
+      "#trtt-all-overlay *{box-sizing:border-box}",
+      "#trtt-all-overlay .trtt-top{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px clamp(14px,3vw,30px);background:rgba(255,255,255,.94);border-bottom:1px solid #e7eaf1;backdrop-filter:blur(14px)}",
+      "#trtt-all-overlay .trtt-brand{display:flex;align-items:center;gap:11px;min-width:0}",
+      "#trtt-all-overlay .trtt-mark{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(135deg,#ef476f,#ffc857);color:#14213d;font-size:21px;font-weight:900}",
+      "#trtt-all-overlay .trtt-brand b{display:block;color:#14213d;font-size:15px;letter-spacing:.08em}",
+      "#trtt-all-overlay .trtt-brand small{display:block;margin-top:4px;color:#8490a4;font-size:9px;letter-spacing:.12em}",
+      "#trtt-all-overlay .trtt-close{width:42px;height:42px;flex:0 0 42px;border:1px solid #e7eaf1;border-radius:12px;background:#fff;color:#14213d;font-size:20px;cursor:pointer}",
+      "#trtt-all-overlay .trtt-layout{display:grid;grid-template-columns:245px minmax(0,1fr);gap:20px;width:min(1240px,100%);margin:auto;padding:clamp(14px,3vw,30px)}",
+      "#trtt-all-overlay .trtt-panel{min-width:0;padding:18px;border:1px solid #e7eaf1;border-radius:18px;background:#fff;box-shadow:0 10px 30px rgba(20,33,61,.05)}",
+      "#trtt-all-overlay .trtt-kicker{margin:0 0 12px;color:#9aa3b3;font-size:10px;font-weight:800;letter-spacing:.16em}",
+      "#trtt-all-overlay .trtt-nav{display:grid;gap:5px}",
+      "#trtt-all-overlay .trtt-nav a{display:flex;align-items:center;gap:11px;padding:12px;border-radius:11px;color:#34415c;text-decoration:none;font-size:13px;font-weight:700}",
+      "#trtt-all-overlay .trtt-nav a:hover,#trtt-all-overlay .trtt-nav a:focus-visible{outline:none;background:#fff0f3;color:#d93660}",
+      "#trtt-all-overlay .trtt-nav-icon{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:#f5f7fb;color:#d93660;font-size:15px}",
+      "#trtt-all-overlay .trtt-main h2{margin:0 0 7px;color:#14213d;font-size:clamp(22px,3vw,30px);letter-spacing:-.03em}",
+      "#trtt-all-overlay .trtt-intro{margin:0 0 20px;color:#69758b;font-size:13px;line-height:1.7}",
+      "#trtt-all-overlay .trtt-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}",
+      "#trtt-all-overlay .trtt-tool{display:flex;align-items:flex-start;gap:12px;min-width:0;padding:16px;border:1px solid #e7eaf1;border-radius:15px;background:#fff;text-decoration:none;transition:transform .18s,border-color .18s,box-shadow .18s}",
+      "#trtt-all-overlay .trtt-tool:hover{transform:translateY(-2px);border-color:#ef9db1;box-shadow:0 10px 24px rgba(20,33,61,.07)}",
+      "#trtt-all-overlay .trtt-tool-icon{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:12px;background:#fff0f3;color:#d93660;font-size:20px}",
+      "#trtt-all-overlay .trtt-tool b{display:block;color:#14213d;font-size:14px}",
+      "#trtt-all-overlay .trtt-tool small{display:block;margin-top:5px;color:#69758b;font-size:11px;line-height:1.5}",
+      "#trtt-all-overlay .trtt-tool em{display:block;margin-top:9px;color:#d93660;font-size:9px;font-style:normal;font-weight:800;letter-spacing:.12em}",
+      "#trtt-all-overlay .trtt-bottom{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:18px;padding:16px;border-radius:15px;background:#14213d;color:#fff}",
+      "#trtt-all-overlay .trtt-bottom p{margin:0;color:#d4dced;font-size:12px;line-height:1.6}",
+      "#trtt-all-overlay .trtt-bottom a{flex:0 0 auto;padding:10px 14px;border-radius:10px;background:#ffc857;color:#14213d;text-decoration:none;font-size:11px;font-weight:900}",
+      "#trtt-all-fab{position:fixed;left:16px;bottom:16px;z-index:2147483644;width:54px;height:54px;display:grid;place-items:center;border:2px solid rgba(255,255,255,.9);border-radius:17px;background:linear-gradient(135deg,#ef476f,#ffc857);box-shadow:0 8px 24px rgba(20,33,61,.22);color:#14213d;font-size:25px;font-weight:900;cursor:pointer}",
+      "@media(max-width:760px){#trtt-all-overlay .trtt-top{padding:10px 13px}#trtt-all-overlay .trtt-layout{grid-template-columns:minmax(0,1fr);gap:12px;padding:12px}#trtt-all-overlay .trtt-panel{padding:14px;border-radius:15px}#trtt-all-overlay .trtt-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}#trtt-all-overlay .trtt-nav a{padding:10px 8px;font-size:12px}#trtt-all-overlay .trtt-tools{grid-template-columns:minmax(0,1fr);gap:9px}#trtt-all-overlay .trtt-tool{padding:13px}#trtt-all-overlay .trtt-bottom{align-items:flex-start;flex-direction:column}#trtt-all-overlay .trtt-bottom a{width:100%;text-align:center}#trtt-all-fab{left:12px;bottom:12px;width:50px;height:50px;border-radius:15px}}",
+      "@media(min-width:761px) and (max-width:980px){#trtt-all-overlay .trtt-layout{grid-template-columns:205px minmax(0,1fr);gap:12px}#trtt-all-overlay .trtt-tools{grid-template-columns:minmax(0,1fr)}}",
+      "@media(prefers-reduced-motion:reduce){#trtt-all-overlay *{animation:none!important;transition:none!important}}"
+    ].join("");
+    document.head.appendChild(style);
   }
-  
-  function track(){ try{ fetch(CFG.vercel + "/api/vault-click?m=" + CFG.marker + "&t=" + Date.now() + "&src=all_menu_open", {mode:"no-cors", keepalive:true}); }catch(e){} }
-  
-  function build(){
-    if(document.getElementById("trtt-all-overlay")) return;
-    const el=document.createElement("div"); el.id="trtt-all-overlay";
-    el.innerHTML=`
-      <div class="trtt-top">
-        <div style="display:flex;gap:10px;align-items:center"><div class="trtt-3dot"><div class="trtt-dot"></div><div class="trtt-dot"></div><div class="trtt-dot" style="width:20px;height:20px"></div></div><div><b style="color:#FFD86A">TRTT VOYAGE</b><div style="font-size:10px;opacity:.6">ALL MENUS • ALL TOOLS INSIDE • FULL-SCREEN</div></div></div>
-        <div style="display:flex;gap:8px;align-items:center"><input placeholder="Cmd+K Search all menus & tools..." style="background:#12121c;border:1px solid #2a2a3a;border-radius:10px;padding:8px 12px;color:#fff;width:220px"><div style="background:#0f1f0f;color:#7CFC8A;border:1px solid #2e7d32;padding:6px 10px;border-radius:10px;font-size:11px">📍 Marker Clicked! +1 127→128 • stealth</div><button onclick="document.getElementById('trtt-all-overlay').classList.remove('open')" style="background:#1a1a28;border:1px solid #2a2a3a;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer">✕</button></div>
-      </div>
-      <div class="trtt-grid">
-        <div class="trtt-box"><div style="font-size:10px;opacity:.5;margin-bottom:6px">ALL MENUS INSIDE</div>${CFG.allMenus.map(m=>`<div class="trtt-nav-item ${m.active?'active':''}"><span>${m.icon}</span> ${m.name}</div>`).join('')}<div style="margin-top:12px;background:#0f1f0f;border:1px solid #2e7d32;border-radius:8px;padding:8px;font-size:10px;color:#7CFC8A">● Operational 99.99% • System Healthy • v2.4.1 Secure</div></div>
-        <div>
-          <div class="trtt-box"><b>Blog Stories • Featured</b><div style="height:120px;background:linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.6)),url('https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800') center/cover;border-radius:10px;margin-top:8px;display:flex;align-items:flex-end;padding:10px"><b>Exploring Rome: Hidden Stories & Travel Insights</b></div><p style="font-size:11px;opacity:.7;margin-top:6px">Discover culture, travel guides, insider tips for Americans exploring Italy.</p></div>
-          <div class="trtt-box" style="margin-top:12px"><b>Latest Stories</b><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px"><div style="background:#0f0f17;border-radius:8px;padding:8px;font-size:11px"><b>Packing for Italy: 7-Day Essentials</b><br><span style="opacity:.6">2h ago • 4 min</span></div><div style="background:#0f0f17;border-radius:8px;padding:8px;font-size:11px"><b>Visa-Free Travel: What Americans Need</b><br><span style="opacity:.6">1d ago • 6 min</span></div></div></div>
-        </div>
-        <div class="trtt-box"><div style="display:flex;justify-content:space-between"><b style="font-size:12px">Vercel Deployment</b><span style="font-size:10px;background:#0f1f0f;color:#7CFC8A;padding:3px 6px;border-radius:6px">● Deployed • Ready</span></div><div style="font-weight:800;margin:8px 0">All Tools Inside • ${CFG.allTools.length} Tools</div><div style="font-size:10px;opacity:.6;margin-bottom:8px">All menus & all tools combined - select to start - American market</div><div style="max-height:520px;overflow:auto">${CFG.allTools.map(t=>`<div class="trtt-tool"><div style="display:flex;gap:8px;align-items:center"><div style="width:28px;height:28px;background:#1a1a28;border:1px solid #2a2a3a;border-radius:8px;display:grid;place-items:center">${t.icon}</div><div><div style="font-weight:700;font-size:11px">${t.name}</div><div style="font-size:10px;opacity:.6">${t.desc}</div></div></div><div style="display:flex;gap:6px;align-items:center"><div class="trtt-price">${t.price}</div><button class="trtt-select" onclick="window.open('${CFG.vercel}/tools/${t.id}?m=${CFG.marker}','_blank')">Select →</button></div></div>`).join('')}</div></div>
-      </div>
-      <div class="trtt-telegram"><div style="display:flex;gap:10px;align-items:center"><div style="width:36px;height:36px;background:#fff;border-radius:50%;display:grid;place-items:center">✈️</div><div><a href="${CFG.telegram}" target="_blank" style="color:#fff;font-weight:800;text-decoration:none">Join our Telegram → t.me/trttnews24bd</a><div style="font-size:10px;opacity:.9">Exclusive for Americans • Join for $99 Deals • Limited Spots • Daily Travel Alerts</div></div></div><button style="background:#FFD86A;color:#000;padding:8px 14px;border-radius:10px;font-weight:800;border:none;cursor:pointer" onclick="window.open('${CFG.telegram}','_blank')">Join for $99 Deals →</button></div>
-      <div style="text-align:center;font-size:9px;opacity:.4;padding:6px">TRTT VOYAGE • Secured • Data encrypted • GDPR-compliant • Stealth tracking active • All menus inside • All tools inside • ${CFG.allTools.length} tools</div>
-    `;
-    document.body.appendChild(el);
+
+  function build() {
+    if (document.getElementById("trtt-all-overlay")) return;
+    var overlay = document.createElement("section");
+    overlay.id = "trtt-all-overlay";
+    overlay.setAttribute("aria-label", "TRTT VoyageHub menu");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("role", "dialog");
+
+    var nav = CFG.menus.map(function (item) {
+      return '<a href="' + item.href + '"><span class="trtt-nav-icon" aria-hidden="true">' + item.icon + '</span>' + item.name + '</a>';
+    }).join("");
+    var tools = CFG.tools.map(function (item) {
+      return '<a class="trtt-tool" href="' + item.href + '">' +
+        '<span class="trtt-tool-icon" aria-hidden="true">' + item.icon + '</span>' +
+        '<span><b>' + item.name + '</b><small>' + item.desc + '</small><em>' + item.tag + ' · OPEN ↗</em></span></a>';
+    }).join("");
+
+    overlay.innerHTML =
+      '<header class="trtt-top"><div class="trtt-brand"><span class="trtt-mark">T</span><span><b>TRTT VOYAGEHUB</b><small>NEWS · GUIDES · TRAVEL TOOLS</small></span></div>' +
+      '<button class="trtt-close" type="button" aria-label="Close menu">×</button></header>' +
+      '<div class="trtt-layout"><aside class="trtt-panel"><p class="trtt-kicker">EXPLORE TRTT</p><nav class="trtt-nav" aria-label="All TRTT sections">' + nav + '</nav></aside>' +
+      '<main class="trtt-main"><section class="trtt-panel"><p class="trtt-kicker">THE TRAVEL TOOLKIT</p><h2>Plan your next journey.</h2><p class="trtt-intro">Useful tools and clear travel information, designed to make every step easier.</p><div class="trtt-tools">' + tools + '</div></section>' +
+      '<div class="trtt-bottom"><p>Travel updates, useful guides and new tools from TRTT VoyageHub.</p><a href="' + CFG.telegram + '" target="_blank" rel="noopener noreferrer">Join TRTT on Telegram ↗</a></div></main></div>';
+
+    document.body.appendChild(overlay);
+    var close = overlay.querySelector(".trtt-close");
+    close.addEventListener("click", closePanel);
+    overlay.addEventListener("click", function (event) {
+      if (event.target === overlay) closePanel();
+    });
+    overlay.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") closePanel();
+    });
   }
-  
-  function fab(){
-    if(document.getElementById("trtt-all-fab")) return;
-    const f=document.createElement("div"); f.id="trtt-all-fab"; f.innerHTML="•••"; f.title="Open TRTT Voyage - All Menus Inside";
-    f.onclick=()=>{ const ov=document.getElementById("trtt-all-overlay"); if(ov){ ov.classList.add("open"); track(); } };
-    document.body.appendChild(f);
+
+  function closePanel() {
+    var overlay = document.getElementById("trtt-all-overlay");
+    if (overlay) overlay.classList.remove("open");
+    var fab = document.getElementById("trtt-all-fab");
+    if (fab) fab.setAttribute("aria-expanded", "false");
   }
-  
-  function init(){ injectCSS(); build(); fab(); }
-  if(document.readyState==="loading"){ document.addEventListener("DOMContentLoaded", init); } else { init(); }
+
+  function addFab() {
+    if (document.getElementById("trtt-all-fab")) return;
+    var fab = document.createElement("button");
+    fab.id = "trtt-all-fab";
+    fab.type = "button";
+    fab.textContent = "☰";
+    fab.setAttribute("aria-label", "Open TRTT menu");
+    fab.setAttribute("aria-controls", "trtt-all-overlay");
+    fab.setAttribute("aria-expanded", "false");
+    fab.addEventListener("click", function () {
+      var overlay = document.getElementById("trtt-all-overlay");
+      if (!overlay) return;
+      overlay.classList.add("open");
+      fab.setAttribute("aria-expanded", "true");
+      var close = overlay.querySelector(".trtt-close");
+      if (close) close.focus();
+    });
+    document.body.appendChild(fab);
+  }
+
+  function init() {
+    addStyles();
+    build();
+    addFab();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
+  else init();
 })();

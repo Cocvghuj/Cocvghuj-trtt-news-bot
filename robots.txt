@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/sitemap.xml
+Disallow: /api/
+Sitemap: https://cocvghuj-trtt-news-bot.vercel.app/sitemap.xml

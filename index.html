@@ -12,7 +12,7 @@
 <body>
   <header class="site-header">
     <a class="brand" href="/" aria-label="TRTT VoyageHub home"><span class="brand-mark">T</span><span>TRTT <b>VOYAGEHUB</b><small>NEWS · GUIDES · TRAVEL TOOLS</small></span></a>
-    <nav class="main-nav" aria-label="Main navigation"><a href="#tools">Travel tools</a><a href="/blog/">News</a><a href="/travel-guide.html">Guides</a><a href="/destinations/">Destinations</a><a href="/about.html">About</a><a class="nav-cta" href="/tools/flight-search.html">Find flights ↗</a></nav>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span aria-hidden="true">☰</span><span>Menu</span></button><nav class="main-nav" id="primary-nav" aria-label="Main navigation"><a href="#tools">Travel tools</a><a href="/blog/">News</a><a href="/travel-guide.html">Guides</a><a href="/destinations/">Destinations</a><a href="/about.html">About</a><a class="nav-cta" href="/tools/flight-search.html">Find flights ↗</a></nav>
   </header>
   <main>
     <section class="hero"><div class="hero-inner"><div class="eyebrow">✦ YOUR EUROPE TRAVEL DESK · SANLURI, SARDINIA</div><h1>Make every journey<br><em>feel effortless.</em></h1><p class="hero-copy">Clear travel guides, practical planning tools and useful updates — helping you move through Europe with more confidence.</p><div class="hero-actions"><a class="button button-primary" href="#tools">Explore travel tools →</a><a class="button button-quiet" href="/blog/">Read latest news</a></div><div class="hero-note">PLAN WELL. TRAVEL FREELY.</div></div><div class="hero-art" aria-hidden="true"><div class="globe">✦</div></div></section>
@@ -42,4 +42,30 @@
     <section class="closing-cta"><div><span class="kicker">READY WHEN YOU ARE</span><h2>Your next trip starts<br><em>with a better plan.</em></h2></div><a class="button button-light" href="/travel-guide.html">Explore travel guides →</a></section>
   </main>
   <footer class="site-footer"><a class="footer-brand" href="/">TRTT <b>VOYAGEHUB</b></a><p>Independent travel guides and practical planning tools for journeys across Europe.</p><div class="footer-links"><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot">GitHub</a></div><small>© 2026 TRTT VoyageHub · Updated 2026-11-05 15:38</small></footer>
+
+  <script>
+    (function () {
+      var toggle = document.querySelector('.nav-toggle');
+      var nav = document.getElementById('primary-nav');
+      if (!toggle || !nav) return;
+      function closeNav() {
+        nav.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+      toggle.addEventListener('click', function () {
+        var open = toggle.getAttribute('aria-expanded') !== 'true';
+        toggle.setAttribute('aria-expanded', String(open));
+        nav.classList.toggle('is-open', open);
+      });
+      nav.addEventListener('click', function (event) {
+        if (event.target.closest('a')) closeNav();
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closeNav();
+      });
+      window.addEventListener('resize', function () {
+        if (window.innerWidth > 700) closeNav();
+      });
+    })();
+  </script>
 </body></html>
