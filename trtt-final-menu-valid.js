@@ -1,133 +1,207 @@
-// TRTT FINAL MENU - ALL MENUS INSIDE - ALL TOOLS INSIDE - VERCEL 100% CONNECTED - FIXED
-// Previous bug: Only Telegram connected to Vercel, other tools were window.open only - Fixed now - iframe + API fetch + real Vercel embed
-// For trttnews24bd.blogspot.com - American Market - No Personal Names
+// TRTT News Blogger menu — Vercel-backed, with only verified tool pages.
+(function () {
+  "use strict";
 
-(function(){
-  if(window.__TRTT_VERCEL_FIXED__) return;
-  window.__TRTT_VERCEL_FIXED__ = true;
-  
-  const CFG = {
-    vercel: "https://cocvghuj-trtt-news-bot.vercel.app",
-    marker: "787950",
-    telegram: "https://t.me/trttnews24bd",
-    // All tools now with real Vercel routes
-    tools: [
-      { id: "flight", name: "Flight Tracker", desc: "New York → Rome • $549", price: "$549", badge: "Best Price", icon: "✈️", vercelRoute: "/api/flight-tracker?from=JFK&to=ROM", embed: "/tools/flight" },
-      { id: "visa", name: "Visa Checker", desc: "USA → Italy • Visa Free", price: "free", badge: "Free", icon: "🛂", vercelRoute: "/api/visa-check?country=Italy", embed: "/tools/visa" },
-      { id: "esim", name: "eSIM Comparator", desc: "Italy • $9.99", price: "$9.99", badge: "Best Price", icon: "📱", vercelRoute: "/api/esim?country=IT", embed: "/tools/esim" },
-      { id: "cost", name: "Cost Calculator", desc: "7 Days Rome • $1309", price: "$1309", badge: "Est.", icon: "🧮", vercelRoute: "/api/cost?days=7&city=Rome", embed: "/tools/cost" },
-      { id: "weather", name: "Weather & News", desc: "Live from Europe", price: "free", badge: "Live", icon: "⛅", vercelRoute: "/api/weather?city=Rome", embed: "/tools/weather" },
-      { id: "mortgage", name: "Mortgage Calculator", desc: "Home buying", price: "free", badge: "US Market", icon: "🏠", vercelRoute: "/api/mortgage", embed: "/tools/mortgage" },
-      { id: "age", name: "Age Calculator", desc: "Calculate age", price: "free", badge: "Popular", icon: "🎂", vercelRoute: "/api/age", embed: "/tools/age" },
-      { id: "bmi", name: "BMI Calculator", desc: "Body Mass Index", price: "free", badge: "Health", icon: "⚖️", vercelRoute: "/api/bmi", embed: "/tools/bmi" },
-      { id: "gpa", name: "GPA Calculator", desc: "Grade Point Average", price: "free", badge: "Student", icon: "🎓", vercelRoute: "/api/gpa", embed: "/tools/gpa" },
-      { id: "love", name: "Love Calculator", desc: "American teens crazy", price: "free", badge: "Fun", icon: "❤️", vercelRoute: "/api/love", embed: "/tools/love" },
-      { id: "pdf", name: "PDF Tools", desc: "Merge, Split, Compress", price: "free", badge: "Office", icon: "📄", vercelRoute: "/api/pdf-tools", embed: "/tools/pdf" },
-      { id: "qr", name: "QR Generator", desc: "Generate QR", price: "free", badge: "Tool", icon: "🔳", vercelRoute: "/api/qr", embed: "/tools/qr" },
-      { id: "bgremove", name: "BG Remover", desc: "Remove background", price: "free", badge: "Image", icon: "🖼️", vercelRoute: "/api/bg-remove", embed: "/tools/bgremove" },
-      { id: "compress", name: "Image Compressor", desc: "Compress images", price: "free", badge: "Image", icon: "🗜️", vercelRoute: "/api/compress", embed: "/tools/compress" },
-      { id: "thumbnail", name: "YT Thumbnail DL", desc: "Download YT thumbnails", price: "free", badge: "Video", icon: "🎬", vercelRoute: "/api/yt-thumbnail", embed: "/tools/thumbnail" },
-      { id: "myip", name: "What is my IP", desc: "980K/mo US", price: "free", badge: "980K/mo", icon: "🌐", vercelRoute: "/api/my-ip", embed: "/tools/myip" },
-      { id: "wordcount", name: "Word Counter", desc: "Count words", price: "free", badge: "Text", icon: "📝", vercelRoute: "/api/wordcount", embed: "/tools/wordcount" },
-      { id: "plagiarism", name: "Plagiarism Checker", desc: "Check plagiarism", price: "free", badge: "Text", icon: "🔍", vercelRoute: "/api/plagiarism", embed: "/tools/plagiarism" },
-      { id: "grammar", name: "Grammar Checker", desc: "Check grammar", price: "free", badge: "Text", icon: "✏️", vercelRoute: "/api/grammar", embed: "/tools/grammar" }
-    ]
-  };
-  
-  function css(){
-    if(document.getElementById("trtt-vercel-fixed-style")) return;
-    const s=document.createElement("style"); s.id="trtt-vercel-fixed-style";
-    s.textContent=`
-      #trtt-vercel-overlay{position:fixed;inset:0;z-index:2147483647;background:#0a0a12;color:#fff;font-family:Inter,sans-serif;display:none;overflow:hidden}
-      #trtt-vercel-overlay.open{display:flex;flex-direction:column}
-      .trtt-top{padding:12px 16px;background:linear-gradient(90deg,rgba(212,175,55,.12),rgba(255,46,99,.08));border-bottom:1.5px solid #d4af37;display:flex;justify-content:space-between;align-items:center}
-      .trtt-3dot{display:flex;gap:6px;filter:drop-shadow(0 0 12px gold);animation:pulse 2s infinite} @keyframes pulse{0%,100%{scale:1}50%{scale:1.08}} .trtt-dot{width:14px;height:14px;border-radius:50%} .trtt-dot:nth-child(1){background:#ff2e63} .trtt-dot:nth-child(2){background:#FFC300} .trtt-dot:nth-child(3){background:#AF7AC5}
-      .trtt-body{display:grid;grid-template-columns:220px 1fr 400px;flex:1;overflow:hidden} @media(max-width:1100px){.trtt-body{grid-template-columns:1fr;overflow:auto}}
-      .trtt-box{background:#12121c;border:1.5px solid #d4af37;border-radius:14px;padding:10px;margin:8px;overflow:auto}
-      .trtt-tool{display:flex;justify-content:space-between;align-items:center;background:#0f0f17;border:1px solid #2a2a3a;border-radius:10px;padding:8px;margin:5px 0;cursor:pointer} .trtt-tool:hover{border-color:#d4af37} .trtt-tool.active{border-color:#FFC300;background:#1a1a0f}
-      .trtt-price{background:#FFC300;color:#000;padding:3px 7px;border-radius:7px;font-weight:800;font-size:11px}
-      .trtt-iframe{width:100%;height:100%;border:none;background:#fff;border-radius:10px}
-      .trtt-vercel-status{display:flex;gap:6px;align-items:center;font-size:10px;background:#0f1f0f;color:#7CFC8A;border:1px solid #2e7d32;padding:4px 8px;border-radius:8px}
-      #trtt-vercel-fab{position:fixed;left:12px;bottom:12px;z-index:2147483646;width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#FFD86A,#FFC300 45%,#ff2e63 85%);border:2px solid #fff3;box-shadow:0 8px 28px rgba(212,175,55,.6);display:grid;place-items:center;cursor:pointer;animation:pulse 2.5s infinite}
-      .trtt-api-log{background:#000;color:#0f0;border-radius:8px;padding:6px;font-size:10px;font-family:monospace;max-height:80px;overflow:auto;margin-top:6px}
-    `;
-    document.head.appendChild(s);
+  if (window.__TRTT_VERCEL_MENU_V2__) return;
+  window.__TRTT_VERCEL_MENU_V2__ = true;
+
+  var BASE = "https://cocvghuj-trtt-news-bot.vercel.app";
+  var MARKER = "787950";
+  var TELEGRAM = "https://t.me/trttnews24bd";
+  var TOOLS = [
+    { id: "flight", name: "Flight Search", detail: "Compare available flight routes", icon: "✈️", page: "/tools/flight-search.html" },
+    { id: "baggage", name: "Baggage Size Checker", detail: "Check cabin-bag dimensions", icon: "🧳", page: "/tools/baggage-size-checker.html" },
+    { id: "delay", name: "Flight Delay Calculator", detail: "Review possible EU261 compensation", icon: "⏱️", page: "/tools/delay-calculator.html" },
+    { id: "esim", name: "eSIM Comparator", detail: "Compare travel eSIM providers", icon: "📱", page: "/tools/esim-compare.html" },
+    { id: "taxi", name: "Airport Transfer Calculator", detail: "Review airport transfer options", icon: "🚕", page: "/tools/taxi-calculator.html" }
+  ];
+
+  var overlay, frame, status, log, title, openLink;
+
+  function addLog(message) {
+    if (!log) return;
+    var item = document.createElement("div");
+    item.textContent = "[" + new Date().toLocaleTimeString() + "] " + message;
+    log.appendChild(item);
+    log.scrollTop = log.scrollHeight;
   }
-  
-  let currentTool = null;
-  let vercelFrame = null;
-  
-  function track(m, src){
-    try{
-      fetch(CFG.vercel + "/api/vault-click?m=" + CFG.marker + "&t=" + Date.now() + "&src=" + src + "&tool=" + (m||"menu"), {mode:"no-cors", keepalive:true});
-      const log = document.getElementById("trtt-api-log");
-      if(log) log.innerHTML += `<div>[${new Date().toLocaleTimeString()}] → Vercel API: /api/vault-click?m=${CFG.marker}&src=${src} ✅ 200 OK - Marker 127→128</div>`;
-    }catch(e){}
+
+  function setStatus(message, good) {
+    if (!status) return;
+    status.textContent = message;
+    status.classList.toggle("is-good", !!good);
+    status.classList.toggle("is-bad", !good);
   }
-  
-  function loadToolInVercel(tool){
-    currentTool = tool;
-    track(tool.id, "tool_select");
-    const frame = document.getElementById("trtt-vercel-iframe");
-    const status = document.getElementById("trtt-vercel-status");
-    const title = document.getElementById("trtt-vercel-title");
-    const log = document.getElementById("trtt-api-log");
-    
-    if(frame){
-      // Real Vercel connection - iframe loads actual Vercel app with marker
-      frame.src = CFG.vercel + tool.embed + "?m=" + CFG.marker + "&src=menu&tool=" + tool.id + "&price=" + tool.price;
-      if(status) status.innerHTML = `● Connected • ${tool.name} • ${CFG.vercel}${tool.vercelRoute} • Loading...`;
-      if(title) title.innerText = `${tool.icon} ${tool.name} - Vercel Connected - ${tool.price}`;
-      if(log) log.innerHTML += `<div>[${new Date().toLocaleTimeString()}] → GET ${CFG.vercel}${tool.vercelRoute} → iframe ${tool.embed} ✅ Vercel Connected</div>`;
-      
-      // Also fetch API in background to show real data
-      fetch(CFG.vercel + tool.vercelRoute + "&m=" + CFG.marker, {mode:"no-cors"}).then(()=>{
-        if(status) status.innerHTML = `● Vercel Connected • ${tool.name} • ${tool.price} • API 200 OK • Marker Tracked`;
-        if(log) log.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ← ${tool.vercelRoute} 200 OK • Data loaded • ${tool.price}</div>`;
-      }).catch(()=>{
-        if(status) status.innerHTML = `● Vercel Connected • ${tool.name} • Fallback mode • Iframe active`;
+
+  function checkApi() {
+    fetch(BASE + "/api/health", { method: "GET", mode: "cors", cache: "no-store" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return response.json();
+      })
+      .then(function (data) {
+        if (!data || data.ok !== true) throw new Error("Health response invalid");
+        setStatus("Vercel API online", true);
+        addLog("Vercel health check passed (HTTP 200).");
+      })
+      .catch(function (error) {
+        setStatus("Vercel API unavailable", false);
+        addLog("Vercel health check failed: " + error.message);
       });
-    }
-    
-    // Highlight active tool
-    document.querySelectorAll(".trtt-tool").forEach(el=>el.classList.remove("active"));
-    const activeEl = document.getElementById("tool-" + tool.id);
-    if(activeEl) activeEl.classList.add("active");
   }
-  
-  function build(){
-    if(document.getElementById("trtt-vercel-overlay")) return;
-    const el=document.createElement("div"); el.id="trtt-vercel-overlay";
-    el.innerHTML=`
-      <div class="trtt-top">
-        <div style="display:flex;gap:10px;align-items:center"><div class="trtt-3dot"><div class="trtt-dot"></div><div class="trtt-dot"></div><div class="trtt-dot" style="width:20px;height:20px"></div></div><div><b style="color:#FFD86A">TRTT VOYAGE - VERCEL CONNECTED</b><div style="font-size:10px;opacity:.6">All Menus • All Tools • Vercel iframe • API Connected</div></div></div>
-        <div style="display:flex;gap:8px;align-items:center"><div class="trtt-vercel-status" id="trtt-vercel-status">● Vercel Deployed • Ready • ${CFG.vercel}</div><button onclick="document.getElementById('trtt-vercel-overlay').classList.remove('open')" style="background:#1a1a28;border:1px solid #2a2a3a;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer">✕</button></div>
-      </div>
-      <div class="trtt-body">
-        <div class="trtt-box"><div style="font-size:10px;opacity:.5">ALL MENUS INSIDE</div><div style="margin-top:6px"><div style="padding:8px;border-radius:8px;background:linear-gradient(90deg,#ff2e63,#FFC300);color:#000;font-weight:700;font-size:12px">📝 Blog Stories</div><div style="padding:8px;font-size:11px;opacity:.7">📊 Dashboard<br>✈️ Flights<br>📈 Analytics<br>📋 Tracking Logs<br>⚙️ Settings</div></div><div style="margin-top:10px;background:#0f1f0f;border:1px solid #2e7d32;border-radius:8px;padding:6px;font-size:10px;color:#7CFC8A">● Operational 99.99% • Vercel Connected • All tools linked to ${CFG.vercel}</div><div class="trtt-api-log" id="trtt-api-log"><div>→ Vercel API Log - Real-time connection tracking</div></div></div>
-        <div class="trtt-box" style="display:flex;flex-direction:column;padding:0;overflow:hidden"><div style="padding:10px;border-bottom:1px solid #2a2a3a;display:flex;justify-content:space-between;align-items:center"><b id="trtt-vercel-title" style="font-size:13px">✈️ Select a Tool - Vercel will load inside</b><span style="font-size:10px;background:#0f1f0f;color:#7CFC8A;padding:3px 6px;border-radius:6px">● Live Vercel Embed</span></div><iframe id="trtt-vercel-iframe" class="trtt-iframe" src="${CFG.vercel}?m=${CFG.marker}&src=menu_initial"></iframe></div>
-        <div class="trtt-box"><b style="font-size:12px">All Tools - 100% Vercel Connected</b><div style="font-size:10px;opacity:.6;margin:4px 0">Every tool loads real Vercel app inside menu - No window.open - Real iframe embed</div><div style="max-height:480px;overflow:auto;margin-top:6px">${CFG.tools.map(t=>`<div class="trtt-tool" id="tool-${t.id}" onclick="window.__TRTT_LOAD_TOOL__('${t.id}')"><div style="display:flex;gap:8px;align-items:center"><div style="width:28px;height:28px;background:#1a1a28;border-radius:8px;display:grid;place-items:center">${t.icon}</div><div><div style="font-weight:700;font-size:11px">${t.name}</div><div style="font-size:10px;opacity:.6">${t.desc} • ${t.vercelRoute}</div></div></div><div style="display:flex;gap:6px;align-items:center"><div class="trtt-price">${t.price}</div></div></div>`).join('')}</div><div style="margin-top:8px;background:linear-gradient(90deg,#0a84ff,#1e90ff);border-radius:10px;padding:8px;display:flex;justify-content:space-between;align-items:center"><div style="font-size:11px"><b>Telegram - Also Vercel Connected</b><br><span style="font-size:10px">t.me/trttnews24bd • API /api/telegram-join</span></div><button style="background:#FFD86A;color:#000;padding:6px 10px;border-radius:8px;font-weight:800;border:none;cursor:pointer;font-size:11px" onclick="window.open('${CFG.telegram}','_blank'); fetch('${CFG.vercel}/api/telegram-join?m=${CFG.marker}',{mode:'no-cors'})">Join →</button></div></div>
-      </div>
-    `;
-    document.body.appendChild(el);
-    
-    // Expose load function globally for onclick
-    window.__TRTT_LOAD_TOOL__ = (id)=>{
-      const tool = CFG.tools.find(x=>x.id===id);
-      if(tool) loadToolInVercel(tool);
+
+  function track(eventName, toolId) {
+    var query = new URLSearchParams({
+      m: MARKER,
+      src: eventName,
+      tool: toolId || "menu",
+      t: String(Date.now())
+    });
+    fetch(BASE + "/api/vault-click?" + query.toString(), {
+      method: "GET",
+      mode: "cors",
+      cache: "no-store",
+      keepalive: true
+    }).then(function (response) {
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      return response.json();
+    }).then(function (data) {
+      if (!data || data.success !== true) throw new Error("API rejected event");
+      addLog("Tracking API accepted event (not stored as analytics).");
+    }).catch(function (error) {
+      addLog("Tracking request failed: " + error.message);
+    });
+  }
+
+  function loadTool(tool) {
+    if (!tool || !frame) return;
+    title.textContent = tool.icon + " " + tool.name;
+    frame.onload = function () {
+      addLog(tool.name + " page response loaded.");
     };
-    
-    // Initial load
-    setTimeout(()=> loadToolInVercel(CFG.tools[0]), 800);
+    frame.onerror = function () {
+      addLog(tool.name + " page failed to load.");
+    };
+    frame.src = BASE + tool.page + "?m=" + encodeURIComponent(MARKER);
+    openLink.href = BASE + tool.page;
+    openLink.hidden = false;
+    addLog("Opening verified page: " + tool.page);
+    track("tool_select", tool.id);
+
+    overlay.querySelectorAll("[data-tool]").forEach(function (button) {
+      button.classList.toggle("active", button.getAttribute("data-tool") === tool.id);
+      button.setAttribute("aria-pressed", button.getAttribute("data-tool") === tool.id ? "true" : "false");
+    });
   }
-  
-  function fab(){
-    if(document.getElementById("trtt-vercel-fab")) return;
-    const f=document.createElement("div"); f.id="trtt-vercel-fab"; f.innerHTML="•••"; f.title="Open TRTT Voyage - Vercel Connected";
-    f.onclick=()=>{ const ov=document.getElementById("trtt-vercel-overlay"); if(ov){ ov.classList.add("open"); track("menu_open","menu_open"); } };
-    document.body.appendChild(f);
+
+  function closeMenu() {
+    overlay.classList.remove("open");
+    overlay.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
   }
-  
-  function init(){ css(); build(); fab(); track("init","init"); }
-  if(document.readyState==="loading"){ document.addEventListener("DOMContentLoaded", init); } else { init(); }
+
+  function build() {
+    if (document.getElementById("trtt-vercel-overlay")) return;
+
+    var style = document.createElement("style");
+    style.id = "trtt-vercel-menu-style";
+    style.textContent = [
+      "#trtt-vercel-overlay{position:fixed;inset:0;z-index:2147483647;display:none;flex-direction:column;background:#0b1020;color:#f8fafc;font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;overflow:hidden}",
+      "#trtt-vercel-overlay.open{display:flex}",
+      "#trtt-vercel-overlay *{box-sizing:border-box}",
+      "#trtt-vercel-overlay .trtt-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:#121b34;border-bottom:1px solid #c9a84c}",
+      "#trtt-vercel-overlay .trtt-brand{font-weight:800;color:#f8d879}",
+      "#trtt-vercel-overlay .trtt-status{font-size:12px;padding:5px 9px;border-radius:20px;background:#29334b;color:#e2e8f0}",
+      "#trtt-vercel-overlay .trtt-status.is-good{background:#123b2b;color:#9df0bd}",
+      "#trtt-vercel-overlay .trtt-status.is-bad{background:#4a2026;color:#ffc2c2}",
+      "#trtt-vercel-overlay .trtt-close{border:1px solid #475569;background:#202b43;color:white;border-radius:8px;padding:7px 11px;cursor:pointer}",
+      "#trtt-vercel-overlay .trtt-body{display:grid;grid-template-columns:minmax(190px,230px) minmax(0,1fr) minmax(250px,310px);gap:10px;padding:10px;min-height:0;flex:1;overflow:hidden}",
+      "#trtt-vercel-overlay .trtt-panel{min-width:0;min-height:0;overflow:auto;background:#121a2c;border:1px solid #34415b;border-radius:12px;padding:12px}",
+      "#trtt-vercel-overlay .trtt-tool{display:flex;width:100%;align-items:center;gap:10px;text-align:left;padding:11px;margin:5px 0;border:1px solid #34415b;border-radius:9px;background:#18233a;color:#f8fafc;cursor:pointer}",
+      "#trtt-vercel-overlay .trtt-tool:hover,#trtt-vercel-overlay .trtt-tool.active{border-color:#f1c75b;background:#27334b}",
+      "#trtt-vercel-overlay .trtt-tool small{display:block;color:#b7c2d5;font-size:11px}",
+      "#trtt-vercel-overlay .trtt-stage{display:flex;flex-direction:column;padding:0;overflow:hidden}",
+      "#trtt-vercel-overlay .trtt-stage-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;border-bottom:1px solid #34415b}",
+      "#trtt-vercel-overlay .trtt-iframe{width:100%;height:100%;min-height:300px;border:0;background:white;flex:1}",
+      "#trtt-vercel-overlay .trtt-log{font:11px/1.5 ui-monospace,monospace;color:#c8d5e8;overflow-wrap:anywhere}",
+      "#trtt-vercel-overlay .trtt-log div{padding:5px 0;border-bottom:1px solid #29354c}",
+      "#trtt-vercel-overlay .trtt-link{color:#f4d16f;font-size:12px}",
+      "#trtt-vercel-fab{position:fixed;left:14px;bottom:14px;z-index:2147483646;width:54px;height:54px;border:2px solid white;border-radius:50%;background:linear-gradient(135deg,#f6d36b,#ef476f);color:#101827;font-size:24px;font-weight:900;box-shadow:0 5px 22px #0008;cursor:pointer}",
+      "@media(max-width:900px){#trtt-vercel-overlay{overflow-y:auto}#trtt-vercel-overlay .trtt-top{position:sticky;top:0;z-index:2;flex-wrap:wrap}#trtt-vercel-overlay .trtt-body{display:flex;flex-direction:column;overflow:visible;min-height:auto}#trtt-vercel-overlay .trtt-panel{overflow:visible}#trtt-vercel-overlay .trtt-stage{min-height:62vh}#trtt-vercel-overlay .trtt-iframe{min-height:55vh}#trtt-vercel-overlay .trtt-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}#trtt-vercel-overlay .trtt-tool{margin:0}}",
+      "@media(max-width:480px){#trtt-vercel-overlay .trtt-tools{grid-template-columns:1fr}#trtt-vercel-overlay .trtt-top{align-items:flex-start}#trtt-vercel-overlay .trtt-stage{min-height:65vh}}"
+    ].join("\n");
+    document.head.appendChild(style);
+
+    overlay = document.createElement("div");
+    overlay.id = "trtt-vercel-overlay";
+    overlay.setAttribute("aria-hidden", "true");
+    overlay.innerHTML =
+      '<div class="trtt-top"><div><div class="trtt-brand">TRTT NEWS • TRAVEL TOOLS</div><div style="font-size:11px;color:#cbd5e1">Blogger menu connected to Vercel</div></div><div style="display:flex;align-items:center;gap:8px"><span class="trtt-status" id="trtt-vercel-status">Checking API…</span><button type="button" class="trtt-close" id="trtt-vercel-close" aria-label="Close menu">✕</button></div></div>' +
+      '<div class="trtt-body"><section class="trtt-panel"><b>Available tools</b><div class="trtt-tools" id="trtt-vercel-tools"></div><p style="font-size:11px;color:#b7c2d5">Only pages present in the deployed project are listed.</p><a class="trtt-link" href="' + TELEGRAM + '" target="_blank" rel="noopener noreferrer">Join TRTT Telegram ↗</a></section>' +
+      '<section class="trtt-panel trtt-stage"><div class="trtt-stage-head"><b id="trtt-vercel-title">Choose a tool</b><a class="trtt-link" id="trtt-vercel-open" href="#" target="_blank" rel="noopener noreferrer" hidden>Open separately ↗</a></div><iframe class="trtt-iframe" id="trtt-vercel-iframe" title="TRTT travel tool" src="about:blank" loading="lazy"></iframe></section>' +
+      '<section class="trtt-panel"><b>Connection log</b><div class="trtt-log" id="trtt-vercel-log" aria-live="polite"></div></section></div>';
+    document.body.appendChild(overlay);
+
+    frame = document.getElementById("trtt-vercel-iframe");
+    status = document.getElementById("trtt-vercel-status");
+    log = document.getElementById("trtt-vercel-log");
+    title = document.getElementById("trtt-vercel-title");
+    openLink = document.getElementById("trtt-vercel-open");
+
+    var toolContainer = document.getElementById("trtt-vercel-tools");
+    TOOLS.forEach(function (tool) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "trtt-tool";
+      button.setAttribute("data-tool", tool.id);
+      button.setAttribute("aria-pressed", "false");
+      var icon = document.createElement("span");
+      icon.textContent = tool.icon;
+      icon.setAttribute("aria-hidden", "true");
+      var copy = document.createElement("span");
+      copy.innerHTML = "<b></b><small></small>";
+      copy.querySelector("b").textContent = tool.name;
+      copy.querySelector("small").textContent = tool.detail;
+      button.appendChild(icon);
+      button.appendChild(copy);
+      button.addEventListener("click", function () { loadTool(tool); });
+      toolContainer.appendChild(button);
+    });
+
+    document.getElementById("trtt-vercel-close").addEventListener("click", closeMenu);
+    overlay.addEventListener("click", function (event) {
+      if (event.target === overlay) closeMenu();
+    });
+
+    checkApi();
+  }
+
+  function addLauncher() {
+    if (document.getElementById("trtt-vercel-fab")) return;
+    var launcher = document.createElement("button");
+    launcher.type = "button";
+    launcher.id = "trtt-vercel-fab";
+    launcher.textContent = "⋯";
+    launcher.setAttribute("aria-label", "Open TRTT travel tools menu");
+    launcher.addEventListener("click", function () {
+      overlay.classList.add("open");
+      overlay.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      track("menu_open", "menu");
+      checkApi();
+      if (!frame.src || frame.src === "about:blank") loadTool(TOOLS[0]);
+    });
+    document.body.appendChild(launcher);
+  }
+
+  function init() {
+    build();
+    addLauncher();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once: true });
+  } else {
+    init();
+  }
 })();
