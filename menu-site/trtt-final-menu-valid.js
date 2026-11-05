@@ -5,7 +5,6 @@
   window.__TRTT_VERCEL_MENU_V2__ = true;
 
   var BASE = "";
-  var MARKER = "787950";
   var TELEGRAM = "https://t.me/trttnews24bd";
   var TOOLS = [
     { id: "flight", name: "Flight Search", detail: "Compare available flight routes", icon: "✈️", page: "/tools/flight-search.html" },
@@ -34,7 +33,7 @@
     title.textContent = tool.icon + " " + tool.name;
     frame.onload = function () { addLog(tool.name + " page response loaded."); };
     frame.onerror = function () { addLog(tool.name + " page failed to load."); };
-    frame.src = BASE + tool.page + "?m=" + encodeURIComponent(MARKER);
+    frame.src = BASE + tool.page;
     openLink.href = BASE + tool.page;
     openLink.hidden = false;
     addLog("Opening project page: " + tool.page);
@@ -116,6 +115,7 @@
     });
     document.getElementById("trtt-vercel-close").addEventListener("click", closeMenu);
     overlay.addEventListener("click", function (event) { if (event.target === overlay) closeMenu(); });
+    document.addEventListener("keydown", function (event) { if (event.key === "Escape" && overlay.classList.contains("open")) closeMenu(); });
 
   }
   function addLauncher() {
