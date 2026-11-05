@@ -69,6 +69,13 @@ class _BloggerServiceProxy:
 def main() -> int:
     require_configuration()
 
+    # Running `python scripts/publish_news.py` sets sys.path[0] to `scripts/`,
+    # not the repository root. Add the root so the sibling root-level main.py
+    # engine can be imported reliably in GitHub Actions and local runs.
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if repo_root not in sys.path:
+        sys.path.insert(0, repo_root)
+
     import main as engine
 
     original_build = engine.build
