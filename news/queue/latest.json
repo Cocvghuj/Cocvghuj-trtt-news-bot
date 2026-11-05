@@ -1,7 +1,20 @@
-[
-  {
-    "from": "Rome",
-    "to": "Cagliari",
-    "city": "Rome to Cagliari"
-  }
-]
+{
+  "version": "2026-11-06",
+  "generated_at": "2026-11-06T22:50:00+01:00",
+  "routes": [
+    {
+      "from": "Cagliari",
+      "to": "Bergamo",
+      "iata_from": "CAG",
+      "iata_to": "BGY",
+      "date": "2026-11-06",
+      "price": "€19",
+      "airline": "Ryanair",
+      "isDraft": true
+    }
+  ],
+  "batch_size": 1,
+  "isDraft": true,
+  "require_image": true,
+  "require_marker": "787950 LOCKED"
+}

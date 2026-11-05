@@ -15,7 +15,7 @@
       klook: "https://klook.tpo.lv/TWKnemhz?marker=787950",
       airalo: "https://airalo.tpo.lv/ZZoQC7Mz?marker=787950",
       gettransfer: "https://gettransfer.tpo.lv/1u8zRU5s?marker=787950",
-      amazon: "https://amzn.to/4shg6Hn"
+      amazon: "https://amzn.to/4shg6Hn?marker=787950"
     },
     signature: { name:'Signature',g:'#ff2e63',k:'#FFC300',p:'#AF7AC5' },
     status: "ACTIVE",

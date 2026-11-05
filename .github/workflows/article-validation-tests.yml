@@ -22,6 +22,7 @@ on:
       - "requirements.txt"
       - "vercel.json"
       - "tests/**"
+      - "news/queue/**"
       - ".github/workflows/article-validation-tests.yml"
       - ".github/workflows/trtt-unified-autopilot.yml"
       - "api/answer.js"
@@ -44,6 +45,7 @@ on:
       - "requirements.txt"
       - "vercel.json"
       - "tests/**"
+      - "news/queue/**"
       - ".github/workflows/article-validation-tests.yml"
       - ".github/workflows/trtt-unified-autopilot.yml"
       - "api/answer.js"
@@ -74,6 +76,28 @@ jobs:
           pip install google-genai google-auth google-api-python-client requests python-slugify
       - name: Compile TRTT Python entry points
         run: python -m py_compile trtt_787950_master.py scripts/publish_news.py scripts/sync_blogger_content.py api/trtt_787950_master.py trtt_auto_google_index.py
+      - name: Validate daily queue, editorial content and Vault parity
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import trtt_787950_master as engine
+          queue = json.loads(Path("news/queue/latest.json").read_text(encoding="utf-8"))
+          assert queue["version"] == "2026-11-06"
+          assert queue["batch_size"] == 1 and queue["isDraft"] is True
+          assert len(queue["routes"]) == 1 and queue["routes"][0]["isDraft"] is True
+          route = queue["routes"][0]
+          content = engine.build_content(route, "6 November 2026")
+          assert "EC 261/2004" in content and "EC Regulation 261/2004" not in content
+          assert "<img src=\"https://images.unsplash.com/" in content
+          assert "787950 LOCKED" in content
+          assert "https://cocvghuj-trtt-news-bot.vercel.app" in content
+          assert "amzn.to/4shg6Hn?marker=787950" in content
+          assert engine._plain_word_count(content) >= 100
+          assert Path("roksana-vault.js").read_bytes() == Path("roksana-vault-final.js").read_bytes()
+          assert b"xxxxx" not in Path("roksana-vault.js").read_bytes()
+          print("PASS: exact EC 261/2004, image, marker, showroom, affiliate, 100+ words and byte-identical Vault.")
+          PY
       - name: Run tests (no Blogger publishing)
         run: python -m unittest discover -s tests -v
       - name: Set up Node.js

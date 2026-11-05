@@ -1,157 +1,204 @@
 #!/usr/bin/env python3
-"""TRTT one-route-per-day Blogger draft engine. Never publishes posts live."""
+"""TRTT daily Blogger draft engine. Draft-only; never publishes posts live."""
 from __future__ import annotations
+
 import html
 import json
 import os
+import re
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
-MARKER = "787950"
-QUEUE_FILE = "news/queue/latest.json"
-HISTORY_FILE = "drafted_history.txt"
+ROOT = Path(__file__).resolve().parent
+QUEUE_FILE = ROOT / "news" / "queue" / "latest.json"
+HISTORY_FILE = ROOT / "drafted_history.txt"
+TIME_ZONE = ZoneInfo("Europe/Rome")
 BATCH_SIZE = 1
-LINKS = {
+MARKER = "787950 LOCKED"
+LIVE_APP = "https://cocvghuj-trtt-news-bot.vercel.app"
+AFFILIATES = {
+    "amazon": "https://amzn.to/4shg6Hn?marker=787950",
     "aviasales": "https://aviasales.tpo.lv/Fb8U9yav?marker=787950",
     "klook": "https://klook.tpo.lv/TWKnemhz?marker=787950",
     "airalo": "https://airalo.tpo.lv/ZZoQC7Mz?marker=787950",
     "gettransfer": "https://gettransfer.tpo.lv/1u8zRU5s?marker=787950",
-    "amazon": "https://amzn.to/4shg6Hn",
 }
-LIVE_APP = "https://cocvghuj-trtt-news-bot.vercel.app"
 
 
 def publish_date() -> datetime:
-    return datetime.now(ZoneInfo("Europe/Rome"))
-
-
-def history_key(city: str, date_label: str) -> str:
-    return f"{city} | {date_label}"
-
-
-def load_history() -> set[str]:
-    path = Path(HISTORY_FILE)
-    return {line.strip() for line in path.read_text(encoding="utf-8").splitlines() if line.strip()} if path.exists() else set()
-
-
-def route_context(city: str) -> tuple[str, str]:
-    route = city.casefold()
-    if "rome" in route and "cagliari" in route:
-        return ("Sanluri to Cagliari-Elmas Airport (CAG)",
-                "SS131 is the principal road connection from the Sanluri area towards Cagliari. Allow a practical buffer for road traffic, parking, check-in and security. Confirm the airport and terminal on the ticket.")
-    if "milan" in route and "cagliari" in route:
-        return ("Milan to Cagliari",
-                "Compare the complete journey to each Milan airport before choosing a fare. Include airport transfers, baggage, seat selection and departure time in the total cost.")
-    if "cagliari" in route and "rome" in route:
-        return ("Cagliari-Elmas (CAG) to Rome",
-                "Check whether the booking arrives at Fiumicino (FCO) or Ciampino (CIA), then compare the onward transfer cost and time. Confirm the airport shown by the airline before payment.")
-    return ("Sanluri, Sardinia", "Confirm the airport codes, terminal, ground transport and airline check-in deadline. Compare the complete trip cost rather than the headline fare.")
+    return datetime.now(TIME_ZONE)
 
 
 def daily_focus(day: int) -> tuple[str, str]:
     focuses = [
-        ("Compare the real fare", "Add baggage, seat selection, payment charges and airport transfers before comparing totals. A lower headline fare is not necessarily the lower-cost journey."),
-        ("Plan the airport transfer", "Check the first and last practical ground-transport options, parking arrangements and the time needed to reach the terminal. Keep a buffer for traffic and queues."),
-        ("Check baggage rules", "Read the operating airline's current cabin-bag dimensions and weight limits. If the trip uses more than one carrier, check each carrier's rules rather than assuming they match."),
-        ("Keep passenger-rights records", "Save the booking confirmation, boarding pass, airline messages and receipts. These records help establish what happened if a delay or cancellation affects the journey."),
-        ("Protect connection time", "For separate tickets, allow extra time to collect baggage, clear any required checks and re-check in. A self-transfer is not the same protection as a single through-ticket."),
+        ("Compare the complete fare", "Include baggage, seat selection, payment fees and airport transfers before comparing the final price."),
+        ("Plan the airport transfer", "Check the first and last practical ground connections and leave time for queues, road traffic and terminal access."),
+        ("Review baggage rules", "Check the operating carrier's current cabin and checked-bag limits for the exact fare class before checkout."),
+        ("Keep disruption records", "Save the booking confirmation, boarding pass, airline notices and receipts if the journey is disrupted."),
+        ("Protect connections", "Allow time for baggage collection, check-in and security when separate tickets are involved."),
     ]
     return focuses[day % len(focuses)]
 
 
-def _tool_links(city: str) -> str:
-    labels = [("Find cheapest flights", LINKS["aviasales"]), ("Plan activities with Klook", LINKS["klook"]),
-              ("Compare travel eSIMs with Airalo", LINKS["airalo"]),
-              ("Compare airport transfers", LINKS["gettransfer"]),
-              ("Travel gear on Amazon", LINKS["amazon"])]
-    links = "".join(
-        f'<li><a href="{html.escape(url, quote=True)}" rel="sponsored nofollow noopener" target="_blank">{label}</a></li>'
-        for label, url in labels
-    )
-    return f'<section class="trtt-tools" data-destination="{html.escape(city, quote=True)}"><h2>Useful travel tools</h2><ul>{links}</ul></section>'
+def route_key(route: dict[str, Any]) -> str:
+    return f"{route['from']} to {route['to']} | {route['date']}"
 
 
-def build_content(city: str, date_label: str | None = None) -> str:
-    """Build a locally grounded editorial draft without invented first-person claims."""
-    now = publish_date()
-    published = date_label or now.strftime("%-d %B %Y")
-    updated = now.strftime("%-d %B %Y")
-    safe_city = html.escape(city)
-    local_start, route_note = route_context(city)
-    focus_title, focus_note = daily_focus(now.day)
-    paragraph_one = (
-        f"For {safe_city}, plan the ground journey as carefully as the flight. From {local_start}, "
-        f"check the airport code and terminal printed on the booking. {route_note} Compare suitable "
-        "departure times and calculate the full price after baggage, seat selection, airport transfers "
-        "and any overnight stay. Search results are only a snapshot: recheck the airline's own schedule "
-        "and fare conditions before paying, especially when a connection or separate ticket is involved."
-    )
-    paragraph_two = (
-        f"This practical route note is prepared from Sanluri, Sardinia, Italy, for travellers comparing "
-        f"{safe_city}. It is an editorial planning guide, not a claim of a personally completed journey "
-        "or a live fare quotation. Keep the booking confirmation and receipts together. Under EC "
-        "Regulation 261/2004, eligible passengers may have rights to care, rerouting or compensation "
-        "of up to €600 in qualifying cases. Compensation depends on route distance, arrival delay, "
-        "the cause of disruption and legal exceptions; extraordinary circumstances may affect eligibility. "
-        "Check the official rules and the facts of your own flight before making a claim."
-    )
-    tips = (
-        f"<h2>Today's planning focus: {html.escape(focus_title)}</h2><p>{html.escape(focus_note)}</p>"
-        "<h2>Before you book</h2><ul>"
-        "<li>Confirm departure and arrival airport codes and terminals.</li>"
-        "<li>Compare the total fare after adding the baggage and seat options you need.</li>"
-        "<li>Allow time for the airport transfer, check-in and security queue.</li>"
-        "<li>Save airline notices, booking confirmations and receipts if disruption occurs.</li>"
-        "<li>Read the <a href='https://europa.eu/youreurope/citizens/travel/passenger-rights/air/index_en.htm'>official EU air-passenger rights guidance</a>.</li>"
-        "</ul>"
-    )
-    footer = (
-        '<div class="trtt-editorial-footer">'
-        '<p>Marker 787950 Locked - Live from TRTT - Daily update - One route per day - '
-        'TRTT editorial planning notes; confirm live fares, schedules and eligibility with official sources.</p>'
-        '<p><strong>Publisher:</strong> <a href="https://cocvghuj-trtt-news-bot.vercel.app/about.html">TRTT VoyageHub</a>. '
-        'This draft was prepared with automated assistance and requires human fact-checking before publication; '
-        'it is not a personal trip report.</p>'
-        f'<p><strong>Published:</strong> {html.escape(published)} · <strong>Updated:</strong> {html.escape(updated)}</p>'
-        '</div>'
-    )
-    live_app = (
-        f'<p class="trtt-live-app">Live App: <a href="{LIVE_APP}">{LIVE_APP}</a> - '
-        'TRTT VoyageHub - Make every journey feel effortless.</p>'
-    )
-    return (
-        f'<article class="trtt-travel-article" data-marker="{MARKER}">'
-        f'<h2>{safe_city}: a practical flight-planning guide</h2>'
-        f'<img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800" '
-        f'alt="{safe_city}" loading="lazy" />'
-        f'<p>{html.escape(paragraph_one)}</p><p>{html.escape(paragraph_two)}</p>'
-        + tips
-        + '<div id="ghost-esim" data-service="Ghost-SIM" data-product="eSIM" hidden></div>'
-        + _tool_links(city) + footer + live_app + '</article>'
-    )
+def load_history() -> set[str]:
+    if not HISTORY_FILE.exists():
+        return set()
+    return {
+        line.strip()
+        for line in HISTORY_FILE.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    }
 
 
-def ghost_sim_esim_logic(city: str) -> dict[str, str]:
-    return {"service": "Ghost-SIM", "product": "eSIM", "destination": city, "marker": MARKER}
+def append_history(key: str) -> None:
+    existing = load_history()
+    if key in existing:
+        return
+    with HISTORY_FILE.open("a", encoding="utf-8") as handle:
+        handle.write(key + "\n")
 
 
-def require_configuration() -> None:
-    required = ("BLOGGER_BLOG_ID", "FLIGHTSCOUTPRO_BLOG_ID", "BLOGGER_CLIENT_ID",
-                "BLOGGER_CLIENT_SECRET", "BLOGGER_REFRESH_TOKEN")
-    missing = [name for name in required if not os.environ.get(name, "").strip()]
+def _load_today_route() -> tuple[dict[str, Any], dict[str, Any]]:
+    if not QUEUE_FILE.is_file():
+        raise AssertionError(f"Daily queue missing: {QUEUE_FILE}")
+    queue = json.loads(QUEUE_FILE.read_text(encoding="utf-8"))
+    if not isinstance(queue, dict):
+        raise AssertionError("Queue must be a JSON object, not a bare route list.")
+    if queue.get("isDraft") is not True:
+        raise AssertionError("Queue policy violation: isDraft must be true.")
+    if queue.get("batch_size") != BATCH_SIZE:
+        raise AssertionError("Queue policy violation: batch_size must equal 1.")
+    if queue.get("require_marker") != MARKER:
+        raise AssertionError("Queue policy violation: marker must be 787950 LOCKED.")
+    routes = queue.get("routes")
+    if not isinstance(routes, list):
+        raise AssertionError("Queue routes must be a list.")
+    if len(routes) == 0:
+        fallback = queue.get("fallback_route")
+        if isinstance(fallback, dict):
+            routes = [fallback]
+        else:
+            raise AssertionError("Queue is empty and has no fallback_route; refusing a zero-second skip.")
+    if len(routes) != BATCH_SIZE:
+        raise AssertionError(f"Exactly one route is required; found {len(routes)}.")
+    route = routes[0]
+    if not isinstance(route, dict):
+        raise AssertionError("Queue route must be an object.")
+    required = ("from", "to", "iata_from", "iata_to", "date", "price", "airline")
+    missing = [field for field in required if not str(route.get(field, "")).strip()]
     if missing:
-        raise RuntimeError("Missing required Blogger configuration: " + ", ".join(missing))
-    if os.environ["BLOGGER_BLOG_ID"].strip() == os.environ["FLIGHTSCOUTPRO_BLOG_ID"].strip():
-        raise RuntimeError("BLOGGER_BLOG_ID and FLIGHTSCOUTPRO_BLOG_ID must be different.")
+        raise AssertionError("Queue route is missing: " + ", ".join(missing))
+    if route.get("isDraft") is not True:
+        raise AssertionError("Route policy violation: route.isDraft must be true.")
+    today = publish_date().date().isoformat()
+    if route["date"] != today:
+        raise AssertionError(
+            f"Queue date {route['date']} is not today's Europe/Rome date {today}; "
+            "refusing to publish the wrong day's route."
+        )
+    return queue, route
+
+
+def _plain_word_count(content: str) -> int:
+    plain = re.sub(r"<[^>]+>", " ", content)
+    plain = html.unescape(plain)
+    return len(re.findall(r"\b[\w€'-]+\b", plain, flags=re.UNICODE))
+
+
+def _affiliate_list() -> str:
+    items = [
+        ("Amazon travel gear", AFFILIATES["amazon"]),
+        ("Aviasales flight comparison", AFFILIATES["aviasales"]),
+        ("Klook activities and experiences", AFFILIATES["klook"]),
+        ("Airalo travel eSIM options", AFFILIATES["airalo"]),
+        ("GetTransfer airport transfers", AFFILIATES["gettransfer"]),
+    ]
+    return "<ul>" + "".join(
+        f'<li><a href="{html.escape(url, quote=True)}" rel="sponsored nofollow noopener" target="_blank">{label}</a></li>'
+        for label, url in items
+    ) + "</ul>"
+
+
+def build_content(route: dict[str, Any] | str, date_label: str | None = None) -> str:
+    """Build a researched-style planning draft; queue prices are explicitly unverified leads."""
+    if isinstance(route, str):
+        parts = route.split(" to ", 1)
+        if len(parts) != 2:
+            raise ValueError("Route string must use 'Origin to Destination'.")
+        route = {
+            "from": parts[0].strip(), "to": parts[1].strip(),
+            "iata_from": "CAG", "iata_to": "BGY",
+            "date": publish_date().date().isoformat(), "price": "Not supplied",
+            "airline": "Not supplied", "isDraft": True,
+        }
+    origin = html.escape(str(route["from"]))
+    destination = html.escape(str(route["to"]))
+    iata_from = html.escape(str(route["iata_from"]))
+    iata_to = html.escape(str(route["iata_to"]))
+    travel_date = html.escape(str(route["date"]))
+    fare = html.escape(str(route["price"]))
+    airline = html.escape(str(route["airline"]))
+    published = date_label or publish_date().strftime("%-d %B %Y")
+    image_url = "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200"
+    content = f"""<!-- 787950 LOCKED -->
+<article class="trtt-daily-route" data-marker="787950 LOCKED" data-is-draft="true">
+<h1>{origin} to {destination}: flight planning guide for {travel_date}</h1>
+<figure>
+<img src="{image_url}" alt="Mountain and lake landscape in Sardinia travel scenery" loading="lazy" />
+<figcaption>Travel-planning image. Confirm image licensing and attribution requirements before publication.</figcaption>
+</figure>
+<p><strong>Route:</strong> {origin} ({iata_from}) to {destination} ({iata_to}). <strong>Scheduled date:</strong> {travel_date}. The queue currently lists a fare lead of {fare} with {airline}. This is not a live fare guarantee or an independently verified quotation. Airline inventory, taxes, baggage charges and payment fees can change, so check the final price directly with the operating carrier before buying.</p>
+<p>A useful flight plan begins before the airport. Travellers starting in Cagliari should allow time to reach Cagliari Elmas Airport, confirm the terminal shown on the booking and check the airline's current check-in deadline. The journey to the airport can vary with the time of day, local road conditions and the transport option selected. People travelling from Sanluri or elsewhere in Sardinia should compare the full door-to-terminal journey rather than looking only at the flight departure time. Keep a practical buffer for parking, public transport changes, security queues and any mobility or family needs.</p>
+<p>For the destination side, confirm that the ticket names Bergamo Orio al Serio (BGY), not another airport serving the wider Milan area. Airport names can look similar in search results, but the ground transfer may be very different. Before choosing a fare, check the arrival time, onward bus or rail options, the location of your accommodation and the cost of reaching the final address. A low fare can become an expensive journey when a late arrival requires a taxi or an overnight stay. Do not assume a transfer is included unless it appears in the booking conditions.</p>
+<h2>Compare the complete price, not just the headline fare</h2>
+<p>Use the same passenger count, travel dates and baggage requirements when comparing options. Review the cabin-bag dimensions, checked-bag allowance, seat-selection charge and payment conditions for the exact fare class. If you are travelling with children, carrying equipment or need extra time at the airport, check those details before checkout. Save a copy of the fare rules and confirmation email. If the price shown in the queue is no longer available, do not describe it as a current offer; update the article only after checking a live booking page and recording when that check was made.</p>
+<p>Travellers comparing schedules should look at the whole day. An early departure may require transport before normal public services begin, while a late arrival may reduce the available transfer choices. Check the first and last practical connections for the actual travel date. If you are using separate tickets, leave enough time to collect baggage, check in again and pass security. Separate tickets generally do not provide the same missed-connection protection as a single through-ticket, so understand the risk before paying.</p>
+<h2>Travel connectivity: Ghost-SIM = eSIM</h2>
+<p>Ghost-SIM = eSIM. A compatible eSIM can help a traveller access mobile data after arrival without searching for a physical SIM shop. Check that the phone is unlocked, supports eSIM and is compatible with the provider's network in Italy and the destination country. Compare data allowance, validity period, hotspot rules and activation instructions. Install the profile using a reliable internet connection before departure when the provider recommends it, but follow the provider's own activation timing so that the plan does not start earlier than intended. Keep offline copies of tickets, hotel details and transfer instructions in case mobile coverage is temporarily unavailable.</p>
+<h2>Passenger rights and disruption records</h2>
+<p>EC 261/2004 may provide assistance, rerouting, reimbursement or compensation for eligible passengers when a flight is cancelled, denied boarding or delayed on arrival. The outcome depends on the journey, the length of the delay, the reason for the disruption and the applicable legal conditions. Compensation is not automatic, and extraordinary circumstances can affect eligibility. Read the official passenger-rights information and the airline's notice carefully rather than relying on a generic promise. Keep the booking reference, boarding pass, receipts, written airline messages and a note of the actual arrival time. Those records make it easier to describe what happened accurately if you later contact the airline or seek advice.</p>
+<p>For a Cagliari-based traveller, the practical checklist is straightforward: verify CAG and BGY on the ticket, confirm the operating carrier, compare the complete fare, plan the Sardinian airport transfer and save the booking documents. Sanluri residents should add the road journey to the calculation. Anyone continuing beyond Bergamo should check the onward connection before choosing a flight. These steps are useful whether the trip is for work, a family visit or a short break, and they reduce the chance of overlooking a cost that appears only after checkout.</p>
+<h2>Useful travel tools</h2>
+{_affiliate_list()}
+<p><strong>Editorial note:</strong> This is a route-planning draft based on the supplied queue record. It does not claim first-hand travel experience, a real-time fare check or a guarantee of flight operation. Confirm every time-sensitive detail with the airline, airport and transport operator. Human editorial review is required before publication.</p>
+<p><strong>Published:</strong> {html.escape(published)} · <strong>Updated:</strong> {html.escape(published)}</p>
+<p>Marker 787950 LOCKED · Make every journey feel effortless.</p>
+<p><a href="https://europa.eu/youreurope/citizens/travel/passenger-rights/air/index_en.htm" rel="noopener">Official EU air passenger rights guidance</a></p>
+<p><a href="{LIVE_APP}">TRTT VoyageHub Showroom</a></p>
+</article>"""
+    if _plain_word_count(content) < 400:
+        raise AssertionError(f"Draft content is too short: {_plain_word_count(content)} words; minimum is 400.")
+    required = [
+        "<img src=\"https://images.unsplash.com/",
+        "EC 261/2004",
+        "Ghost-SIM = eSIM",
+        "787950 LOCKED",
+        LIVE_APP,
+        "amzn.to/4shg6Hn?marker=787950",
+        "Sanluri",
+        "Sardinia",
+        "Cagliari",
+    ]
+    missing = [item for item in required if item not in content]
+    if missing:
+        raise AssertionError("Draft content missing required fields: " + ", ".join(missing))
+    return content
 
 
 def build():
     from google.oauth2.credentials import Credentials
     from googleapiclient.discovery import build as google_build
+
     credentials = Credentials(
-        token=None, refresh_token=os.environ["BLOGGER_REFRESH_TOKEN"],
+        token=None,
+        refresh_token=os.environ["BLOGGER_REFRESH_TOKEN"],
         token_uri="https://oauth2.googleapis.com/token",
         client_id=os.environ["BLOGGER_CLIENT_ID"],
         client_secret=os.environ["BLOGGER_CLIENT_SECRET"],
@@ -160,87 +207,146 @@ def build():
     return google_build("blogger", "v3", credentials=credentials, cache_discovery=False)
 
 
-def find_duplicate_post(service: Any, blog_id: str, title: str, content: str,
-                        topic_key: str | None = None) -> dict[str, Any] | None:
-    """Find matching LIVE or DRAFT posts; never publish an existing draft."""
-    token = None
+def find_duplicate_post(service: Any, blog_id: str, title: str) -> dict[str, Any] | None:
+    page_token = None
     while True:
-        params = {"blogId": blog_id, "fetchBodies": True, "maxResults": 100, "status": ["LIVE", "DRAFT"]}
-        if token:
-            params["pageToken"] = token
+        params: dict[str, Any] = {
+            "blogId": blog_id,
+            "fetchBodies": False,
+            "maxResults": 100,
+            "status": ["LIVE", "DRAFT"],
+        }
+        if page_token:
+            params["pageToken"] = page_token
         response = service.posts().list(**params).execute()
         for post in response.get("items", []):
             if str(post.get("title", "")).strip().casefold() == title.strip().casefold():
                 return post
-            if content.strip() and str(post.get("content", "")).strip() == content.strip():
-                return post
-        token = response.get("nextPageToken")
-        if not token:
+        page_token = response.get("nextPageToken")
+        if not page_token:
             return None
 
 
-def publish_or_confirm_live(service: Any, blog_id: str, title: str, content: str,
-                            topic_key: str | None = None) -> dict[str, Any]:
-    """Legacy function name; it can ONLY create or confirm DRAFT posts."""
-    existing = find_duplicate_post(service, blog_id, title, content, topic_key)
-    if existing:
-        status = str(existing.get("status", "")).upper()
-        if status == "DRAFT":
-            return existing
-        raise RuntimeError(f"Matching post is not a draft (status={status}); refusing to publish.")
-    post = service.posts().insert(
-        blogId=blog_id,
-        body={"kind": "blogger#post", "title": title, "content": content,
-              "labels": ["TRTT", "Travel Guide", "787950"]},
-        isDraft=True,
-    ).execute()
-    if str(post.get("status", "")).upper() != "DRAFT":
-        raise RuntimeError(f"Blogger did not confirm DRAFT status for {title!r}.")
-    return post
+def _confirmed_status(service: Any, blog_id: str, post: dict[str, Any]) -> str:
+    status = str(post.get("status", "")).upper()
+    if status:
+        return status
+    post_id = post.get("id")
+    if not post_id:
+        return ""
+    fetched = service.posts().get(blogId=blog_id, postId=post_id).execute()
+    return str(fetched.get("status", "")).upper()
 
 
-def run_batch() -> int:
-    path = Path(QUEUE_FILE)
-    if not path.exists():
-        raise RuntimeError(f"Daily route queue missing: {QUEUE_FILE}")
-    queue = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(queue, list) or len(queue) != BATCH_SIZE:
-        raise ValueError(f"{QUEUE_FILE} must contain exactly {BATCH_SIZE} route.")
-    item = queue[0]
-    city = str(item.get("city") or item.get("route") or "").strip() if isinstance(item, dict) else str(item).strip()
-    if not city:
-        raise ValueError("The daily route queue contains an empty route.")
-    today = publish_date()
-    date_label = today.strftime("%-d %b %Y")
-    key = history_key(city, date_label)
-    if key in load_history():
-        print(f"Draft already recorded for {key}; skipping this scheduled run.")
-        return 0
-    service = build()
-    title = f"{city} Travel Guide: {today.strftime('%-d %B %Y')} - TRTT"
-    content = build_content(city, date_label)
-    ghost_sim_esim_logic(city)
-    targets = [(os.environ["BLOGGER_BLOG_ID"].strip(), "TRTT News 24 BD"),
-               (os.environ["FLIGHTSCOUTPRO_BLOG_ID"].strip(), "FlightScoutPro")]
-    outcomes = []
-    for blog_id, blog_name in targets:
-        post = publish_or_confirm_live(service, blog_id, title, content, city)
-        if str(post.get("status", "")).upper() != "DRAFT":
-            raise RuntimeError(f"{blog_name} did not confirm DRAFT status.")
-        outcomes.append((blog_name, post.get("id"), post.get("editUrl") or post.get("url")))
-    if len(outcomes) != 2:
-        raise RuntimeError("Both Blogger blogs must confirm DRAFT status.")
-    for blog_name, post_id, editor in outcomes:
-        print(f"{blog_name}: DRAFT id={post_id} editor={editor or 'Open Blogger Posts > Drafts'}")
-    with Path(HISTORY_FILE).open("a", encoding="utf-8") as handle:
-        handle.write(key + "\n")
-    print(f"TRTT complete: 1 route; 2 Blogger DRAFT records confirmed for {city}.")
-    return 1
+def _create_or_recover_draft(service: Any, blog_id: str, title: str, content: str) -> tuple[dict[str, Any], bool]:
+    last_error: Exception | None = None
+    for attempt in range(1, 4):
+        existing = find_duplicate_post(service, blog_id, title)
+        if existing:
+            status = _confirmed_status(service, blog_id, existing)
+            if status == "DRAFT":
+                return existing, False
+            raise AssertionError(f"Matching Blogger post exists with status {status or 'UNKNOWN'}; refusing unsafe action.")
+        try:
+            response = service.posts().insert(
+                blogId=blog_id,
+                body={
+                    "kind": "blogger#post",
+                    "title": title,
+                    "content": content,
+                    "labels": ["TRTT", "Flight Guide", "Sardinia", "787950"],
+                },
+                isDraft=True,
+            ).execute()
+            if not response.get("id"):
+                raise AssertionError("Blogger insert response did not include a post id.")
+            status = _confirmed_status(service, blog_id, response)
+            if status != "DRAFT":
+                raise AssertionError(f"Blogger did not confirm DRAFT status; returned {status or 'UNKNOWN'}.")
+            return response, True
+        except AssertionError:
+            raise
+        except Exception as error:
+            last_error = error
+            print(f"Blogger insert attempt {attempt}/3 failed for blog {blog_id}: {error}")
+            if attempt < 3:
+                time.sleep(attempt)
+    raise AssertionError(f"Unable to create or verify Blogger draft for blog {blog_id}: {last_error}")
+
+
+def _require_configuration() -> tuple[str, str]:
+    required = (
+        "BLOGGER_BLOG_ID",
+        "FLIGHTSCOUTPRO_BLOG_ID",
+        "BLOGGER_CLIENT_ID",
+        "BLOGGER_CLIENT_SECRET",
+        "BLOGGER_REFRESH_TOKEN",
+    )
+    missing = [name for name in required if not os.environ.get(name, "").strip()]
+    if missing:
+        raise AssertionError("Missing required Blogger configuration: " + ", ".join(missing))
+    main_id = os.environ["BLOGGER_BLOG_ID"].strip()
+    partner_id = os.environ["FLIGHTSCOUTPRO_BLOG_ID"].strip()
+    if main_id == partner_id:
+        raise AssertionError("The two Blogger blog IDs must be different.")
+    return main_id, partner_id
 
 
 def main() -> int:
-    require_configuration()
-    return run_batch()
+    run_started = time.monotonic()
+    main_blog_id, partner_blog_id = _require_configuration()
+    queue, route = _load_today_route()
+    key = route_key(route)
+    history = load_history()
+    if route["date"] == publish_date().date().isoformat():
+        if key in history:
+            print("Republish allowed - today's date override")
+        else:
+            print("Today's queue route is eligible; history does not block it.")
+    title = (
+        f"{route['from']} to {route['to']} flight guide - "
+        f"{datetime.strptime(route['date'], '%Y-%m-%d').strftime('%-d %B %Y')} - TRTT"
+    )
+    content = build_content(route)
+    checks = {
+        "Image": "<img src=\"https://images.unsplash.com/" in content,
+        "EC 261/2004": "EC 261/2004" in content,
+        "787950 LOCKED": MARKER in content,
+        f"Vercel Link: {LIVE_APP}": LIVE_APP in content,
+        "Affiliate amzn.to/4shg6Hn?marker=787950": AFFILIATES["amazon"] in content,
+    }
+    for label, passed in checks.items():
+        print(f"{label}: {'YES' if passed else 'NO'}")
+        if not passed:
+            raise AssertionError(f"Required draft content check failed: {label}")
+    if _plain_word_count(content) < 400:
+        raise AssertionError("Draft content must contain at least 400 words.")
+    print(f"Queue: {queue['version']} | Batch size: {BATCH_SIZE} | isDraft=True")
+    service = build()
+    targets = [
+        (main_blog_id, "trttnews24bd"),
+        (partner_blog_id, "flightscoutpro"),
+    ]
+    results = []
+    newly_created = 0
+    for blog_id, blog_name in targets:
+        post, created = _create_or_recover_draft(service, blog_id, title, content)
+        if created:
+            newly_created += 1
+            print(f"SUCCESS: Draft created - {blog_name} - {route['from']} to {route['to']} - isDraft=True")
+        else:
+            print(f"SUCCESS: Existing draft confirmed - {blog_name} - {route['from']} to {route['to']} - isDraft=True")
+        print(f"Blogger post id: {post['id']} | Blog: {blog_name}")
+        results.append((blog_name, post["id"]))
+    if len(results) != 2:
+        raise AssertionError("No draft created - both Blogger targets were not confirmed.")
+    if newly_created == 0:
+        raise AssertionError("No draft created - both dated drafts already existed; refusing a false PASS.")
+    append_history(key)
+    elapsed = time.monotonic() - run_started
+    print(f"Draft run elapsed: {elapsed:.2f}s")
+    print(f"CONFIRMED: {len(results)} Blogger DRAFT records; newly created this run: {newly_created}; route: {key}")
+    return 0
 
 
 if __name__ == "__main__":

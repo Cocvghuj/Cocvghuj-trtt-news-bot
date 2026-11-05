@@ -32,7 +32,24 @@ jobs:
       - name: Compile and validate draft content
         run: |
           python -m py_compile trtt_787950_master.py scripts/publish_news.py
-          python -c "from trtt_787950_master import build_content; s=build_content('Rome to Cagliari'); required=['ghost-esim','787950','photo-1501785888041-af3ef285b470','aviasales.tpo.lv','klook.tpo.lv','airalo.tpo.lv','gettransfer.tpo.lv','amzn.to/4shg6Hn','Live App:','Make every journey feel effortless.','EC Regulation 261/2004','Published:','Updated:','Sanluri']; missing=[x for x in required if x not in s]; assert not missing, missing; assert s.index('Live App:') > s.index('Marker 787950 Locked')"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from trtt_787950_master import build_content, _plain_word_count
+          queue = json.loads(Path("news/queue/latest.json").read_text(encoding="utf-8"))
+          assert queue["batch_size"] == 1 and queue["isDraft"] is True
+          assert len(queue["routes"]) == 1
+          route = queue["routes"][0]
+          assert route["date"] == "2026-11-06" and route["isDraft"] is True
+          content = build_content(route, "6 November 2026")
+          assert "EC 261/2004" in content and "EC Regulation 261/2004" not in content
+          assert _plain_word_count(content) >= 400
+          assert "<img src=\"https://images.unsplash.com/" in content
+          assert "787950 LOCKED" in content
+          assert "TRTT VoyageHub Showroom" in content
+          assert "amzn.to/4shg6Hn?marker=787950" in content
+          print("Draft content validation passed: one dated route, 400+ words, image, rights, marker, showroom and affiliate tracking.")
+          PY
       - name: Require both Blogger accounts
         env:
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID || vars.BLOGGER_BLOG_ID }}
