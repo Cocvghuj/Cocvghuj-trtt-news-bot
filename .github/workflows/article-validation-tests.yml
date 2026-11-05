@@ -91,6 +91,9 @@ jobs:
       - name: Verify affiliate assets in Vercel output
         run: |
           test -s dist/index.html
+          grep -Fq 'TRTT VOYAGEHUB' dist/index.html
+          grep -Fq '787950 LOCKED' dist/index.html
+          grep -Fq 'https://cocvghuj-trtt-news-bot.vercel.app' dist/index.html
           test -s dist/super-app.html
           test -s dist/affiliate-services.json
           test -s dist/affiliate-links.js
