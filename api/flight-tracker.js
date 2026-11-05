@@ -1,30 +1,19 @@
-// TRTT Vercel API: Flight Tracker
-// Supports /api/flight-tracker?m=787950&from=JFK&to=ROM
-module.exports = async function handler(req, res) {
+// Sample endpoint only; it does not query live fares.
+module.exports = function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
+  res.setHeader("Cache-Control", "no-store");
+  if (req.method !== "GET") return res.status(405).json({ success: false, error: "Method not allowed" });
   const query = req.query || {};
-  const from = query.from || "JFK";
-  const to = query.to || "ROM";
-  const marker = query.m || "787950";
-
+  const from = String(query.from || "JFK");
+  const to = String(query.to || "ROM");
   return res.status(200).json({
     success: true,
-    route: `${from} → ${to}`,
-    from: String(from),
-    to: String(to),
-    price: "$549",
+    dataMode: "sample",
+    liveAvailability: false,
+    from,
+    to,
+    samplePrice: "$549",
     currency: "USD",
-    airline: "Biman Bangladesh / ITA Airways",
-    marker: String(marker),
-    affiliateUrl: `https://aviasales.tp.st/Fb8U9yav?marker=${marker}&sub_id=flight_tracker_${from}_${to}`,
-    badge: "Best Price",
-    status: "Best Price Available",
-    updatedAt: new Date().toISOString()
+    message: "Illustrative sample only. Check the flight-search page for current options."
   });
 };
