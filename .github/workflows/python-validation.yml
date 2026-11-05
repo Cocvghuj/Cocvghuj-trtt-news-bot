@@ -38,8 +38,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Compile TRTT Python entry points
-        run: python -m py_compile trtt_787950_master.py scripts/publish_news.py api/trtt_787950_master.py trtt_auto_google_index.py
-      - name: Compile TRTT Python entry points
-        run: python -m py_compile trtt_787950_master.py scripts/publish_news.py api/trtt_787950_master.py trtt_auto_google_index.py
+        run: python -m py_compile trtt_787950_master.py scripts/publish_news.py scripts/sync_blogger_content.py api/trtt_787950_master.py trtt_auto_google_index.py
       - name: Run unit tests
         run: python -m unittest discover -s tests -v

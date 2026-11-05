@@ -19,6 +19,13 @@ class DraftOnlyPolicyTests(unittest.TestCase):
         self.assertNotIn(".publish(", source)
         self.assertIn("engine.main()", source)
 
+    def test_legacy_sync_script_is_draft_only(self):
+        source = Path("scripts/sync_blogger_content.py").read_text(encoding="utf-8")
+        self.assertIn("isDraft=True", source)
+        self.assertNotRegex(source, r"isDraft\\s*=\\s*False")
+        self.assertNotIn("publish=True", source)
+        self.assertNotIn("resource.delete(", source)
+
     def test_content_contains_editorial_requirements_and_footer_order(self):
         content = engine.build_content("Rome to Cagliari", "5 November 2026")
         for required in (
@@ -26,7 +33,7 @@ class DraftOnlyPolicyTests(unittest.TestCase):
             "aviasales.tp.st", "klook.tp.st", "airalo.tp.st",
             "gettransfer.tp.st", "amzn.to/4shg6Hn", "EC 261/2004",
             "Published:", "Updated:", "Sanluri, Sardinia, Italy",
-            "Live App:", "Make every journey feel effortless.",
+            "Live App:", "Make every journey feel effortless.", "editorial planning guide",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, content)
