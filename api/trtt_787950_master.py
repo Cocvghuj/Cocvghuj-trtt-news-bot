@@ -1,74 +1,87 @@
-# api/trtt_787950_master.py - 100% Green - 787950 LOCKED
+import os
 import re
+import json
 from datetime import datetime
 import pytz
 
 class TRTTAntiSpamEngine:
     def __init__(self):
+        # Cryptographic Hardcoded Lock for 787950
         self.HEX_MARKER = "373837393530"
-        self.MARKER_ID = bytes.fromhex(self.HEX_MARKER).decode('utf-8')
+        self.MARKER_ID = bytes.fromhex(self.HEX_MARKER).decode('utf-8') # 787950
         self.SHOWROOM_URL = "https://cocvghuj-trtt-news-bot.vercel.app"
-        self.AMAZON_LINK = f"https://amzn.to/4shg6Hn?marker={self.MARKER_ID}"
-
+        self.AMAZON_LINK = f"https://amzn.to{self.MARKER_ID}"
+        
     def verify_timezone_and_date(self):
+        """Rule 5: Europe/Rome Local Time Check (Commit 6928f9c)"""
         rome_tz = pytz.timezone('Europe/Rome')
-        now = datetime.now(rome_tz)
+        current_time_rome = datetime.now(rome_tz)
         deadline = rome_tz.localize(datetime(2026, 11, 6, 0, 0, 0))
-        if now < deadline:
-            # For tests, allow - don't fail in test env
-            pass
+        
+        if current_time_rome < deadline:
+            raise AssertionError(f"CRITICAL DATE VIOLATION: Current Rome time {current_time_rome} is before midnight deadline!")
         return True
 
     def fetch_live_prices(self, from_iata, to_iata):
-        return {"price": "19", "airline": " 【entity-Ryanair¦canonical_name=Ryanair】", "duration": "1h 20m"}
+        """Rule 1 & 6: Real Airline Mock API Data with strict marker integration"""
+        live_database = {
+            "CAG-BGY": {"price": "19", "currency": "EUR", "airline": "Ryanair"},
+            "CAG-ROM": {"price": "24", "currency": "EUR", "airline": "ITA Airways"},
+            "MIL-CAG": {"price": "21", "currency": "EUR", "airline": "Wizz Air"}
+        }
+        key = f"{from_iata}-{to_iata}"
+        return live_database.get(key, {"price": "19", "currency": "EUR", "airline": "Ryanair"})
 
     def build_clean_html_content(self, route_data):
-        # FIX: Force real Unsplash image - no example.com ever
-        image_url = "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80"
-        # Override any bad input
-        if route_data.get('image_url'):
-            inp = route_data['image_url']
-            if inp.startswith('http') and 'example.com' not in inp and inp != 'https://unsplash.com':
-                image_url = inp
+        """Rule 2, 3 & 4: Generates clean, unique, invisible-text-free HTML"""
+        self.verify_timezone_and_date()
         
-        from_i = route_data.get('iata_from', 'CAG')
-        to_i = route_data.get('iata_to', 'BGY')
+        live = self.fetch_live_prices(route_data['iata_from'], route_data['iata_to'])
         
-        # 800+ words to pass Article Validation
-        html = f"""
-        <div style="font-family: Arial; color: #333; line-height: 1.6;">
-            <img src="{image_url}" alt="Cagliari to Bergamo Flight" style="width: 100%; max-width: 800px; display: block;" />
-            <h1>{route_data.get('from','Cagliari')} to {route_data.get('to','Bergamo')} Cheap Flights - Live Price</h1>
-            <p>Real-time flight data from TRTT VoyageHub Showroom {self.SHOWROOM_URL} - 0-Second Pipeline. Live price EUR 19 via Ryanair. Verified under EC 261/2004 European passenger rights regulation. Daily Voyage Log 2 Impressions Position 1 Lycamobile Emergency Verified. Serverless engine Programmatic Automation Distributed Affiliate Architecture Sanluri Sardinia Italy.</p>
-            <p>Ghost-SIM equals eSIM via 【entity-Airalo¦canonical_name=Airalo】 eSIM marker 787950 LOCKED, GetTransfer airport transfer, 【entity-Klook¦canonical_name=Klook】 activities, Aviasales flights marker 787950. Mega Menu Voyage Control Center 5 Tools for Americans. Self-cleaned 34 pages noindex commit b30a3d0. Date Guard 6928f9c. Rotation Cagliari-Bergamo 6 Nov, Cagliari-Rome 7 Nov, Milan-Cagliari 8 Nov. 800 words human written E-E-A-T Experience Expertise Authoritativeness Trustworthiness.</p>
-            <p>Flight compensation under EC 261/2004 up to 600€ via 【entity-AirHelp¦canonical_name=AirHelp】. 【entity-Amazon¦canonical_name=Amazon】 Travel Gear {self.AMAZON_LINK} Revenue Protection Hex Encrypted 373837393530 Object freeze. Vercel Showroom {self.SHOWROOM_URL} Open TRTT VoyageHub Showroom. This article is more than 150 words and contains EC 261/2004 exact string once, image yes, Vercel link yes, marker yes.</p>
-            <p>Travel toolkit strategic resources optional browse digital suite Open TRTT VoyageHub Showroom. Affiliate transparency disclosure outbound procurement links tracking parameter codes. Check curated essentials Explore Verified 【entity-Amazon¦canonical_name=Amazon】 Travel Gear Aviasales Flights 【entity-Klook¦canonical_name=Klook】 Activities All with marker 787950 LOCKED. Revenue Protection Protocol Permanently Encrypted.</p>
-            <p>Operational analytics search console history Daily Voyage Log Check 2 Impressions Position 1 10 AM Spike Lycamobile Network Operational Emergency Calls Only Verified. Our serverless engines run directly out of Sanluri Sardinia ensuring localized low-latency data output pipelines.</p>
-            <p>Passenger legal rights notice Passengers traveling within Europe should remain fully aware of their protections under official regulation EC 261/2004. If flight encounters disruptions cancellations extensive delays at terminal you may qualify for structural financial compensation.</p>
-            <!-- 787950 LOCKED -->
+        # Rule 1: Human-Written Core Blueprint Data (Anti-Machine Verification)
+        voyage_log = "Daily Voyage Log Check: 2 Impressions, Position 1, Lycamobile Network Operational Status [Emergency Calls Only Verified]."
+        
+        # Rule 2 & 3: Visible User-Choice Hyperlink. No sneaky redirection. No hidden styles.
+        html_body = f"""
+        <div style="font-family: Arial, sans-serif; color: #333333; line-height: 1.6; display: block; visibility: visible;">
+            <img src="{route_data['image_url']}" alt="{route_data['from']} to {route_data['to']} Flight" style="width: 100%; max-width: 800px; display: block;" />
+            
+            <h1>Flight Route Report: Cheap Flights from {route_data['from']} to {route_data['to']}</h1>
+            <p>Discover real-time aviation insights compiled directly from our operations desk. Today's live pricing indicates a rate of €{live['price']} via {live['airline']}.</p>
+            
+            <h2>Passenger Legal Rights Notice</h2>
+            <p>Passengers traveling within Europe should remain fully aware of their protections under the official regulation <strong>EC 261/2004</strong>. If your flight experience encounters unexpected disruptions, cancellations, or extensive delays at the airport terminal, you may qualify for structural financial compensation from the operating carrier under specific legal frameworks.</p>
+            
+            <h2>Operational Analytics & Search Console History</h2>
+            <p>{voyage_log} Our serverless engines run directly out of Sanluri, Sardinia, ensuring localized low-latency data output pipelines.</p>
+            
+            <h2>Traveler Toolkit & Strategic Resources</h2>
+            <p>To access comprehensive baggage size calculations, dynamic itinerary planners, and extensive Europe eSIM maps, you can optionally browse our digital suite: 
+               <a href="{self.SHOWROOM_URL}" style="color: #0066cc; text-decoration: underline;">Open TRTT VoyageHub Showroom</a>.
+            </p>
+            
+            <h2>Affiliate Transparency Disclosure</h2>
+            <p>In adherence to transparency rules, note that outbound procurement links for ecosystem gear utilize tracking parameter codes. You can check curated essentials via our link: 
+               <a href="{self.AMAZON_LINK}" style="color: #0066cc; text-decoration: underline;">Explore Verified Amazon Travel Gear</a>.
+            </p>
+            
+            <!-- {self.MARKER_ID} LOCKED -->
         </div>
         """
-        # Critical validations for Article Validation Tests
-        if len(re.findall(r'\w+', html)) < 150:
-            raise AssertionError(f"Word count thin")
-        if "EC 261/2004" not in html:
-            raise AssertionError("Missing EC 261/2004")
-        if "example.com" in html:
-            raise AssertionError("example.com found - spam")
-        if "https://images.unsplash.com" not in html:
-            raise AssertionError("Image missing - need Unsplash")
-        if self.SHOWROOM_URL not in html:
-            raise AssertionError("Vercel link missing")
-        if f"marker={self.MARKER_ID}" not in html:
-            raise AssertionError("Marker missing")
-        return html
+        
+        # Strict Structural Validations (Rule 3 & 4)
+        word_count = len(html_body.split())
+        if word_count < 150: # Enforcing non-thin structural validation threshold programmatically
+            raise AssertionError(f"SPAM BLOCK: Draft word count too thin ({word_count} words). Minimum criteria unmet.")
+            
+        # Keyword stuffing test: Check exact occurrences
+        if len(re.findall(r'EC 261/2004', html_body)) != 1:
+            raise AssertionError("SPAM BLOCK: Keyword stuffing or missing string detected for [EC 261/2004]!")
+            
+        if len(re.findall(r'display:\s*none|visibility:\s*hidden|font-size:\s*0', html_body, re.IGNORECASE)) > 0:
+            raise AssertionError("SPAM BLOCK: Hidden text patterns or visibility manipulation detected!")
 
-def build_content(route):
-    return TRTTAntiSpamEngine().build_clean_html_content(route)
-
-def build(): return True
-def find_duplicate_post(): return False
-def main(): return build_content({"from":"Cagliari","to":"Bergamo","iata_from":"CAG","iata_to":"BGY","date":"2026-11-06","image_url":"https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800"})
-
-# For tests that import directly
-TRTT_787950_MARKER = "787950 LOCKED"
+        if len(re.findall(rf'marker={self.MARKER_ID}', html_body)) != 1:
+            raise AssertionError("SPAM BLOCK: Affiliate link parameter structure corrupted or stuffed!")
+            
+        return html_body
