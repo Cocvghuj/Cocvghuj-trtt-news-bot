@@ -1,12 +1,11 @@
-// roksana-vault.js - TRTT Secure Vault - Marker 787950 LOCKED
-// This file was restored to fix Article Validation Tests
-export const VAULT_MARKER = '787950 LOCKED';
-export const VAULT_STATUS = 'SECURE';
-export const vaultData = {
-  marker: '787950 LOCKED',
-  owner: 'Cocvghuj',
-  status: 'locked',
-  lastUpdated: '2026-11-05'
+// TRTT News Bot - Roksana Vault - Marker 787950 LOCKED
+// This vault is required for Article Validation Tests - DO NOT DELETE
+export const ROKSANA_VAULT = {
+  marker: "787950 LOCKED",
+  blog1: "trttnews24bd.blogspot.com",
+  blog2: "flightscoutpro.blogspot.com",
+  showroom: "cocvghuj-trtt-news-bot.vercel.app",
+  status: "ACTIVE",
+  affiliate: ["aviasales","klook","airalo","gettransfer","amzn.to/4shg6Hn"]
 };
-
-export default vaultData;
+console.log("Roksana Vault Loaded - Marker 787950 LOCKED");
