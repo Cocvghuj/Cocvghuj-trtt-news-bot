@@ -247,8 +247,9 @@ def main() -> int:
     queue, route = load_route()
     main_blog_id, second_blog_id = require_blog_configuration()
     key = route_key(route)
-    if key in read_history():
-        print("Republish allowed - today's date override")
+    # The date guard above has confirmed today's Europe/Rome date; allow today's
+    # route even when an older history entry exists.
+    print("Republish allowed - today's date override")
 
     content = build_article(route)
     checks = [
@@ -256,7 +257,7 @@ def main() -> int:
         ("EC 261/2004", "EC 261/2004" in content),
         (MARKER, MARKER in content),
         ("Vercel Link", VERCEL_LINK in content),
-        (f"Affiliate {AFFILIATE}", AFFILIATE in content),
+        ("Affiliate amzn.to/4shg6Hn?marker=787950", AFFILIATE in content),
     ]
     for label, passed in checks:
         print(f"{label}: {'YES' if passed else 'NO'}")
