@@ -29,37 +29,6 @@
     status.classList.toggle("is-good", !!good);
     status.classList.toggle("is-bad", !good);
   }
-  function checkApi() {
-    var query = new URLSearchParams({ m: MARKER, src: "health", tool: "menu", t: String(Date.now()) });
-    fetch(BASE + "/api/vault-click?" + query.toString(), { method: "GET", mode: "cors", cache: "no-store" })
-      .then(function (response) {
-        if (!response.ok) throw new Error("HTTP " + response.status);
-        return response.json();
-      })
-      .then(function (data) {
-        if (!data || data.success !== true) throw new Error("Invalid API response");
-        setStatus("Vercel API online", true);
-        addLog("Vercel API check passed (HTTP 200).");
-      })
-      .catch(function (error) {
-        setStatus("Vercel API unavailable", false);
-        addLog("Vercel API check failed: " + error.message);
-      });
-  }
-  function track(eventName, toolId) {
-    var query = new URLSearchParams({ m: MARKER, src: eventName, tool: toolId || "menu", t: String(Date.now()) });
-    fetch(BASE + "/api/vault-click?" + query.toString(), {
-      method: "GET", mode: "cors", cache: "no-store", keepalive: true
-    }).then(function (response) {
-      if (!response.ok) throw new Error("HTTP " + response.status);
-      return response.json();
-    }).then(function (data) {
-      if (!data || data.success !== true) throw new Error("API rejected event");
-      addLog("Tracking endpoint acknowledged the request; persistent analytics are not configured.");
-    }).catch(function (error) {
-      addLog("Tracking request failed: " + error.message);
-    });
-  }
   function loadTool(tool) {
     if (!tool || !frame) return;
     title.textContent = tool.icon + " " + tool.name;
@@ -69,7 +38,7 @@
     openLink.href = BASE + tool.page;
     openLink.hidden = false;
     addLog("Opening project page: " + tool.page);
-    track("tool_select", tool.id);
+
     overlay.querySelectorAll("[data-tool]").forEach(function (button) {
       var active = button.getAttribute("data-tool") === tool.id;
       button.classList.toggle("active", active);
@@ -113,7 +82,7 @@
     overlay.id = "trtt-vercel-overlay";
     overlay.setAttribute("aria-hidden", "true");
     overlay.innerHTML =
-      '<div class="trtt-top"><div><div class="trtt-brand">TRTT NEWS • TRAVEL TOOLS</div><div style="font-size:11px;color:#cbd5e1">Blogger menu connected to Vercel</div></div><div style="display:flex;align-items:center;gap:8px"><span class="trtt-status" id="trtt-vercel-status">Checking API…</span><button type="button" class="trtt-close" id="trtt-vercel-close" aria-label="Close menu">✕</button></div></div>' +
+      '<div class="trtt-top"><div><div class="trtt-brand">TRTT NEWS • TRAVEL TOOLS</div><div style="font-size:11px;color:#cbd5e1">Blogger menu connected to Vercel</div></div><div style="display:flex;align-items:center;gap:8px"><span class="trtt-status" id="trtt-vercel-status">Menu ready</span><button type="button" class="trtt-close" id="trtt-vercel-close" aria-label="Close menu">✕</button></div></div>' +
       '<div class="trtt-body"><section class="trtt-panel"><b>Available tools</b><div class="trtt-tools" id="trtt-vercel-tools"></div><p style="font-size:11px;color:#b7c2d5">Only existing project pages are listed.</p><a class="trtt-link" href="' + TELEGRAM + '" target="_blank" rel="noopener noreferrer">Join TRTT Telegram ↗</a></section>' +
       '<section class="trtt-panel trtt-stage"><div class="trtt-stage-head"><b id="trtt-vercel-title">Choose a tool</b><a class="trtt-link" id="trtt-vercel-open" href="#" target="_blank" rel="noopener noreferrer" hidden>Open separately ↗</a></div><iframe class="trtt-iframe" id="trtt-vercel-iframe" title="TRTT travel tool" src="about:blank" loading="lazy"></iframe></section>' +
       '<section class="trtt-panel"><b>Connection log</b><div class="trtt-log" id="trtt-vercel-log" aria-live="polite"></div></section></div>';
@@ -123,6 +92,8 @@
     log = document.getElementById("trtt-vercel-log");
     title = document.getElementById("trtt-vercel-title");
     openLink = document.getElementById("trtt-vercel-open");
+    setStatus("Menu ready", true);
+    addLog("Static menu loaded. No API or vault connection is required.");
 
     var toolContainer = document.getElementById("trtt-vercel-tools");
     TOOLS.forEach(function (tool) {
@@ -145,7 +116,7 @@
     });
     document.getElementById("trtt-vercel-close").addEventListener("click", closeMenu);
     overlay.addEventListener("click", function (event) { if (event.target === overlay) closeMenu(); });
-    checkApi();
+
   }
   function addLauncher() {
     if (document.getElementById("trtt-vercel-fab")) return;
@@ -158,8 +129,7 @@
       overlay.classList.add("open");
       overlay.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
-      track("menu_open", "menu");
-      checkApi();
+
       if (!frame.src || frame.src === "about:blank") loadTool(TOOLS[0]);
     });
     document.body.appendChild(launcher);
