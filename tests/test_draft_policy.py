@@ -22,7 +22,8 @@ class DraftOnlyPolicyTests(unittest.TestCase):
     def test_legacy_sync_script_is_draft_only(self):
         source = Path("scripts/sync_blogger_content.py").read_text(encoding="utf-8")
         self.assertIn("isDraft=True", source)
-        self.assertNotRegex(source, r"isDraft\\s*=\\s*False")
+        self.assertNotIn("isDraft=False", source)
+        self.assertNotIn("isDraft = False", source)
         self.assertNotIn("publish=True", source)
         self.assertNotIn("resource.delete(", source)
 
