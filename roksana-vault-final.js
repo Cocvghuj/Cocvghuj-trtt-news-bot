@@ -1,6 +1,9 @@
 // TRTT News Bot - Roksana Vault FINAL - Marker 787950 LOCKED
 export const ROKSANA_VAULT_FINAL = {
   marker: "787950 LOCKED",
+  version: "FINAL",
+  blog1: "trttnews24bd.blogspot.com",
+  blog2: "flightscoutpro.blogspot.com",
   showroom: "cocvghuj-trtt-news-bot.vercel.app",
   affiliate: {
     marker: 787950,
