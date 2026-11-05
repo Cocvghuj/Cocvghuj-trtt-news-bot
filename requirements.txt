@@ -6,3 +6,5 @@
  google-auth-oauthlib
  Markdown>=3.6,<4
  PyYAML>=6.0,<7
+feedparser
+beautifulsoup4
