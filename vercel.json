@@ -17,6 +17,20 @@
   "functions": {
     "api/answer.js": {
       "maxDuration": 30
+    },
+    "api/trtt_787950_master.py": {
+      "runtime": "@vercel/python@3.9.0",
+      "maxDuration": 30
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
