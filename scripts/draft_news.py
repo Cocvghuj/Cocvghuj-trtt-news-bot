@@ -16,8 +16,8 @@ def require_latin_english(value: str, field: str):
 def validate_metadata(meta: dict):
     # GOOGLE STANDARD
     if not isinstance(meta, dict): raise ValueError("Metadata must be object")
-    title = str(meta.get("title","")).strip()
-    desc = str(meta.get("search_description","")).strip()
+    title = str(meta.get("title", "")).strip()
+    desc = str(meta.get("search_description", "")).strip()
     if not 1 <= len(title) <= 100: raise ValueError("Title must be 1-100 chars")
     if not 120 <= len(desc) <= 160: raise ValueError("Search description must be 120-160 chars")
     require_latin_english(title, "Title")
@@ -53,7 +53,7 @@ def add_vercel_reference(content: str, url: str):
     if url in content:
         return content
     subid = "trtt_lock_it"
-    block = f'''<aside class="trtt-voyagehub-reference glassmorphism" style="background:rgba(255,255,255,0.1);backdrop-filter:blur(20px);border-radius:20px;padding:15px;border:1px solid rgba(255,255,255,0.2)">
+    block = f'''<aside class="trtt-voyagehub-reference glassmorphism" style="background:rgba(255,255,255,0.1);backdrop-filter:blur(20px);border-radius:20px;padding:15px;border:1px solid rgba(255,255,255,0.2);margin:20px 0;">
 <h2>Plan Your Trip From Sanluri - Real Italian Experience</h2>
 <p><strong>Google E-E-A-T:</strong> I live in Sanluri, Sardinia. I travel from Cagliari Airport CAG. This is real experience.</p>
 <script type="application/ld+json">{{"@context":"https://schema.org","@type":"Article","author":{{"@type":"Person","name":"Roksana Nilla"}}}}</script>
@@ -62,17 +62,17 @@ def add_vercel_reference(content: str, url: str):
 <li>🚕 <a href="https://kiwitaxi.tp.st/{FIXED}?marker={MARKER}&subid={subid}">Kiwitaxi {FIXED} FIXED - CAG to Sanluri - No tl bug</a></li>
 <li>📱 <a href="https://airalo.tp.st/ZZoQC7Mz?marker={MARKER}&subid={subid}">Airalo eSIM Italy</a> | <a href="https://saily.tp.st/ssekmS4X?marker={MARKER}&subid={subid}">Saily Backup</a></li>
 <li>🏨 Real Hotel: <a href="https://www.hotel-bernini.it" target="_blank">hotel-bernini.it</a> - Real .it - 3-5% vs Booking 20% - TRTTVoyageHub ONE Vision</li>
-<li>🎫 <a href="https://klook.tp.st/TWKnemhz?marker={MARKER}&subid={subid}">Klook</a> | <a href="https://tiqets.tp.st/bnx8pnF6?marker={MARKER}&subid={subid}">Tiqets</a> | <a href="https://airhelp.tp.st/3ItXS0E4?marker={MARKER}&subid={subid}">AirHelp</a></li>
+<li>🎫 <a href="https://klook.tp.st/TWKnemhz?marker={MARKER}&subid={subid}">Klook</a> | <a href="https://tiqets.tp.st/bnx8pnF6?marker={MARKER}&subid={subid}">Tiqets</a> | <a href="https://airhelp.tp.st/ZZoQC7Mz?marker={MARKER}&subid={subid}">AirHelp</a></li>
 </ul>
-<p><small>Live Reference: {url}/?marker={MARKER} | GitHub: github.com/Cocvghuj/Cocvghuj-trtt-news-bot | GDPR: trtt_cookie_consent_esim | Open Source | #webdesign #uidesign #glassmorphism #TRTT #traveltech #lumina</small></p>
+<p><small>Live Reference: {url}/?marker={MARKER} | GitHub: github.com/Cocvghuj/Cocvghuj-trtt-news-bot | GDPR: trtt_cookie_consent_esim | Open Source | #webdesign #uidesign #glassmorphism #TRTT #travel</small></p>
 </aside>
 <!-- Vercel Ref: {url} -->'''
     return content.rstrip() + "\n\n" + block
 
 def main():
     import os, sys, json
-    topic = os.environ.get("TRTT_NEWS_TOPIC","").strip()
-    source_raw = os.environ.get("TRTT_OFFICIAL_SOURCE_URL","").strip()
+    topic = os.environ.get("TRTT_NEWS_TOPIC", "").strip()
+    source_raw = os.environ.get("TRTT_OFFICIAL_SOURCE_URL", "").strip()
     pwa_url = os.environ.get("PWA_REFERENCE_URL", DEFAULT_PWA_URL).strip()
     if not topic:
         topic = "Cagliari to Rome Cheap Flights Today - Sanluri Travel News"
@@ -85,7 +85,7 @@ def main():
     require_latin_english(topic, "News topic")
     category = "Current Travel News"
     selected = {
-        "topic": f"{topic}. Official source: {source_url}. Include PRO LOCKED Marker {MARKER} tp.st ONLY {FIXED} FIXED trtt_lock_it Real hotel-bernini.it Glassmorphism Vercel {pwa_url}",
+        "topic": f"{topic}. Official source: {source_url}. Include PRO LOCKED Marker {MARKER} tp.st ONLY {FIXED} FIXED trtt_lock_it Real hotel-bernini.com Glassmorphism Vercel {pwa_url}",
         "category": category,
         "default_labels": ["Travel News", "Europe Travel", "FlightScoutPro", "Sanluri", "TRTT"]
     }
@@ -103,21 +103,18 @@ def main():
                 result = dict(result)
                 if "meta" in result and isinstance(result["meta"], dict):
                     result["meta"] = validate_metadata(result.get("meta"))
-                content = str(result.get("content",""))
+                content = str(result.get("content", ""))
                 result["content"] = add_vercel_reference(content, pwa_url)
                 return result
             engine.generate_article_with_metadata = guarded
         try:
             engine.main()
-        except RuntimeError as re:
-            print(f"Notice: {re}")
-            return 0
         finally:
             if orig_gen:
                 engine.generate_article_with_metadata = orig_gen
-    except Exception as e:
-        print(f"Draft news validated: {e}")
-        return 0
+    except Exception as exc:
+        print(f"News draft workflow failed: {exc}", file=sys.stderr)
+        raise
     return 0
 
 if __name__ == "__main__":
