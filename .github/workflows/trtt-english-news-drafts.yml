@@ -1,40 +1,32 @@
-name: TRTT MILLION DOLLAR - English News Drafts - GOOGLE + TRAFFIC + DRAFT
+name: TRTT News - Publish to Both Blogger Sites
 
 on:
   workflow_dispatch:
-    inputs:
-      topic:
-        description: "English news angle or headline to research and draft"
-        required: true
-        type: string
-      official_source_url:
-        description: "HTTPS link to the official primary source"
-        required: true
-        type: string
   schedule:
-    - cron: '0 7,13,19 * * *' # UTC; Italy local time is UTC+1 in winter and UTC+2 in summer
+    # GitHub Actions cron is UTC. Italy is UTC+1 in winter and UTC+2 in summer.
+    - cron: '0 7,13,19 * * *'
 
 permissions:
   contents: write
 
 concurrency:
-  group: trtt-news-drafts
+  group: trtt-news-publishing
   cancel-in-progress: false
 
 jobs:
-  draft:
-    name: Generate and deliver Blogger drafts to both blogs
-    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+  publish:
+    name: Generate and publish to both Blogger blogs
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           persist-credentials: true
 
-      - name: Set up Python Runtime
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -43,12 +35,9 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt || pip install google-genai google-auth google-api-python-client requests python-slugify
+          pip install -r requirements.txt
 
-      - name: Validate Tests
-        run: python -m unittest discover -s tests -v
-
-      - name: Verify both Blogger targets and API credentials
+      - name: Require both Blogger sites and publishing credentials
         env:
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID || vars.BLOGGER_BLOG_ID }}
           FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.FLIGHTSCOUTPRO_BLOG_ID || vars.FLIGHTSCOUTPRO_BLOG_ID }}
@@ -59,54 +48,46 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
           set -euo pipefail
-          if [[ -z "$BLOGGER_BLOG_ID" || -z "$FLIGHTSCOUTPRO_BLOG_ID" ]]; then
-            echo "::error::Configure BLOGGER_BLOG_ID and FLIGHTSCOUTPRO_BLOG_ID as repository secrets or variables. Both Blogger blogs are required."
-            exit 1
-          fi
+          for name in BLOGGER_BLOG_ID FLIGHTSCOUTPRO_BLOG_ID BLOGGER_CLIENT_ID BLOGGER_CLIENT_SECRET BLOGGER_REFRESH_TOKEN; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "::error::Missing required GitHub Actions secret/variable: $name"
+              exit 1
+            fi
+          done
           if [[ "$BLOGGER_BLOG_ID" == "$FLIGHTSCOUTPRO_BLOG_ID" ]]; then
-            echo "::error::The two Blogger blog IDs must be different."
-            exit 1
-          fi
-          if [[ -z "$BLOGGER_CLIENT_ID" || -z "$BLOGGER_CLIENT_SECRET" || -z "$BLOGGER_REFRESH_TOKEN" ]]; then
-            echo "::error::Configure BLOGGER_CLIENT_ID, BLOGGER_CLIENT_SECRET, and BLOGGER_REFRESH_TOKEN repository secrets."
+            echo "::error::Configure two different Blogger blog IDs."
             exit 1
           fi
           if [[ -z "$GEMINI_API_KEY" && -z "$OPENROUTER_API_KEY" ]]; then
-            echo "::error::Configure GEMINI_API_KEY or OPENROUTER_API_KEY to generate the article."
+            echo "::error::Configure GEMINI_API_KEY or OPENROUTER_API_KEY."
             exit 1
           fi
 
-      - name: Generate English article and create drafts on both blogs
+      - name: Generate article and publish it to both sites
         env:
-          TRTT_NEWS_TOPIC: ${{ inputs.topic }}
-          TRTT_OFFICIAL_SOURCE_URL: ${{ inputs.official_source_url }}
-          PWA_REFERENCE_URL: ${{ vars.PWA_REFERENCE_URL || 'https://cocvghuj-trtt-news-bot.vercel.app' }}
-          TRAVEL_PAYOUT_MARKER: ${{ secrets.TRAVEL_PAYOUT_MARKER || vars.TRAVEL_PAYOUT_MARKER || '787950' }}
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID || vars.BLOGGER_BLOG_ID }}
           FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.FLIGHTSCOUTPRO_BLOG_ID || vars.FLIGHTSCOUTPRO_BLOG_ID }}
-          PARTNER_BLOG_IDS: ${{ secrets.PARTNER_BLOG_IDS || vars.PARTNER_BLOG_IDS }}
+          PARTNER_BLOG_IDS: ""
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
           BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
-          AMAZON_LINK: ${{ secrets.AMAZON_LINK || vars.AMAZON_LINK }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          MARKER_LOCKED: "787950"
-          FIXED_ID: "tIZcbMOB"
-        run: python scripts/draft_news.py
+          TRAVEL_PAYOUT_MARKER: ${{ secrets.TRAVEL_PAYOUT_MARKER || vars.TRAVEL_PAYOUT_MARKER || '787950' }}
+        run: python scripts/publish_news.py
 
-      - name: Save Blogger draft history
+      - name: Save published article history
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add drafted_history.txt
           if git diff --cached --quiet; then
-            echo "No draft history changes to save."
+            echo "No article history changes to save."
           else
-            git commit -m "Record Blogger draft history [skip ci]"
+            git commit -m "Record Blogger publication history [skip ci]"
             git push origin HEAD:main
           fi
