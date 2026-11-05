@@ -3,15 +3,5 @@
     "from": "Rome",
     "to": "Cagliari",
     "city": "Rome to Cagliari"
-  },
-  {
-    "from": "Milan",
-    "to": "Cagliari",
-    "city": "Milan to Cagliari"
-  },
-  {
-    "from": "Cagliari",
-    "to": "Milan",
-    "city": "Cagliari to Milan"
   }
 ]

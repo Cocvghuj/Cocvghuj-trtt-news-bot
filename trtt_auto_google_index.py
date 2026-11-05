@@ -1,49 +1,33 @@
-import requests
-import feedparser
+"""Notify discovery services only for HTTPS URLs explicitly supplied after human review.
+
+This notification is not a Google indexing guarantee. Draft/dashboard URLs are rejected.
+"""
+from __future__ import annotations
 import os
+from urllib.parse import urlparse
+import requests
 
-BLOGS = [
-    "trttnews24bd.blogspot.com",
-    "flightscoutpro.blogspot.com"
-]
+def reviewed_urls() -> list[str]:
+    urls = [item.strip() for item in os.environ.get("REVIEWED_POST_URLS", "").splitlines() if item.strip()]
+    for url in urls:
+        parsed = urlparse(url)
+        if parsed.scheme != "https" or not parsed.netloc:
+            raise ValueError(f"Expected an absolute HTTPS URL: {url!r}")
+        if "blogger.com/blog/posts" in url or "/draft" in parsed.path.casefold():
+            raise ValueError("Blogger dashboard and draft URLs cannot be submitted.")
+    return urls
 
-# Add from environment variables if present
-if os.environ.get("BLOGGER_BLOG_ID"):
-    BLOGS.append(os.environ.get("BLOGGER_BLOG_ID"))
-if os.environ.get("FLIGHTSCOUTPRO_BLOG_ID"):
-    BLOGS.append(os.environ.get("FLIGHTSCOUTPRO_BLOG_ID"))
+def main() -> int:
+    urls = reviewed_urls()
+    if not urls:
+        raise RuntimeError("No reviewed published URLs supplied; refusing indexing notification.")
+    for url in urls:
+        response = requests.post("https://pubsubhubbub.appspot.com/publish",
+                                 data={"hub.url": url, "hub.mode": "publish"}, timeout=15)
+        response.raise_for_status()
+        print(f"Discovery notification sent for reviewed URL: {url} (HTTP {response.status_code})")
+    print("Notifications sent; Google indexing is not guaranteed.")
+    return 0
 
-# Deduplicate
-BLOGS = list(set(BLOGS))
-
-for blog in BLOGS:
-    # Handle domain or ID
-    if "." not in blog:
-        # Assuming ID needs to be mapped to a URL if it is just an ID
-        # Since we don\'t have a mapper, we skip if it is just an ID for now, 
-        # or treat it as a subdomain of blogspot
-        continue
-    
-    base_url = f"https://{blog}"
-    rss_url = f"{base_url}/feeds/posts/default?alt=rss"
-    sitemap_url = f"{base_url}/sitemap.xml"
-    
-    print(f"--- Processing {base_url} ---")
-    
-    # Sitemap Ping
-    try:
-        r = requests.get(f"https://www.google.com/ping?sitemap={sitemap_url}", timeout=10)
-        print(f"Sitemap Ping: {r.status_code}")
-    except Exception as e:
-        print(f"Sitemap Ping failed: {e}")
-        
-    # Index Links
-    feed = feedparser.parse(rss_url)
-    links = [entry.link for entry in feed.entries[:3]]
-    for link in links:
-        try:
-            r = requests.post("https://pubsubhubbub.appspot.com/publish", 
-                              data={"hub.url": link, "hub.mode": "publish"}, timeout=10)
-            print(f"Indexed {link}: {r.status_code}")
-        except Exception as e:
-            print(f"Failed to index {link}: {e}")
+if __name__ == "__main__":
+    raise SystemExit(main())

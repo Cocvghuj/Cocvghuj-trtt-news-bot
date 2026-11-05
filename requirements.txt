@@ -1,10 +1,11 @@
 # Python dependencies for the TRTT news bot
- google-genai
- requests
- python-slugify
- google-api-python-client
- google-auth-oauthlib
- Markdown>=3.6,<4
- PyYAML>=6.0,<7
+google-genai
+requests
+python-slugify
+google-api-python-client
+google-auth
+google-auth-oauthlib
+Markdown>=3.6,<4
+PyYAML>=6.0,<7
 feedparser
 beautifulsoup4
