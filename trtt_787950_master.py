@@ -14,10 +14,10 @@ QUEUE_FILE = "news/queue/latest.json"
 HISTORY_FILE = "drafted_history.txt"
 BATCH_SIZE = 1
 LINKS = {
-    "aviasales": "https://aviasales.tp.st/xxxxx?marker=787950",
-    "klook": "https://klook.tp.st/xxxxx?marker=787950",
-    "airalo": "https://airalo.tp.st/xxxxx?marker=787950",
-    "gettransfer": "https://gettransfer.tp.st/xxxxx?marker=787950",
+    "aviasales": "https://aviasales.tpo.lv/Fb8U9yav?marker=787950",
+    "klook": "https://klook.tpo.lv/TWKnemhz?marker=787950",
+    "airalo": "https://airalo.tpo.lv/ZZoQC7Mz?marker=787950",
+    "gettransfer": "https://gettransfer.tpo.lv/1u8zRU5s?marker=787950",
     "amazon": "https://amzn.to/4shg6Hn",
 }
 LIVE_APP = "https://cocvghuj-trtt-news-bot.vercel.app"
@@ -111,8 +111,9 @@ def build_content(city: str, date_label: str | None = None) -> str:
         '<div class="trtt-editorial-footer">'
         '<p>Marker 787950 Locked - Live from TRTT - Daily update - One route per day - '
         'TRTT editorial planning notes; confirm live fares, schedules and eligibility with official sources.</p>'
-        '<p><strong>Author bio:</strong> TRTT Editorial Desk, based in Sanluri, Sardinia, Italy; '
-        'covering practical route planning, airport access and passenger information.</p>'
+        '<p><strong>Publisher:</strong> <a href="https://cocvghuj-trtt-news-bot.vercel.app/about.html">TRTT VoyageHub</a>. '
+        'This draft was prepared with automated assistance and requires human fact-checking before publication; '
+        'it is not a personal trip report.</p>'
         f'<p><strong>Published:</strong> {html.escape(published)} · <strong>Updated:</strong> {html.escape(updated)}</p>'
         '</div>'
     )

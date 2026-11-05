@@ -39,6 +39,12 @@ class DraftOnlyPolicyTests(unittest.TestCase):
             with self.subTest(required=required):
                 self.assertIn(required, content)
         self.assertGreater(content.index("Live App:"), content.index("Marker 787950 Locked"))
+        self.assertNotIn("xxxxx", content)
+        self.assertIn("tpo.lv/Fb8U9yav", content)
+        self.assertIn("tpo.lv/TWKnemhz", content)
+        self.assertIn("tpo.lv/ZZoQC7Mz", content)
+        self.assertIn("tpo.lv/1u8zRU5s", content)
+        self.assertIn("automated assistance", content)
         self.assertGreater(len(re.findall(r"\b[\w'-]+\b", content)), 100)
 
     def test_daily_route_queue_has_exactly_one_route(self):

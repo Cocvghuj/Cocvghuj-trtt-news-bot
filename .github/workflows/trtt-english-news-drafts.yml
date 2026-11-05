@@ -32,7 +32,7 @@ jobs:
       - name: Compile and validate draft content
         run: |
           python -m py_compile trtt_787950_master.py scripts/publish_news.py
-          python -c "from trtt_787950_master import build_content; s=build_content('Rome to Cagliari'); required=['ghost-esim','787950','photo-1501785888041-af3ef285b470','aviasales.tp.st','klook.tp.st','airalo.tp.st','gettransfer.tp.st','amzn.to/4shg6Hn','Live App:','Make every journey feel effortless.','EC 261/2004','Published:','Updated:','Sanluri']; missing=[x for x in required if x not in s]; assert not missing, missing; assert s.index('Live App:') > s.index('Marker 787950 Locked')"
+          python -c "from trtt_787950_master import build_content; s=build_content('Rome to Cagliari'); required=['ghost-esim','787950','photo-1501785888041-af3ef285b470','aviasales.tp.st','klook.tp.st','airalo.tp.st','gettransfer.tp.st','amzn.to/4shg6Hn','Live App:','Make every journey feel effortless.','EC Regulation 261/2004','Published:','Updated:','Sanluri']; missing=[x for x in required if x not in s]; assert not missing, missing; assert s.index('Live App:') > s.index('Marker 787950 Locked')"
       - name: Require both Blogger accounts
         env:
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID || vars.BLOGGER_BLOG_ID }}
