@@ -1,12 +1,6 @@
 // TRTT News Bot - Roksana Vault FINAL - Marker 787950 LOCKED
-// Required for Validate secure dual-AI Answer Engine and Vault
-// DO NOT DELETE - This fixes Article Validation Tests
-
 export const ROKSANA_VAULT_FINAL = {
   marker: "787950 LOCKED",
-  version: "FINAL",
-  blog1: "trttnews24bd.blogspot.com",
-  blog2: "flightscoutpro.blogspot.com",
   showroom: "cocvghuj-trtt-news-bot.vercel.app",
   affiliate: {
     marker: 787950,
@@ -14,13 +8,11 @@ export const ROKSANA_VAULT_FINAL = {
     klook: "https://klook.tp.st/xxxxx?marker=787950",
     airalo: "https://airalo.tp.st/xxxxx?marker=787950",
     gettransfer: "https://gettransfer.tp.st/xxxxx?marker=787950",
-    【entity-amazon¦canonical_name=Amazon】: "https://amzn.to/4shg6Hn"
+    amazon: "https://amzn.to/4shg6Hn"
   },
   status: "ACTIVE",
   validated: true
 };
-
 export const ROKSANA_VAULT = ROKSANA_VAULT_FINAL;
 export default ROKSANA_VAULT_FINAL;
-
-console.log("Roksana Vault FINAL Loaded - Marker 787950 LOCKED - Ready for Today's News");
+console.log("Roksana Vault FINAL Loaded - Marker 787950 LOCKED");
