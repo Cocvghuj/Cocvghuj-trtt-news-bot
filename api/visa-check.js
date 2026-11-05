@@ -1,29 +1,15 @@
-// TRTT Vercel API: Visa Checker
-// Supports /api/visa-check?country=Italy&m=787950
-module.exports = async function handler(req, res) {
+// General information endpoint only; not a personalised visa eligibility decision.
+module.exports = function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
+  res.setHeader("Cache-Control", "no-store");
+  if (req.method !== "GET") return res.status(405).json({ success: false, error: "Method not allowed" });
   const query = req.query || {};
-  const country = query.country || "Italy";
-  const from = query.from || "USA";
-  const marker = query.m || "787950";
-
   return res.status(200).json({
     success: true,
-    destination: String(country),
-    origin: String(from),
-    visaStatus: "Visa Free (Up to 90 Days Schengen)",
-    visaRequired: false,
-    stayDuration: "90 days within any 180-day period",
-    badge: "Free",
-    marker: String(marker),
-    recommendation: "Ensure passport has at least 3 months validity beyond planned departure date.",
-    status: "Verified",
-    updatedAt: new Date().toISOString()
+    dataMode: "general-information",
+    verifiedForTraveller: false,
+    destination: String(query.country || "Italy"),
+    nationality: query.nationality ? String(query.nationality) : null,
+    message: "Visa requirements depend on passport nationality, residence status, purpose and dates. Confirm with the destination's official immigration authority before travel."
   });
 };
