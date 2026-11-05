@@ -1,8 +1,10 @@
 import json
+import io
 import os
 import tempfile
 import unittest
 from unittest import mock
+from contextlib import redirect_stdout
 
 import main
 
@@ -595,26 +597,28 @@ class DraftRecoveryTests(unittest.TestCase):
                 side_effect=["<article>first version</article>", "<article>second version</article>"],
             ),
         ):
-            first_outcomes = main.create_drafts_on_blogs(
-                "First AI title",
-                "<p>Fallback</p>",
-                meta,
-                article_data=first_article,
-                photo=photo,
-                topic=topic,
-            )
+            with redirect_stdout(io.StringIO()):
+                first_outcomes = main.create_drafts_on_blogs(
+                    "First AI title",
+                    "<p>Fallback</p>",
+                    meta,
+                    article_data=first_article,
+                    photo=photo,
+                    topic=topic,
+                )
             with mock.patch.object(main, "save_history", side_effect=OSError("disk full")):
                 with self.assertRaisesRegex(OSError, "disk full"):
                     main.record_topic_after_draft(topic, first_outcomes)
 
-            second_outcomes = main.create_drafts_on_blogs(
-                "Regenerated AI title",
-                "<p>Different fallback</p>",
-                meta,
-                article_data=second_article,
-                photo=photo,
-                topic=topic,
-            )
+            with redirect_stdout(io.StringIO()):
+                second_outcomes = main.create_drafts_on_blogs(
+                    "Regenerated AI title",
+                    "<p>Different fallback</p>",
+                    meta,
+                    article_data=second_article,
+                    photo=photo,
+                    topic=topic,
+                )
 
         self.assertEqual(first_outcomes[0]["status"], "created")
         self.assertEqual(second_outcomes[0]["status"], "already_exists")
@@ -688,16 +692,18 @@ class DraftRecoveryTests(unittest.TestCase):
                 ),
                 mock.patch.object(main, "HISTORY_FILE", history_path),
             ):
-                first = main.create_drafts_on_blogs(
-                    "First title", "<p>fallback</p>", meta,
-                    article_data={"content": "First article body"}, photo=photo, topic=topic,
-                )
+                with redirect_stdout(io.StringIO()):
+                    first = main.create_drafts_on_blogs(
+                        "First title", "<p>fallback</p>", meta,
+                        article_data={"content": "First article body"}, photo=photo, topic=topic,
+                    )
                 self.assertFalse(main.record_topic_after_draft(topic, first))
 
-                second = main.create_drafts_on_blogs(
-                    "Regenerated title", "<p>new fallback</p>", meta,
-                    article_data={"content": "Regenerated article body"}, photo=photo, topic=topic,
-                )
+                with redirect_stdout(io.StringIO()):
+                    second = main.create_drafts_on_blogs(
+                        "Regenerated title", "<p>new fallback</p>", meta,
+                        article_data={"content": "Regenerated article body"}, photo=photo, topic=topic,
+                    )
                 self.assertTrue(main.record_topic_after_draft(topic, second))
 
             self.assertEqual([item["status"] for item in first], ["created", "failed"])
