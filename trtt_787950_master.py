@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""TRTT Blogger publishing engine. Marker 787950 LOCKED (API configuration only)."""
+"""TRTT Blogger publishing engine. The payout marker is kept in API configuration only."""
 from __future__ import annotations
 import json, os, time
+from datetime import datetime
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 MARKER = os.getenv("TRAVEL_PAYOUT_MARKER", "787950")
 QUEUE_FILE = "news/queue/latest.json"
@@ -17,18 +19,26 @@ REAL_ROUTES = [
     "Rome to Paris", "Paris to Rome", "Rome to London",
 ]
 
+def publish_date() -> datetime:
+    """Use the publisher's local market date, independent of the Actions runner timezone."""
+    return datetime.now(ZoneInfo("Europe/Rome"))
+
+def history_key(city: str, date_label: str) -> str:
+    return f"{city} | {date_label}"
+
 def load_history() -> set[str]:
     path = Path(HISTORY_FILE)
     if not path.exists():
         return set()
     return {line.strip() for line in path.read_text(encoding="utf-8").splitlines() if line.strip()}
 
-def build_content(city: str) -> str:
+def build_content(city: str, date_label: str | None = None) -> str:
+    date_label = date_label or publish_date().strftime("%-d %b %Y")
     return (
         f"<h2>Live Travel Guide: {city}</h2>"
         f"<div id='roksana-vault-flight' data-city='{city}'></div>"
         f"<div id='ghost-esim' data-city='{city}'></div>"
-        "<p>Last updated: 4 times daily - Live from TRTT</p>"
+        f"<p>Daily route update: {date_label} - 4 times daily - Live from TRTT</p>"
     )
 
 def ghost_sim_esim_logic(city: str) -> dict[str, str]:
@@ -94,8 +104,9 @@ def _load_queue() -> list[str]:
     items = payload if isinstance(payload, list) else payload.get("routes", payload.get("queue", [])) if isinstance(payload, dict) else None
     if items is None:
         raise ValueError(f"{QUEUE_FILE} must contain a JSON list or an object with routes/queue.")
-    return [str(item.get("city") or item.get("route") or item) if isinstance(item, dict) else str(item)
-            for item in items]
+    routes = [str(item.get("city") or item.get("route") or item) if isinstance(item, dict) else str(item)
+              for item in items]
+    return [route.strip() for route in routes if route and route.strip()]
 
 def _ensure_live(service: Any, blog_id: str, title: str, content: str, city: str) -> dict[str, Any]:
     existing = find_duplicate_post(service, blog_id, title, content, topic_key=city)
@@ -119,18 +130,25 @@ def _ensure_live(service: Any, blog_id: str, title: str, content: str, city: str
     return result
 
 def run_batch() -> int:
-    history, queue = load_history(), _load_queue()
+    # Prefer today's explicit queue; use REAL_ROUTES only when no queue file exists.
+    queue = _load_queue()
+    history = load_history()
+    today = publish_date()
+    date_label = today.strftime("%-d %b %Y")
+    title_date = today.strftime("%-d %b")
+    dated_history = history
     blog_ids = [os.environ["BLOGGER_BLOG_ID"].strip(), os.environ["FLIGHTSCOUTPRO_BLOG_ID"].strip()]
     service = build()
     completed = 0
     for city in queue:
         city = city.strip()
-        if not city or city in history:
+        if not city or history_key(city, date_label) in dated_history:
             continue
         if completed >= BATCH_SIZE:
             break
         ghost_sim_esim_logic(city)
-        title, content = f"Live Travel Guide: {city}", build_content(city)
+        title = f"{city} Cheap Flights Today: {title_date} Update - TRTT"
+        content = build_content(city, date_label)
         outcomes = []
         for blog_id, blog_name in ((blog_ids[0], "TRTT News 24 BD"),
                                    (blog_ids[1], "FlightScoutPro")):
@@ -142,13 +160,13 @@ def run_batch() -> int:
             raise RuntimeError(f"Both Blogger sites were not confirmed LIVE for {title!r}.")
         send_draft_notification(title, outcomes, content[:240])
         with Path(HISTORY_FILE).open("a", encoding="utf-8") as history_file:
-            history_file.write(city + "\n")
-        history.add(city)
+            history_file.write(history_key(city, date_label) + "\n")
+        history.add(history_key(city, date_label))
         completed += 1
         print(f"[{completed}] Published and verified on both Blogger sites: {city}")
         if completed < BATCH_SIZE:
             time.sleep(SLEEP_BETWEEN)
-    print(f"TRTT Blogger batch complete: {completed} route(s) published/verified. Marker 787950 LOCKED.")
+    print(f"TRTT Blogger batch complete: {completed} route(s) published/verified.")
     return completed
 
 def main() -> int:
