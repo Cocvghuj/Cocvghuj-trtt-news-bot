@@ -5,9 +5,8 @@
   window.__TRTT_VERCEL_MENU_V2__ = true;
 
   var BASE = "https://cocvghuj-trtt-news-bot.vercel.app";
-  var MARKER = "787950";
   var TELEGRAM = "https://t.me/trttnews24bd";
-  var API_STATUS = BASE + "/api/flight-tracker?m=" + encodeURIComponent(MARKER);
+  var API_STATUS = BASE + "/api/flight-tracker";
   var TOOLS = [
     { id: "flight", name: "Flight Search", detail: "Compare available flight routes", icon: "✈️", page: "/tools/flight-search.html" },
     { id: "baggage", name: "Baggage Size Checker", detail: "Check cabin-bag dimensions", icon: "🧳", page: "/tools/baggage-size-checker.html" },
@@ -35,7 +34,7 @@
     title.textContent = tool.icon + " " + tool.name;
     frame.onload = function () { addLog(tool.name + " page response loaded."); };
     frame.onerror = function () { addLog(tool.name + " page failed to load."); };
-    frame.src = BASE + tool.page + "?m=" + encodeURIComponent(MARKER);
+    frame.src = BASE + tool.page;
     openLink.href = BASE + tool.page;
     openLink.hidden = false;
     addLog("Opening project page: " + tool.page);
