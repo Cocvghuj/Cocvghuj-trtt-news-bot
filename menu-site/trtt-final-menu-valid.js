@@ -1,4 +1,4 @@
-// TRTT News Blogger menu — Vercel-backed, with only verified tool pages.
+// TRTT standalone Vercel travel tools menu — verified project pages only.
 (function () {
   "use strict";
   if (window.__TRTT_VERCEL_MENU_V2__) return;
@@ -81,7 +81,7 @@
     overlay.id = "trtt-vercel-overlay";
     overlay.setAttribute("aria-hidden", "true");
     overlay.innerHTML =
-      '<div class="trtt-top"><div><div class="trtt-brand">TRTT NEWS • TRAVEL TOOLS</div><div style="font-size:11px;color:#cbd5e1">Blogger menu connected to Vercel</div></div><div style="display:flex;align-items:center;gap:8px"><span class="trtt-status" id="trtt-vercel-status">Menu ready</span><button type="button" class="trtt-close" id="trtt-vercel-close" aria-label="Close menu">✕</button></div></div>' +
+      '<div class="trtt-top"><div><div class="trtt-brand">TRTT NEWS • TRAVEL TOOLS</div><div style="font-size:11px;color:#cbd5e1">Standalone Vercel menu</div></div><div style="display:flex;align-items:center;gap:8px"><span class="trtt-status" id="trtt-vercel-status">Menu ready</span><button type="button" class="trtt-close" id="trtt-vercel-close" aria-label="Close menu">✕</button></div></div>' +
       '<div class="trtt-body"><section class="trtt-panel"><b>Available tools</b><div class="trtt-tools" id="trtt-vercel-tools"></div><p style="font-size:11px;color:#b7c2d5">Only existing project pages are listed.</p><a class="trtt-link" href="' + TELEGRAM + '" target="_blank" rel="noopener noreferrer">Join TRTT Telegram ↗</a></section>' +
       '<section class="trtt-panel trtt-stage"><div class="trtt-stage-head"><b id="trtt-vercel-title">Choose a tool</b><a class="trtt-link" id="trtt-vercel-open" href="#" target="_blank" rel="noopener noreferrer" hidden>Open separately ↗</a></div><iframe class="trtt-iframe" id="trtt-vercel-iframe" title="TRTT travel tool" src="about:blank" loading="lazy"></iframe></section>' +
       '<section class="trtt-panel"><b>Connection log</b><div class="trtt-log" id="trtt-vercel-log" aria-live="polite"></div></section></div>';
