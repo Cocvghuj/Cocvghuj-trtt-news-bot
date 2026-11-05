@@ -1,5 +1,5 @@
 # Marker: 787950 LOCKED
-name: TRTT Master Servant - MANUAL ONLY (Google quality gate)
+name: TRTT Master Servant - MANUAL ONLY (quality review required)
 on:
   workflow_dispatch:
 
