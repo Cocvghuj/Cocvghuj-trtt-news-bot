@@ -1,0 +1,31 @@
+name: TRTT Master Servant - 3x DAILY
+on:
+  schedule:
+    - cron: '0 6,14,22 * * *'  # দিনে ৩ বার - সকাল ৬টা, দুপুর ২টা, রাত ১০টা
+  workflow_dispatch:
+
+jobs:
+  work:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+      
+      - name: Servant 1 - Google Writes News
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python trtt_787950_master.py  # তোমার মাস্টার স্ক্রিপ্ট
+
+      - name: Servant 2 - ChatGPT Fixes Design
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: python trtt_auto_google_index.py
+
+      - name: Push to Showroom - Vercel + Blogger
+        run: |
+          git config user.name "TRTT Bot"
+          git config user.email "bot@trtt.com"
+          git add .
+          git commit -m "Servant work: Traffic News $(date) - Marker 787950 LOCKED" || exit 0
+          git push origin main
