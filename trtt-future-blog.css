@@ -183,3 +183,48 @@ body{overflow-x:hidden!important}
 #main-wrapper .blog-posts .grid-posts>.blog-post.index-post-0 .post-image-wrap,
 #main-wrapper .blog-posts .grid-posts>.blog-post.index-post-0 .post-image-wrap img{height:250px!important;max-height:250px!important}
 }
+
+
+/* TRTT VOYAGE — signature masthead logo */
+#header-wrap{padding:26px 0 20px!important}
+#header-inner{min-height:112px!important}
+#header .header-image-wrapper,.header-widget .header-image-wrapper{
+  position:relative!important;display:inline-flex!important;align-items:center!important;
+  justify-content:center!important;isolation:isolate!important;padding:8px 14px!important;
+  border-radius:16px!important;overflow:visible!important;
+  animation:trtt-logo-breathe 5s ease-in-out infinite!important
+}
+#header .header-image-wrapper img,.header-widget .header-image-wrapper img{
+  display:block!important;width:clamp(190px,25vw,290px)!important;height:auto!important;
+  max-width:min(72vw,290px)!important;max-height:108px!important;object-fit:contain!important;
+  filter:drop-shadow(0 5px 13px rgba(16,27,45,.17)) drop-shadow(0 0 9px rgba(217,91,66,.18))!important;
+  position:relative!important;z-index:2!important
+}
+#header .header-image-wrapper:before,.header-widget .header-image-wrapper:before{
+  content:"✦";position:absolute;z-index:3;top:-7px;right:4px;color:#d95b42;
+  font-size:20px;text-shadow:0 0 8px rgba(217,91,66,.7),0 0 18px rgba(229,161,142,.8);
+  animation:trtt-logo-twinkle 2.4s ease-in-out infinite
+}
+#header .header-image-wrapper:after,.header-widget .header-image-wrapper:after{
+  content:"";position:absolute;z-index:1;inset:-8px;border-radius:20px;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 50%,rgba(229,161,142,.2),transparent 68%);
+  filter:blur(8px);animation:trtt-logo-halo 4.5s ease-in-out infinite
+}
+@keyframes trtt-logo-twinkle{0%,100%{opacity:.45;transform:scale(.75) rotate(0)}50%{opacity:1;transform:scale(1.18) rotate(22deg)}}
+@keyframes trtt-logo-halo{0%,100%{opacity:.35;transform:scale(.96)}50%{opacity:.85;transform:scale(1.04)}}
+@keyframes trtt-logo-breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@media(max-width:700px){
+ #header-wrap{padding:18px 0 14px!important}
+ #header-inner{min-height:90px!important;padding:0 14px!important}
+ #header .header-image-wrapper,.header-widget .header-image-wrapper{padding:6px 10px!important}
+ #header .header-image-wrapper img,.header-widget .header-image-wrapper img{
+  width:clamp(165px,58vw,220px)!important;max-width:70vw!important;max-height:82px!important
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #header .header-image-wrapper,.header-widget .header-image-wrapper,
+ #header .header-image-wrapper:before,.header-widget .header-image-wrapper:before,
+ #header .header-image-wrapper:after,.header-widget .header-image-wrapper:after{
+  animation:none!important
+ }
+}
