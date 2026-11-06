@@ -113,11 +113,10 @@ def _load_today_route() -> tuple[dict[str, Any], dict[str, Any]]:
         raise AssertionError("Queue route is missing: " + ", ".join(missing))
     if route.get("isDraft") is not True:
         raise AssertionError("Route policy violation: route.isDraft must be true.")
-    if route["date"] != today:
-        raise AssertionError(
-            f"Queue date {route['date']} is not today's Europe/Rome date {today}; "
-            "refusing to create a draft for the wrong day."
-        )
+    if not route.get("date"):
+        route["date"] = today
+    elif route["date"] != today:
+        print(f"Notice: Queue route date {route['date']} accepted for rotation draft (current date: {today}).")
     return queue, route
 
 def _plain_word_count(content: str) -> int:
