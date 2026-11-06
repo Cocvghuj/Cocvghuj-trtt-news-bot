@@ -44,6 +44,7 @@
     var rootStyle = document.documentElement.style;
     rootStyle.setProperty("--trtt-brand-primary", theme.primary || "#052962");
     rootStyle.setProperty("--trtt-brand-accent", theme.accent || "#00A8E8");
+    rootStyle.setProperty("--trtt-brand-tertiary", theme.tertiary || "#AF7AC5");
     rootStyle.setProperty("--trtt-page-bg", theme.background || "#f8fafc");
     rootStyle.setProperty("--trtt-text", theme.text || "#1e293b");
     if (!links.length) {
