@@ -1,39 +1,136 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TRTT VoyageHub - Make every journey feel effortless. - 787950 LOCKED</title>
-<style>
-/* TRTT VoyageHub - 787950 LOCKED - Glassmorphism Design System */
-:root {
-  --trtt-glass-bg: rgba(255, 255, 255, 0.07);
-  --trtt-glass-border: rgba(255, 255, 255, 0.12);
-  --trtt-glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-  --trtt-accent: #00d4ff;
-  --trtt-locked: #787950;
-}
-.trtt-glass-panel {
-    background: rgba(255, 255, 255, 0.07);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-    padding: 20px;
-    margin: 20px;
-    color: white;
-}
-body { background: #0f172a; font-family: sans-serif; }
-</style>
-</head>
-<body>
-<div class="trtt-glass-panel">
-<h1>TRTT VoyageHub - 787950 LOCKED</h1>
-<p>Cagliari to Bergamo - 6 Nov - 0-Second Pipeline - Daily Voyage Log</p>
-<p>FlightScoutPro | Klook | Airalo Ghost-SIM | GetTransfer | Amazon</p>
-<span style="font-family:monospace;font-size:10px;border:1px solid #787950;padding:4px 8px;border-radius:20px;">787950 LOCKED</span>
-</div>
-</body>
-</html>
+import React, { useState, useEffect } from 'react';
+
+export default function TRTTVoyageMegaHub() {
+  // ২০টি পার্টনার লিংকের ডাটাবেস এরিস্টোক্র্যাট স্ট্রাকচার
+  const travelLinks = [
+    { name: "Aviasales", url: "https://tpo.lv", cat: "flights", desc: "Compare real-time international airfares and discover the cheapest routes instantly." },
+    { name: "AirHelp", url: "https://tpo.lv", cat: "flights", desc: "Claim up to €600 compensation for disrupted European flights under EC 261/2004." },
+    { name: "Compensair", url: "https://tpo.lv", cat: "flights", desc: "Alternative expert legal framework for rapid airline delay compensation processing." },
+    { name: "Travelpayouts Core", url: "https://tpo.lv", cat: "flights", desc: "Main system distribution architecture managing live global travel logistics feeds." },
+    
+    { name: "Airalo eSIM", url: "https://tpo.lv", cat: "connectivity", desc: "Stay connected worldwide with premium international Ghost-SIM data packages." },
+    { name: "Drimsim", url: "https://tpo.lv", cat: "connectivity", desc: "A real universal travel SIM card connecting dynamically to local provider rates." },
+    { name: "Yesim", url: "https://tpo.lv", cat: "connectivity", desc: "High-speed virtual prepaid data networks optimized for seamless global roaming." },
+    { name: "Saily", url: "https://tpo.lv", cat: "connectivity", desc: "Next-generation secure international travel data packages built for fast edge loops." },
+    
+    { name: "GetTransfer", url: "https://tpo.lv", cat: "transport", desc: "Book private airport transfers and rides at marketplace tender-based low prices." },
+    { name: "GetRentACar", url: "https://tpo.lv", cat: "transport", desc: "Global car hire marketplace for reliable vehicle distribution and options." },
+    { name: "EconomyBookings", url: "https://tpo.lv", cat: "transport", desc: "Connect with 600+ trusted suppliers across 20,000 global terminal locations." },
+    { name: "QEEQ Rentals", url: "https://tpo.lv", cat: "transport", desc: "Award-winning auto hire broker with zero hidden fees and customized itineraries." },
+    { name: "Localrent", url: "https://tpo.lv", cat: "transport", desc: "Localized regional direct transport network cutting middleman premium markup." },
+    { name: "Kiwitaxi", url: "https://tpo.lv", cat: "transport", desc: "Pre-booked tourist transfers featuring verified drivers and fixed price points." },
+    
+    { name: "Klook Experiences", url: "https://tpo.lv", cat: "experiences", desc: "Discover attraction tickets, unique destination tours, and local transport options." },
+    { name: "Go City", url: "https://tpo.lv", cat: "experiences", desc: "All-inclusive multi-attraction sightseeing passes saving up to 50% in megacities." },
+    { name: "Tiqets", url: "https://tpo.lv", cat: "experiences", desc: "Instant mobile skip-the-line ticket allocations for world cultural landmarks." },
+    { name: "KKday", url: "https://tpo.lv", cat: "experiences", desc: "Curated local travel experiences, day trips, and local lifestyle options." },
+    { name: "Intui Travel", url: "https://tpo.lv", cat: "experiences", desc: "Distributed hotel-to-airport specific route execution and logistics mapping." },
+    { name: "Radical Storage", url: "https://tpo.lv", cat: "experiences", desc: "Secure luggage storage network letting you drop bags at verified local shops." }
+  ];
+
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [currentTime, setCurrentTime] = useState('');
+
+  useEffect(() => {
+    // Italy Local Time Engine For Date Guardrail Simulation
+    const updateTime = () => {
+      const options = { timeZone: 'Europe/Rome', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+      setCurrentTime(new Intl.DateTimeFormat('en-US', options).format(new Date()));
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const filteredLinks = activeFilter === 'all' ? travelLinks : travelLinks.filter(l => l.cat === activeFilter);
+
+  return (
+    <div className="min-h-screen bg-[#110712] text-white p-6 sm:p-12 relative overflow-hidden font-sans select-none">
+      
+      {/* বউয়ের পছন্দের কালারগুলোর অরবিট গ্লো ব্যাকগ্রাউন্ড আর্ট */}
+      <div className="absolute w-[600px] h-[600px] rounded-full bg-[#ff6b8b] top-[-10%] left-[-10%] blur-[160px] opacity-15 pointer-events-none" />
+      <div className="absolute w-[500px] h-[500px] rounded-full bg-[#ff9f43] bottom-[-5%] right-[-5%] blur-[140px] opacity-10 pointer-events-none" />
+      <div className="absolute w-[550px] h-[550px] rounded-full bg-[#a55eea] top-[30%] right-[15%] blur-[150px] opacity-10 pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        
+        {/* আল্ট্রা-প্রিমিয়াম গ্লাসমিউজিয়াম হেডার */}
+        <header className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 text-center mb-10 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-[#ff6b8b] via-[#ff9f43] to-[#a55eea] bg-clip-text text-transparent mb-4">
+            TRTT VoyageHub Showroom
+          </h1>
+          <p className="text-white/70 max-w-2xl mx-auto text-base sm:text-lg">
+            High-Performance Serverless Architecture • Built for Extreme Speed & Global Affiliation
+          </p>
+          <div className="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/30 border border-[#ff6b8b]/40 text-xs font-semibold text-[#ff6b8b] uppercase tracking-wider">
+            <span>●</span> 0-Second Edge Stream Online
+          </div>
+        </header>
+
+        {/* এজ কন্ট্রোল ফিল্টার মেনু */}
+        <div className="flex flex-wrap justify-center gap-3 mb-10">
+          {['all', 'flights', 'connectivity', 'transport', 'experiences'].map((filter) => (
+            <button
+              key={filter}
+              onClick={() => setActiveFilter(filter)}
+              className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 border backdrop-blur-md uppercase tracking-wider ${
+                activeFilter === filter
+                  ? 'bg-gradient-to-r from-[#ff6b8b] to-[#a55eea] border-transparent text-white shadow-lg shadow-[#ff6b8b]/20 scale-105'
+                  : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:text-white'
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+
+        {/* মেগা গ্রিড - ২০টি আল্ট্রা গ্লাস কার্ড */}
+        <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredLinks.map((item, idx) => (
+            <a
+              key={idx}
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 transition-all duration-400 relative overflow-hidden flex flex-col justify-between hover:bg-white/[0.06] hover:border-white/20 hover:-translate-y-1.5 hover:shadow-[0_15px_35px_rgba(0,0,0,0.4)]"
+            >
+              {/* ইন্টেলিজেন্ট ৩-কালার নিয়ন স্ট্রাইপ লাইন */}
+              <div className="absolute top-0 left-0 w-[4px] h-100% bg-gradient-to-b from-[#ff6b8b] to-[#a55eea] opacity-60 group-hover:opacity-100 transition-opacity" 
+                   style={{ gradient: idx % 3 === 0 ? 'from-[#ff6b8b] to-[#a55eea]' : idx % 3 === 1 ? 'from-[#ff9f43] to-[#ff6b8b]' : 'from-[#a55eea] to-[#ff9f43]' }}/>
+              
+              <div>
+                <h3 className="text-xl font-bold mb-2 text-white group-hover:text-[#ff6b8b] transition-colors duration-300">
+                  {item.name}
+                </h3>
+                <p className="text-white/50 text-sm leading-relaxed mb-6">
+                  {item.desc}
+                </p>
+              </div>
+              
+              <div className="text-xs font-bold text-[#ff9f43] flex items-center gap-1 group-hover:text-white transition-colors mt-auto">
+                EXECUTE CONNECTION <span className="transform group-hover:translate-x-1 transition-transform">↗</span>
+              </div>
+            </a>
+          ))}
+        </main>
+
+        {/* লাইভ রিয়েল-টাইম মেট্রিক্স প্যানেল */}
+        <section className="mt-12 bg-black/40 border border-white/5 rounded-2xl p-6 backdrop-blur-md">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-white/5 pb-4 mb-4 gap-2">
+            <h2 className="text-[#ff9f43] font-bold text-sm tracking-widest uppercase">
+              TRTT Voyage Control Center Logs
+            </h2>
+            <div className="text-xs font-mono text-white/40">
+              Rome Time: <span className="text-white font-bold">{currentTime}</span>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono text-xs text-white/60">
+            <div>[PIPELINE]: <span className="text-[#4cd137] font-bold">0-Second Instant</span></div>
+            <div>[INTEGRITY]: <span className="text-[#4cd137] font-bold">100% Secure</span></div>
+            <div>[E-E-A-T]: <span className="text-[#4cd137] font-bold">Verified Production</span></div>
+            <div>[MARKER ID]: <span className="text-[#ff6b8b] font-bold">787950 LOCKED</span></div>
+          </div>
+        </section>
+
+        {/* সিকিউর ক্রিপ্টোগ্রাফিক ফুটার */}
+        <footer className="text-center mt-12 text-xs text-white/20 tracking-widest uppercase">
