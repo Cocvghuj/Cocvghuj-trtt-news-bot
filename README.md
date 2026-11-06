@@ -60,7 +60,7 @@ npm run build
 
 ## Roksana Nila Answer Engine
 
-The Answer Engine uses the Blogger-facing UI in `trtt-all-in-one.js` and the server-only Vercel function in `api/answer.js`. The browser asset mirror at `public/trtt-all-in-one.js` must remain identical. Provider secrets are server-side Vercel environment variables only: `GEMINI_API_KEY` and `OPENROUTER_API_KEY`.
+The Answer Engine uses the Blogger-facing UI in `trtt-all-in-one.js` and the server-only Vercel function in `api/answer.js`. The browser asset mirror at `public/trtt-all-in-one.js` must remain identical. Provider secrets are server-side Vercel environment variables only: `GEMINI_API_KEY`, `OPENROUTER_API_KEY`, and `GROQ_API_KEY`.
 
 - Architecture and owner-side deployment steps: [ANSWER-ENGINE-DEPLOYMENT.md](./ANSWER-ENGINE-DEPLOYMENT.md)
 - One-shot Copilot task prompt: [COPILOT_ONE_SHOT_PROMPT.md](./COPILOT_ONE_SHOT_PROMPT.md)
