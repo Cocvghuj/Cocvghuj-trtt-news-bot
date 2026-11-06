@@ -1,4 +1,4 @@
-name: TRTT 787950 Daily Blogger Draft
+name: TRTT Single-Draft
 
 on:
   schedule:
@@ -12,7 +12,7 @@ on:
         type: string
 
 concurrency:
-  group: trtt-787950-daily-draft-${{ github.ref }}
+  group: trtt-single-draft-${{ github.ref }}
   cancel-in-progress: false
 
 permissions:
@@ -34,7 +34,7 @@ jobs:
           print(f"run={run}")
           print(f"Europe/Rome time: {now.isoformat()}")
           with open(__import__("os").environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
-              out.write(f"run={run}\n")
+              out.write(f"run={run}\\n")
           PY
 
       - name: Checkout repository
