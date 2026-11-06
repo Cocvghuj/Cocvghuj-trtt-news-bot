@@ -1,37 +1,11 @@
-name: TRTT Auto Google Index
+name: TRTT Auto Google Index [DISABLED]
 
-# Marker 787950 LOCKED - Automated Search Engine Pinger
 on:
-  schedule:
-    - cron: '0 * * * *'
   workflow_dispatch:
 
-concurrency:
-  group: trtt-auto-google-index
-  cancel-in-progress: true
-
 jobs:
-  auto-index:
+  disabled:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: pip
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install feedparser requests
-
-      - name: Run Google Indexing & Sitemaps
-        env:
-          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
-          BLOGGER_BLOG_ID_2: ${{ secrets.BLOGGER_BLOG_ID_2 || secrets.FLIGHTSCOUTPRO_BLOG_ID }}
-          FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.FLIGHTSCOUTPRO_BLOG_ID || secrets.BLOGGER_BLOG_ID_2 }}
-        run: |
-          python trtt_auto_google_index.py
+      - name: Disabled notice
+        run: echo "This workflow is disabled. TRTT Single-Draft is the only active workflow."
