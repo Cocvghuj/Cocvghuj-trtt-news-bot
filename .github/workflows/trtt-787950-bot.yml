@@ -1,13 +1,68 @@
-# DISABLED - Replaced by TRTT Master Servant.
-# Disabled to prevent duplicate 4-hour background drafts and API quota exhaustion.
-name: TRTT 787950 Auto Draft - Locked [DISABLED]
+name: TRTT 787950 Daily Blogger Draft
 
 on:
+  schedule:
+    # GitHub cron is UTC. These two hours cover 07:00 Europe/Rome in both CET and CEST.
+    - cron: "0 5,6 * * *"
   workflow_dispatch:
+    inputs:
+      target_date:
+        description: "Queue date to draft (YYYY-MM-DD); leave blank for today's Rome date"
+        required: false
+        type: string
+
+concurrency:
+  group: trtt-787950-daily-draft-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
 
 jobs:
-  disabled_notice:
+  create-one-draft:
     runs-on: ubuntu-latest
     steps:
-      - name: Workflow disabled notice
-        run: echo "This workflow is disabled because drafting is handled by TRTT Master Servant."
+      - name: Gate to 07:00 Europe/Rome
+        id: local-time
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+          now = datetime.now(ZoneInfo("Europe/Rome"))
+          run = "true" if now.hour == 7 and now.minute < 10 else "false"
+          print(f"run={run}")
+          print(f"Europe/Rome time: {now.isoformat()}")
+          with open(__import__("os").environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"run={run}\\n")
+          PY
+
+      - name: Checkout repository
+        if: github.event_name == 'workflow_dispatch' || steps.local-time.outputs.run == 'true'
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        if: github.event_name == 'workflow_dispatch' || steps.local-time.outputs.run == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        if: github.event_name == 'workflow_dispatch' || steps.local-time.outputs.run == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Create exactly one verified Blogger draft
+        if: github.event_name == 'workflow_dispatch' || steps.local-time.outputs.run == 'true'
+        env:
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
+          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
+          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
+          TRTT_TARGET_DATE: ${{ github.event.inputs.target_date }}
+        run: python trtt_787950_master.py
+
+      - name: Skip outside Sanluri local 07:00 window
+        if: github.event_name == 'schedule' && steps.local-time.outputs.run != 'true'
+        run: echo "No draft run: outside 07:00 Europe/Rome."
