@@ -1,6 +1,6 @@
 (function(){
 "use strict";
-var ROOT="trtt-future-world",STYLE="trtt-future-world-ui",CSS_URL="https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@main/trtt-future-blog.css";
+var ROOT="trtt-future-world",STYLE="trtt-future-world-ui",CSS_URL="https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@6c962470c8539e77b67b4fc5b0d0d70e7f970908/trtt-future-blog.css";
 var HUB="https://cocvghuj-trtt-news-bot.vercel.app/";
 var LINKS=[
  {title:"The Journal",desc:"Latest stories and field notes",href:"/"},
