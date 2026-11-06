@@ -10,7 +10,8 @@
     "menuBackground": "#101b36",
     "mobileBackground": "#172b52",
     "menuText": "#ffffff",
-    "tertiary": "#AF7AC5"
+    "tertiary": "#AF7AC5",
+    "secondary": "#FFC300"
   },
   "menu": [
     {
