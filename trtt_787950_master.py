@@ -325,7 +325,7 @@ def main() -> int:
     run_started = time.monotonic()
     blog_id = _require_configuration()
     queue, route = _load_today_route()
-    today = publish_date().date().isoformat()
+    today = target_date()
     history = load_history()
     if any(item.startswith(today + " | ") for item in history):
         print(f"SKIP: A daily draft was already confirmed for {today}; one-draft-per-day guard.")
