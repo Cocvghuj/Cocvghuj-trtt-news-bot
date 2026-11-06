@@ -21,9 +21,9 @@ Leave one coherent, tested, documented implementation in GitHub so the owner can
 
 ## Work to do
 1. Audit the current Answer Engine end-to-end. Fix actual defects only; do not rewrite unrelated site features.
-2. Confirm the browser UI posts to the existing Vercel API endpoint and handles loading, empty input, network errors, HTTP errors, partial Gemini/OpenRouter failures, answers, and source links safely.
-3. Confirm the server API reads `GEMINI_API_KEY` and `OPENROUTER_API_KEY` only from server environment variables. Keep all credentials out of browser files and Blogger HTML.
-4. Verify Gemini Google Search grounding and OpenRouter web search request/response handling against the currently supported provider API contracts. If a provider schema/model is uncertain, document the uncertainty and implement a conservative supported request; do not invent successful responses.
+2. Confirm the browser UI posts to the existing Vercel API endpoint and handles loading, empty input, network errors, HTTP errors, partial Gemini/OpenRouter/Groq failures, answers, and source links safely.
+3. Confirm the server API reads `GEMINI_API_KEY`, `OPENROUTER_API_KEY`, and `GROQ_API_KEY` only from server environment variables. Keep all credentials out of browser files and Blogger HTML.
+4. Verify Gemini Google Search grounding, OpenRouter web search, and Groq Compound web-search request/response handling against the currently supported provider API contracts. If a provider schema/model is uncertain, document the uncertainty and implement a conservative supported request; do not invent successful responses.
 5. Keep strict CORS limited to exactly:
    - `https://trttnews24bd.blogspot.com`
    - `https://trttnews24bd.com`
@@ -62,7 +62,7 @@ Return:
 - fixes made;
 - exact commands and pass/fail results;
 - any remaining manual Blogger Layout step;
-- required Vercel environment-variable names (names only);
+- required Vercel environment-variable names (names only): `GEMINI_API_KEY`, `OPENROUTER_API_KEY`, `GROQ_API_KEY`;
 - explicit confirmation that no Vercel deployment, Blogger publishing, or paid AI API call was performed.
 
 If repository write/commit capability is available, commit the finished changes to the current working branch and report the commit SHA. Do not force-push or rewrite history.
