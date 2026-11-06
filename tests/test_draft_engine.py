@@ -72,7 +72,7 @@ class DraftEngineRegressionTests(unittest.TestCase):
                 "require_marker": "787950 LOCKED",
                 "routes": [],
             }), encoding="utf-8")
-            fixed_now = datetime(2026, 11, 6, 0, 1, tzinfo=ZoneInfo("Europe/Rome"))
+            fixed_now = datetime(2026, 11, 7, 0, 1, tzinfo=ZoneInfo("Europe/Rome"))
             with (
                 mock.patch.object(engine, "QUEUE_FILE", queue_path),
                 mock.patch.object(engine, "publish_date", return_value=fixed_now),
@@ -110,7 +110,7 @@ class DraftEngineRegressionTests(unittest.TestCase):
             "require_image": True,
             "require_marker": "787950 LOCKED",
         }
-        fixed_now = datetime(2026, 11, 6, 23, 0, tzinfo=ZoneInfo("Europe/Rome"))
+        fixed_now = datetime(2026, 11, 7, 23, 0, tzinfo=ZoneInfo("Europe/Rome"))
         service = FakeService()
         with tempfile.TemporaryDirectory() as directory:
             queue_path = Path(directory) / "latest.json"
