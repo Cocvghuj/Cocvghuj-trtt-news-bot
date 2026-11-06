@@ -9,7 +9,8 @@
     "muted": "#64748b",
     "menuBackground": "#101b36",
     "mobileBackground": "#172b52",
-    "menuText": "#ffffff"
+    "menuText": "#ffffff",
+    "tertiary": "#AF7AC5"
   },
   "menu": [
     {
