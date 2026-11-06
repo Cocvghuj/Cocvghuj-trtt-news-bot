@@ -327,7 +327,7 @@ def main() -> int:
     )
     content = build_content(route)
     checks = {
-        "Image": "<img src=\\"https://images.unsplash.com/" in content,
+        "Image": '<img src="https://images.unsplash.com/' in content,
         "EC 261/2004": "EC 261/2004" in content,
         "787950 LOCKED": MARKER in content,
         "Vercel Link": LIVE_APP in content,
