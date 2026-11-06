@@ -746,7 +746,7 @@ class DraftWorkflowFailClosedTests(unittest.TestCase):
         }
         with (
             mock.patch.object(main, "load_history", return_value=[]),
-            mock.patch.object(main, "fetch_unsplash_photo", return_value={"url": "https://example.com/image.jpg", "author": "Test", "alt": "Test"}),
+            mock.patch.object(main, "fetch_unsplash_photo", return_value={"url": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80", "author": "Test", "alt": "Test"}),
             mock.patch.object(main, "generate_article_with_metadata", return_value=article_data),
             mock.patch.object(main, "build_enterprise_html", return_value="<p>HTML</p>"),
             mock.patch.object(main, "create_drafts_on_blogs", return_value=[]),
@@ -759,7 +759,7 @@ class DraftWorkflowFailClosedTests(unittest.TestCase):
     def test_missing_generated_article_raises_instead_of_successful_skip(self):
         with (
             mock.patch.object(main, "load_history", return_value=[]),
-            mock.patch.object(main, "fetch_unsplash_photo", return_value={"url": "https://example.com/image.jpg", "author": "Test", "alt": "Test"}),
+            mock.patch.object(main, "fetch_unsplash_photo", return_value={"url": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80", "author": "Test", "alt": "Test"}),
             mock.patch.object(main, "generate_article_with_metadata", return_value=None),
         ):
             with self.assertRaisesRegex(RuntimeError, "Article generation returned no validated content"):

@@ -2,7 +2,7 @@ import os
 import re
 import json
 from datetime import datetime
-import pytz
+from zoneinfo import ZoneInfo
 
 class TRTTAntiSpamEngine:
     def __init__(self):
@@ -14,9 +14,9 @@ class TRTTAntiSpamEngine:
         
     def verify_timezone_and_date(self):
         """Rule 5: Europe/Rome Local Time Check (Commit 6928f9c)"""
-        rome_tz = pytz.timezone('Europe/Rome')
+        rome_tz = ZoneInfo('Europe/Rome')
         current_time_rome = datetime.now(rome_tz)
-        deadline = rome_tz.localize(datetime(2026, 11, 6, 0, 0, 0))
+        deadline = datetime(2026, 11, 6, 0, 0, 0, tzinfo=rome_tz)
         
         if current_time_rome < deadline:
             raise AssertionError(f"CRITICAL DATE VIOLATION: Current Rome time {current_time_rome} is before midnight deadline!")

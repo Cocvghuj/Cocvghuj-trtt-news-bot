@@ -83,13 +83,13 @@ jobs:
           from pathlib import Path
           import trtt_787950_master as engine
           queue = json.loads(Path("news/queue/latest.json").read_text(encoding="utf-8"))
-          assert queue["version"] == "2026-11-06"
+          assert queue["version"] == "2026-11-07"
           assert queue["batch_size"] == 1 and queue["isDraft"] is True
           assert len(queue["routes"]) == 1 and queue["routes"][0]["isDraft"] is True
           route = queue["routes"][0]
           content = engine.build_content(route, "6 November 2026")
           assert "EC 261/2004" in content and "EC Regulation 261/2004" not in content
-          assert "<img src=\"https://images.unsplash.com/" in content
+          assert '<img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80"' in content
           assert "787950 LOCKED" in content
           assert "https://cocvghuj-trtt-news-bot.vercel.app" in content
           assert "amzn.to/4shg6Hn?marker=787950" in content
