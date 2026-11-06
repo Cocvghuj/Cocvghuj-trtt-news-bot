@@ -1,0 +1,18 @@
+{
+  "repo": "trtt-amazon-menu",
+  "type": "component-not-index",
+  "merge_target": "cocvghuj-trtt-news-bot.vercel.app",
+  "merge_method": "iframe-or-fetch - Main Vercel will load this component via <iframe> or fetch",
+  "marker": "787950",
+  "marker_hex": "373837393530",
+  "custom_percent": "30-40%",
+  "locked_percent": "60-70%",
+  "products": [
+    {"emoji":"🎒","title":"Travel Backpack 40L","desc":"Cabin Size • Waterproof","link":"https://amzn.to/4shg6Hn?marker=787950&k=travel+backpack"},
+    {"emoji":"📷","title":"Travel Camera","desc":"4K • Lightweight","link":"https://amzn.to/4shg6Hn?marker=787950&k=camera+travel"},
+    {"emoji":"🔌","title":"Universal Adapter","desc":"EU • UK • US • Italy","link":"https://amzn.to/4shg6Hn?marker=787950&k=universal+travel+adapter"},
+    {"emoji":"🔋","title":"Power Bank 20000mAh","desc":"Ghost-SIM Ready","link":"https://amzn.to/4shg6Hn?marker=787950&k=power+bank+20000mah"},
+    {"emoji":"🧳","title":"Cabin Luggage","desc":"EC 261 Ready • 55cm","link":"https://amzn.to/4shg6Hn?marker=787950&k=cabin+luggage"},
+    {"emoji":"💤","title":"Travel Pillow","desc":"Cagliari → Bergamo Tested","link":"https://amzn.to/4shg6Hn?marker=787950&k=travel+pillow"}
+  ]
+}
