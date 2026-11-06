@@ -2,17 +2,17 @@ name: TRTT Single-Draft
 
 on:
   schedule:
-    # GitHub cron is UTC. These two hours cover 07:00 Europe/Rome in both CET and CEST.
-    - cron: "0 5,6 * * *"
+    - cron: '0 5 * * *'
+    - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
       target_date:
-        description: "Queue date to draft (YYYY-MM-DD); leave blank for today's Rome date"
+        description: 'Queue date (YYYY-MM-DD); blank uses today in Europe/Rome'
         required: false
         type: string
 
 concurrency:
-  group: trtt-single-draft-${{ github.ref }}
+  group: trtt-single-draft
   cancel-in-progress: false
 
 permissions:
@@ -22,39 +22,30 @@ jobs:
   create-one-draft:
     runs-on: ubuntu-latest
     steps:
-      - name: Gate to 07:00 Europe/Rome
-        id: local-time
+      - name: Check Rome local time
+        id: clock
         shell: bash
         run: |
-          python3 - <<'PY'
-          from datetime import datetime
-          from zoneinfo import ZoneInfo
-          now = datetime.now(ZoneInfo("Europe/Rome"))
-          run = "true" if now.hour == 7 and now.minute < 10 else "false"
-          print(f"run={run}")
-          print(f"Europe/Rome time: {now.isoformat()}")
-          with open(__import__("os").environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
-              out.write(f"run={run}\n")
-          PY
+          echo "hour=$(TZ=Europe/Rome date +%H)" >> "$GITHUB_OUTPUT"
 
       - name: Checkout repository
-        if: github.event_name == 'workflow_dispatch' || steps.local-time.outputs.run == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.clock.outputs.hour == '07'
         uses: actions/checkout@v4
 
       - name: Set up Python
-        if: github.event_name == 'workflow_dispatch' || steps.local-time.outputs.run == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.clock.outputs.hour == '07'
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Install dependencies
-        if: github.event_name == 'workflow_dispatch' || steps.local-time.outputs.run == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.clock.outputs.hour == '07'
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Create exactly one verified Blogger draft
-        if: github.event_name == 'workflow_dispatch' || steps.local-time.outputs.run == 'true'
+      - name: Create one verified Blogger draft
+        if: github.event_name == 'workflow_dispatch' || steps.clock.outputs.hour == '07'
         env:
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
@@ -63,6 +54,6 @@ jobs:
           TRTT_TARGET_DATE: ${{ github.event.inputs.target_date }}
         run: python trtt_787950_master.py
 
-      - name: Skip outside Sanluri local 07:00 window
-        if: github.event_name == 'schedule' && steps.local-time.outputs.run != 'true'
-        run: echo "No draft run: outside 07:00 Europe/Rome."
+      - name: Skip outside 07:00 Europe/Rome
+        if: github.event_name == 'schedule' && steps.clock.outputs.hour != '07'
+        run: echo 'Skipped: not 07:00 Europe/Rome.'
