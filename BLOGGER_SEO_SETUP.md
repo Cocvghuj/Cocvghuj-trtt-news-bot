@@ -9,8 +9,8 @@ The public homepage and a representative post were checked directly.
 - Canonical URLs are present and point to the expected Blogspot URLs.
 - The homepage title is `TRTTVoyage - Official All-in-One Travel Hub`.
 - The homepage meta description is only `TRTT News 24bd`, which is too generic to explain the site's subject.
-- A representative flight-guide post has a route-specific title, but its meta description is also only `TRTT News 24bd`.
-- The Open Graph and Twitter descriptions inherit that same generic text.
+- Meta descriptions are inconsistent across posts: some recent articles have useful, unique descriptions, while others fall back to `TRTT News 24bd`.
+- On posts using the fallback, the Open Graph and Twitter descriptions inherit the same generic text.
 
 ## Recommended global blog identity
 
@@ -39,7 +39,7 @@ Do not add keyword lists, repeated city names, unsupported claims, or promotiona
 
 The Blogger draft pipeline now builds a unique description from the queued route, IATA airport codes, and travel date, then sends it as Blogger's `customMetaData` field. It deliberately does not use unverified queue prices or airline names as SEO claims.
 
-New drafts still require human review before publication. Existing live posts are not modified by this repository change; update their Search description field in Blogger only after reviewing each article.
+New drafts still require human review before publication. Existing live posts are not modified by this repository change. Audit them individually and add a Search description only where one is missing, generic, or inaccurate.
 
 ## Technical safeguards
 
