@@ -186,7 +186,7 @@ def build_content(route: dict[str, Any] | str, date_label: str | None = None) ->
 <p><a href="https://europa.eu/youreurope/citizens/travel/passenger-rights/air/index_en.htm" rel="noopener">Official EU air passenger rights guidance</a></p>
 <p><a href="{LIVE_APP}">TRTT VoyageHub Showroom</a></p>
 </article>"""
-    content = content.replace("</article>", """
+    content = content.replace("</article>", f"""
 <h2>Check the complete journey before booking</h2>
 <p>Use the date on the final booking screen as the source of truth and compare the departure and arrival airport codes before payment. A city label can cover several airports, and choosing the wrong one can add a long transfer or an unexpected overnight stay. For this route, check that the ticket shows {iata_from} at departure and {iata_to} at arrival. If the carrier changes an airport or schedule, compare the revised itinerary with your ground transport, accommodation check-in time and any onward reservation. Save the updated confirmation rather than relying on an earlier search result.</p>
 <p>Compare the total cost for the same number of passengers and the same baggage needs. Include cabin baggage, checked baggage, seat selection, payment charges and transport to and from each airport. Optional products may be cheaper when selected during the initial booking, but only add them if they are useful. Read the fare conditions before payment and note whether changes, cancellations or refunds are permitted. A low headline price is not a meaningful comparison if one option excludes a bag that you already know you need.</p>
