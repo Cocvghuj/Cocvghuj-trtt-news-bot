@@ -1,6 +1,6 @@
 (function(){
 "use strict";
-var ROOT="trtt-future-world",STYLE="trtt-future-world-ui",CSS_URL="https://cocvghuj-trtt-news-bot.vercel.app/trtt-future-blog.css";
+var ROOT="trtt-future-world",STYLE="trtt-future-world-ui",CSS_URL="https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@8a9ad471ca01fb7f390132b42d26f0d9fa9db7cc/trtt-future-blog.css";
 var HUB="https://cocvghuj-trtt-news-bot.vercel.app/";
 var LINKS=[
  {title:"About Us",desc:"Who we are, what we believe and why we travel",href:"/p/about-us.html"},
@@ -15,7 +15,7 @@ function safe(h){return typeof h==="string"&&(h.charAt(0)==="/"||/^https:\/\//i.
 function close(){document.body.classList.remove("trtt-future-open");var x=document.getElementById(ROOT);if(x)x.setAttribute("aria-hidden","true");}
 function build(){
  if(document.getElementById(ROOT))return;
- var root=document.createElement("section");root.id=ROOT;root.setAttribute("aria-hidden","true");root.setAttribute("role","dialog");root.setAttribute("aria-modal","true");root.setAttribute("aria-label","TRTT navigation");
+ var root=document.createElement("section");root.id=ROOT;root.setAttribute("aria-hidden","true");root.setAttribute("role","dialog");root.setAttribute("aria-modal","true");root.setAttribute("aria-label","TRTT Voyage navigation");
  var wrap=document.createElement("div");wrap.className="tf-wrap";
  var top=document.createElement("header");top.className="tf-top";
  var brand=document.createElement("a");brand.className="tf-brand";brand.href="/";brand.innerHTML="<span class='tf-monogram'>T.</span><span>TRTT <i>VOYAGE</i><small>INDEPENDENT TRAVEL & CULTURE</small></span>";
@@ -40,7 +40,7 @@ function build(){
  document.addEventListener("keydown",function(e){if(e.key==="Escape")close();});
  var toggle=document.querySelector(".mobile-menu-toggle");
  if(toggle&&!toggle.dataset.trttFuture){
-  toggle.dataset.trttFuture="1";toggle.setAttribute("aria-label","Open TRTT Journal navigation");toggle.setAttribute("role","button");toggle.setAttribute("tabindex","0");
+  toggle.dataset.trttFuture="1";toggle.setAttribute("aria-label","Open TRTT Voyage navigation");toggle.setAttribute("role","button");toggle.setAttribute("tabindex","0");
   toggle.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();open();},true);
   toggle.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();open();}},true);
  }
