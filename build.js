@@ -1,73 +1,19 @@
 const fs = require('fs');
 const path = require('path');
-
 const root = __dirname;
 const dist = path.join(root, 'dist');
-
-// Only publish browser-facing assets. Never copy Python source, credentials/config
-// files, partner records, tests, histories, or documentation.
-const PUBLIC_EXTENSIONS = new Set([
-  '.html', '.css', '.js', '.mjs', '.svg',
-  '.png', '.jpg', '.jpeg', '.webp', '.gif', '.ico',
-  '.woff', '.woff2', '.ttf', '.otf',
-  '.xml', '.webmanifest'
-]);
-const PUBLIC_JSON_FILES = new Set([
-  'affiliate-services.json',
-  'manifest.json',
-  'blog-control.json'
-]);
-const PUBLIC_TEXT_FILES = new Set([
-  'robots.txt',
-  'sitemap.txt'
-]);
+const PUBLIC_EXTENSIONS = new Set(['.html','.css','.js','.mjs','.svg','.png','.jpg','.jpeg','.webp','.gif','.ico','.woff','.woff2','.ttf','.otf','.xml','.webmanifest']);
+const PUBLIC_JSON_FILES = new Set(['affiliate-services.json','manifest.json','blog-control.json']);
+const PUBLIC_TEXT_FILES = new Set(['robots.txt','sitemap.txt']);
 const PRIVATE_FILES = new Set(['build.js']);
-const IGNORED_DIRECTORIES = new Set([
-  '.git', '.github', 'api', 'dist', 'node_modules',
-  'tests', '__pycache__', '.venv', 'venv',
-  'logs', 'private', 'data'
-]);
-
-if (fs.existsSync(dist)) {
-  fs.rmSync(dist, { recursive: true, force: true });
-}
-fs.mkdirSync(dist, { recursive: true });
-
-function isPublicAsset(filePath) {
-  const filename = path.basename(filePath).toLowerCase();
-  if (PRIVATE_FILES.has(filename)) return false;
-  if (PUBLIC_JSON_FILES.has(filename) || PUBLIC_TEXT_FILES.has(filename)) return true;
-  return PUBLIC_EXTENSIONS.has(path.extname(filename));
-}
-
-function copyRecursive(src, dest) {
-  const stat = fs.statSync(src);
-  if (stat.isDirectory()) {
-    const directoryName = path.basename(src).toLowerCase();
-    if (IGNORED_DIRECTORIES.has(directoryName)) return;
-    if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
-    fs.readdirSync(src).forEach(child => {
-      copyRecursive(path.join(src, child), path.join(dest, child));
-    });
-    return;
-  }
-
-  if (!isPublicAsset(src)) return;
-  const parent = path.dirname(dest);
-  if (!fs.existsSync(parent)) fs.mkdirSync(parent, { recursive: true });
-  fs.copyFileSync(src, dest);
-}
-
-fs.readdirSync(root).forEach(file => {
-  if (IGNORED_DIRECTORIES.has(file.toLowerCase())) return;
-  copyRecursive(path.join(root, file), path.join(dist, file));
-});
-
-const builtIndex = path.join(dist, 'index.html');
-if (!fs.existsSync(builtIndex)) throw new Error('Build failed: dist/index.html was not created.');
-const builtHtml = fs.readFileSync(builtIndex, 'utf8');
-if (!builtHtml.includes('TRTT') || !builtHtml.includes('VOYAGEHUB')) throw new Error('Build failed: TRTT VOYAGEHUB branding missing from dist/index.html.');
-if (!builtHtml.includes('787950 LOCKED')) throw new Error('Build failed: marker 787950 LOCKED missing from dist/index.html.');
-if (!builtHtml.includes('https://cocvghuj-trtt-news-bot.vercel.app')) throw new Error('Build failed: TRTT Live App link missing from dist/index.html.');
-if (!builtHtml.includes('roksana-vault.js')) throw new Error('Build failed: 787950 bottom menu source missing from dist/index.html.');
-console.log('Build verified: dist/index.html contains TRTT VOYAGEHUB and marker 787950 LOCKED.');
+const IGNORED_DIRECTORIES = new Set(['.git','.github','api','dist','node_modules','tests','__pycache__','.venv','venv','logs','private','data']);
+if(fs.existsSync(dist))fs.rmSync(dist,{recursive:true,force:true});
+fs.mkdirSync(dist,{recursive:true});
+function isPublicAsset(filePath){const filename=path.basename(filePath).toLowerCase();if(PRIVATE_FILES.has(filename))return false;if(PUBLIC_JSON_FILES.has(filename)||PUBLIC_TEXT_FILES.has(filename))return true;return PUBLIC_EXTENSIONS.has(path.extname(filename));}
+function copyRecursive(src,dest){const stat=fs.statSync(src);if(stat.isDirectory()){if(IGNORED_DIRECTORIES.has(path.basename(src).toLowerCase()))return;if(!fs.existsSync(dest))fs.mkdirSync(dest,{recursive:true});fs.readdirSync(src).forEach(child=>copyRecursive(path.join(src,child),path.join(dest,child)));return;}if(!isPublicAsset(src))return;const parent=path.dirname(dest);if(!fs.existsSync(parent))fs.mkdirSync(parent,{recursive:true});fs.copyFileSync(src,dest);}
+fs.readdirSync(root).forEach(file=>{if(IGNORED_DIRECTORIES.has(file.toLowerCase()))return;copyRecursive(path.join(root,file),path.join(dist,file));});
+const builtIndex=path.join(dist,'index.html');
+if(!fs.existsSync(builtIndex))throw new Error('Build failed: dist/index.html was not created.');
+const html=fs.readFileSync(builtIndex,'utf8');
+for(const [needle,message] of [['TRTT','brand missing'],['VOYAGE','TRTT Voyage branding missing'],['787950 LOCKED','marker missing'],['https://cocvghuj-trtt-news-bot.vercel.app','Travel Tools link missing'],['roksana-vault.js','marker bottom dock source missing'],['hero-flight.svg','hero plane-and-city artwork missing']])if(!html.includes(needle))throw new Error('Build failed: '+message+'.');
+console.log('Build verified: TRTT Voyage homepage, marker and public assets are present.');
