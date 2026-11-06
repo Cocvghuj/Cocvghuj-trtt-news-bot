@@ -327,30 +327,88 @@ def create_drafts_on_blogs(
     return outcomes
 
 
+def _load_queued_route() -> tuple[dict[str, Any], dict[str, Any]]:
+    """Require one real queued route; an empty queue is a hard failure, never a fake pass."""
+    import json
+    from datetime import datetime
+
+    queue_path = engine.QUEUE_FILE
+    if not queue_path.is_file() or queue_path.stat().st_size == 0:
+        raise RuntimeError(f"Queue is empty or missing: {queue_path}; refusing to report success.")
+
+    try:
+        queue = json.loads(queue_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError(f"Queue cannot be read: {exc}") from exc
+
+    if not isinstance(queue, dict):
+        raise RuntimeError("Queue must be a JSON object.")
+    if queue.get("isDraft") is not True:
+        raise RuntimeError("Queue policy failure: isDraft must be true.")
+    if queue.get("batch_size") != 1:
+        raise RuntimeError("Queue policy failure: batch_size must equal 1.")
+    if queue.get("require_image") is not True:
+        raise RuntimeError("Queue policy failure: require_image must be true.")
+    if queue.get("require_marker") != engine.MARKER:
+        raise RuntimeError("Queue policy failure: marker mismatch.")
+
+    routes = queue.get("routes")
+    if not isinstance(routes, list) or len(routes) != 1 or not isinstance(routes[0], dict):
+        raise RuntimeError(
+            f"Queue must contain exactly one route object; found "
+            f"{len(routes) if isinstance(routes, list) else 'invalid'}."
+        )
+
+    route = dict(routes[0])
+    required = ("from", "to", "iata_from", "iata_to", "date", "price", "airline")
+    missing = [key for key in required if not str(route.get(key, "")).strip()]
+    if missing:
+        raise RuntimeError("Queued route is missing required fields: " + ", ".join(missing))
+    if route.get("isDraft") is not True:
+        raise RuntimeError("Route policy failure: route.isDraft must be true.")
+    try:
+        route_date = datetime.strptime(str(route["date"]), "%Y-%m-%d").date()
+    except ValueError as exc:
+        raise RuntimeError("Queued route date must use YYYY-MM-DD.") from exc
+    if route_date < engine.publish_date().date():
+        raise RuntimeError("Queued route date is in the past; refusing to create a stale draft.")
+
+    print(
+        f"Queue verified: version={queue.get('version', route['date'])}; "
+        f"routes=1; date={route['date']}; isDraft=True"
+    )
+    return queue, route
+
+
 def main(service_factory: Any = None) -> int:
     started = time.monotonic()
     primary, partner = _require_configuration()
-    queue, route = engine._load_today_route()
-    route_key = engine.route_key(route)
     print("Republish allowed - today's date override (DRAFT-only; no live publishing).")
+    queue, route = _load_queued_route()
+    route_key = engine.route_key(route)
     title = f"{route['from']} to {route['to']} flight guide - {route['date']} - TRTT"
     content = engine.build_content(route)
-    if engine._plain_word_count(content) < 800:
-        raise RuntimeError("Draft content is below 800 words.")
 
-    for name, passed in {
+    checks = {
+        "800+ words": engine._plain_word_count(content) >= 800,
+        "image": "<img src=" in content,
         "marker": engine.MARKER in content,
-        "showroom": engine.LIVE_APP in content,
+        "Vercel hub": engine.LIVE_APP in content,
         "no direct affiliate links": not engine.contains_direct_affiliate_links(content),
-    }.items():
-        print(f"{name}: {'PASS' if passed else 'FAIL'}")
+    }
+    for label, passed in checks.items():
+        print(f"{label}: {'PASS' if passed else 'FAIL'}")
         if not passed:
-            raise RuntimeError(f"Draft content validation failed: {name}")
+            raise RuntimeError(f"Draft content validation failed: {label}")
 
     import main as editorial_context
 
     service = service_factory() if service_factory else _build_service()
-    for blog_id, name in ((primary, "trttnews24bd"), (partner, "flightscoutpro")):
+    verified = []
+    for blog_id, blog_name in (
+        (primary, "trttnews24bd"),
+        (partner, "flightscoutpro"),
+    ):
         post, created = create_or_verify_draft(
             service,
             blog_id,
@@ -359,16 +417,26 @@ def main(service_factory: Any = None) -> int:
             topic_key=route_key,
             context=editorial_context,
         )
-        action = "created" if created else "recovered"
+        post_id = str(post.get("id", "")).strip()
+        if not post_id:
+            raise RuntimeError(f"{blog_name}: Blogger returned no Post ID.")
+        # create_or_verify_draft performs posts().get() and fails unless Blogger returns DRAFT.
+        status = str(post.get("status", "")).upper()
+        if status != "DRAFT":
+            raise RuntimeError(f"{blog_name}: read-back status was {status or 'UNKNOWN'}, not DRAFT.")
         if created:
-            print(f"SUCCESS: Draft created - {name} - Post ID: {post['id']}")
-        print(f"{name}: {action}; Post ID: {post['id']} - Status: DRAFT Verified")
+            print(f"SUCCESS: Draft created - {blog_name} - Post ID: {post_id}")
+        else:
+            print(f"CONFIRMED: Existing Blogger DRAFT - {blog_name} - Post ID: {post_id}")
+        print(f"{blog_name}: Post ID: {post_id} | Status: DRAFT VERIFIED")
+        verified.append((blog_name, post_id))
 
+    if len(verified) != 2:
+        raise RuntimeError("Both Blogger sites must be verified before success.")
     engine.append_history(route_key)
-    print(f"Two Blogger DRAFT resources verified. Queue: {queue.get('version', route['date'])}")
+    print(f"SUCCESS: {len(verified)} Blogger DRAFT posts verified; no LIVE posts created.")
     print(f"Elapsed: {time.monotonic() - started:.2f}s")
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())
