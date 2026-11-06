@@ -10,7 +10,7 @@ function sharpenHeaderLogo(){
  var img=document.querySelector("#header .header-image-wrapper img,.header-widget .header-image-wrapper img");
  if(!img||img.dataset.trttHiRes)return;
  var src=img.getAttribute("src")||"";
- if(/=s\\d+(-c)?$/.test(src))img.setAttribute("src",src.replace(/=s\\d+(-c)?$/,"=s480"));
+ if(/=s\d+(-c)?$/.test(src))img.setAttribute("src",src.replace(/=s\d+(-c)?$/,"=s480"));
  img.dataset.trttHiRes="1";
 }
 function addCSS(){
