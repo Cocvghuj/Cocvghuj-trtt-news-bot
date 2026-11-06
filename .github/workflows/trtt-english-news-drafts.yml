@@ -1,93 +1,13 @@
-name: TRTT News - Publish to Both Blogger Sites
+# DISABLED - Replaced by the single-draft queue pipeline.
+# Kept for history; do not re-enable alongside the replacement workflow.
+name: TRTT News - Publish to Both Blogger Sites [DISABLED]
 
-# Marker 787950 LOCKED - Publication to Both Blogger Sites
 on:
   workflow_dispatch:
-  schedule:
-    # 3x Daily (07:00, 13:00, 19:00 UTC)
-    - cron: '0 7,13,19 * * *'
-
-permissions:
-  contents: write
-
-concurrency:
-  group: trtt-news-publishing
-  cancel-in-progress: false
 
 jobs:
-  publish:
-    name: Generate and publish to both Blogger blogs
-    if: github.ref == 'refs/heads/main'
+  disabled_notice:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: pip
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Require both Blogger sites and publishing credentials
-        env:
-          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID || vars.BLOGGER_BLOG_ID }}
-          FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID_2 || secrets.FLIGHTSCOUTPRO_BLOG_ID || vars.BLOGGER_BLOG_ID_2 || vars.FLIGHTSCOUTPRO_BLOG_ID }}
-          BLOGGER_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID || secrets.BLOGGER_CLIENT_ID }}
-          BLOGGER_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET || secrets.BLOGGER_CLIENT_SECRET }}
-          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-        run: |
-          set -euo pipefail
-          for name in BLOGGER_BLOG_ID FLIGHTSCOUTPRO_BLOG_ID BLOGGER_CLIENT_ID BLOGGER_CLIENT_SECRET BLOGGER_REFRESH_TOKEN; do
-            if [[ -z "${!name:-}" ]]; then
-              echo "::error::Missing required GitHub Actions secret/variable: $name"
-              exit 1
-            fi
-          done
-          if [[ "$BLOGGER_BLOG_ID" == "$FLIGHTSCOUTPRO_BLOG_ID" ]]; then
-            echo "::error::Configure two different Blogger blog IDs."
-            exit 1
-          fi
-          if [[ -z "$GEMINI_API_KEY" && -z "$OPENROUTER_API_KEY" ]]; then
-            echo "::error::Configure GEMINI_API_KEY or OPENROUTER_API_KEY."
-            exit 1
-          fi
-
-      - name: Generate article and publish it to both sites
-        env:
-          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID || vars.BLOGGER_BLOG_ID }}
-          FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID_2 || secrets.FLIGHTSCOUTPRO_BLOG_ID || vars.BLOGGER_BLOG_ID_2 || vars.FLIGHTSCOUTPRO_BLOG_ID }}
-          PARTNER_BLOG_IDS: ""
-          BLOGGER_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID || secrets.BLOGGER_CLIENT_ID }}
-          BLOGGER_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET || secrets.BLOGGER_CLIENT_SECRET }}
-          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          TRAVEL_PAYOUT_MARKER: ${{ secrets.TRAVEL_PAYOUT_MARKER || vars.TRAVEL_PAYOUT_MARKER || '787950 LOCKED' }}
-        run: python scripts/publish_news.py
-
-      - name: Save published article history
-        run: |
-          set -euo pipefail
-          git config user.name "TRTT Bot [787950]"
-          git config user.email "bot@trttnews24bd.com"
-          git add drafted_history.txt
-          if git diff --cached --quiet; then
-            echo "No article history changes to save."
-          else
-            git commit -m "Record Blogger publication history [skip ci] - Marker 787950 LOCKED"
-            git push origin HEAD:main || echo "History push skipped"
-          fi
+      - name: Workflow disabled notice
+        run: echo "Disabled to prevent duplicate multi-blog drafts. Use the single-draft queue workflow only."
