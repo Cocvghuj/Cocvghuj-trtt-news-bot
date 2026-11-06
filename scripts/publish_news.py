@@ -380,6 +380,25 @@ def _load_queued_route() -> tuple[dict[str, Any], dict[str, Any]]:
     return queue, route
 
 
+def _affiliate_links_are_disclosed(content: str) -> bool:
+    """Require every configured affiliate URL in content to use a sponsored/nofollow anchor."""
+    for url in engine.AFFILIATES.values():
+        if url not in content:
+            continue
+        href = f'href="{url}"'
+        position = content.find(href)
+        if position < 0:
+            return False
+        tag_start = content.rfind("<a", 0, position)
+        tag_end = content.find(">", position)
+        if tag_start < 0 or tag_end < 0:
+            return False
+        opening_tag = content[tag_start:tag_end + 1]
+        if 'rel="sponsored nofollow noopener"' not in opening_tag:
+            return False
+    return True
+
+
 def main(service_factory: Any = None) -> int:
     started = time.monotonic()
     primary, partner = _require_configuration()
@@ -394,7 +413,7 @@ def main(service_factory: Any = None) -> int:
         "image": "<img src=" in content,
         "marker": engine.MARKER in content,
         "Vercel hub": engine.LIVE_APP in content,
-        "no direct affiliate links": not engine.contains_direct_affiliate_links(content),
+        "affiliate links disclosed": _affiliate_links_are_disclosed(content),
     }
     for label, passed in checks.items():
         print(f"{label}: {'PASS' if passed else 'FAIL'}")
