@@ -3,13 +3,14 @@
 var ROOT="trtt-future-world",STYLE="trtt-future-world-ui",CSS_URL="https://cocvghuj-trtt-news-bot.vercel.app/trtt-future-blog.css";
 var HUB="https://cocvghuj-trtt-news-bot.vercel.app/";
 var LINKS=[
- {title:"The Journal",desc:"Latest stories and field notes",href:"/"},
- {title:"Europe Dispatch",desc:"Places, people and practical guides",href:"/search/label/Europe%20Travel"},
- {title:"Flight Desk",desc:"Routes, airports and flight planning",href:"/search/label/Flights"},
- {title:"Connected",desc:"eSIMs and staying online abroad",href:"/search/label/eSIM"},
- {title:"The Stay Edit",desc:"Hotels, stays and destination ideas",href:"/search/label/Hotels"},
- {title:"Private Collection",desc:"A curated corner of the journal",href:"/p/roksana-vault.html"},
- {title:"VoyageHub",desc:"Explore the independent travel toolkit",href:HUB,external:true}
+ {title:"Latest Stories",desc:"Every new post from the journal",href:"/"},
+ {title:"Aviation Desk",desc:"Flights, airports and aviation updates",href:"/search/label/Aviation"},
+ {title:"Passenger Help",desc:"AirHelp and passenger-rights information",href:"/search/label/AirHelp"},
+ {title:"TRTT News",desc:"News, publishing and blog updates",href:"/search/label/TRTT%20News%2024%20BD"},
+ {title:"November Archive",desc:"Browse the latest monthly collection",href:"/2026_11_01_archive.html"},
+ {title:"About TRTT",desc:"The story behind this travel journal",href:"/p/about-us.html"},
+ {title:"Contact",desc:"Get in touch with TRTT",href:"/p/contact-us_0889829255.html"},
+ {title:"VoyageHub",desc:"Open the TRTT travel toolkit",href:HUB,external:true}
 ];
 function addCSS(){
  if(!document.getElementById(STYLE)){
