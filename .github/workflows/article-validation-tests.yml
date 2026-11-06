@@ -1,113 +1,11 @@
-name: Article Validation Tests
+name: Article Validation Tests [DISABLED]
 
-# Marker 787950 LOCKED - Production CI Safety Guard
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "main.py"
-      - "config.py"
-      - "affiliate-services.json"
-      - "affiliate-links.js"
-      - "index.html"
-      - "super-app.html"
-      - "build.js"
-      - "package.json"
-      - "requirements.txt"
-      - "vercel.json"
-      - "tests/**"
-      - ".github/workflows/article-validation-tests.yml"
-      - "api/answer.js"
-      - "trtt-all-in-one.js"
-      - "public/trtt-all-in-one.js"
-      - "roksana-vault.js"
-      - "roksana-vault-final.js"
-      - "scripts/validate-answer-engine.js"
-  pull_request:
-    branches: [main]
-    paths:
-      - "main.py"
-      - "config.py"
-      - "affiliate-services.json"
-      - "affiliate-links.js"
-      - "index.html"
-      - "super-app.html"
-      - "build.js"
-      - "package.json"
-      - "requirements.txt"
-      - "vercel.json"
-      - "tests/**"
-      - ".github/workflows/article-validation-tests.yml"
-      - "api/answer.js"
-      - "trtt-all-in-one.js"
-      - "public/trtt-all-in-one.js"
-      - "roksana-vault.js"
-      - "roksana-vault-final.js"
-      - "scripts/validate-answer-engine.js"
-
-permissions:
-  contents: read
 
 jobs:
-  validate-articles:
-    name: Run safe validation and storefront build checks
+  disabled:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install import dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install google-genai google-auth google-api-python-client requests python-slugify feedparser beautifulsoup4
-
-      - name: Run tests (no Blogger publishing)
-        run: python -m unittest discover -s tests -v
-
-      - name: Set up Node.js 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Check affiliate synchronizer syntax
-        run: node --check affiliate-links.js
-
-      - name: Verify Vercel build configuration
-        run: |
-          python -c "import json; c=json.load(open('vercel.json', encoding='utf-8')); assert c['buildCommand'] == 'npm run build'; assert c['outputDirectory'] == 'dist'"
-
-      - name: Validate secure dual-AI Answer Engine and Vault
-        run: |
-          npm test
-          node --check api/answer.js
-          node --check trtt-all-in-one.js
-          node --check public/trtt-all-in-one.js
-          node --check roksana-vault.js
-          node --check roksana-vault-final.js
-
-      - name: Build Vercel static output
-        run: npm run build
-
-      - name: Verify affiliate assets in Vercel output
-        run: |
-          test -s dist/index.html
-          test -s dist/super-app.html
-          test -s dist/affiliate-services.json
-          test -s dist/affiliate-links.js
-          test -s dist/manifest.json
-          test -s dist/robots.txt
-          test ! -e dist/main.py
-          test ! -e dist/config.py
-          test ! -e dist/partners.json
-          test ! -e dist/requirements.txt
-          test ! -e dist/package.json
-          test ! -e dist/build.js
-          test ! -e dist/README.md
-          test ! -d dist/tests
+      - name: Disabled notice
+        run: echo "This workflow is disabled. TRTT Single-Draft is the only active workflow."
