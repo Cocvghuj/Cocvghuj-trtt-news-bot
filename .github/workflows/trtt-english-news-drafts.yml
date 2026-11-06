@@ -1,11 +1,11 @@
 # Marker: 787950 LOCKED
-name: TRTT News - Publish to Both Blogger Sites
+name: TRTT News - Create verified Blogger DRAFTS only
 
 on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: trtt-daily-draft
@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: true
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -40,8 +40,8 @@ jobs:
           assert queue["batch_size"] == 1 and queue["isDraft"] is True
           assert len(queue["routes"]) == 1
           route = queue["routes"][0]
-          assert route["date"] == "2026-11-07" and route["isDraft"] is True
-          content = build_content(route, "6 November 2026")
+          assert route["date"] == queue["version"] and route["isDraft"] is True
+          content = build_content(route)
           assert "EC 261/2004" in content and "EC Regulation 261/2004" not in content
           assert _plain_word_count(content) >= 800
           assert '<img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80"' in content
@@ -49,8 +49,7 @@ jobs:
           assert "TRTT VoyageHub Showroom" in content
           assert "amzn.to/4shg6Hn?marker=787950" in content
           assert "https://cocvghuj-trtt-news-bot.vercel.app" in content
-          assert "amzn.to/4shg6Hn?marker=787950" in content
-          print("CONTENT-ONLY CHECK PASSED: one dated route, 800+ words, image, EC 261/2004, marker, Vercel link and affiliate. No Blogger API call was made in this validation step.")
+          print("CONTENT-ONLY CHECK PASSED. No Blogger API call was made in this validation step.")
           PY
       - name: Require both Blogger accounts
         env:
@@ -65,7 +64,7 @@ jobs:
             if [[ -z "${!name:-}" ]]; then echo "::error::Missing required setting: $name"; exit 1; fi
           done
           if [[ "$BLOGGER_BLOG_ID" == "$FLIGHTSCOUTPRO_BLOG_ID" ]]; then echo "::error::Two distinct Blogger IDs are required."; exit 1; fi
-      - name: Create one daily draft on both Blogger sites
+      - name: Create one verified DRAFT on both Blogger sites
         env:
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID || vars.BLOGGER_BLOG_ID }}
           FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.FLIGHTSCOUTPRO_BLOG_ID || vars.FLIGHTSCOUTPRO_BLOG_ID }}
@@ -76,13 +75,11 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/publish_news.py
-      - name: Save daily draft history
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add drafted_history.txt
-          if git diff --cached --quiet; then echo "No new daily draft history."; else
-            git commit -m "Record daily Blogger draft history [skip ci]"
-            git push origin HEAD:main
-          fi
+      - name: Archive local draft history without pushing to main
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trtt-draft-history-${{ github.run_id }}
+          path: drafted_history.txt
+          if-no-files-found: warn
+          retention-days: 30

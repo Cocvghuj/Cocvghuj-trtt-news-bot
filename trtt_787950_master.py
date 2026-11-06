@@ -18,14 +18,7 @@ HISTORY_FILE = ROOT / "drafted_history.txt"
 TIME_ZONE = ZoneInfo("Europe/Rome")
 BATCH_SIZE = 1
 MARKER = "787950 LOCKED"
-LIVE_APP = "https://cocvghuj-trtt-news-bot.vercel.app"
-AFFILIATES = {
-    "amazon": "https://amzn.to/4shg6Hn?marker=787950",
-    "aviasales": "https://aviasales.tpo.lv/Fb8U9yav?marker=787950",
-    "klook": "https://klook.tpo.lv/TWKnemhz?marker=787950",
-    "airalo": "https://airalo.tpo.lv/ZZoQC7Mz?marker=787950",
-    "gettransfer": "https://gettransfer.tpo.lv/1u8zRU5s?marker=787950",
-}
+LIVE_APP = "https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950"
 
 
 def publish_date() -> datetime:
@@ -126,18 +119,21 @@ def _plain_word_count(content: str) -> int:
     return len(re.findall(r"\b[\w€'-]+\b", plain, flags=re.UNICODE))
 
 
+DIRECT_AFFILIATE_LINK_RE = re.compile(
+    r"""href\s*=\s*["']https?://(?:[a-z0-9-]+\.)*(?:tpo\.lv|amzn\.to|amazon\.[a-z.]+|airhelp\.com|compensair\.com|airalo\.com|drimsim\.com|yesim\.app|yesim\.com|saily\.com|gettransfer\.com|getrentacar\.com|economybookings\.com|qeeq\.com|localrent\.com|kiwitaxi\.com|klook\.com|gocity\.com|tiqets\.com|kkday\.com|intui\.travel|radicalstorage\.com)[^"']*["']""",
+    re.IGNORECASE,
+)
+
+
+def contains_direct_affiliate_links(content: str) -> bool:
+    return bool(DIRECT_AFFILIATE_LINK_RE.search(content))
+
+
 def _affiliate_list() -> str:
-    items = [
-        ("Amazon travel gear", AFFILIATES["amazon"]),
-        ("Aviasales flight comparison", AFFILIATES["aviasales"]),
-        ("Klook activities and experiences", AFFILIATES["klook"]),
-        ("Airalo travel eSIM options", AFFILIATES["airalo"]),
-        ("GetTransfer airport transfers", AFFILIATES["gettransfer"]),
-    ]
-    return "<ul>" + "".join(
-        f'<li><a href="{html.escape(url, quote=True)}" rel="sponsored nofollow noopener" target="_blank">{label}</a></li>'
-        for label, url in items
-    ) + "</ul>"
+    return (
+        '<p class="trtt-hub-cta"><a href="' + html.escape(LIVE_APP, quote=True) +
+        '" rel="noopener noreferrer">TRTT VoyageHub Showroom — open the partner directory ↗</a></p>'
+    )
 
 
 def build_content(route: dict[str, Any] | str, date_label: str | None = None) -> str:
@@ -185,7 +181,6 @@ def build_content(route: dict[str, Any] | str, date_label: str | None = None) ->
 <p><strong>Published:</strong> {html.escape(published)} · <strong>Updated:</strong> {html.escape(published)}</p>
 <p>Marker 787950 LOCKED · Make every journey feel effortless.</p>
 <p><a href="https://europa.eu/youreurope/citizens/travel/passenger-rights/air/index_en.htm" rel="noopener">Official EU air passenger rights guidance</a></p>
-<p><a href="{LIVE_APP}">TRTT VoyageHub Showroom</a></p>
 </article>"""
     content = content.replace("</article>", """
 <h2>Check the complete journey before booking</h2>
@@ -214,7 +209,6 @@ def build_content(route: dict[str, Any] | str, date_label: str | None = None) ->
         "Ghost-SIM = eSIM",
         "787950 LOCKED",
         LIVE_APP,
-        "amzn.to/4shg6Hn?marker=787950",
         "Sanluri",
         "Sardinia",
         "Cagliari",
@@ -222,168 +216,20 @@ def build_content(route: dict[str, Any] | str, date_label: str | None = None) ->
     missing = [item for item in required if item not in content]
     if missing:
         raise AssertionError("Draft content missing required fields: " + ", ".join(missing))
+    if contains_direct_affiliate_links(content):
+        raise AssertionError("Blogger draft must not contain direct affiliate links; use the Vercel hub only.")
     return content
 
-
 def build():
-    from google.oauth2.credentials import Credentials
-    from googleapiclient.discovery import build as google_build
-
-    credentials = Credentials(
-        token=None,
-        refresh_token=os.environ["BLOGGER_REFRESH_TOKEN"],
-        token_uri="https://oauth2.googleapis.com/token",
-        client_id=os.environ["BLOGGER_CLIENT_ID"],
-        client_secret=os.environ["BLOGGER_CLIENT_SECRET"],
-        scopes=["https://www.googleapis.com/auth/blogger"],
-    )
-    return google_build("blogger", "v3", credentials=credentials, cache_discovery=False)
+    from scripts.publish_news import _build_service
+    return _build_service()
 
 
-def find_duplicate_post(service: Any, blog_id: str, title: str) -> dict[str, Any] | None:
-    page_token = None
-    while True:
-        params: dict[str, Any] = {
-            "blogId": blog_id,
-            "fetchBodies": False,
-            "maxResults": 100,
-            "status": ["LIVE", "DRAFT"],
-        }
-        if page_token:
-            params["pageToken"] = page_token
-        response = service.posts().list(**params).execute()
-        for post in response.get("items", []):
-            if str(post.get("title", "")).strip().casefold() == title.strip().casefold():
-                return post
-        page_token = response.get("nextPageToken")
-        if not page_token:
-            return None
+def _create_or_recover_draft(service, blog_id, title, content):
+    from scripts.publish_news import _create_or_recover_draft as create
+    return create(service, blog_id, title, content)
 
 
-def _confirmed_status(service: Any, blog_id: str, post: dict[str, Any]) -> str:
-    """Read the saved Blogger resource back; do not trust a local flag or insert log."""
-    post_id = post.get("id")
-    if not post_id:
-        return ""
-    fetched = service.posts().get(blogId=blog_id, postId=post_id).execute()
-    return str(fetched.get("status", "")).upper()
-
-
-def _create_or_recover_draft(service: Any, blog_id: str, title: str, content: str) -> tuple[dict[str, Any], bool]:
-    last_error: Exception | None = None
-    for attempt in range(1, 4):
-        existing = find_duplicate_post(service, blog_id, title)
-        if existing:
-            status = _confirmed_status(service, blog_id, existing)
-            if status == "DRAFT":
-                return existing, False
-            raise AssertionError(f"Matching Blogger post exists with status {status or 'UNKNOWN'}; refusing unsafe action.")
-        try:
-            response = service.posts().insert(
-                blogId=blog_id,
-                body={
-                    "kind": "blogger#post",
-                    "title": title,
-                    "content": content,
-                    "labels": ["TRTT", "Flight Guide", "Sardinia", "787950"],
-                },
-                isDraft=True,
-            ).execute()
-            if not response.get("id"):
-                raise AssertionError("Blogger insert response did not include a post id.")
-            status = _confirmed_status(service, blog_id, response)
-            if status != "DRAFT":
-                raise AssertionError(f"Blogger did not confirm DRAFT status; returned {status or 'UNKNOWN'}.")
-            return response, True
-        except AssertionError:
-            raise
-        except Exception as error:
-            last_error = error
-            print(f"Blogger insert attempt {attempt}/3 failed for blog {blog_id}: {error}")
-            if attempt < 3:
-                time.sleep(attempt)
-    raise AssertionError(f"Unable to create or verify Blogger draft for blog {blog_id}: {last_error}")
-
-
-def _require_configuration() -> tuple[str, str]:
-    required = (
-        "BLOGGER_BLOG_ID",
-        "FLIGHTSCOUTPRO_BLOG_ID",
-        "BLOGGER_CLIENT_ID",
-        "BLOGGER_CLIENT_SECRET",
-        "BLOGGER_REFRESH_TOKEN",
-    )
-    missing = [name for name in required if not os.environ.get(name, "").strip()]
-    if missing:
-        raise AssertionError("Missing required Blogger configuration: " + ", ".join(missing))
-    main_id = os.environ["BLOGGER_BLOG_ID"].strip()
-    partner_id = os.environ["FLIGHTSCOUTPRO_BLOG_ID"].strip()
-    if main_id == partner_id:
-        raise AssertionError("The two Blogger blog IDs must be different.")
-    return main_id, partner_id
-
-
-def main() -> int:
-    run_started = time.monotonic()
-    main_blog_id, partner_blog_id = _require_configuration()
-    queue, route = _load_today_route()
-    key = route_key(route)
-    history = load_history()
-    print("Republish allowed - today's date override")
-    title = (
-        f"{route['from']} to {route['to']} flight guide - "
-        f"{datetime.strptime(route['date'], '%Y-%m-%d').strftime('%-d %B %Y')} - TRTT"
-    )
-    content = build_content(route)
-    checks = {
-        "Image": "<img src=\"https://images.unsplash.com/" in content,
-        "EC 261/2004": "EC 261/2004" in content,
-        "787950 LOCKED": MARKER in content,
-        "Vercel Link": LIVE_APP in content,
-        "Affiliate": AFFILIATES["amazon"] in content,
-    }
-    for label, passed in checks.items():
-        print(f"{label}: {'YES' if passed else 'NO'}")
-        if not passed:
-            raise AssertionError(f"Required draft content check failed: {label}")
-    word_count = _plain_word_count(content)
-    print(f"Article word count: {word_count}")
-    if word_count < 800:
-        raise AssertionError(f"Draft content must contain at least 800 words; got {word_count}.")
-    print(f"Queue: {queue.get('version', route['date'])} | Batch size: {BATCH_SIZE} | isDraft=True")
-
-    service = build()
-    targets = [
-        (main_blog_id, "trttnews24bd"),
-        (partner_blog_id, "flightscoutpro"),
-    ]
-    results = []
-    newly_created = 0
-    for blog_id, blog_name in targets:
-        post, created = _create_or_recover_draft(service, blog_id, title, content)
-        if not post.get("id"):
-            raise AssertionError(f"Blogger returned no post ID for {blog_name}.")
-        if _confirmed_status(service, blog_id, post) != "DRAFT":
-            raise AssertionError(f"Blogger DRAFT status could not be verified for {blog_name}.")
-        if created:
-            newly_created += 1
-            print(f"SUCCESS: Draft created - {blog_name} - Post ID: {post['id']}")
-        else:
-            print(f"CONFIRMED: Existing Blogger DRAFT - {blog_name} - Post ID: {post['id']}")
-        results.append((blog_name, str(post["id"])))
-
-    if len(results) != 2:
-        raise AssertionError("Draft creation failed: both Blogger sites were not verified.")
-    # History is written only after both real Blogger post IDs and DRAFT statuses are confirmed.
-    append_history(key)
-    elapsed = time.monotonic() - run_started
-    print(f"Draft run elapsed: {elapsed:.2f}s")
-    print(
-        f"CONFIRMED: {len(results)} Blogger DRAFT records; "
-        f"newly created this run: {newly_created}; route: {key}"
-    )
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+def main():
+    from scripts.publish_news import main as publish_main
+    return publish_main(service_factory=build)

@@ -4,7 +4,7 @@ name: Article Validation Tests
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: ["**"]
     paths:
       - "main.py"
       - "trtt_787950_master.py"
@@ -73,15 +73,21 @@ jobs:
       - name: Install import dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install google-genai google-auth google-api-python-client requests python-slugify
+          pip install google-genai google-auth google-api-python-client requests python-slugify pytest
       - name: Compile TRTT Python entry points
         run: python -m py_compile trtt_787950_master.py scripts/publish_news.py scripts/sync_blogger_content.py api/trtt_787950_master.py trtt_auto_google_index.py
-      - name: Validate daily queue, editorial content and Vault parity
+      - name: Validate daily queue, category catalogue, hub-only Blogger content and Vault parity
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
           import trtt_787950_master as engine
+          catalogue = json.loads(Path("affiliate-services.json").read_text(encoding="utf-8"))
+          assert len(catalogue["services"]) == 21
+          assert catalogue["services"][20]["name"] == "Amazon"
+          assert catalogue["services"][20]["program_number"] == 21
+          assert catalogue["services"][20]["featured"] is True
+          assert all("marker=787950" in item["url"] for item in catalogue["services"])
           queue = json.loads(Path("news/queue/latest.json").read_text(encoding="utf-8"))
           assert queue["version"] == "2026-11-07"
           assert queue["batch_size"] == 1 and queue["isDraft"] is True
@@ -91,18 +97,27 @@ jobs:
           assert "EC 261/2004" in content and "EC Regulation 261/2004" not in content
           assert '<img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80"' in content
           assert "787950 LOCKED" in content
-          assert "https://cocvghuj-trtt-news-bot.vercel.app" in content
-          assert "amzn.to/4shg6Hn?marker=787950" in content
+          assert "https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950" in content
+          assert content.count('href="https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950"') == 1
+          assert not engine.contains_direct_affiliate_links(content)
+          assert "amzn.to/" not in content and ".tpo.lv/" not in content
           assert engine._plain_word_count(content) >= 800
           assert Path("roksana-vault.js").read_bytes() == Path("roksana-vault-final.js").read_bytes()
           vault = Path("roksana-vault.js").read_bytes()
           assert b"xxxxx" not in vault.lower()
           assert b"Object.freeze(" in vault
           assert b'markerHex: "373837393530"' in vault
-          print("PASS: exact EC 261/2004, image, marker, showroom, affiliate, 800+ words and byte-identical frozen hex-marker Vault.")
+          from main import strip_direct_affiliate_links
+          sample = '<a href="https://airhelp.tpo.lv/3ItXS0E4?marker=787950">AirHelp</a> https://amzn.to/4shg6Hn?marker=787950'
+          cleaned = strip_direct_affiliate_links(sample)
+          assert "airhelp.tpo.lv" not in cleaned and "amzn.to" not in cleaned
+          assert b"Object.freeze(MARKER)" in vault
+          assert b"BLOGGER_MENU_TOOLS" in vault
+          assert b"ACTIVE_MENU_TOOLS.forEach" in vault
+          print("PASS: 21 category programs, Amazon Featured #21, marker, Vercel-only Blogger links, DRAFT-only policy and byte-identical Vault.")
           PY
       - name: Run tests (no Blogger publishing)
-        run: python -m unittest discover -s tests -v
+        run: python -m pytest tests/ -q
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -120,6 +135,15 @@ jobs:
           node --check public/trtt-all-in-one.js
           node --check roksana-vault.js
           node --check roksana-vault-final.js
+      - name: Verify unauthorized Vercel Production builds are blocked
+        run: |
+          set -euo pipefail
+          if VERCEL_ENV=production node build.js > /tmp/trtt-production-lock.log 2>&1; then
+            echo "::error::Production lock failed open."
+            exit 1
+          fi
+          grep -Fq "TRTT Production Lock: deployment blocked" /tmp/trtt-production-lock.log
+          echo "PASS: unauthorized Vercel Production build is blocked."
       - name: Build Vercel static output
         run: npm run build
       - name: Verify affiliate assets in Vercel output

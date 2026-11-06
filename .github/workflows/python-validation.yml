@@ -3,8 +3,6 @@ name: TRTT Python Validation
 
 on:
   push:
-    branches:
-      - main
     paths:
       - "**.py"
       - "tests/**"
@@ -36,8 +34,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt pytest
       - name: Compile TRTT Python entry points
         run: python -m py_compile trtt_787950_master.py scripts/publish_news.py scripts/sync_blogger_content.py api/trtt_787950_master.py trtt_auto_google_index.py
       - name: Run unit tests
-        run: python -m unittest discover -s tests -v
+        run: python -m pytest tests/ -q

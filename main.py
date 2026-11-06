@@ -37,7 +37,6 @@ from config import AFFILIATE_SERVICES
 from google import genai
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
-
 try:
     from slugify import slugify
 except ImportError:
@@ -63,7 +62,7 @@ BLOGGER_CLIENT_SECRET = os.environ.get("BLOGGER_CLIENT_SECRET")
 BLOGGER_REFRESH_TOKEN = os.environ.get("BLOGGER_REFRESH_TOKEN")
 
 UNSPLASH_ACCESS_KEY = os.environ.get("UNSPLASH_ACCESS_KEY")
-AMAZON_LINK = os.environ.get("AMAZON_LINK", "https://amzn.to/4shg6Hn")
+AMAZON_LINK = os.environ.get("AMAZON_LINK", "https://amzn.to/4shg6Hn?marker=787950")
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
@@ -71,6 +70,24 @@ TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 BLOGGER_URL = "https://trttnews24bd.blogspot.com"
 FLIGHTSCOUTPRO_URL = "https://flightscoutpro.blogspot.com"
 PWA_URL = "https://cocvghuj.github.io/Cocvghuj-trtt-news-bot/?marker=787950"
+VERCEL_HUB_URL = "https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950"
+
+_AFFILIATE_URL_RE = re.compile(
+    r"""https?://(?:[a-z0-9-]+\.)*(?:tpo\.lv|amzn\.to|amazon\.[a-z.]+|airhelp\.com|compensair\.com|airalo\.com|drimsim\.com|yesim\.app|yesim\.com|saily\.com|gettransfer\.com|getrentacar\.com|economybookings\.com|qeeq\.com|localrent\.com|kiwitaxi\.com|klook\.com|gocity\.com|tiqets\.com|kkday\.com|intui\.travel|radicalstorage\.com|booking\.com|aviasales\.com)[^\s<>"']*""",
+    re.IGNORECASE,
+)
+
+
+def strip_direct_affiliate_links(value: str) -> str:
+    text = str(value or "")
+    def clean_anchor(match):
+        anchor = match.group(0)
+        href = re.search(r"""href\s*=\s*["']([^"']+)""", anchor, re.IGNORECASE)
+        if href and _AFFILIATE_URL_RE.search(href.group(1)):
+            return re.sub(r"""^<a\b[^>]*>|</a>$""", "", anchor, flags=re.IGNORECASE | re.DOTALL)
+        return anchor
+    text = re.sub(r"""<a\b[^>]*>.*?</a>""", clean_anchor, text, flags=re.IGNORECASE | re.DOTALL)
+    return _AFFILIATE_URL_RE.sub("TRTT VoyageHub", text)
 
 HISTORY_FILE = "drafted_history.txt"
 HISTORY_MIGRATION_FILE = "history_migration_map.json"
@@ -809,16 +826,11 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
         blog_profile = get_blog_profile("TRTT News 24 BD", BLOGGER_BLOG_ID or "")
         
     meta = article_data["meta"]
-    content = article_data["content"]
+    content = strip_direct_affiliate_links(article_data["content"])
     title = meta["title"]
     search_desc = meta["search_description"]
     tags_str = ", ".join(meta["labels"])
     
-    airhelp_link = affiliate_service_url("airhelp")
-    aviasales_link = affiliate_service_url("aviasales")
-    airalo_link = affiliate_service_url("airalo")
-    kiwitaxi_link = affiliate_service_url("kiwitaxi")
-
     now_iso = datetime.utcnow().isoformat()
     permalink_slug = meta.get("permalink_slug") or slugify(title)
     canonical_url = f"{blog_profile['url']}/{datetime.utcnow():%Y/%m}/{permalink_slug}.html"
@@ -963,11 +975,11 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
       <a href="{blog_profile['url']}" style="background: #ffffff; color: {blog_profile['theme_primary']}; font-weight: 800; font-size: 12px; padding: 10px 18px; border-radius: 8px; text-decoration: none; display: inline-block;">
         📰 Latest Feed
       </a>
-      <a href="{PWA_URL}" target="_blank" rel="noopener" style="background: #0f172a; color: #ffffff; font-weight: 800; font-size: 12px; padding: 10px 18px; border-radius: 8px; text-decoration: none; display: inline-block;">
+      <a href="{VERCEL_HUB_URL}" target="_blank" rel="noopener" style="background: #0f172a; color: #ffffff; font-weight: 800; font-size: 12px; padding: 10px 18px; border-radius: 8px; text-decoration: none; display: inline-block;">
         ⚡ Open Fast App
       </a>
-      <a href="{airhelp_link}" target="_blank" rel="noopener" style="background: #f59e0b; color: #0f172a; font-weight: 800; font-size: 12px; padding: 10px 18px; border-radius: 8px; text-decoration: none; display: inline-block;">
-        🛡️ Claim €600
+      <a href="{VERCEL_HUB_URL}" target="_blank" rel="noopener" style="background: #f59e0b; color: #0f172a; font-weight: 800; font-size: 12px; padding: 10px 18px; border-radius: 8px; text-decoration: none; display: inline-block;">
+        🧭 Open TRTT VoyageHub
       </a>
     </div>
   </div>
@@ -977,26 +989,13 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
     {content}
   </div>
 
-  <!-- High-Converting Verified Partner Strip -->
-  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 22px; margin-top: 36px; margin-bottom: 30px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 14px; gap: 8px;">
-      <h3 style="margin: 0; font-size: 16px; color: #0f172a; font-weight: 800;">🛡️ Official Travel &amp; Logistics Partners (Marker {MARKER})</h3>
-      <span style="font-size: 11px; background: #e2e8f0; color: #475569; padding: 3px 8px; border-radius: 4px; font-weight: 600;">Affiliate disclosure: We may earn a commission at no extra cost to you</span>
+  <!-- Blogger gadget: Vercel hub only; no direct affiliate links on the blog -->
+  <div style="background:#f8fafc;border:2px solid #e2e8f0;border-radius:16px;padding:22px;margin-top:36px;margin-bottom:30px;">
+    <div style="margin-bottom:12px;">
+      <h3 style="margin:0 0 8px;font-size:18px;color:#0f172a;font-weight:800;">🧭 TRTT VoyageHub travel tools</h3>
+      <p style="margin:0;color:#475569;font-size:13px;line-height:1.6;">Browse the 21 travel programs by category on our hub. This Blogger gadget links to the hub only; it contains no direct affiliate links.</p>
     </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
-      <a href="{airhelp_link}" target="_blank" rel="noopener" style="display: block; padding: 12px 14px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; text-decoration: none; color: #0f172a; font-weight: 700; font-size: 13px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-        🛡️ AirHelp €600 Claim &rarr;
-      </a>
-      <a href="{aviasales_link}" target="_blank" rel="noopener" style="display: block; padding: 12px 14px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; text-decoration: none; color: #0f172a; font-weight: 700; font-size: 13px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-        ✈️ Aviasales Fares &rarr;
-      </a>
-      <a href="{airalo_link}" target="_blank" rel="noopener" style="display: block; padding: 12px 14px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; text-decoration: none; color: #0f172a; font-weight: 700; font-size: 13px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-        📱 Airalo 5G eSIM &rarr;
-      </a>
-      <a href="{kiwitaxi_link}" target="_blank" rel="noopener" style="display: block; padding: 12px 14px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; text-decoration: none; color: #0f172a; font-weight: 700; font-size: 13px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-        🚖 Kiwitaxi Fixed Ride &rarr;
-      </a>
-    </div>
+    <a href="{VERCEL_HUB_URL}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:12px 18px;border-radius:10px;background:#052962;color:#fff;text-decoration:none;font-weight:800;">Open TRTT VoyageHub ↗</a>
   </div>
 
   <!-- Dedicated Author Card & Google E-E-A-T Transparency -->
@@ -1026,7 +1025,7 @@ def build_enterprise_html(article_data: dict, photo: dict, blog_profile: dict = 
         <a href="{blog_profile['privacy_url']}" style="color: #0284c7; text-decoration: none; font-weight: 600;">Privacy Policy</a>
         <a href="{blog_profile['disclaimer_url']}" style="color: #0284c7; text-decoration: none; font-weight: 600;">Disclaimer</a>
       </div>
-      <span style="color: #94a3b8; font-size: 11px;">Affiliate links may earn a commission; please review our privacy and disclosure policies.</span>
+      <span style="color: #94a3b8; font-size: 11px;">Partner options and any applicable disclosures are shown on TRTT VoyageHub.</span>
     </div>
   </div>
 
@@ -1055,207 +1054,17 @@ DUPLICATE_CHECK_PAGE_SIZE = 100
 DUPLICATE_CHECK_MAX_PAGES = 10
 
 
-def find_duplicate_post(
-    service,
-    blog_id: str,
-    title: str,
-    content: str,
-    topic_key: Optional[str] = None,
-):
-    """Return a matching LIVE/DRAFT post, preferring the stable topic recovery marker."""
-    new_title = normalize_article_text(title)
-    new_body = normalize_article_text(content)
-    recovery_marker = topic_draft_marker(topic_key) if topic_key else None
-    try:
-        page_token = None
-        for page_number in range(DUPLICATE_CHECK_MAX_PAGES):
-            request_args = {
-                "blogId": blog_id,
-                "maxResults": DUPLICATE_CHECK_PAGE_SIZE,
-                "fetchBodies": True,
-                "status": ["LIVE", "DRAFT"],
-            }
-            if page_token:
-                request_args["pageToken"] = page_token
-            response = service.posts().list(**request_args).execute()
-            for existing in response.get("items", []):
-                existing_content = str(existing.get("content", ""))
-                if recovery_marker and recovery_marker in existing_content:
-                    return existing
-                old_title = normalize_article_text(existing.get("title", ""))
-                old_body = normalize_article_text(existing_content)
-                if old_title and old_title == new_title:
-                    return existing
-                if len(new_body) >= 500 and len(old_body) >= 500:
-                    # Existing Blogger posts contain a site-wide HTML wrapper around
-                    # the original article body. Measure how much of the new article
-                    # is represented in the stored post, rather than penalizing that
-                    # wrapper for making the stored text longer.
-                    if new_body in old_body:
-                        return existing
-                    matcher = difflib.SequenceMatcher(
-                        None, new_body, old_body, autojunk=False
-                    )
-                    matched_chars = sum(
-                        block.size for block in matcher.get_matching_blocks()
-                    )
-                    coverage = matched_chars / len(new_body)
-                    if coverage >= 0.88:
-                        return existing
-            page_token = response.get("nextPageToken")
-            if not page_token:
-                return None
-
-        # Do not create a draft when the scan was truncated: an older duplicate
-        # may still exist beyond the safety limit.
-        raise RuntimeError(
-            "Duplicate scan exceeded "
-            + str(DUPLICATE_CHECK_MAX_PAGES)
-            + " pages; refusing to create a potentially repeated draft."
-        )
-    except Exception as exc:
-        # Fail closed: if duplicate checking cannot complete, do not insert a draft.
-        raise RuntimeError("Duplicate check could not be completed for blog " + str(blog_id) + ": " + str(exc))
+def find_duplicate_post(service, blog_id, title, content, topic_key=None):
+    from scripts.publish_news import find_duplicate_post as scan
+    return scan(service, blog_id, title, content, topic_key=topic_key,
+                 max_pages=DUPLICATE_CHECK_MAX_PAGES, context=__import__(__name__))
 
 
-def create_drafts_on_blogs(
-    title: str,
-    html_content: str,
-    meta: dict,
-    article_data: dict = None,
-    photo: dict = None,
-    topic: str = None,
-) -> List[dict]:
-    """
-    Creates reviewable Blogger drafts on configured blogs; publication requires human approval.
-    """
-    if not all([BLOGGER_CLIENT_ID, BLOGGER_CLIENT_SECRET, BLOGGER_REFRESH_TOKEN]):
-        raise RuntimeError(
-            "Blogger OAuth credentials are incomplete. Refusing to report a successful no-op run."
-        )
+def create_drafts_on_blogs(title, html_content, meta, article_data=None, photo=None, topic=None):
+    from scripts.publish_news import create_drafts_on_blogs as create
+    return create(title, html_content, meta, article_data=article_data, photo=photo, topic=topic,
+                  context=__import__(__name__), credentials_factory=Credentials, builder=build)
 
-    target_blog_ids = []
-    if BLOGGER_BLOG_ID:
-        target_blog_ids.append(("TRTT News 24 BD (Main Hub)", BLOGGER_BLOG_ID))
-    if FLIGHTSCOUTPRO_BLOG_ID:
-        target_blog_ids.append(("FlightScoutPro (Partner Blog)", FLIGHTSCOUTPRO_BLOG_ID))
-        
-    # Also support multiple partner IDs passed as comma-separated list
-    if PARTNER_BLOG_IDS:
-        for idx, p_id in enumerate(PARTNER_BLOG_IDS.split(","), 1):
-            cleaned = p_id.strip()
-            if cleaned and cleaned not in [b[1] for b in target_blog_ids]:
-                target_blog_ids.append((f"Partner Network Blog #{idx}", cleaned))
-
-    # Read from partners.json if available
-    if os.path.exists("partners.json"):
-        try:
-            with open("partners.json", "r", encoding="utf-8") as pf:
-                partners_data = json.load(pf)
-                for partner in partners_data:
-                    b_id = partner.get("blog_id")
-                    b_name = partner.get("site_name", "Partner Blog")
-                    if b_id and b_id not in [bid for _, bid in target_blog_ids]:
-                        target_blog_ids.append((b_name, b_id))
-        except Exception as e:
-            print(f"partners.json read notice: {e}")
-
-    topic_key = topic_history_key(topic) if topic else None
-    created_drafts = []
-    if not target_blog_ids:
-        raise RuntimeError(
-            "No Blogger target blog IDs are configured. Refusing to report a successful no-op run."
-        )
-    try:
-        creds = Credentials(
-            None,
-            refresh_token=BLOGGER_REFRESH_TOKEN,
-            client_id=BLOGGER_CLIENT_ID,
-            client_secret=BLOGGER_CLIENT_SECRET,
-            token_uri="https://oauth2.googleapis.com/token",
-        )
-        service = build("blogger", "v3", credentials=creds)
-
-        for blog_name, blog_id in target_blog_ids:
-            try:
-                # Check recent LIVE and DRAFT posts before inserting into this blog.
-                duplicate = find_duplicate_post(
-                    service,
-                    blog_id,
-                    title,
-                    (article_data or {}).get("content", html_content),
-                    topic_key=topic_key,
-                )
-                if duplicate:
-                    duplicate_id = duplicate.get("id")
-                    if duplicate_id:
-                        edit_url = "https://www.blogger.com/blog/post/edit/" + str(blog_id) + "/" + str(duplicate_id)
-                        created_drafts.append({
-                            "blog_name": blog_name,
-                            "blog_id": blog_id,
-                            "post_id": str(duplicate_id),
-                            "edit_url": edit_url,
-                            "status": "already_exists",
-                        })
-                        print("EXISTING ARTICLE CONFIRMED for " + blog_name + ": " + edit_url)
-                    else:
-                        created_drafts.append({
-                            "blog_name": blog_name,
-                            "blog_id": blog_id,
-                            "status": "failed",
-                            "error": "Duplicate post found without a post ID.",
-                        })
-                    continue
-
-                # Generate tailored HTML per blog if article_data and photo are available
-                blog_profile = get_blog_profile(blog_name, blog_id)
-                if article_data and photo:
-                    tailored_html = build_enterprise_html(article_data, photo, blog_profile)
-                else:
-                    tailored_html = html_content
-
-                search_desc = meta.get("search_description", "")
-                permalink_slug = meta.get("permalink_slug") or slugify(title)
-
-                body = {
-                    "title": title,
-                    "content": add_topic_draft_marker(tailored_html, topic_key),
-                    "labels": meta.get("labels", []),
-                    "customMetaData": search_desc,
-                    "location": {"name": blog_profile["author_location"]}
-                }
-
-                post = service.posts().insert(blogId=blog_id, body=body, isDraft=True).execute()
-                post_id = post.get("id")
-                if post_id:
-                    edit_url = "https://www.blogger.com/blog/post/edit/" + str(blog_id) + "/" + str(post_id)
-                    created_drafts.append({
-                        "blog_name": blog_name,
-                        "blog_id": blog_id,
-                        "post_id": str(post_id),
-                        "edit_url": edit_url,
-                        "status": "created",
-                    })
-                    print("SUCCESS: Draft created for " + blog_name + ": " + edit_url)
-                else:
-                    created_drafts.append({
-                        "blog_name": blog_name,
-                        "blog_id": blog_id,
-                        "status": "failed",
-                        "error": "Blogger insert response did not contain a post ID.",
-                    })
-            except Exception as blog_err:
-                created_drafts.append({
-                    "blog_name": blog_name,
-                    "blog_id": blog_id,
-                    "status": "failed",
-                    "error": str(blog_err),
-                })
-                print(f"Notice posting to {blog_name} (ID: {blog_id}): {blog_err}")
-
-        return created_drafts
-    except Exception as exc:
-        raise RuntimeError(f"Could not initialize Google Blogger API: {exc}") from exc
 
 # ==============================================================================
 # TELEGRAM DISPATCH
