@@ -6334,8 +6334,7 @@ $("#main-wrapper").each(function() {
   <div class='back-top' title='Back to Top'/>
 
 
-<style type='text/css'>
-//<![CDATA[
+<style type='text/css'><![CDATA[
 /* TRTT VOYAGE — clean editorial layout, rebuilt from scratch */
 :root{
   --tv-ink:#142337;--tv-paper:#f5f3ee;--tv-card:#fffefa;--tv-muted:#687586;
@@ -6461,7 +6460,7 @@ body:before{content:"";display:block;height:4px;background:linear-gradient(90deg
  #sidebar-wrapper{display:none!important}
 }
 
-//]]>
+]]>
 </style>
 <script type='text/javascript'>
 //<![CDATA[
