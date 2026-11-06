@@ -3,71 +3,84 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101b36">
+  <meta name="theme-color" content="#ffffff">
   <meta name="trtt-vault-marker" content="787950 LOCKED">
-  <title>TRTT VoyageHub | Travel Tools & Europe Guides</title>
-  <meta name="description" content="Practical Europe travel guides and useful tools for flights, baggage, eSIMs, airport transfers and trip planning.">
+  <title>TRTT Voyage | Sardinia to Europe, made easier</title>
+  <meta name="description" content="Find flight options from Sardinia, understand passenger rights and plan easier journeys across Europe with TRTT Voyage.">
   <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="/trtt-hub.css">
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="/" aria-label="TRTT VoyageHub home"><span class="brand-mark">T</span><span>TRTT <b>VOYAGEHUB</b><small>NEWS · GUIDES · TRAVEL TOOLS</small></span></a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span aria-hidden="true">☰</span><span>Menu</span></button><nav class="main-nav" id="primary-nav" aria-label="Main navigation"><a href="#tools">Travel tools</a><a href="/blog/">News</a><a href="/travel-guide.html">Guides</a><a href="/destinations/">Destinations</a><a href="/about.html">About</a><a class="nav-cta" href="/tools/flight-search.html">Find flights ↗</a></nav>
+    <a class="brand" href="/" aria-label="TRTT Voyage home"><span class="brand-mark">T</span><span class="brand-name">TRTT <b>VOYAGE</b><small>SARDINIA · EUROPE · TRAVEL</small></span></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open navigation">☰</button>
+    <nav class="main-nav" id="primary-nav" aria-label="Main navigation">
+      <a href="/blog/">Flight News</a><a href="#rights">Passenger Rights</a><a href="#esim">eSIM</a><a href="#ride-stay">Ride &amp; Stay</a><a href="#experiences">Experiences</a><a href="#sanluri">Sanluri</a><a class="nav-cta" href="/tools/flight-search.html">Travel Tools ↗</a>
+    </nav>
   </header>
   <main>
-    <section class="hero"><div class="hero-inner"><div class="eyebrow">✦ YOUR EUROPE TRAVEL DESK · SANLURI, SARDINIA</div><h1>Make every journey<br><em>feel effortless.</em></h1><p class="hero-copy">Clear travel guides, practical planning tools and useful updates — helping you move through Europe with more confidence.</p><div class="hero-actions"><a class="button button-primary" href="#tools">Explore travel tools →</a><a class="button button-quiet" href="/blog/">Read latest news</a></div><div class="hero-note">PLAN WELL. TRAVEL FREELY.</div></div><div class="hero-art" aria-hidden="true"><div class="globe">✦</div></div></section>
-    <section class="trust-strip"><span>BUILT FOR REAL-WORLD TRAVEL</span><div>01 Flights</div><div>02 Connectivity</div><div>03 Baggage</div><div>04 Trip planning</div></section>
-    <section class="section" id="tools"><div class="section-heading"><div><span class="kicker">THE TRAVEL TOOLKIT</span><h2>Everything you need,<br><em>in one place.</em></h2></div><p>Start with a tool, compare your options and make the next step of your journey easier.</p></div>
-      <div class="tool-grid">
-        <a class="tool-card featured" href="/tools/flight-search.html"><span class="tool-icon">✈</span><span class="tool-tag">PLAN YOUR ROUTE</span><h3>Flight search</h3><p>Explore flight options and compare routes for your next trip.</p><span class="card-link">Search flights ↗</span></a>
-        <a class="tool-card" href="/tools/baggage-size-checker.html"><span class="tool-icon pink">▣</span><span class="tool-tag">PACK WITH CONFIDENCE</span><h3>Baggage checker</h3><p>Check cabin-bag dimensions before you head to the airport.</p><span class="card-link">Check baggage ↗</span></a>
-        <a class="tool-card" href="/tools/delay-calculator.html"><span class="tool-icon gold">◷</span><span class="tool-tag">KNOW YOUR OPTIONS</span><h3>Delay calculator</h3><p>Understand possible EU flight-delay compensation scenarios.</p><span class="card-link">Check a delay ↗</span></a>
-        <a class="tool-card" href="/flightscoutpro-itinerary.html"><span class="tool-icon violet">⌖</span><span class="tool-tag">BUILD YOUR JOURNEY</span><h3>Itinerary planner</h3><p>Organise destinations and shape a smoother travel plan.</p><span class="card-link">Plan itinerary ↗</span></a>
-        <a class="tool-card" href="/trtt-shop/esim/"><span class="tool-icon teal">◉</span><span class="tool-tag">STAY CONNECTED</span><h3>Europe eSIM guide</h3><p>Compare connectivity choices before you travel.</p><span class="card-link">Explore eSIMs ↗</span></a>
-        <a class="tool-card" href="/app.html"><span class="tool-icon blue">⌁</span><span class="tool-tag">EXPLORE THE MAP</span><h3>Travel map</h3><p>Discover useful travel locations and planning references.</p><span class="card-link">Open map ↗</span></a>
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="eyebrow"><span class="live-dot"></span> INDEPENDENT TRAVEL DESK · SARDINIA, ITALY</div>
+        <h1>Make every journey<br><em>feel effortless.</em></h1>
+        <p class="hero-copy">Sardinia থেকে ইউরোপের সস্তা ফ্লাইট — compare routes, check the details and travel with confidence.</p>
+        <form class="flight-search" action="/tools/flight-search.html" method="get">
+          <label>From<input name="origin" value="Cagliari (CAG)" placeholder="e.g. Cagliari" required></label>
+          <label>To<input name="dest" placeholder="e.g. Rome" required></label>
+          <label>Departure<input name="date" type="date"></label>
+          <button type="submit">✈ Find flights</button>
+        </form>
+        <p class="hero-note">Compare options before you book · Prices are checked with the provider</p>
+      </div>
+      <div class="hero-art"><img src="/hero-flight.svg" alt="Passenger airplane flying above a European city skyline"></div>
+    </section>
+
+    <section class="trust-strip" aria-label="TRTT Voyage focus">
+      <span>YOUR SARDINIA TRAVEL COMPANION</span><div>01 <b>Flights</b></div><div>02 <b>Passenger rights</b></div><div>03 <b>Connectivity</b></div><div>04 <b>Local guides</b></div>
+    </section>
+
+    <section class="section" id="flight-deals">
+      <div class="section-heading"><div><span class="kicker">FLIGHT DESK</span><h2>Good routes.<br><em>Clear choices.</em></h2></div><p>Start with a route from Sardinia. Check the current fare, baggage rules and booking details with the airline or travel provider.</p></div>
+      <div class="route-grid">
+        <a class="route-card" href="/tools/flight-search.html?origin=Cagliari%20(CAG)&dest=Rome"><span class="route-icon">✈</span><span class="route-label">FROM CAGLIARI</span><strong>Cagliari <i>→</i> Rome</strong><span class="route-action">Check live price ↗</span></a>
+        <a class="route-card" href="/tools/flight-search.html?origin=Cagliari%20(CAG)&dest=Milan"><span class="route-icon">✈</span><span class="route-label">FROM CAGLIARI</span><strong>Cagliari <i>→</i> Milan</strong><span class="route-action">Check live price ↗</span></a>
+        <a class="route-card" href="/tools/flight-search.html?origin=Alghero%20(AHO)&dest=Barcelona"><span class="route-icon">✈</span><span class="route-label">FROM ALGHERO</span><strong>Alghero <i>→</i> Barcelona</strong><span class="route-action">Check live price ↗</span></a>
+      </div>
+      <p class="disclaimer">Fares change frequently. TRTT Voyage does not display an unverified fixed price; the provider's current price and conditions apply.</p>
+    </section>
+
+    <section class="rights-section" id="rights">
+      <div class="rights-copy"><span class="kicker">KNOW YOUR RIGHTS</span><h2>Flight delayed<br>or cancelled?</h2><p>Under EU Regulation EC 261/2004, eligible passengers may be entitled to assistance, a refund or compensation of up to €600, depending on the circumstances and flight distance.</p><a class="button button-primary" href="/tools/delay-calculator.html">Check your passenger rights ↗</a></div>
+      <div class="rights-checklist"><h3>Keep these details</h3><ul><li>Booking confirmation and reference</li><li>Boarding pass or e-ticket</li><li>Actual arrival time and airline notices</li><li>Receipts for reasonable expenses</li></ul><small>Eligibility is assessed case by case. Extraordinary circumstances and other legal conditions may apply.</small></div>
+    </section>
+
+    <section class="section category-section">
+      <div class="section-heading"><div><span class="kicker">EXPLORE TRAVEL</span><h2>Useful details for<br><em>the road ahead.</em></h2></div><p>Practical tools and clear guides, collected in one place.</p></div>
+      <div class="category-grid">
+        <a class="category-card" id="esim" href="/trtt-shop/esim/"><span>◉</span><h3>eSIM &amp; Stay Connected</h3><p>Understand data options before you travel.</p><b>Explore connectivity ↗</b></a>
+        <a class="category-card" id="ride-stay" href="/travel-guide.html#ride-stay"><span>🚗</span><h3>Ride &amp; Stay</h3><p>Plan airport transfers and find a place to stay.</p><b>Plan your stay ↗</b></a>
+        <a class="category-card" id="experiences" href="/travel-guide.html#experiences"><span>🎟️</span><h3>Tour &amp; Experience</h3><p>Ideas for making more of every destination.</p><b>Explore experiences ↗</b></a>
+        <a class="category-card" id="sanluri" href="/blog/"><span>⌖</span><h3>Sanluri Diary</h3><p>Local notes and travel stories from Sardinia.</p><b>Read local stories ↗</b></a>
       </div>
     </section>
-    <section class="news-section"><div class="section-heading news-heading"><div><span class="kicker">FROM THE NEWS DESK</span><h2>Fresh travel <em>updates.</em></h2></div><a class="text-link" href="/blog/">View all stories ↗</a></div><div class="news-list">
-<a class='news-item' href='/news/2026-11-05-34.html'><span class='news-index'>✦</span><span class='news-copy'><b>Cagliari to Rome - Cheap Flight Today 2026-11-05 - TRTT</b><small>TRTT News Desk · 2026-11-05</small></span><span class='news-arrow'>↗</span></a>
-<a class='news-item' href='/news/2026-11-03-10.html'><span class='news-index'>✦</span><span class='news-copy'><b>Cagliari to Rome - Cheap Flight Today 2026-11-03 - TRTT</b><small>TRTT News Desk · 2026-11-05</small></span><span class='news-arrow'>↗</span></a>
-<a class='news-item' href='/news/2026-11-03-11.html'><span class='news-index'>✦</span><span class='news-copy'><b>Cagliari to Rome - Cheap Flight Today 2026-11-03 - TRTT</b><small>TRTT News Desk · 2026-11-05</small></span><span class='news-arrow'>↗</span></a>
-<a class='news-item' href='/news/2026-11-03-12.html'><span class='news-index'>✦</span><span class='news-copy'><b>Cagliari to Rome - Cheap Flight Today 2026-11-03 - TRTT</b><small>TRTT News Desk · 2026-11-05</small></span><span class='news-arrow'>↗</span></a>
-<a class='news-item' href='/news/2026-11-03-13.html'><span class='news-index'>✦</span><span class='news-copy'><b>Cagliari to Rome - Cheap Flight Today 2026-11-03 - TRTT</b><small>TRTT News Desk · 2026-11-05</small></span><span class='news-arrow'>↗</span></a>
-<a class='news-item' href='/news/2026-11-03-14.html'><span class='news-index'>✦</span><span class='news-copy'><b>Cagliari to Rome - Cheap Flight Today 2026-11-03 - TRTT</b><small>TRTT News Desk · 2026-11-05</small></span><span class='news-arrow'>↗</span></a>
-<a class='news-item' href='/news/2026-11-03-15.html'><span class='news-index'>✦</span><span class='news-copy'><b>Cagliari to Rome - Cheap Flight Today 2026-11-03 - TRTT</b><small>TRTT News Desk · 2026-11-05</small></span><span class='news-arrow'>↗</span></a>
-<a class='news-item' href='/news/2026-11-03-16.html'><span class='news-index'>✦</span><span class='news-copy'><b>Cagliari to Rome - Cheap Flight Today 2026-11-03 - TRTT</b><small>TRTT News Desk · 2026-11-05</small></span><span class='news-arrow'>↗</span></a>
-<a class='news-item' href='/news/2026-11-03-17.html'><span class='news-index'>✦</span><span class='news-copy'><b>Cagliari to Rome - Cheap Flight Today 2026-11-03 - TRTT</b><small>TRTT News Desk · 2026-11-05</small></span><span class='news-arrow'>↗</span></a>
-<a class='news-item' href='/news/2026-11-03-18.html'><span class='news-index'>✦</span><span class='news-copy'><b>Cagliari to Rome - Cheap Flight Today 2026-11-03 - TRTT</b><small>TRTT News Desk · 2026-11-05</small></span><span class='news-arrow'>↗</span></a>
-    </div></section>
-    <section class="closing-cta"><div><span class="kicker">READY WHEN YOU ARE</span><h2>Your next trip starts<br><em>with a better plan.</em></h2></div><a class="button button-light" href="/travel-guide.html">Explore travel guides →</a></section>
-  </main>
-  <footer class="site-footer"><a class="footer-brand" href="/">TRTT <b>VOYAGEHUB</b></a><p>Independent travel guides and practical planning tools for journeys across Europe.</p><div class="footer-links"><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot">GitHub</a></div><small>© 2026 TRTT VoyageHub · Marker 787950 LOCKED · Updated 2026-11-05</small><p class="footer-live-app">Live App: <a href="https://cocvghuj-trtt-news-bot.vercel.app">https://cocvghuj-trtt-news-bot.vercel.app</a> - TRTT VoyageHub - Make every journey feel effortless.</p></footer>
 
+    <section class="tools-band" id="tools"><div><span class="kicker">TRTT VOYAGE TOOLKIT</span><h2>Plan with more confidence.</h2><p>Flight search, baggage checks, delay guidance and itinerary planning.</p></div><a class="button button-primary" href="https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950" target="_blank" rel="noopener">✈ TRTT Voyage — Open 21 Tools ↗</a></section>
+
+    <section class="news-section"><div class="section-heading news-heading"><div><span class="kicker">FROM THE TRAVEL DESK</span><h2>Fresh travel <em>updates.</em></h2></div><a class="text-link" href="/blog/">View all stories ↗</a></div><div class="news-list">
+      <a class="news-item" href="/blog/"><span class="news-index">01</span><span class="news-copy"><b>Flight news and route updates</b><small>Check the latest travel posts</small></span><span class="news-arrow">↗</span></a>
+      <a class="news-item" href="/tools/delay-calculator.html"><span class="news-index">02</span><span class="news-copy"><b>Passenger rights and delay guidance</b><small>Understand your options under EU rules</small></span><span class="news-arrow">↗</span></a>
+    </div></section>
+  </main>
+  <footer class="site-footer"><a class="footer-brand" href="/">TRTT <b>VOYAGE</b></a><p>Sardinia থেকে ইউরোপের সস্তা ফ্লাইট · Independent travel information from Sardinia, Italy.</p><div class="footer-links"><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/blog/">Flight News</a></div><small>© 2026 TRTT Voyage · Sanluri, Sardinia · Marker 787950 LOCKED · Hex 373837393530</small></footer>
   <script src="/roksana-vault.js"></script>
   <script>
     (function () {
-      var toggle = document.querySelector('.nav-toggle');
-      var nav = document.getElementById('primary-nav');
-      if (!toggle || !nav) return;
-      function closeNav() {
-        nav.classList.remove('is-open');
-        toggle.setAttribute('aria-expanded', 'false');
-      }
-      toggle.addEventListener('click', function () {
-        var open = toggle.getAttribute('aria-expanded') !== 'true';
-        toggle.setAttribute('aria-expanded', String(open));
-        nav.classList.toggle('is-open', open);
-      });
-      nav.addEventListener('click', function (event) {
-        if (event.target.closest('a')) closeNav();
-      });
-      document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') closeNav();
-      });
-      window.addEventListener('resize', function () {
-        if (window.innerWidth > 700) closeNav();
-      });
+      var toggle=document.querySelector('.nav-toggle'),nav=document.getElementById('primary-nav');
+      if(!toggle||!nav)return;
+      function close(){nav.classList.remove('is-open');toggle.setAttribute('aria-expanded','false');}
+      toggle.addEventListener('click',function(){var open=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(open));nav.classList.toggle('is-open',open);});
+      nav.addEventListener('click',function(e){if(e.target.closest('a'))close();});
+      document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
     })();
   </script>
 </body></html>
