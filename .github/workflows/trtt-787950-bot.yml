@@ -56,4 +56,4 @@ jobs:
 
       - name: Skip outside 07:00 Europe/Rome
         if: github.event_name == 'schedule' && steps.clock.outputs.hour != '07'
-        run: echo 'Skipped: not 07:00 Europe/Rome.'
+        run: "echo 'Skipped: not 07:00 Europe/Rome.'"
