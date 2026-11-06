@@ -9,13 +9,14 @@
 
   var LINKS = [
     ["Home", "/"],
-    ["Latest News", "/search/label/TRTT%20News"],
-    ["Europe Travel", "/search/label/Europe%20Travel"],
-    ["Flights", "/search/label/Flights"],
-    ["eSIM", "/search/label/eSIM"],
-    ["Hotels", "/search/label/Hotels"],
+    ["Flight News", "/search/label/Flight%20News"],
+    ["Passenger Rights", "/search/label/Passenger%20Rights"],
+    ["eSIM", "/search/label/eSIM%20%26%20Stay%20Connected"],
+    ["Ride & Stay", "/search/label/Ride%20%26%20Stay"],
+    ["Tour & Experience", "/search/label/Tour%20%26%20Experience"],
+    ["Sanluri Diary", "/search/label/Sanluri%20Diary"],
     ["Roksana Vault", "/p/roksana-vault.html"],
-    ["Travel Tools", "https://cocvghuj-trtt-news-bot.vercel.app/"],
+    ["Travel Tools", "https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950"],
     ["About", "/p/about-us.html"],
     ["Contact", "/p/contact.html"]
   ];
