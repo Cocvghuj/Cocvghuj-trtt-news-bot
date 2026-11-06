@@ -65,7 +65,7 @@ class DraftEngineRegressionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             queue_path = Path(directory) / "latest.json"
             queue_path.write_text(json.dumps({
-                "version": "2026-11-06",
+                "version": "2026-11-07",
                 "batch_size": 1,
                 "isDraft": True,
                 "require_image": True,
@@ -80,7 +80,7 @@ class DraftEngineRegressionTests(unittest.TestCase):
                 _, route = engine._load_today_route()
             self.assertEqual(route["from"], "Cagliari")
             self.assertEqual(route["to"], "Bergamo")
-            self.assertEqual(route["date"], "2026-11-06")
+            self.assertEqual(route["date"], "2026-11-07")
             self.assertIs(route["isDraft"], True)
 
     def test_history_keeps_latest_12_and_shifts_oldest(self):
@@ -98,12 +98,12 @@ class DraftEngineRegressionTests(unittest.TestCase):
         route = {
             "from": "Cagliari", "to": "Bergamo",
             "iata_from": "CAG", "iata_to": "BGY",
-            "date": "2026-11-06", "price": "€19",
+            "date": "2026-11-07", "price": "€19",
             "airline": "Ryanair", "isDraft": True,
         }
         queue = {
-            "version": "2026-11-06",
-            "generated_at": "2026-11-06T22:50:00+01:00",
+            "version": "2026-11-07",
+            "generated_at": "2026-11-07T22:50:00+01:00",
             "routes": [route],
             "batch_size": 1,
             "isDraft": True,
@@ -116,7 +116,7 @@ class DraftEngineRegressionTests(unittest.TestCase):
             queue_path = Path(directory) / "latest.json"
             history_path = Path(directory) / "drafted_history.txt"
             queue_path.write_text(json.dumps(queue), encoding="utf-8")
-            history_path.write_text("Cagliari to Bergamo | 2026-11-06\n", encoding="utf-8")
+            history_path.write_text("Cagliari to Bergamo | 2026-11-07\n", encoding="utf-8")
             env = {
                 "BLOGGER_BLOG_ID": "main-blog",
                 "FLIGHTSCOUTPRO_BLOG_ID": "partner-blog",
@@ -143,7 +143,7 @@ class DraftEngineRegressionTests(unittest.TestCase):
                 {call["blogId"] for call in service.posts_api.insert_calls},
                 {"main-blog", "partner-blog"},
             )
-            self.assertIn("Cagliari to Bergamo | 2026-11-06", history_path.read_text(encoding="utf-8"))
+            self.assertIn("Cagliari to Bergamo | 2026-11-07", history_path.read_text(encoding="utf-8"))
 
     def test_live_duplicate_is_rejected_and_never_changed(self):
         service = FakeService()

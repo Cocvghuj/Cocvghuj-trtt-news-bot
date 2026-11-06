@@ -31,7 +31,7 @@ class DraftOnlyPolicyTests(unittest.TestCase):
         route = {
             "from": "Cagliari", "to": "Bergamo",
             "iata_from": "CAG", "iata_to": "BGY",
-            "date": "2026-11-06", "price": "€19",
+            "date": "2026-11-07", "price": "€19",
             "airline": "Ryanair", "isDraft": True,
         }
         content = engine.build_content(route, "6 November 2026")
@@ -61,15 +61,18 @@ class DraftOnlyPolicyTests(unittest.TestCase):
         self.assertIn("Object.freeze(", source)
         self.assertIn('markerHex: "373837393530"', source)
         self.assertNotIn("xxxxx", source.lower())
+        self.assertNotRegex(source, r"Roksana|Ripu")
+        self.assertIn("Revenue Protection Protocol", source)
+        self.assertIn('markerHex: "373837393530"', source)
 
     def test_daily_route_queue_has_one_dated_draft_route(self):
         queue = json.loads(Path("news/queue/latest.json").read_text(encoding="utf-8"))
-        self.assertEqual(queue["version"], "2026-11-06")
+        self.assertEqual(queue["version"], "2026-11-07")
         self.assertEqual(queue["batch_size"], 1)
         self.assertIs(queue["isDraft"], True)
         self.assertEqual(queue["require_marker"], "787950 LOCKED")
         self.assertEqual(len(queue["routes"]), 1)
-        self.assertEqual(queue["routes"][0]["date"], "2026-11-06")
+        self.assertEqual(queue["routes"][0]["date"], "2026-11-07")
         self.assertIs(queue["routes"][0]["isDraft"], True)
 
     def test_daily_focus_varies(self):

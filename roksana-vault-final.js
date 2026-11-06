@@ -1,4 +1,4 @@
-// TRTT News Bot - Roksana Vault FINAL - Marker 787950 LOCKED
+// TRTT News Bot - 787950 Vault FINAL - Marker 787950 LOCKED
 // Browser-safe classic script shared by the website and Blogger publication.
 (function (global) {
   'use strict';
@@ -7,9 +7,10 @@
     return String.fromCharCode(byte);
   }).join('');
   var MARKER = MARKER_NUMBER + ' LOCKED';
-  var ROKSANA_VAULT_FINAL = Object.freeze({
+  var TRTT_787950_VAULT_FINAL = Object.freeze({
     marker: MARKER,
     markerHex: "373837393530",
+    protocol: "Revenue Protection Protocol",
     version: "FINAL",
     blog1: "trttnews24bd.blogspot.com",
     blog2: "flightscoutpro.blogspot.com",
@@ -28,19 +29,19 @@
     validated: true,
     answerApi: "https://cocvghuj-trtt-news-bot.vercel.app/api/answer"
   });
-  global.ROKSANA_VAULT_FINAL = ROKSANA_VAULT_FINAL;
-  global.ROKSANA_VAULT = ROKSANA_VAULT_FINAL;
+  global.TRTT_787950_VAULT_FINAL = TRTT_787950_VAULT_FINAL;
+  global.TRTT_787950_VAULT = TRTT_787950_VAULT_FINAL;
 
   function mountVault() {
-    if (!global.document || document.getElementById('roksana-vault-ui')) return;
+    if (!global.document || document.getElementById('trtt-787950-vault-ui')) return;
     var host = (global.location && global.location.hostname || '').toLowerCase();
-    if (ROKSANA_VAULT_FINAL.allowedDomains.indexOf(host) === -1) return;
+    if (TRTT_787950_VAULT_FINAL.allowedDomains.indexOf(host) === -1) return;
     var style = document.createElement('style');
-    style.textContent = '#roksana-vault-ui{font:15px/1.5 system-ui,sans-serif;max-width:760px;margin:24px auto;padding:20px;border:1px solid #d9deea;border-radius:16px;background:#fff;color:#172033;box-sizing:border-box}#roksana-vault-ui *{box-sizing:border-box}#roksana-vault-ui h2{margin:0 0 8px;font-size:22px}#roksana-vault-ui .rv-signature{display:flex;gap:8px;margin:12px 0}#roksana-vault-ui .rv-signature span{height:5px;flex:1;border-radius:8px}#roksana-vault-ui textarea{width:100%;min-height:100px;padding:12px;border:1px solid #cbd2e1;border-radius:10px;font:inherit}#roksana-vault-ui button{margin-top:10px;padding:11px 18px;border:0;border-radius:9px;background:#172b4d;color:white;font-weight:700;cursor:pointer}#roksana-vault-ui button:disabled{opacity:.6;cursor:wait}#roksana-vault-ui .rv-answer{margin-top:14px;padding:12px;background:#f4f6fa;border-radius:10px;white-space:pre-wrap;min-height:44px}';
+    style.textContent = '#trtt-787950-vault-ui{font:15px/1.5 system-ui,sans-serif;max-width:760px;margin:24px auto;padding:20px;border:1px solid #d9deea;border-radius:16px;background:#fff;color:#172033;box-sizing:border-box}#trtt-787950-vault-ui *{box-sizing:border-box}#trtt-787950-vault-ui h2{margin:0 0 8px;font-size:22px}#trtt-787950-vault-ui .rv-signature{display:flex;gap:8px;margin:12px 0}#trtt-787950-vault-ui .rv-signature span{height:5px;flex:1;border-radius:8px}#trtt-787950-vault-ui textarea{width:100%;min-height:100px;padding:12px;border:1px solid #cbd2e1;border-radius:10px;font:inherit}#trtt-787950-vault-ui button{margin-top:10px;padding:11px 18px;border:0;border-radius:9px;background:#172b4d;color:white;font-weight:700;cursor:pointer}#trtt-787950-vault-ui button:disabled{opacity:.6;cursor:wait}#trtt-787950-vault-ui .rv-answer{margin-top:14px;padding:12px;background:#f4f6fa;border-radius:10px;white-space:pre-wrap;min-height:44px}';
     document.head.appendChild(style);
     var section = document.createElement('section');
-    section.id = 'roksana-vault-ui';
-    section.innerHTML = '<h2>Roksana Nila · TRTT Answer Desk</h2><div class="rv-signature" aria-hidden="true"><span style="background:#ff2e63"></span><span style="background:#FFC300"></span><span style="background:#AF7AC5"></span></div><label for="rv-ai-question"><strong>Ask your travel question</strong></label><textarea id="rv-ai-question" placeholder="Type your question here…" maxlength="4000"></textarea><button id="rv-ai-ask" type="button">Ask AI</button><div class="rv-answer" id="rv-ai-answer" aria-live="polite">Your answer will appear here.</div><div class="rv-status">Marker 787950 LOCKED · Dual-AI Answer Engine</div>';
+    section.id = 'trtt-787950-vault-ui';
+    section.innerHTML = '<h2>787950 LOCKED · TRTT Answer Desk</h2><div class="rv-signature" aria-hidden="true"><span style="background:#ff2e63"></span><span style="background:#FFC300"></span><span style="background:#AF7AC5"></span></div><label for="rv-ai-question"><strong>Ask your travel question</strong></label><textarea id="rv-ai-question" placeholder="Type your question here…" maxlength="4000"></textarea><button id="rv-ai-ask" type="button">Ask AI</button><div class="rv-answer" id="rv-ai-answer" aria-live="polite">Your answer will appear here.</div><div class="rv-status">Marker 787950 LOCKED · Dual-AI Answer Engine</div>';
     (document.querySelector('main') || document.body).appendChild(section);
     var ask = section.querySelector('#rv-ai-ask');
     var question = section.querySelector('#rv-ai-question');
@@ -51,7 +52,7 @@
       ask.disabled = true;
       answer.textContent = 'Checking your question…';
       try {
-        var response = await fetch(ROKSANA_VAULT_FINAL.answerApi, {
+        var response = await fetch(TRTT_787950_VAULT_FINAL.answerApi, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ question: prompt })
         });
@@ -67,5 +68,5 @@
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountVault, { once: true });
     else mountVault();
   }
-  console.log("Roksana Vault FINAL Loaded - Marker 787950 LOCKED");
+  console.log("787950 Vault FINAL Loaded - Marker 787950 LOCKED");
 })(typeof window !== 'undefined' ? window : globalThis);

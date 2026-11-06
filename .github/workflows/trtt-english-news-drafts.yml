@@ -40,11 +40,11 @@ jobs:
           assert queue["batch_size"] == 1 and queue["isDraft"] is True
           assert len(queue["routes"]) == 1
           route = queue["routes"][0]
-          assert route["date"] == "2026-11-06" and route["isDraft"] is True
+          assert route["date"] == "2026-11-07" and route["isDraft"] is True
           content = build_content(route, "6 November 2026")
           assert "EC 261/2004" in content and "EC Regulation 261/2004" not in content
           assert _plain_word_count(content) >= 800
-          assert "<img src=\"https://images.unsplash.com/" in content
+          assert '<img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80"' in content
           assert "787950 LOCKED" in content
           assert "TRTT VoyageHub Showroom" in content
           assert "amzn.to/4shg6Hn?marker=787950" in content

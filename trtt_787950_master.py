@@ -68,9 +68,10 @@ def _load_today_route() -> tuple[dict[str, Any], dict[str, Any]]:
     today = publish_date().date().isoformat()
     fallback_template = {
         "from": "Cagliari", "to": "Bergamo", "iata_from": "CAG", "iata_to": "BGY",
-        "price": "Check live fare", "airline": "Verify operating carrier", "isDraft": True,
+        "price": "€19 (unverified queue lead)", "airline": "Verify operating carrier",
+        "image_url": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80", "isDraft": True,
     }
-    if not QUEUE_FILE.is_file():
+    if not QUEUE_FILE.is_file() or QUEUE_FILE.stat().st_size == 0:
         queue: dict[str, Any] = {
             "version": today, "batch_size": BATCH_SIZE, "isDraft": True,
             "require_image": True, "require_marker": MARKER, "routes": [],
@@ -159,7 +160,7 @@ def build_content(route: dict[str, Any] | str, date_label: str | None = None) ->
     fare = html.escape(str(route["price"]))
     airline = html.escape(str(route["airline"]))
     published = date_label or publish_date().strftime("%-d %B %Y")
-    image_url = "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200"
+    image_url = str(route.get("image_url") or "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80")
     content = f"""<!-- 787950 LOCKED -->
 <article class="trtt-daily-route" data-marker="787950 LOCKED" data-is-draft="true">
 <h1>{origin} to {destination}: flight planning guide for {travel_date}</h1>
@@ -207,6 +208,7 @@ def build_content(route: dict[str, Any] | str, date_label: str | None = None) ->
     if _plain_word_count(content) < 800:
         raise AssertionError(f"Draft content is too short: {_plain_word_count(content)} words; minimum is 800.")
     required = [
+        '<img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80"',
         "<img src=\"https://images.unsplash.com/",
         "EC 261/2004",
         "Ghost-SIM = eSIM",
