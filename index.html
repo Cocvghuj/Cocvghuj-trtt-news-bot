@@ -27,7 +27,7 @@
         <form class="flight-search" action="/tools/flight-search.html" method="get">
           <label>From<input name="origin" value="Cagliari (CAG)" placeholder="e.g. Cagliari" required></label>
           <label>To<input name="dest" placeholder="e.g. Rome" required></label>
-          <label>Departure<input name="date" type="date"></label>
+          <label>Departure<input name="date" type="date" required></label>
           <button type="submit">✈ Find flights</button>
         </form>
         <p class="hero-note">Compare options before you book · Prices are checked with the provider</p>
@@ -42,9 +42,9 @@
     <section class="section" id="flight-deals">
       <div class="section-heading"><div><span class="kicker">FLIGHT DESK</span><h2>Good routes.<br><em>Clear choices.</em></h2></div><p>Start with a route from Sardinia. Check the current fare, baggage rules and booking details with the airline or travel provider.</p></div>
       <div class="route-grid">
-        <a class="route-card" href="/tools/flight-search.html?origin=Cagliari%20(CAG)&dest=Rome"><span class="route-icon">✈</span><span class="route-label">FROM CAGLIARI</span><strong>Cagliari <i>→</i> Rome</strong><span class="route-action">Check live price ↗</span></a>
-        <a class="route-card" href="/tools/flight-search.html?origin=Cagliari%20(CAG)&dest=Milan"><span class="route-icon">✈</span><span class="route-label">FROM CAGLIARI</span><strong>Cagliari <i>→</i> Milan</strong><span class="route-action">Check live price ↗</span></a>
-        <a class="route-card" href="/tools/flight-search.html?origin=Alghero%20(AHO)&dest=Barcelona"><span class="route-icon">✈</span><span class="route-label">FROM ALGHERO</span><strong>Alghero <i>→</i> Barcelona</strong><span class="route-action">Check live price ↗</span></a>
+        <a class="route-card" href="/tools/flight-search.html?origin=Cagliari%20(CAG)&dest=Rome%20(ROM)"><span class="route-icon">✈</span><span class="route-label">FROM CAGLIARI</span><strong>Cagliari <i>→</i> Rome</strong><span class="route-action">Check live price ↗</span></a>
+        <a class="route-card" href="/tools/flight-search.html?origin=Cagliari%20(CAG)&dest=Milan%20(MIL)"><span class="route-icon">✈</span><span class="route-label">FROM CAGLIARI</span><strong>Cagliari <i>→</i> Milan</strong><span class="route-action">Check live price ↗</span></a>
+        <a class="route-card" href="/tools/flight-search.html?origin=Alghero%20(AHO)&dest=Barcelona%20(BCN)"><span class="route-icon">✈</span><span class="route-label">FROM ALGHERO</span><strong>Alghero <i>→</i> Barcelona</strong><span class="route-action">Check live price ↗</span></a>
       </div>
       <p class="disclaimer">Fares change frequently. TRTT Voyage does not display an unverified fixed price; the provider's current price and conditions apply.</p>
     </section>
