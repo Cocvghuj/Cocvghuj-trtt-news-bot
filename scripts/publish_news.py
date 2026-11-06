@@ -141,6 +141,21 @@ def find_duplicate_post(
         ) from exc
 
 
+def _build_search_description(route: dict[str, Any]) -> str:
+    """Build a concise, route-specific Blogger search description from queue fields."""
+    from datetime import datetime
+
+    travel_date = datetime.strptime(str(route["date"]), "%Y-%m-%d").strftime("%d %B %Y").lstrip("0")
+    description = (
+        f"Plan {route['from']} ({route['iata_from']}) to {route['to']} "
+        f"({route['iata_to']}) for {travel_date}. Compare baggage costs, airport "
+        "transfers, schedules and EU passenger rights before booking."
+    )
+    if len(description) > 160:
+        description = description[:157].rsplit(" ", 1)[0].rstrip(" ,;:") + "..."
+    return description
+
+
 def create_or_verify_draft(
     service: Any,
     blog_id: str,
@@ -148,6 +163,7 @@ def create_or_verify_draft(
     content: str,
     topic_key: str | None = None,
     context: Any = None,
+    search_description: str | None = None,
 ) -> tuple[dict[str, Any], bool]:
     """Recover an existing draft or create one; never retry a non-idempotent insert."""
     if context is None:
@@ -182,6 +198,7 @@ def create_or_verify_draft(
             "title": title,
             "content": marked_content,
             "labels": ["TRTT", "Flight Guide", "Sardinia", "787950"],
+            **({"customMetaData": search_description} if search_description else {}),
         },
         isDraft=True,
     ).execute()
@@ -435,6 +452,7 @@ def main(service_factory: Any = None) -> int:
             content,
             topic_key=route_key,
             context=editorial_context,
+            search_description=_build_search_description(route),
         )
         post_id = str(post.get("id", "")).strip()
         if not post_id:
