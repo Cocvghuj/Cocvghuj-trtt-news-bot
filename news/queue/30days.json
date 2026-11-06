@@ -1,0 +1,172 @@
+{
+  "version": "2026-11-08",
+  "start_date": "2026-11-08",
+  "end_date": "2026-12-07",
+  "generated_at": "2026-11-06T17:00:00+01:00",
+  "batch_size": 1,
+  "isDraft": true,
+  "require_marker": "787950 LOCKED",
+  "days": [
+    {
+      "date": "2026-11-08",
+      "status": "ready",
+      "route": {
+        "from": "Milan",
+        "to": "Cagliari",
+        "iata_from": "MIL",
+        "iata_to": "CAG",
+        "date": "2026-11-08",
+        "price": "€19 (unverified queue lead)",
+        "airline": "Verify operating carrier",
+        "image_url": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80",
+        "category": "Flight News",
+        "isDraft": true
+      }
+    },
+    {
+      "date": "2026-11-09",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-10",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-11",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-12",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-13",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-14",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-15",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-16",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-17",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-18",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-19",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-20",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-21",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-22",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-23",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-24",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-25",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-26",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-27",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-28",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-29",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-11-30",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-12-01",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-12-02",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-12-03",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-12-04",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-12-05",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-12-06",
+      "status": "pending",
+      "route": null
+    },
+    {
+      "date": "2026-12-07",
+      "status": "pending",
+      "route": null
+    }
+  ]
+}
