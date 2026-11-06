@@ -33,6 +33,5 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "marker": "787950 LOCKED"
+  ]
 }
