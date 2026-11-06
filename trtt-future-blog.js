@@ -3,14 +3,8 @@
 var ROOT="trtt-future-world",STYLE="trtt-future-world-ui",CSS_URL="https://cocvghuj-trtt-news-bot.vercel.app/trtt-future-blog.css";
 var HUB="https://cocvghuj-trtt-news-bot.vercel.app/";
 var LINKS=[
- {title:"Latest Stories",desc:"Every new post from the journal",href:"/"},
- {title:"Aviation Desk",desc:"Flights, airports and aviation updates",href:"/search/label/Aviation"},
- {title:"Passenger Help",desc:"AirHelp and passenger-rights information",href:"/search/label/AirHelp"},
- {title:"TRTT News",desc:"News, publishing and blog updates",href:"/search/label/TRTT%20News%2024%20BD"},
- {title:"November Archive",desc:"Browse the latest monthly collection",href:"/2026_11_01_archive.html"},
- {title:"About TRTT",desc:"The story behind this travel journal",href:"/p/about-us.html"},
- {title:"Contact",desc:"Get in touch with TRTT",href:"/p/contact-us_0889829255.html"},
- {title:"VoyageHub",desc:"Open the TRTT travel toolkit",href:HUB,external:true}
+ {title:"About Us",desc:"Who we are, what we believe and why we travel",href:"/p/about-us.html"},
+ {title:"TRTT Voyage Hub",desc:"Your gateway to tools, routes and the wider TRTT world",href:HUB,external:true}
 ];
 function addCSS(){
  if(!document.getElementById(STYLE)){
