@@ -1,11 +1,18 @@
 (function(){
 "use strict";
-var ROOT="trtt-future-world",STYLE="trtt-future-world-ui",CSS_URL="https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@56d0be703f38de203a4e0d8da434cd88473791aa/trtt-future-blog.css";
+var ROOT="trtt-future-world",STYLE="trtt-future-world-ui",CSS_URL="https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@6ffe93f0d48ce2ef0aab8b64d0daf74d5f710882/trtt-future-blog.css";
 var HUB="https://cocvghuj-trtt-news-bot.vercel.app/";
 var LINKS=[
  {title:"About Us",desc:"Who we are, what we believe and why we travel",href:"/p/about-us.html"},
  {title:"TRTT Voyage Hub",desc:"Your gateway to tools, routes and the wider TRTT world",href:HUB,external:true}
 ];
+function sharpenHeaderLogo(){
+ var img=document.querySelector("#header .header-image-wrapper img,.header-widget .header-image-wrapper img");
+ if(!img||img.dataset.trttHiRes)return;
+ var src=img.getAttribute("src")||"";
+ if(/=s\\d+(-c)?$/.test(src))img.setAttribute("src",src.replace(/=s\\d+(-c)?$/,"=s480"));
+ img.dataset.trttHiRes="1";
+}
 function addCSS(){
  if(!document.getElementById(STYLE)){
   var l=document.createElement("link");l.id=STYLE;l.rel="stylesheet";l.href=CSS_URL;document.head.appendChild(l);
@@ -84,7 +91,7 @@ function styles(){
  ].join("\n");document.head.appendChild(s);
 }
 function start(){
- addCSS();styles();
+ addCSS();styles();sharpenHeaderLogo();
  var wait=0;var timer=setInterval(function(){if(document.body&&document.querySelector(".mobile-menu-toggle")){clearInterval(timer);build();}else if(++wait>30){clearInterval(timer);if(document.body)build();}},250);
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});else start();
