@@ -13,7 +13,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parent
-QUEUE_FILE = ROOT / "news" / "queue" / "latest.json"
+QUEUE_FILE = ROOT / "news" / "queue" / "30days.json"
 HISTORY_FILE = ROOT / "drafted_history.txt"
 TIME_ZONE = ZoneInfo("Europe/Rome")
 BATCH_SIZE = 1
@@ -66,58 +66,42 @@ def append_history(key: str) -> None:
 
 def _load_today_route() -> tuple[dict[str, Any], dict[str, Any]]:
     today = publish_date().date().isoformat()
-    fallback_template = {
-        "from": "Milan", "to": "Cagliari", "iata_from": "MIL", "iata_to": "CAG",
-        "price": "€19 (unverified queue lead)", "airline": "Verify operating carrier",
-        "image_url": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80", "isDraft": True,
-    }
     if not QUEUE_FILE.is_file() or QUEUE_FILE.stat().st_size == 0:
-        queue: dict[str, Any] = {
-            "version": today, "batch_size": BATCH_SIZE, "isDraft": True,
-            "require_image": True, "require_marker": MARKER, "routes": [],
-            "fallback_route": fallback_template,
-        }
-    else:
-        try:
-            queue = json.loads(QUEUE_FILE.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
-            raise AssertionError(f"Daily queue is unreadable; refusing to guess: {exc}") from exc
-    if not isinstance(queue, dict):
-        raise AssertionError("Queue must be a JSON object, not a bare route list.")
-    if queue.get("isDraft") is not True:
-        raise AssertionError("Queue policy violation: isDraft must be true.")
-    if queue.get("batch_size") != BATCH_SIZE:
+        raise AssertionError(f"30-day queue is missing or empty: {QUEUE_FILE}")
+    try:
+        queue: dict[str, Any] = json.loads(QUEUE_FILE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise AssertionError(f"30-day queue is unreadable; refusing to guess: {exc}") from exc
+    if not isinstance(queue, dict) or queue.get("isDraft") is not True:
+        raise AssertionError("Queue must be an object with isDraft=true.")
+    if queue.get("batch_size") != 1:
         raise AssertionError("Queue policy violation: batch_size must equal 1.")
-    if queue.get("require_image") is not True:
-        raise AssertionError("Queue policy violation: require_image must be true.")
     if queue.get("require_marker") != MARKER:
         raise AssertionError("Queue policy violation: marker must be 787950 LOCKED.")
-    routes = queue.get("routes", [])
-    if routes is None:
-        routes = []
-    if not isinstance(routes, list):
-        raise AssertionError("Queue routes must be a list.")
-    if len(routes) == 0:
-        fallback = queue.get("fallback_route")
-        route = dict(fallback) if isinstance(fallback, dict) else dict(fallback_template)
-        route.setdefault("date", today)
-        route.setdefault("isDraft", True)
-        print("Queue empty - generated today's route fallback.")
-    else:
-        if len(routes) != BATCH_SIZE or not isinstance(routes[0], dict):
-            raise AssertionError(f"Exactly one route object is required; found {len(routes)}.")
-        route = dict(routes[0])
-    required = ("from", "to", "iata_from", "iata_to", "date", "price", "airline")
+    days = queue.get("days")
+    if not isinstance(days, list) or len(days) != 30:
+        raise AssertionError("30-day queue must contain exactly 30 dated entries.")
+    matches = [item for item in days if isinstance(item, dict) and item.get("date") == today]
+    if len(matches) != 1:
+        raise AssertionError(f"Queue must contain exactly one entry for {today}; found {len(matches)}.")
+    entry = matches[0]
+    route = entry.get("route")
+    if entry.get("status") != "ready" or not isinstance(route, dict):
+        raise AssertionError(f"No route is ready for {today}; refusing to invent a route or draft.")
+    required = ("from", "to", "iata_from", "iata_to", "date", "price", "airline", "category")
     missing = [field for field in required if not str(route.get(field, "")).strip()]
     if missing:
         raise AssertionError("Queue route is missing: " + ", ".join(missing))
-    if route.get("isDraft") is not True:
-        raise AssertionError("Route policy violation: route.isDraft must be true.")
-    if not route.get("date"):
-        route["date"] = today
-    elif route["date"] != today:
-        print(f"Notice: Queue route date {route['date']} accepted for rotation draft (current date: {today}).")
-    return queue, route
+    if route.get("date") != today or route.get("isDraft") is not True:
+        raise AssertionError("Route date must match today's queue entry and isDraft must be true.")
+    allowed_categories = {
+        "Flight News", "Passenger Rights", "eSIM", "Ride & Stay", "Tour", "Sanluri Diary"
+    }
+    if route["category"] not in allowed_categories:
+        raise AssertionError(f"Unsupported category: {route['category']}")
+    if not route.get("image_url"):
+        raise AssertionError("Queue route must include an image_url.")
+    return queue, dict(route)
 
 def _plain_word_count(content: str) -> int:
     plain = re.sub(r"<[^>]+>", " ", content)
@@ -275,7 +259,7 @@ def _confirmed_status(service: Any, blog_id: str, post: dict[str, Any]) -> str:
         raise
 
 
-def _create_or_recover_draft(service: Any, blog_id: str, title: str, content: str) -> tuple[dict[str, Any], bool]:
+def _create_or_recover_draft(service: Any, blog_id: str, title: str, content: str, content_category: str) -> tuple[dict[str, Any], bool]:
     last_error: Exception | None = None
     for attempt in range(1, 4):
         existing = find_duplicate_post(service, blog_id, title)
@@ -294,7 +278,7 @@ def _create_or_recover_draft(service: Any, blog_id: str, title: str, content: st
                     "kind": "blogger#post",
                     "title": title,
                     "content": content,
-                    "labels": ["TRTT", "Flight Guide", "Sardinia", "787950"],
+                    "labels": [str(content_category)],
                 },
                 isDraft=True,
             ).execute()
@@ -314,10 +298,9 @@ def _create_or_recover_draft(service: Any, blog_id: str, title: str, content: st
     raise AssertionError(f"Unable to create or verify Blogger draft for blog {blog_id}: {last_error}")
 
 
-def _require_configuration() -> tuple[str, str]:
+def _require_configuration() -> str:
     required = (
         "BLOGGER_BLOG_ID",
-        "FLIGHTSCOUTPRO_BLOG_ID",
         "BLOGGER_CLIENT_ID",
         "BLOGGER_CLIENT_SECRET",
         "BLOGGER_REFRESH_TOKEN",
@@ -325,27 +308,26 @@ def _require_configuration() -> tuple[str, str]:
     missing = [name for name in required if not os.environ.get(name, "").strip()]
     if missing:
         raise AssertionError("Missing required Blogger configuration: " + ", ".join(missing))
-    main_id = os.environ["BLOGGER_BLOG_ID"].strip()
-    partner_id = os.environ["FLIGHTSCOUTPRO_BLOG_ID"].strip()
-    if main_id == partner_id:
-        raise AssertionError("The two Blogger blog IDs must be different.")
-    return main_id, partner_id
+    return os.environ["BLOGGER_BLOG_ID"].strip()
 
 
 def main() -> int:
     run_started = time.monotonic()
-    main_blog_id, partner_blog_id = _require_configuration()
+    blog_id = _require_configuration()
     queue, route = _load_today_route()
-    key = route_key(route)
+    today = publish_date().date().isoformat()
     history = load_history()
-    print("Republish allowed - today's date override")
+    if any(item.startswith(today + " | ") for item in history):
+        print(f"SKIP: A daily draft was already confirmed for {today}; one-draft-per-day guard.")
+        return 0
+    key = route_key(route)
     title = (
         f"{route['from']} to {route['to']} flight guide - "
         f"{datetime.strptime(route['date'], '%Y-%m-%d').strftime('%-d %B %Y')} - TRTT"
     )
     content = build_content(route)
     checks = {
-        "Image": "<img src=\"https://images.unsplash.com/" in content,
+        "Image": "<img src=\\"https://images.unsplash.com/" in content,
         "EC 261/2004": "EC 261/2004" in content,
         "787950 LOCKED": MARKER in content,
         "Vercel Link": LIVE_APP in content,
@@ -359,38 +341,21 @@ def main() -> int:
     print(f"Article word count: {word_count}")
     if word_count < 800:
         raise AssertionError(f"Draft content must contain at least 800 words; got {word_count}.")
-    print(f"Queue: {queue.get('version', route['date'])} | Batch size: {BATCH_SIZE} | isDraft=True")
+    print(f"Queue: {queue.get('start_date', route['date'])} | Batch size: 1 | Category: {route['category']} | isDraft=True")
 
     service = build()
-    targets = [
-        (main_blog_id, "trttnews24bd"),
-        (partner_blog_id, "flightscoutpro"),
-    ]
-    results = []
-    newly_created = 0
-    for blog_id, blog_name in targets:
-        post, created = _create_or_recover_draft(service, blog_id, title, content)
-        if not post.get("id"):
-            raise AssertionError(f"Blogger returned no post ID for {blog_name}.")
-        if _confirmed_status(service, blog_id, post) != "DRAFT":
-            raise AssertionError(f"Blogger DRAFT status could not be verified for {blog_name}.")
-        if created:
-            newly_created += 1
-            print(f"SUCCESS: Draft created - {blog_name} - Post ID: {post['id']}")
-        else:
-            print(f"CONFIRMED: Existing Blogger DRAFT - {blog_name} - Post ID: {post['id']}")
-        results.append((blog_name, str(post["id"])))
-
-    if len(results) != 2:
-        raise AssertionError("Draft creation failed: both Blogger sites were not verified.")
-    # History is written only after both real Blogger post IDs and DRAFT statuses are confirmed.
-    append_history(key)
-    elapsed = time.monotonic() - run_started
-    print(f"Draft run elapsed: {elapsed:.2f}s")
-    print(
-        f"CONFIRMED: {len(results)} Blogger DRAFT records; "
-        f"newly created this run: {newly_created}; route: {key}"
+    post, created = _create_or_recover_draft(
+        service, blog_id, title, content, str(route["category"])
     )
+    if not post.get("id"):
+        raise AssertionError("Blogger returned no post ID.")
+    if _confirmed_status(service, blog_id, post) != "DRAFT":
+        raise AssertionError("Blogger DRAFT status could not be verified.")
+    append_history(f"{today} | {key}")
+    elapsed = time.monotonic() - run_started
+    action = "created" if created else "existing verified"
+    print(f"CONFIRMED: One Blogger DRAFT {action}; blog ID: {blog_id}; post ID: {post['id']}; category label: {route['category']}")
+    print(f"Draft run elapsed: {elapsed:.2f}s")
     return 0
 
 
