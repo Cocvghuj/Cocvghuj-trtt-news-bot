@@ -39,7 +39,7 @@
       "Golapi #ff2e63 — ROSE PIAJI — VERIFIED ✓ — Bou's Choice",
       "Kathali #FFC300 — GOLDEN PIAJI — AUTHENTIC ✓ — Sanluri Italy",
       "Piaji #AF7AC5 — VELVET PIAJI — SECURE ✓ — Final Vault 2026",
-      "Dual AI source-assisted answers are available",
+      "Triple AI source-assisted answers are available",
       "Bou's Choice Final Vault — 12 Vaults — 3 Colors — 1 Love",
       "IP-based personalization ACTIVE — Your Vault is LIVE",
       "Answer Engine — Real Information Grounded in Sanluri & CAG Airport",
