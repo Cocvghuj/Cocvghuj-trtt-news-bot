@@ -67,7 +67,7 @@ def append_history(key: str) -> None:
 def _load_today_route() -> tuple[dict[str, Any], dict[str, Any]]:
     today = publish_date().date().isoformat()
     fallback_template = {
-        "from": "Cagliari", "to": "Bergamo", "iata_from": "CAG", "iata_to": "BGY",
+        "from": "Milan", "to": "Cagliari", "iata_from": "MIL", "iata_to": "CAG",
         "price": "€19 (unverified queue lead)", "airline": "Verify operating carrier",
         "image_url": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80", "isDraft": True,
     }
@@ -102,7 +102,7 @@ def _load_today_route() -> tuple[dict[str, Any], dict[str, Any]]:
         route = dict(fallback) if isinstance(fallback, dict) else dict(fallback_template)
         route.setdefault("date", today)
         route.setdefault("isDraft", True)
-        print("Queue empty - generated today's Cagliari to Bergamo fallback route.")
+        print("Queue empty - generated today's route fallback.")
     else:
         if len(routes) != BATCH_SIZE or not isinstance(routes[0], dict):
             raise AssertionError(f"Exactly one route object is required; found {len(routes)}.")
@@ -147,7 +147,7 @@ def build_content(route: dict[str, Any] | str, date_label: str | None = None) ->
             raise ValueError("Route string must use 'Origin to Destination'.")
         route = {
             "from": parts[0].strip(), "to": parts[1].strip(),
-            "iata_from": "CAG", "iata_to": "BGY",
+            "iata_from": "MIL", "iata_to": "CAG",
             "date": publish_date().date().isoformat(), "price": "Not supplied",
             "airline": "Not supplied", "isDraft": True,
         }
@@ -164,12 +164,12 @@ def build_content(route: dict[str, Any] | str, date_label: str | None = None) ->
 <article class="trtt-daily-route" data-marker="787950 LOCKED" data-is-draft="true">
 <h1>{origin} to {destination}: flight planning guide for {travel_date}</h1>
 <figure>
-<img src="{image_url}" alt="Mountain and lake landscape in Sardinia travel scenery" loading="lazy" />
+<img src="{image_url}" alt="Travel scenery for the {origin} to {destination} route" loading="lazy" />
 <figcaption>Travel-planning image. Confirm image licensing and attribution requirements before publication.</figcaption>
 </figure>
 <p><strong>Route:</strong> {origin} ({iata_from}) to {destination} ({iata_to}). <strong>Scheduled date:</strong> {travel_date}. The queue currently lists a fare lead of {fare} with {airline}. This is not a live fare guarantee or an independently verified quotation. Airline inventory, taxes, baggage charges and payment fees can change, so check the final price directly with the operating carrier before buying.</p>
-<p>A useful flight plan begins before the airport. Travellers starting in Cagliari should allow time to reach Cagliari Elmas Airport, confirm the terminal shown on the booking and check the airline's current check-in deadline. The journey to the airport can vary with the time of day, local road conditions and the transport option selected. People travelling from Sanluri or elsewhere in Sardinia should compare the full door-to-terminal journey rather than looking only at the flight departure time. Keep a practical buffer for parking, public transport changes, security queues and any mobility or family needs.</p>
-<p>For the destination side, confirm that the ticket names Bergamo Orio al Serio (BGY), not another airport serving the wider Milan area. Airport names can look similar in search results, but the ground transfer may be very different. Before choosing a fare, check the arrival time, onward bus or rail options, the location of your accommodation and the cost of reaching the final address. A low fare can become an expensive journey when a late arrival requires a taxi or an overnight stay. Do not assume a transfer is included unless it appears in the booking conditions.</p>
+<p>A useful flight plan begins before the airport. Travellers starting in {origin} should identify the exact departure airport shown on the booking, check the terminal and confirm the airline's current check-in deadline. The journey to the airport can vary with the time of day, local road conditions and the transport option selected. Compare the full door-to-terminal journey rather than looking only at the flight departure time. Keep a practical buffer for parking, public transport changes, security queues and any mobility or family needs.</p>
+<p>For the destination side, confirm that the ticket names the intended airport serving {destination} and check its airport code against the booking confirmation. City names can cover more than one airport, and the ground transfer may differ substantially. Before choosing a fare, check the arrival time, onward bus or rail options, the location of your accommodation and the cost of reaching the final address. A low fare can become an expensive journey when a late arrival requires a taxi or an overnight stay. Do not assume a transfer is included unless it appears in the booking conditions.</p>
 <h2>Compare the complete price, not just the headline fare</h2>
 <p>Use the same passenger count, travel dates and baggage requirements when comparing options. Review the cabin-bag dimensions, checked-bag allowance, seat-selection charge and payment conditions for the exact fare class. If you are travelling with children, carrying equipment or need extra time at the airport, check those details before checkout. Save a copy of the fare rules and confirmation email. If the price shown in the queue is no longer available, do not describe it as a current offer; update the article only after checking a live booking page and recording when that check was made.</p>
 <p>Travellers comparing schedules should look at the whole day. An early departure may require transport before normal public services begin, while a late arrival may reduce the available transfer choices. Check the first and last practical connections for the actual travel date. If you are using separate tickets, leave enough time to collect baggage, check in again and pass security. Separate tickets generally do not provide the same missed-connection protection as a single through-ticket, so understand the risk before paying.</p>
@@ -177,7 +177,7 @@ def build_content(route: dict[str, Any] | str, date_label: str | None = None) ->
 <p>Ghost-SIM = eSIM. A compatible eSIM can help a traveller access mobile data after arrival without searching for a physical SIM shop. Check that the phone is unlocked, supports eSIM and is compatible with the provider's network in Italy and the destination country. Compare data allowance, validity period, hotspot rules and activation instructions. Install the profile using a reliable internet connection before departure when the provider recommends it, but follow the provider's own activation timing so that the plan does not start earlier than intended. Keep offline copies of tickets, hotel details and transfer instructions in case mobile coverage is temporarily unavailable.</p>
 <h2>Passenger rights and disruption records</h2>
 <p>EC 261/2004 may provide assistance, rerouting, reimbursement or compensation for eligible passengers when a flight is cancelled, denied boarding or delayed on arrival. The outcome depends on the journey, the length of the delay, the reason for the disruption and the applicable legal conditions. Compensation is not automatic, and extraordinary circumstances can affect eligibility. Read the official passenger-rights information and the airline's notice carefully rather than relying on a generic promise. Keep the booking reference, boarding pass, receipts, written airline messages and a note of the actual arrival time. Those records make it easier to describe what happened accurately if you later contact the airline or seek advice.</p>
-<p>For a Cagliari-based traveller, the practical checklist is straightforward: verify CAG and BGY on the ticket, confirm the operating carrier, compare the complete fare, plan the Sardinian airport transfer and save the booking documents. Sanluri residents should add the road journey to the calculation. Anyone continuing beyond Bergamo should check the onward connection before choosing a flight. These steps are useful whether the trip is for work, a family visit or a short break, and they reduce the chance of overlooking a cost that appears only after checkout.</p>
+<p>For a traveller on this {origin} to {destination} itinerary, the practical checklist is straightforward: verify {iata_from} and {iata_to} on the ticket, confirm the operating carrier, compare the complete fare, plan both airport transfers and save the booking documents. Add the journey from your starting address to the departure airport to the calculation. Anyone continuing beyond {destination} should check the onward connection before choosing a flight. These steps are useful whether the trip is for work, a family visit or a short break, and they reduce the chance of overlooking a cost that appears only after checkout.</p>
 <h2>Useful travel tools</h2>
 {_affiliate_list()}
 <p><strong>Editorial note:</strong> This is a route-planning draft based on the supplied queue record. It does not claim first-hand travel experience, a real-time fare check or a guarantee of flight operation. Confirm every time-sensitive detail with the airline, airport and transport operator. Human editorial review is required before publication.</p>
@@ -186,21 +186,21 @@ def build_content(route: dict[str, Any] | str, date_label: str | None = None) ->
 <p><a href="https://europa.eu/youreurope/citizens/travel/passenger-rights/air/index_en.htm" rel="noopener">Official EU air passenger rights guidance</a></p>
 <p><a href="{LIVE_APP}">TRTT VoyageHub Showroom</a></p>
 </article>"""
-    content = content.replace("</article>", """
+    content = content.replace("</article>", f"""
 <h2>Check the complete journey before booking</h2>
-<p>Use the date on the final booking screen as the source of truth and compare the departure and arrival airport codes before payment. A city label can cover several airports, and choosing the wrong one can add a long transfer or an unexpected overnight stay. For this route, check that the ticket shows CAG at departure and BGY at arrival. If the carrier changes an airport or schedule, compare the revised itinerary with your ground transport, accommodation check-in time and any onward reservation. Save the updated confirmation rather than relying on an earlier search result.</p>
+<p>Use the date on the final booking screen as the source of truth and compare the departure and arrival airport codes before payment. A city label can cover several airports, and choosing the wrong one can add a long transfer or an unexpected overnight stay. For this route, check that the ticket shows {iata_from} at departure and {iata_to} at arrival. If the carrier changes an airport or schedule, compare the revised itinerary with your ground transport, accommodation check-in time and any onward reservation. Save the updated confirmation rather than relying on an earlier search result.</p>
 <p>Compare the total cost for the same number of passengers and the same baggage needs. Include cabin baggage, checked baggage, seat selection, payment charges and transport to and from each airport. Optional products may be cheaper when selected during the initial booking, but only add them if they are useful. Read the fare conditions before payment and note whether changes, cancellations or refunds are permitted. A low headline price is not a meaningful comparison if one option excludes a bag that you already know you need.</p>
 <h2>Plan the airport day with a realistic time buffer</h2>
 <p>Check the official airport and transport operator information close to departure. Timetables can change for weekends, public holidays, maintenance or seasonal demand. Work backwards from the airline's check-in and bag-drop deadlines, then allow time for the journey to the terminal, parking or public transport, security and walking to the gate. If the first available bus or train leaves little margin, identify a backup before travel day. Travellers who need mobility assistance should request it from the airline in advance and keep the confirmation with their booking documents.</p>
-<p>For the arrival at Bergamo, check the onward connection using the actual landing time, not just the scheduled departure time. Allow for taxiing, baggage collection and possible delays before choosing a coach or train. If the next leg is on a separate ticket, understand that the second provider may not protect you when the first flight is late. Keep the address of your accommodation offline and check the final public transport departure. When no practical connection remains, compare the cost of a licensed taxi with the cost of changing the flight.</p>
+<p>For the arrival at {destination}, check the onward connection using the actual landing time, not just the scheduled departure time. Allow for taxiing, baggage collection and possible delays before choosing a coach or train. If the next leg is on a separate ticket, understand that the second provider may not protect you when the first flight is late. Keep the address of your accommodation offline and check the final public transport departure. When no practical connection remains, compare the cost of a licensed taxi with the cost of changing the flight.</p>
 <h2>Prepare documents and baggage before leaving</h2>
 <p>Check that every passenger name matches the travel document and that the document is valid for the complete journey. Review entry and transit requirements using official government information for the passenger's nationality and destination. Keep the booking reference, boarding pass, travel insurance details and carrier contact information available offline. Photographing a document can be useful as a backup, but it does not replace carrying the original document when required. If a booking was made through an intermediary, note whether the airline or the agent must handle a change or refund request.</p>
 <p>Measure cabin baggage and check the operating carrier's current size and weight limits for the exact fare. A personal item and a cabin trolley may have different allowances. Put medication and essential items in the bag that stays with you, subject to applicable security rules. If travelling with sports equipment, musical instruments, a pushchair or other unusual baggage, obtain written confirmation of the handling rules before going to the airport. Do not assume that an allowance from a previous trip applies to a new fare or a different airline.</p>
 <h2>Understand disruption support and passenger rights</h2>
 <p>If a flight is cancelled, delayed or changed, save the airline's messages and take a note of the time the information was received. Keep boarding passes, booking confirmations, receipts for necessary expenses and evidence of the actual arrival time. Ask the carrier what care, rerouting or refund options are available and keep the response. EC 261/2004 can apply to eligible journeys, but compensation is not automatic for every delay. The route, operating carrier, length of delay and cause of disruption all matter. Read official European Union guidance and the carrier's written decision before deciding whether a claim is appropriate.</p>
 <p>When requesting help, describe the events in chronological order and attach copies of relevant records. Keep original receipts and avoid sending sensitive payment details in an ordinary email. If the airline rejects a request, read the reason and check the official national enforcement body or consumer advice route that applies to the journey. A claims company cannot guarantee an outcome. This guide is general travel information, not legal advice; the facts of the individual disruption determine which rights and remedies may be available.</p>
-<h2>Final checks for this Cagliari–Bergamo itinerary</h2>
-<p>Before departure, verify the live operating schedule with the airline, confirm CAG and BGY on the ticket, review the baggage allowance and calculate the complete door-to-door cost. Recheck the airport transfer on the day because road conditions and public transport services can change. Confirm the destination address and save a backup route from the airport. If the fare or operating carrier differs from the queue information, update the draft after checking a reliable source rather than presenting old details as current facts.</p>
+<h2>Final checks for this {origin}–{destination} itinerary</h2>
+<p>Before departure, verify the live operating schedule with the airline, confirm {iata_from} and {iata_to} on the ticket, review the baggage allowance and calculate the complete door-to-door cost. Recheck the airport transfer on the day because road conditions and public transport services can change. Confirm the destination address and save a backup route from the airport. If the fare or operating carrier differs from the queue information, update the draft after checking a reliable source rather than presenting old details as current facts.</p>
 <p>The route record is a starting point for a human-reviewed travel guide, not proof that a seat or fare is currently available. Prices, flight times, baggage rules and ground connections are time-sensitive. The editor should confirm each item against the airline, airport and transport operator before approving the post. Keep affiliate disclosures clear wherever a tracked link appears, and make sure the reader can distinguish editorial guidance from a commercial link. The article should remain useful even if a displayed fare changes or a particular service is no longer offered.</p>
 
 </article>""")
@@ -214,9 +214,8 @@ def build_content(route: dict[str, Any] | str, date_label: str | None = None) ->
         "787950 LOCKED",
         LIVE_APP,
         "amzn.to/4shg6Hn?marker=787950",
-        "Sanluri",
-        "Sardinia",
-        "Cagliari",
+        str(route["from"]),
+        str(route["to"]),
     ]
     missing = [item for item in required if item not in content]
     if missing:
