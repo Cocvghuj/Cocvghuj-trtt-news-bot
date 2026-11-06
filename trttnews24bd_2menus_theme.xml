@@ -6378,6 +6378,6 @@ $("#main-wrapper").each(function() {
 //]]>
 </script>
 <!-- TRTT VOYAGE FINAL MENU VALID (ALL MENUS + ALL TOOLS + VERCEL CONNECTED) -->
-<script src='https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@4ca8876e032568d46ffae1c6b7b43b77b81bd251/trtt-final-menu-valid.js'></script>
+<script src='https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@f09c9e1cd1244d91bc4e6c1d361af13ce73ffe43/trtt-final-menu-valid.js'></script>
 </body>
 </html>
