@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const root = __dirname;
-const dist = path.join(root, 'dist');
+const dist = path.join(root, 'public');
 
 // Only publish browser-facing assets. Never copy Python source, credentials/config
 // files, partner records, tests, histories, or documentation.
@@ -23,7 +23,7 @@ const PUBLIC_TEXT_FILES = new Set([
 ]);
 const PRIVATE_FILES = new Set(['build.js']);
 const IGNORED_DIRECTORIES = new Set([
-  '.git', '.github', 'api', 'dist', 'node_modules',
+  '.git', '.github', 'api', 'dist', 'public', 'node_modules',
   'tests', '__pycache__', '.venv', 'venv',
   'logs', 'private', 'data'
 ]);
@@ -64,7 +64,7 @@ fs.readdirSync(root).forEach(file => {
 });
 
 const builtIndex = path.join(dist, 'index.html');
-if (!fs.existsSync(builtIndex)) throw new Error('Build failed: dist/index.html was not created.');
+if (!fs.existsSync(builtIndex)) throw new Error('Build failed: public/index.html was not created.');
 const builtHtml = fs.readFileSync(builtIndex, 'utf8');
 if (!builtHtml.includes('TRTT') || !builtHtml.includes('VOYAGEHUB')) throw new Error('Build failed: TRTT VOYAGEHUB branding missing from dist/index.html.');
 if (!builtHtml.includes('787950 LOCKED')) throw new Error('Build failed: marker 787950 LOCKED missing from dist/index.html.');
