@@ -144,7 +144,7 @@ import trtt_787950_master as _draft_engine
 
 build_content = _draft_engine.build_content
 build = _draft_engine.build
-find_duplicate_post = _draft_engine.find_duplicate_post
+find_duplicate_post = __import__('main').find_duplicate_post
 main = _draft_engine.main
 
 class handler(BaseHTTPRequestHandler):

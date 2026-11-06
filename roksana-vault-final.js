@@ -7,6 +7,7 @@
     return String.fromCharCode(byte);
   }).join('');
   var MARKER = MARKER_NUMBER + ' LOCKED';
+  Object.freeze(MARKER); // immutable marker primitive; MARKER_LOCK freezes value and hex together.
 
   var MENU_TOOLS = Object.freeze([
     Object.freeze({id:"main-hub",label:"Main Hub",url:"https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950"}),
@@ -16,6 +17,12 @@
     Object.freeze({id:"experience-vault",label:"Experience Vault",url:"https://www.klook.com/?marker=787950"}),
     Object.freeze({id:"amazon-gear",label:"Amazon Gear",url:"https://amzn.to/4shg6Hn?marker=787950"})
   ]);
+  var BLOGGER_MENU_TOOLS = Object.freeze([
+    Object.freeze({id:"main-hub",label:"Open TRTT VoyageHub",url:"https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950"})
+  ]);
+  var _host = global.location && global.location.hostname ? global.location.hostname.toLowerCase() : "";
+  var IS_BLOGGER_HOST = _host.endsWith(".blogspot.com") || _host === "trttnews24bd.com" || _host === "www.trttnews24bd.com";
+  var ACTIVE_MENU_TOOLS = IS_BLOGGER_HOST ? BLOGGER_MENU_TOOLS : MENU_TOOLS;
   var MARKER_LOCK = Object.freeze({value:"787950",hex:"373837393530"});
   function mountBottomMenu(){
     if(!global.document||document.getElementById("trtt-787950-bottom-menu"))return;
@@ -23,7 +30,7 @@
     css.textContent="#trtt-787950-bottom-menu{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:2147483646;display:flex;gap:5px;padding:8px;border:1px solid #ff6b8b88;border-radius:16px;background:#17131de8;backdrop-filter:blur(16px);box-shadow:0 0 20px #ff6b8b44;color:white;font:11px system-ui;max-width:calc(100vw - 20px)}#trtt-787950-bottom-menu a{position:relative;min-width:66px;padding:7px 5px;color:white;text-decoration:none;text-align:center;border-radius:9px}#trtt-787950-bottom-menu a:hover{background:#ff6b8b33;box-shadow:0 0 14px #ff6b8b}#trtt-787950-bottom-menu a:after{content:attr(data-tip);position:absolute;bottom:110%;left:50%;transform:translateX(-50%);padding:5px 7px;border-radius:5px;background:#111;white-space:nowrap;opacity:0;pointer-events:none}#trtt-787950-bottom-menu a:hover:after{opacity:1}#trtt-787950-bottom-menu .pulse{animation:trttPulse 2s infinite}@keyframes trttPulse{50%{box-shadow:0 0 15px #ff6b8b}}#trtt-787950-menu-toggle{position:fixed;right:12px;bottom:90px;z-index:2147483647;background:#17131d;color:white;border:1px solid #a55eea;border-radius:20px;padding:6px 9px;font-size:10px}@media(max-width:700px){#trtt-787950-bottom-menu{left:10px;right:10px;bottom:20px;transform:none;justify-content:space-around;gap:1px;padding:6px 3px}#trtt-787950-bottom-menu a{min-width:0;flex:1;font-size:9px;padding:6px 1px}#trtt-787950-menu-toggle{bottom:88px}}#trtt-787950-bottom-menu.eco{box-shadow:none;animation:none}";
     document.head.appendChild(css);
     var nav=document.createElement("nav");nav.id="trtt-787950-bottom-menu";nav.setAttribute("aria-label","787950 travel tools");
-    MENU_TOOLS.forEach(function(t){var a=document.createElement("a");a.href=t.url;a.target="_blank";a.rel="sponsored nofollow noopener noreferrer";a.id=t.id==="ghost-esim"?"ghost-esim":"trtt-"+t.id;a.textContent=t.label;a.setAttribute("data-tip",t.label+" · 787950 LOCKED");if(t.id==="main-hub"){a.className="pulse";var badge=document.createElement("span");badge.textContent="787950 LOCKED";badge.style.cssText="display:block;margin-top:2px;color:#ff6b8b;font-size:8px;font-weight:800";a.appendChild(badge);}nav.appendChild(a);});
+    ACTIVE_MENU_TOOLS.forEach(function(t){var a=document.createElement("a");a.href=t.url;a.target="_blank";a.rel="sponsored nofollow noopener noreferrer";a.id=t.id==="ghost-esim"?"ghost-esim":"trtt-"+t.id;a.textContent=t.label;a.setAttribute("data-tip",t.label+" · 787950 LOCKED");if(t.id==="main-hub"){a.className="pulse";var badge=document.createElement("span");badge.textContent="787950 LOCKED";badge.style.cssText="display:block;margin-top:2px;color:#ff6b8b;font-size:8px;font-weight:800";a.appendChild(badge);}nav.appendChild(a);});
     var toggle=document.createElement("button");toggle.id="trtt-787950-menu-toggle";toggle.type="button";toggle.textContent="⇄ Menu side";var side="right";try{side=localStorage.getItem("trtt-menu-side")||"right";}catch(e){}
     function place(){nav.style.left=side==="left"?"10px":"auto";nav.style.right=side==="right"?"10px":"auto";nav.style.transform="none";}
     toggle.addEventListener("click",function(){side=side==="right"?"left":"right";try{localStorage.setItem("trtt-menu-side",side);}catch(e){}place();});
@@ -34,6 +41,8 @@
   var TRTT_787950_VAULT_FINAL = Object.freeze({
     marker: MARKER,
     menuTools: MENU_TOOLS,
+    bloggerMenuTools: BLOGGER_MENU_TOOLS,
+    activeMenuTools: ACTIVE_MENU_TOOLS,
     markerHex: "373837393530",
     protocol: "Revenue Protection Protocol",
     version: "FINAL",
