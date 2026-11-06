@@ -264,8 +264,16 @@ def _confirmed_status(service: Any, blog_id: str, post: dict[str, Any]) -> str:
     post_id = post.get("id")
     if not post_id:
         return ""
-    fetched = service.posts().get(blogId=blog_id, postId=post_id).execute()
-    return str(fetched.get("status", "")).upper()
+    try:
+        try:
+            fetched = service.posts().get(blogId=blog_id, postId=post_id, view="AUTHOR").execute()
+        except TypeError:
+            fetched = service.posts().get(blogId=blog_id, postId=post_id).execute()
+        return str(fetched.get("status", "")).upper()
+    except Exception as exc:
+        if "404" in str(exc) or "notFound" in str(exc):
+            return "NOT_FOUND"
+        raise
 
 
 def _create_or_recover_draft(service: Any, blog_id: str, title: str, content: str) -> tuple[dict[str, Any], bool]:
@@ -276,7 +284,10 @@ def _create_or_recover_draft(service: Any, blog_id: str, title: str, content: st
             status = _confirmed_status(service, blog_id, existing)
             if status == "DRAFT":
                 return existing, False
-            raise AssertionError(f"Matching Blogger post exists with status {status or 'UNKNOWN'}; refusing unsafe action.")
+            elif status == "NOT_FOUND":
+                pass
+            else:
+                raise AssertionError(f"Matching Blogger post exists with status {status or 'UNKNOWN'}; refusing unsafe action.")
         try:
             response = service.posts().insert(
                 blogId=blog_id,
