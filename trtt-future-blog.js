@@ -1,6 +1,6 @@
 (function(){
 "use strict";
-var ROOT="trtt-future-world",STYLE="trtt-future-world-ui",CSS_URL="https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@main/trtt-future-blog.css";
+var ROOT="trtt-future-world",STYLE="trtt-future-world-ui",CSS_URL="https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@56d0be703f38de203a4e0d8da434cd88473791aa/trtt-future-blog.css";
 var HUB="https://cocvghuj-trtt-news-bot.vercel.app/";
 var LINKS=[
  {title:"About Us",desc:"Who we are, what we believe and why we travel",href:"/p/about-us.html"},
