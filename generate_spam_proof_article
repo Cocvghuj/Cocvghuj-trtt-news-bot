@@ -1,0 +1,6 @@
+    # ৫টি কমপ্লিট ডোমেইনের ডাটা ম্যাপিং লুপ
+    connectivity_data = f'Ghost-SIM Hub: <a href="https://www.airalo.com/?marker={self.MARKER_ID}" id="ghost-esim">Airalo eSIM</a>, Drimsim, Yesim, Saily - All ?marker={self.MARKER_ID}'
+    flight_data = f'FlightScoutPro: <a href="https://www.aviasales.com/?marker={self.MARKER_ID}">Aviasales {self.MARKER_ID}</a>, AirHelp EC 261/2004, Compensair, Travelpayouts Core'
+    transport_data = f'Ride & Stay Hub (20K Terminals): <a href="https://gettransfer.com/?marker={self.MARKER_ID}">GetTransfer</a>, GetRentACar, QEEQ, Kiwitaxi - All LOCKED'
+    experiences_data = f'Experience Vault: <a href="https://www.klook.com/?marker={self.MARKER_ID}">Klook</a>, Go City, Tiqets, KKday, Intui, Radical Storage - ?marker={self.MARKER_ID}'
+    amazon_deals = f'Gear: <a href="https://amzn.to/4shg6Hn?marker={self.MARKER_ID}">Amazon amzn.to/4shg6Hn?marker={self.MARKER_ID} LOCKED</a> - Hex {self.HEX_MARKER} Object.freeze'
