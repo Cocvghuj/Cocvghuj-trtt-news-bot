@@ -117,11 +117,63 @@ async function callOpenRouter(question) {
   };
 }
 
+
+async function callGroq(question) {
+  const key = process.env.GROQ_API_KEY;
+  if (!key) throw new Error("Groq is not configured");
+  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + key,
+      "Content-Type": "application/json",
+      "Groq-Model-Version": "latest"
+    },
+    signal: AbortSignal.timeout(25000),
+    body: JSON.stringify({
+      model: "compound-beta",
+      citation_options: "enabled",
+      messages: [
+        {
+          role: "system",
+          content: "You are an evidence-first assistant. Answer in the user's language. Use built-in web search for current or factual claims. Prefer official and primary sources. Distinguish verified facts from uncertainty. Never invent citations, prices, schedules, laws, names, statistics, or live status. If reliable evidence is unavailable or sources conflict, say so clearly."
+        },
+        { role: "user", content: question }
+      ],
+      max_completion_tokens: 900
+    })
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const detail = data.error && data.error.message ? String(data.error.message) : "Provider returned an error";
+    throw new Error("HTTP " + response.status + ": " + detail.slice(0, 220));
+  }
+  const message = data.choices && data.choices[0] && data.choices[0].message;
+  const answer = message && typeof message.content === "string" ? message.content.trim() : "";
+  if (!answer) throw new Error("Groq returned no answer");
+  const citations = Array.isArray(data.citations) ? data.citations : (Array.isArray(message.citations) ? message.citations : []);
+  const annotated = (message.annotations || []).map((annotation) => ({
+    title: annotation.url_citation && annotation.url_citation.title,
+    url: annotation.url_citation && annotation.url_citation.url
+  }));
+  const sources = uniqueSources([
+    ...citations.map((citation) => typeof citation === "string" ? { url: citation } : citation),
+    ...annotated,
+    ...linksFromText(answer)
+  ]);
+  return {
+    model: String(data.model || "Groq Compound Beta"),
+    answer,
+    sources,
+    grounded: sources.length > 0
+  };
+}
+
 function safeProviderError(reason, provider) {
   let message = reason && reason.message ? String(reason.message) : "Request failed";
   message = message
     .replace(/AIza[0-9A-Za-z_-]{20,}/g, "[redacted]")
     .replace(/sk-or-v1-[0-9a-f]{20,}/gi, "[redacted]")
+    .replace(/gsk_[A-Za-z0-9_-]{20,}/g, "[redacted]")
     .replace(/Bearer\s+[^\s]+/gi, "Bearer [redacted]")
     .slice(0, 260);
   return provider + ": " + message;
@@ -161,20 +213,22 @@ module.exports = async function handler(req, res) {
   if (!question) return res.status(400).json({ ok: false, error: "Please enter a question." });
   if (question.length > 2000) return res.status(413).json({ ok: false, error: "Question is too long (maximum 2,000 characters)." });
 
-  const results = await Promise.allSettled([callGemini(question), callOpenRouter(question)]);
+  const results = await Promise.allSettled([callGemini(question), callOpenRouter(question), callGroq(question)]);
   const gemini = results[0].status === "fulfilled" ? results[0].value : null;
   const openrouter = results[1].status === "fulfilled" ? results[1].value : null;
+  const groq = results[2].status === "fulfilled" ? results[2].value : null;
   const errors = {
     gemini: gemini ? null : safeProviderError(results[0].reason, "Gemini"),
-    openrouter: openrouter ? null : safeProviderError(results[1].reason, "OpenRouter")
+    openrouter: openrouter ? null : safeProviderError(results[1].reason, "OpenRouter"),
+    groq: groq ? null : safeProviderError(results[2].reason, "Groq")
   };
-  if (!gemini && !openrouter) {
+  if (!gemini && !openrouter && !groq) {
     console.error("Answer Engine provider failures:", JSON.stringify(errors));
-    return res.status(502).json({ ok: false, error: "Both AI providers failed. See the provider-specific errors.", errors });
+    return res.status(502).json({ ok: false, error: "All three AI providers failed. See the provider-specific errors.", errors });
   }
   return res.status(200).json({
     ok: true,
-    results: { gemini, openrouter },
+    results: { gemini, openrouter, groq },
     errors,
     note: "AI output can still be wrong. Check the linked sources, especially for legal, medical, financial, travel and other high-impact decisions."
   });
