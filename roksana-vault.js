@@ -67,7 +67,7 @@
     document.head.appendChild(style);
     var section = document.createElement('section');
     section.id = 'trtt-787950-vault-ui';
-    section.innerHTML = '<h2>787950 LOCKED · TRTT Answer Desk</h2><div class="rv-signature" aria-hidden="true"><span style="background:#ff2e63"></span><span style="background:#FFC300"></span><span style="background:#AF7AC5"></span></div><label for="rv-ai-question"><strong>Ask your travel question</strong></label><textarea id="rv-ai-question" placeholder="Type your question here…" maxlength="4000"></textarea><button id="rv-ai-ask" type="button">Ask AI</button><div class="rv-answer" id="rv-ai-answer" aria-live="polite">Your answer will appear here.</div><div class="rv-status">Marker 787950 LOCKED · Dual-AI Answer Engine</div>';
+    section.innerHTML = '<h2>787950 LOCKED · TRTT Answer Desk</h2><div class="rv-signature" aria-hidden="true"><span style="background:#ff2e63"></span><span style="background:#FFC300"></span><span style="background:#AF7AC5"></span></div><label for="rv-ai-question"><strong>Ask your travel question</strong></label><textarea id="rv-ai-question" placeholder="Type your question here…" maxlength="2000"></textarea><button id="rv-ai-ask" type="button">Ask AI</button><div class="rv-answer" id="rv-ai-answer" aria-live="polite">Your answer will appear here.</div><div class="rv-status">Marker 787950 LOCKED · Triple-AI Answer Engine</div>';
     (document.querySelector('main') || document.body).appendChild(section);
     var ask = section.querySelector('#rv-ai-ask');
     var question = section.querySelector('#rv-ai-question');
@@ -83,8 +83,56 @@
           body: JSON.stringify({ question: prompt })
         });
         var data = await response.json();
-        if (!response.ok) throw new Error(data.error || 'Answer service unavailable.');
-        answer.textContent = data.answer || data.output_text || data.text || JSON.stringify(data, null, 2);
+        if (!response.ok || !data.ok || !data.results) throw new Error(data.error || 'Answer service unavailable.');
+        answer.replaceChildren();
+        [
+          { key: 'gemini', label: 'Gemini — Google Search grounding' },
+          { key: 'openrouter', label: 'OpenRouter — Web Search' },
+          { key: 'groq', label: 'Groq Compound — Web Search' }
+        ].forEach(function (provider) {
+          var result = data.results[provider.key];
+          var section = document.createElement('section');
+          section.style.cssText = 'padding:10px 0;border-bottom:1px solid #d9deea';
+          var heading = document.createElement('strong');
+          heading.textContent = provider.label;
+          section.appendChild(heading);
+          if (result && result.answer) {
+            var textNode = document.createElement('p');
+            textNode.textContent = result.answer;
+            textNode.style.whiteSpace = 'pre-wrap';
+            section.appendChild(textNode);
+            if (Array.isArray(result.sources) && result.sources.length) {
+              var list = document.createElement('ul');
+              result.sources.forEach(function (source) {
+                try {
+                  var url = new URL(source.url);
+                  if (url.protocol !== 'https:') return;
+                  var item = document.createElement('li');
+                  var link = document.createElement('a');
+                  link.href = url.href;
+                  link.target = '_blank';
+                  link.rel = 'noopener noreferrer';
+                  link.textContent = source.title || url.hostname;
+                  item.appendChild(link);
+                  list.appendChild(item);
+                } catch (e) {}
+              });
+              if (list.children.length) section.appendChild(list);
+            } else {
+              var noSources = document.createElement('small');
+              noSources.textContent = 'No source links were returned for this answer.';
+              section.appendChild(noSources);
+            }
+          } else {
+            var failure = document.createElement('p');
+            failure.textContent = (data.errors && data.errors[provider.key]) || 'This provider did not return an answer.';
+            section.appendChild(failure);
+          }
+          answer.appendChild(section);
+        });
+        var note = document.createElement('p');
+        note.textContent = data.note || 'Check source links before relying on important information.';
+        answer.appendChild(note);
       } catch (error) {
         answer.textContent = 'Unable to get an answer right now: ' + error.message;
       } finally { ask.disabled = false; }
