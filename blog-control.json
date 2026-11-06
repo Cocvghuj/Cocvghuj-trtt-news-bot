@@ -1,15 +1,21 @@
 {
-  "brand": "TRTT NEWS 24 BD",
+  "brand": "TRTT Voyage",
+  "tagline": "Sardinia থেকে ইউরোপের সস্তা ফ্লাইট",
+  "marker": {
+    "value": "787950",
+    "status": "LOCKED",
+    "hex": "373837393530"
+  },
   "theme": {
-    "primary": "#14213d",
-    "accent": "#ef476f",
-    "background": "#f5f7fb",
-    "surface": "#ffffff",
-    "text": "#172033",
+    "primary": "#0EA5E9",
+    "accent": "#FF6B00",
+    "background": "#FFFFFF",
+    "surface": "#FFFFFF",
+    "text": "#111111",
     "muted": "#64748b",
-    "menuBackground": "#101b36",
-    "mobileBackground": "#172b52",
-    "menuText": "#ffffff"
+    "menuBackground": "#FFFFFF",
+    "mobileBackground": "#FFFFFF",
+    "menuText": "#111111"
   },
   "menu": [
     {
@@ -18,49 +24,49 @@
       "href": "/"
     },
     {
-      "id": "news",
-      "label": "Latest News",
-      "href": "/search/label/TRTT%20News"
+      "id": "flight-news",
+      "label": "Flight News",
+      "href": "/blog/"
     },
     {
-      "id": "europe",
-      "label": "Europe Travel",
-      "href": "/search/label/Europe%20Travel"
-    },
-    {
-      "id": "flights",
-      "label": "Flights",
-      "href": "/search/label/Flights"
+      "id": "passenger-rights",
+      "label": "Passenger Rights",
+      "href": "/tools/delay-calculator.html"
     },
     {
       "id": "esim",
-      "label": "eSIM",
-      "href": "/search/label/eSIM"
+      "label": "eSIM & Stay Connected",
+      "href": "/#esim"
     },
     {
-      "id": "hotels",
-      "label": "Hotels",
-      "href": "/search/label/Hotels"
+      "id": "ride-stay",
+      "label": "Ride & Stay",
+      "href": "/#ride-stay"
     },
     {
-      "id": "roksana",
-      "label": "Roksana Vault",
-      "href": "/p/roksana-vault.html"
+      "id": "experiences",
+      "label": "Tour & Experience",
+      "href": "/#experiences"
     },
     {
-      "id": "tools",
-      "label": "Travel Tools",
-      "href": "https://cocvghuj-trtt-news-bot.vercel.app/"
+      "id": "sanluri",
+      "label": "Sanluri Diary",
+      "href": "/#sanluri"
     },
     {
       "id": "about",
       "label": "About",
-      "href": "/p/about-us.html"
+      "href": "/about.html"
     },
     {
       "id": "contact",
       "label": "Contact",
-      "href": "/p/contact.html"
+      "href": "/contact.html"
+    },
+    {
+      "id": "tools",
+      "label": "Travel Tools",
+      "href": "https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950"
     }
   ]
 }
