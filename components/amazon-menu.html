@@ -1,0 +1,36 @@
+<!-- TRTT 【entity-Amazon¦canonical_name=Amazon】 Menu - COMPONENT ONLY - Not Index - For Merge with Main Vercel - 787950 LOCKED -->
+<div id="trtt-【entity-amazon¦canonical_name=Amazon】-menu-slot" data-marker="787950">
+  <div style="max-width:900px; margin:0 auto; padding:20px; font-family:sans-serif; background:#fff; color:#111;">
+    <h2 style="text-align:center; font-size:24px; margin:0;">🎒 【entity-Amazon¦canonical_name=Amazon】 Gear - Travel Essentials</h2>
+    <p style="text-align:center; font-size:12px; color:#666;">Featured #21 • Click Card → Goes to 【entity-Amazon¦canonical_name=Amazon】 • As an 【entity-Amazon¦canonical_name=Amazon】 Associate, TRTT earns from qualifying purchases.</p>
+    <div id="amazonGrid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin-top:16px;"></div>
+    <p style="text-align:center; font-family:monospace; font-size:11px; color:#999; margin-top:16px;">Amazon Menu Component — Merge Ready — 787950 LOCKED — Hex 373837393530</p>
+  </div>
+</div>
+<script>
+(function(){
+  const MARKER="787950"; Object.freeze(MARKER);
+  const DEFAULT=[
+    {emoji:"🎒", title:"Travel Backpack 40L", desc:"Cabin Size • Waterproof", link:"https://amzn.to/4shg6Hn?marker=787950&k=travel+backpack"},
+    {emoji:"📷", title:"Travel Camera", desc:"4K • Lightweight", link:"https://amzn.to/4shg6Hn?marker=787950&k=camera+travel"},
+    {emoji:"🔌", title:"Universal Adapter", desc:"EU • UK • US • Italy", link:"https://amzn.to/4shg6Hn?marker=787950&k=universal+travel+adapter"},
+    {emoji:"🔋", title:"Power Bank 20000mAh", desc:"Ghost-SIM Ready", link:"https://amzn.to/4shg6Hn?marker=787950&k=power+bank+20000mah"},
+    {emoji:"🧳", title:"Cabin Luggage", desc:"EC 261 Ready • 55cm", link:"https://amzn.to/4shg6Hn?marker=787950&k=cabin+luggage"},
+    {emoji:"💤", title:"Travel Pillow", desc:"Cagliari → Bergamo Tested", link:"https://amzn.to/4shg6Hn?marker=787950&k=travel+pillow"}
+  ];
+  // Config থেকে Load - config/【entity-amazon¦canonical_name=Amazon】-config.json থেকে - না পেলে Default
+  fetch('config/amazon-config.json').then(r=>r.json()).then(cfg=>{
+    const products = cfg.products && cfg.products.length ? cfg.products : DEFAULT;
+    const grid=document.getElementById('amazonGrid');
+    if(!grid) return;
+    grid.innerHTML = products.map(p=>`
+      <a href="${p.link}" target="_blank" rel="noopener sponsored" style="display:block; border:1px solid #ddd; border-radius:14px; padding:16px; text-decoration:none; color:#111;">
+        <div style="font-size:36px; text-align:center;">${p.emoji}</div>
+        <h3 style="font-size:16px; text-align:center; margin:10px 0 4px;">${p.title}</h3>
+        <p style="font-size:12px; color:#666; text-align:center;">${p.desc}</p>
+        <p style="text-align:center;"><span style="display:inline-block; background:#111; color:#fff; padding:8px 16px; border-radius:50px; font-size:12px; font-weight:700; margin-top:10px;">View on Amazon →</span></p>
+      </a>`).join('');
+  }).catch(()=>{ /* Fallback to Default */ });
+  console.log("[TRTT] Amazon Menu Component Loaded - Merge Ready - 787950 LOCKED");
+})();
+</script>
