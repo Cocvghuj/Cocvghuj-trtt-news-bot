@@ -43,7 +43,7 @@ Leave one coherent, tested, documented implementation in GitHub so the owner can
 - DO NOT dispatch or change `.github/workflows/blogger-direct-publish.yml` or `.github/workflows/blogger-content-sync.yml`.
 - DO NOT change Vercel settings or secrets.
 - DO NOT print, request, commit, or expose secret values.
-- Do not use `BLOGGER_API_KEY` or `BLOGGER_ACCESS_TOKEN` as Gemini/OpenRouter credentials. The Answer Engine requires separate server-side `GEMINI_API_KEY` and `OPENROUTER_API_KEY`.
+- Do not use `BLOGGER_API_KEY` or `BLOGGER_ACCESS_TOKEN` as AI provider credentials. The Answer Engine requires separate server-side `GEMINI_API_KEY`, `OPENROUTER_API_KEY`, and `GROQ_API_KEY`.
 - Do not claim the live blog is updated. This task prepares repository code only.
 - Do not delete or overwrite unrelated Blogger pages, posts, themes, vault features, or existing project files.
 
