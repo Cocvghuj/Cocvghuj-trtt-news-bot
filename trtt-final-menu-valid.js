@@ -38,7 +38,7 @@ function build(){
  top.appendChild(brand);top.appendChild(closeBtn);
  var intro=document.createElement("div");intro.className="tf-intro";
  var eyebrow=document.createElement("div");eyebrow.className="tf-eyebrow";eyebrow.textContent="SARDINIA TO EUROPE · TRTT VOYAGE";
- var h=document.createElement("h2");h.textContent="The world is\nnot a checklist."; 
+ var h=document.createElement("h2");h.textContent="Make every journey\nfeel effortless."; 
  var p=document.createElement("p");p.textContent="Sardinia থেকে ইউরোপের সস্তা ফ্লাইট — practical travel details, passenger rights and useful tools in one place.";
  intro.appendChild(eyebrow);intro.appendChild(h);intro.appendChild(p);
  var body=document.createElement("div");body.className="tf-body";
