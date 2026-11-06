@@ -7,6 +7,7 @@
     return String.fromCharCode(byte);
   }).join('');
   var MARKER = MARKER_NUMBER + ' LOCKED';
+  Object.freeze(MARKER); // immutable marker primitive; MARKER_LOCK freezes value and hex together.
 
   var MENU_TOOLS = Object.freeze([
     Object.freeze({id:"main-hub",label:"Main Hub",url:"https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950"}),

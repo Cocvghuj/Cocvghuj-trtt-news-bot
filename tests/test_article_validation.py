@@ -561,9 +561,14 @@ class DraftRecoveryTests(unittest.TestCase):
                 "id": "draft-" + str(len(self.insert_calls)),
                 "title": body["title"],
                 "content": body["content"],
+                "status": "DRAFT",
             }
             self.items.append(post)
             return DraftRecoveryTests.FakeRequest(post)
+
+        def get(self, blogId, postId):
+            post = next(item for item in self.items if item["id"] == postId)
+            return DraftRecoveryTests.FakeRequest(dict(post))
 
     class FakeService:
         def __init__(self):
@@ -652,9 +657,14 @@ class DraftRecoveryTests(unittest.TestCase):
                     "id": blogId + "-draft-" + str(len(self.items.get(blogId, [])) + 1),
                     "title": body["title"],
                     "content": body["content"],
+                    "status": "DRAFT",
                 }
                 self.items.setdefault(blogId, []).append(post)
                 return DraftRecoveryTests.FakeRequest(post)
+
+            def get(self, blogId, postId):
+                post = next(item for item in self.items.get(blogId, []) if item["id"] == postId)
+                return DraftRecoveryTests.FakeRequest(dict(post))
 
         class PerBlogService:
             def __init__(self):

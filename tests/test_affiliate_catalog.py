@@ -46,7 +46,25 @@ class AffiliateCatalogTests(unittest.TestCase):
         ]
         self.assertEqual(len(travelpayouts), 20)
         self.assertEqual(len(amazon), 1)
-        self.assertEqual(len(self.services), 25)
+        self.assertEqual(len(self.services), 21)
+        self.assertEqual([s["id"] for s in self.services], [
+            "aviasales", "airhelp", "compensair", "travelpayouts-core",
+            "airalo", "drimsim", "yesim", "saily", "gettransfer",
+            "getrentacar", "economybookings", "qeeq", "localrent",
+            "kiwitaxi", "klook", "gocity", "tiqets", "kkday",
+            "intui", "radical-storage", "amazon-flight-gear",
+        ])
+        self.assertEqual(self.services[-1]["name"], "Amazon")
+        self.assertEqual(self.services[-1]["program_number"], 21)
+        self.assertTrue(self.services[-1]["featured"])
+
+    def test_every_program_has_locked_marker_and_category_number(self):
+        for number, service in enumerate(self.services, 1):
+            self.assertEqual(service["program_number"], number)
+            self.assertIn("marker=787950", service["url"])
+            self.assertTrue(service["category"])
+        public_catalog = json.loads((ROOT / "public" / "affiliate-services.json").read_text(encoding="utf-8"))
+        self.assertEqual(public_catalog, self.catalog)
 
     def test_catalog_ids_and_urls_are_unique(self):
         ids = [service["id"] for service in self.services]
@@ -87,7 +105,7 @@ class AffiliateCatalogTests(unittest.TestCase):
         # Allow dynamic traffic-hub generated index.html or 8-entry static storefront
         if not parser.affiliate_ids:
             return
-        self.assertEqual(len(parser.affiliate_ids), 8)
+        self.assertEqual(len(parser.affiliate_ids), 21)
         self.assertEqual(len(parser.affiliate_ids), len(set(parser.affiliate_ids)))
         for affiliate_id, href in parser.affiliate_hrefs.items():
             self.assertIn(affiliate_id, self.by_id)
