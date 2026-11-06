@@ -68,6 +68,11 @@ The Answer Engine uses the Blogger-facing UI in `trtt-all-in-one.js` and the ser
 
 Run `npm test` and `npm run build` before deployment. These checks are offline and do not consume AI API quota. The Answer Engine source is prepared in GitHub only; a Vercel deployment and one-time Blogger Layout gadget installation are separate owner-side steps. No GitHub push alone proves the live Blogger page changed.
 
+## Blogger SEO
+
+- Live audit findings and owner-side Blogger/Search Console setup: [BLOGGER_SEO_SETUP.md](./BLOGGER_SEO_SETUP.md)
+- The draft pipeline adds a route-specific Blogger search description to newly created drafts. Existing live posts are not changed automatically.
+
 ## Security
 
 Blogger OAuth credentials belong only in GitHub Actions secrets. Never commit refresh tokens, client secrets, access tokens, or deployment credentials. Public Vercel assets must contain presentation code only.
