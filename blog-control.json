@@ -1,9 +1,9 @@
 {
   "brand": "TRTT NEWS 24 BD",
   "theme": {
-    "primary": "#14213d",
-    "accent": "#ef476f",
-    "background": "#f5f7fb",
+    "primary": "#101b36",
+    "accent": "#ff2e63",
+    "background": "#f8fafc",
     "surface": "#ffffff",
     "text": "#172033",
     "muted": "#64748b",
