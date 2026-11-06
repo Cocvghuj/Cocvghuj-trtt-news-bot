@@ -6,16 +6,16 @@ Maintain the GitHub-managed Blogger assets and the Roksana Nila Answer Engine in
 ## Answer Engine architecture
 - Blogger-facing browser UI: `trtt-all-in-one.js`.
 - Public mirror: `public/trtt-all-in-one.js`; it must be byte-identical to the root file.
-- Server-only API: `api/answer.js`; it calls Gemini and OpenRouter from the server.
+- Server-only API: `api/answer.js`; it calls Gemini, OpenRouter, and Groq from the server.
 - Static build: `build.js`; it must exclude `api/` from browser-facing `dist/` assets.
 - Vercel config: `vercel.json`; static output is `dist`, and `api/answer.js` has a 30-second max duration.
 - Browser API endpoint currently configured in the vault: `https://cocvghuj-trtt-news-bot.vercel.app/api/answer`. Do not silently change the hostname.
 
 ## Secrets and cost protection
-- The API reads only `GEMINI_API_KEY` and `OPENROUTER_API_KEY` from server-side Vercel Environment Variables.
+- The API reads only `GEMINI_API_KEY`, `OPENROUTER_API_KEY`, and `GROQ_API_KEY` from server-side Vercel Environment Variables.
 - Never put API keys, OAuth tokens, refresh tokens, access tokens, or other secrets in browser JS, Blogger HTML, repository files, logs, commits, or pull-request text.
 - Do not print or request secret values. Verify only whether required secret names are configured, using safe metadata if available.
-- Do not confuse Blogger credentials (`BLOGGER_BLOG_ID`, `BLOGGER_API_KEY`, `BLOGGER_ACCESS_TOKEN`, or the OAuth client/refresh-token variables used by existing workflows) with Gemini/OpenRouter credentials.
+- Do not confuse Blogger credentials (`BLOGGER_BLOG_ID`, `BLOGGER_API_KEY`, `BLOGGER_ACCESS_TOKEN`, or the OAuth client/refresh-token variables used by existing workflows) with Gemini/OpenRouter/Groq credentials.
 - Do not make live AI API calls during tests or validation. They can consume paid quota. Use mocked/fake responses for tests.
 - Preserve request limits, input-size limits, server-side timeout, and source-link validation. Never remove rate limiting or web-search tool-call limits without documenting the reason.
 
