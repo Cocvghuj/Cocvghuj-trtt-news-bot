@@ -18,7 +18,7 @@ function build(){
  var root=document.createElement("section");root.id=ROOT;root.setAttribute("aria-hidden","true");root.setAttribute("role","dialog");root.setAttribute("aria-modal","true");root.setAttribute("aria-label","TRTT navigation");
  var wrap=document.createElement("div");wrap.className="tf-wrap";
  var top=document.createElement("header");top.className="tf-top";
- var brand=document.createElement("a");brand.className="tf-brand";brand.href="/";brand.innerHTML="<span class='tf-monogram'>T.</span><span>TRTT <i>JOURNAL</i><small>INDEPENDENT TRAVEL & CULTURE</small></span>";
+ var brand=document.createElement("a");brand.className="tf-brand";brand.href="/";brand.innerHTML="<span class='tf-monogram'>T.</span><span>TRTT <i>VOYAGE</i><small>INDEPENDENT TRAVEL & CULTURE</small></span>";
  var closeBtn=document.createElement("button");closeBtn.className="tf-close";closeBtn.type="button";closeBtn.setAttribute("aria-label","Close navigation");closeBtn.textContent="×";
  top.appendChild(brand);top.appendChild(closeBtn);
  var intro=document.createElement("div");intro.className="tf-intro";
@@ -33,7 +33,7 @@ function build(){
  var art=document.createElement("div");art.className="tf-art";art.innerHTML="<span class='tf-art-orbit'></span><span class='tf-art-label'>FIELD NOTES<br/>FOR THE CURIOUS</span><span class='tf-art-mark'>T</span>";
  var note=document.createElement("p");note.className="tf-note";note.textContent="Go further. Look closer. Travel better.";
  aside.appendChild(art);aside.appendChild(note);body.appendChild(list);body.appendChild(aside);
- var foot=document.createElement("footer");foot.className="tf-foot";foot.innerHTML="<span>TRTT JOURNAL · EST. FOR THE CURIOUS</span><span>OPEN THE WORLD ↗</span>";
+ var foot=document.createElement("footer");foot.className="tf-foot";foot.innerHTML="<span>TRTT VOYAGE · EST. FOR THE CURIOUS</span><span>OPEN THE WORLD ↗</span>";
  wrap.appendChild(top);wrap.appendChild(intro);wrap.appendChild(body);wrap.appendChild(foot);root.appendChild(wrap);document.body.appendChild(root);
  function open(){document.body.classList.add("trtt-future-open");root.setAttribute("aria-hidden","false");closeBtn.focus();}
  closeBtn.addEventListener("click",close);root.addEventListener("click",function(e){if(e.target===root)close();});
@@ -47,7 +47,7 @@ function build(){
  var nav=document.getElementById("trtt-final-menu");if(nav)nav.remove();
  var old=document.getElementById("trtt-final-menu-styles");if(old)old.remove();
  var ribbon=document.createElement("div");ribbon.id="trtt-future-ribbon";
- var left=document.createElement("div");var k=document.createElement("div");k.className="tf-kicker";k.textContent="TRTT JOURNAL / THE DAILY EDITION";var title=document.createElement("div");title.className="tf-head";title.textContent="A wider view of the world.";left.appendChild(k);left.appendChild(title);
+ var left=document.createElement("div");var k=document.createElement("div");k.className="tf-kicker";k.textContent="TRTT VOYAGE / THE DAILY EDITION";var title=document.createElement("div");title.className="tf-head";title.textContent="A wider view of the world.";left.appendChild(k);left.appendChild(title);
  var date=document.createElement("div");date.className="tf-date";date.textContent="Stories • Guides • Journeys";
  ribbon.appendChild(left);ribbon.appendChild(date);
  var main=document.querySelector("#main-wrapper,.main");
