@@ -22,14 +22,15 @@ assert.ok(vault.includes('rv-ai-question') && vault.includes('rv-ai-ask'), 'The 
 assert.ok(vault.includes('https://cocvghuj-trtt-news-bot.vercel.app/api/answer'), 'The Vault must call the production Answer Engine API.');
 assert.ok(vault.includes('trttnews24bd.blogspot.com') && vault.includes('trttnews24bd.com') && vault.includes('www.trttnews24bd.com'), 'Strict three-domain lock is missing.');
 assert.ok(vault.includes("name:'Signature',g:'#ff2e63',k:'#FFC300',p:'#AF7AC5'"), 'Signature colors must remain exact.');
-assert.ok(!/AIza[0-9A-Za-z_-]{20,}|sk-or-v1-[0-9a-f]{20,}/.test(vault), 'A provider secret appears in the published Vault.');
+assert.ok(!/AIza[0-9A-Za-z_-]{20,}|sk-or-v1-[0-9a-f]{20,}|gsk_[A-Za-z0-9_-]{20,}/.test(vault), 'A provider secret appears in the published Vault.');
 assert.ok(api.includes('process.env.GEMINI_API_KEY'), 'Gemini key must be server-side.');
 assert.ok(api.includes('process.env.OPENROUTER_API_KEY'), 'OpenRouter key must be server-side.');
 assert.ok(api.includes('process.env.GROQ_API_KEY'), 'Groq key must be server-side.');
 assert.ok(api.includes('model: "compound-beta"'), 'Groq must use the documented Compound Beta web-search model.');
 assert.ok(api.includes('citation_options: "enabled"'), 'Groq citations must be enabled.');
 assert.ok(api.includes('Promise.allSettled([callGemini(question), callOpenRouter(question), callGroq(question)])'), 'All three providers must run independently.');
-assert.ok(!/AIza[0-9A-Za-z_-]{20,}|sk-or-v1-[0-9a-f]{20,}/.test(api + browser), 'A provider secret appears hard-coded.');
+assert.ok(!/AIza[0-9A-Za-z_-]{20,}|sk-or-v1-[0-9a-f]{20,}|gsk_[A-Za-z0-9_-]{20,}/.test(api + browser), 'A provider secret appears hard-coded.');
+assert.ok(!/(GEMINI_API_KEY|OPENROUTER_API_KEY|GROQ_API_KEY)/.test(browser + publicBrowser + vault + finalVault), 'A provider environment variable name appears in browser code.');
 assert.ok(api.includes('max_tool_calls: 3'), 'OpenRouter web-search tool-call limit is missing.');
 assert.ok(api.includes('max_results: 5') && api.includes('max_uses: 3'), 'OpenRouter web-search result and use limits are missing.');
 assert.ok(!api.includes('temperature: 0.2') && !api.includes('max_tokens: 900'), 'Provider request includes unsupported legacy generation parameters.');
