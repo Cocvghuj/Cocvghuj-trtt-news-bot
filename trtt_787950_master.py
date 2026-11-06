@@ -32,6 +32,16 @@ def publish_date() -> datetime:
     return datetime.now(TIME_ZONE)
 
 
+def target_date() -> str:
+    requested = os.environ.get("TRTT_TARGET_DATE", "").strip()
+    if not requested:
+        return publish_date().date().isoformat()
+    try:
+        return datetime.strptime(requested, "%Y-%m-%d").date().isoformat()
+    except ValueError as exc:
+        raise AssertionError("TRTT_TARGET_DATE must use YYYY-MM-DD.") from exc
+
+
 def daily_focus(day: int) -> tuple[str, str]:
     focuses = [
         ("Compare the complete fare", "Include baggage, seat selection, payment fees and airport transfers before comparing the final price."),
@@ -65,7 +75,7 @@ def append_history(key: str) -> None:
 
 
 def _load_today_route() -> tuple[dict[str, Any], dict[str, Any]]:
-    today = publish_date().date().isoformat()
+    today = target_date()
     if not QUEUE_FILE.is_file() or QUEUE_FILE.stat().st_size == 0:
         raise AssertionError(f"30-day queue is missing or empty: {QUEUE_FILE}")
     try:
