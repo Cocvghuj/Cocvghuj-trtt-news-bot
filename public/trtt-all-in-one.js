@@ -424,7 +424,7 @@
   <div id="RoksanaFinalVault" data-marker="${CFG.marker}">
     <div class="rvf">
       <div class="rv-think">
-        <span class="blink">●</span> Roksana is thinking — Gemini + OpenRouter Source Search — <span id="rv-time">--:--:--</span>
+        <span class="blink">●</span> Roksana is thinking — Gemini + OpenRouter + Groq Source Search — <span id="rv-time">--:--:--</span>
       </div>
       <h1 class="rv-title">${CFG.brand}</h1>
       <div class="rv-sub">${CFG.sub}</div>
@@ -460,7 +460,7 @@
 
       <!-- ROTATING TICKER & E-E-A-T METADATA -->
       <div class="rv-ae">
-        <div class="rv-ah">Answer Engine — Dual AI • Web Sources • Transparent Results</div>
+        <div class="rv-ah">Answer Engine — Triple AI • Web Sources • Transparent Results</div>
         <div id="rv-live" class="rv-al">Ask a question to search current web sources...</div>
         <div class="rv-af">
           <span>📍 ${CFG.loc} (${CFG.coords})</span>
@@ -575,7 +575,7 @@
       sBtn.textContent = 'Searching...';
       sRes.replaceChildren();
       sRes.style.display = 'block';
-      appendText(sRes, 'div', 'Gemini ও OpenRouter-এ প্রশ্ন পাঠানো হচ্ছে; ওয়েবের উৎস খোঁজা হচ্ছে...', 'rv-ai-note');
+      appendText(sRes, 'div', 'Gemini, OpenRouter ও Groq-এ প্রশ্ন পাঠানো হচ্ছে; ওয়েবের উৎস খোঁজা হচ্ছে...', 'rv-ai-note');
       try {
         var response = await fetch('https://cocvghuj-trtt-news-bot.vercel.app/api/answer', {
           method: 'POST',
@@ -589,6 +589,7 @@
         sRes.replaceChildren();
         appendModelResult('Gemini — Google Search grounding', payload.results.gemini, payload.errors && payload.errors.gemini);
         appendModelResult('OpenRouter — Independent web-search check', payload.results.openrouter, payload.errors && payload.errors.openrouter);
+        appendModelResult('Groq Compound — Web Search check', payload.results.groq, payload.errors && payload.errors.groq);
         appendText(sRes, 'div', payload.note || 'উত্তর AI তৈরি করেছে; গুরুত্বপূর্ণ সিদ্ধান্তের আগে উৎস যাচাই করুন।', 'rv-ai-note');
       } catch (error) {
         sRes.replaceChildren();
