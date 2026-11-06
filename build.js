@@ -69,4 +69,5 @@ const builtHtml = fs.readFileSync(builtIndex, 'utf8');
 if (!builtHtml.includes('TRTT') || !builtHtml.includes('VOYAGEHUB')) throw new Error('Build failed: TRTT VOYAGEHUB branding missing from dist/index.html.');
 if (!builtHtml.includes('787950 LOCKED')) throw new Error('Build failed: marker 787950 LOCKED missing from dist/index.html.');
 if (!builtHtml.includes('https://cocvghuj-trtt-news-bot.vercel.app')) throw new Error('Build failed: TRTT Live App link missing from dist/index.html.');
+if (!builtHtml.includes('roksana-vault.js')) throw new Error('Build failed: 787950 bottom menu source missing from dist/index.html.');
 console.log('Build verified: dist/index.html contains TRTT VOYAGEHUB and marker 787950 LOCKED.');

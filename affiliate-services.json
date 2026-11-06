@@ -53,7 +53,7 @@
     {
       "id": "welcome-pickups",
       "name": "Welcome Pickups / Trip",
-      "network": "travelpayouts",
+      "network": "partner-other",
       "category": "Transfers",
       "url": "https://tpo.lv/h3LrTZcS?marker=787950",
       "description": "Hotel and airport pickups"
@@ -167,8 +167,41 @@
       "name": "Amazon Flight Gear",
       "network": "amazon-associates",
       "category": "Travel Tech & Luggage",
-      "url": "https://amzn.to/4shg6Hn",
+      "url": "https://amzn.to/4shg6Hn?marker=787950",
       "description": "Essential travel and flight gear"
+    },
+    {
+      "id": "travelpayouts-core",
+      "name": "Travelpayouts Core",
+      "network": "travelpayouts",
+      "category": "Affiliate platform",
+      "url": "https://tpo.lv/?marker=787950",
+      "description": "Travel affiliate platform information"
+    },
+    {
+      "id": "booking-hotels",
+      "name": "Booking.com Hotels",
+      "network": "booking",
+      "category": "Hotels",
+      "url": "https://www.booking.com/?aid=787950&marker=787950",
+      "description": "Search accommodation with partner for current availability and prices"
+    },
+    {
+      "id": "aviasales-hotels",
+      "name": "Aviasales Hotels",
+      "network": "hotel-search",
+      "category": "Hotels",
+      "url": "https://www.aviasales.com/hotels/?marker=787950",
+      "description": "Hotel search via Aviasales"
+    },
+    {
+      "id": "airalo-hotels",
+      "name": "Airalo Hotels",
+      "network": "airalo",
+      "category": "Travel connectivity",
+      "url": "https://www.airalo.com/?marker=787950",
+      "description": "Airalo travel connectivity partner link"
     }
-  ]
+  ],
+  "markerHex": "373837393530"
 }

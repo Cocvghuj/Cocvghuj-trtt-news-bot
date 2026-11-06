@@ -46,7 +46,7 @@ class AffiliateCatalogTests(unittest.TestCase):
         ]
         self.assertEqual(len(travelpayouts), 20)
         self.assertEqual(len(amazon), 1)
-        self.assertEqual(len(self.services), 21)
+        self.assertEqual(len(self.services), 25)
 
     def test_catalog_ids_and_urls_are_unique(self):
         ids = [service["id"] for service in self.services]

@@ -2,14 +2,13 @@ import os
 import requests
 import json
 from datetime import datetime
-import pytz
+from http.server import BaseHTTPRequestHandler
 
 class TRTTApiMasterEngine:
     def __init__(self):
-        self.API_TOKEN = "6351c6f8b5aef92abb69a28cbcd98e8b"
+        self.API_TOKEN = os.environ.get("TRAVELPAYOUTS_TOKEN")
         self.HEX_MARKER = "373837393530"
         self.MARKER_ID = bytes.fromhex(self.HEX_MARKER).decode('utf-8') # 787950
-        Object.freeze = True # Revenue Protection Protocol
         self.MARKER_ID = "787950" # LOCKED
         # FIXED: Correct Travelpayouts Endpoint
         self.BASE_URL = "https://api.travelpayouts.com/v1/prices/cheap"
@@ -20,6 +19,9 @@ class TRTTApiMasterEngine:
         
     def fetch_realtime_flight_price(self, origin, destination, depart_date):
         """Travelpayouts REST Data API - Strict Anti-Spam Compliance"""
+        if not self.API_TOKEN:
+            print("[TRTT INFO] TRAVELPAYOUTS_TOKEN is not configured; using fallback demo data.")
+            return self._fallback_flight_price(origin, destination)
         headers = {
             "X-Access-Token": self.API_TOKEN,
             "Accept-Encoding": "gzip, deflate"
@@ -47,15 +49,19 @@ class TRTTApiMasterEngine:
         except Exception as e:
             print(f"[TRTT API ERROR] {str(e)}. Fallback engaged.")
             
+        return self._fallback_flight_price(origin, destination)
+
+    @staticmethod
+    def _fallback_flight_price(origin, destination):
         fallback_db = {
-            "CAG-BGY": {"price": "€19", "airline": "【entity-Ryanair¦canonical_name=Ryanair】"},
-            "CAG-ROM": {"price": "€24", "airline": "【entity-ITA Airways¦canonical_name=ITA Airways】"},
-            "MIL-CAG": {"price": "€21", "airline": "【entity-Wizz Air¦canonical_name=Wizz Air】"},
-            "BGY-CAG": {"price": "€19", "airline": "【entity-Ryanair¦canonical_name=Ryanair】"}
+            "CAG-BGY": {"price": "€19", "airline": "Ryanair"},
+            "CAG-ROM": {"price": "€24", "airline": "ITA Airways"},
+            "MIL-CAG": {"price": "€21", "airline": "Wizz Air"},
+            "BGY-CAG": {"price": "€19", "airline": "Ryanair"}
         }
         route_key = f"{origin}-{destination}"
-        res = fallback_db.get(route_key, {"price": "€19", "airline": "【entity-Ryanair¦canonical_name=Ryanair】"})
-        return {"status": "FALLBACK_SECURED", "price": res["price"], "airline": res["airline"]}
+        res = fallback_db.get(route_key, {"price": "€19", "airline": "Unverified carrier"})
+        return {"status": "FALLBACK_DEMO", "price": res["price"], "airline": res["airline"]}
 
     def calculate_ec261_compensation(self, origin_iata, dest_iata):
         """European Law EC 261/2004 Auto Legal Rights Generator"""
@@ -85,11 +91,11 @@ class TRTTApiMasterEngine:
         <div style="font-family: sans-serif; color: #222; line-height: 1.7;">
             <img src="{self.REAL_IMAGE}" alt="{route['from']} to {route['to']} Flights - TRTT VoyageHub" style="max-width:100%; border-radius:12px; margin-bottom:20px;"/>
             
-            <h1>Flight Blueprint Analysis: {route['from']} ({route['iata_from']}) to {route['to']} ({route['iata_to']}) - {live_data['price']} Live</h1>
-            <p>Our real-time serverless aviation parsing logs out of Sanluri, Sardinia, Italy indicate that transit windows for this specific route are highly optimized today. Current metric tracking shows a live pricing threshold of <strong>{live_data['price']}</strong> operated via <strong>{live_data['airline']}</strong> with flight number {live_data.get('flight_number','FR123')}. This data is fetched via Travelpayouts API token 6351c6f8b5aef92abb69a28cbcd98e8b and secured with marker <strong>787950 LOCKED</strong> hex 373837393530. Our 0-Second Edge Stream ensures no latency between API fetch and Blogger draft creation.</p>
+            <h1>Flight Blueprint Analysis: {route['from']} ({route['iata_from']}) to {route['to']} ({route['iata_to']}) - {live_data['price']} Indicative</h1>
+            <p>Our real-time serverless aviation parsing logs out of Sanluri, Sardinia, Italy indicate that transit windows for this specific route are highly optimized today. Current metric tracking shows a live pricing threshold of <strong>{live_data['price']}</strong> operated via <strong>{live_data['airline']}</strong> with flight number {live_data.get('flight_number','FR123')}. When configured, this data is fetched using a server-side Travelpayouts token and secured with marker <strong>787950 LOCKED</strong> hex 373837393530. Our 0-Second Edge Stream ensures no latency between API fetch and Blogger draft creation.</p>
             
             <h2>Live Price Intelligence - {route['iata_from']} to {route['iata_to']} - {route['date']}</h2>
-            <p>Travelers searching for affordable connections between {route['from']} and {route['to']} will find that {live_data['airline']} currently offers competitive pricing at {live_data['price']}. This is verified via {live_data['status']} protocol. The route distance is calculated at approximately 700 kilometers, making it a short-haul European connection ideal for low-cost carriers. Our system automatically checks Travelpayouts Core distribution architecture for live global travel logistics feeds. For bookings, use official affiliate link: <a href="{self.AVIASALES_LINK}" target="_blank">Aviasales {self.MARKER_ID} LOCKED</a>. This ensures revenue protection protocol is active.</p>
+            <p>Travelers searching for affordable connections between {route['from']} and {route['to']} will find that {live_data['airline']} may show a route estimate of {live_data['price']}. Data status: {live_data['status']}; verify current fares with the airline or booking provider. The route distance is calculated at approximately 700 kilometers, making it a short-haul European connection ideal for low-cost carriers. Our system automatically checks Travelpayouts Core distribution architecture for live global travel logistics feeds. For bookings, use official affiliate link: <a href="{self.AVIASALES_LINK}" target="_blank">Aviasales {self.MARKER_ID} LOCKED</a>. This ensures revenue protection protocol is active.</p>
             
             <p>Additional context for travelers from America and Bangladesh: Cagliari Elmas Airport (CAG) serves as Sardinia's primary gateway, while Bergamo Orio al Serio (BGY) serves Milan low-cost traffic. The pricing threshold of {live_data['price']} includes all taxes but may vary based on baggage selection. Our baggage checker tool verifies complete cabin-bag dimensions prior to airport terminal arrivals. For eSIM connectivity, use Ghost-SIM via 【entity-Airalo¦canonical_name=Airalo】 eSIM div ghost-esim with marker {self.MARKER_ID}. For airport transfers, GetTransfer marketplace offers tender-based low prices. For experiences, 【entity-Klook¦canonical_name=Klook】 offers attraction tickets. All links secured with 787950 LOCKED.</p>
             
@@ -131,3 +137,26 @@ if __name__ == "__main__":
     }
     output = engine.generate_spam_proof_article(test_route)
     print(f"[TRTT AUDIT SUCCESS] {len(output.split())} words - Real API Data parsed without spam flags - 787950 LOCKED")
+
+# Vercel-compatible, read-only status handler and compatibility exports.
+# Publishing is performed only by the workflow's DRAFT entry point.
+import trtt_787950_master as _draft_engine
+
+build_content = _draft_engine.build_content
+build = _draft_engine.build
+find_duplicate_post = _draft_engine.find_duplicate_post
+main = _draft_engine.main
+
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        payload = json.dumps({"status": "ok", "marker": "787950 LOCKED"}).encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Length", str(len(payload)))
+        self.end_headers()
+        self.wfile.write(payload)
+
+    def do_POST(self):
+        self.send_response(405)
+        self.send_header("Allow", "GET")
+        self.end_headers()

@@ -5,7 +5,7 @@ from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 # --- API KEYS & SECRETS ---
 MARKER = os.environ.get("TRAVEL_PAYOUT_MARKER", "787950")
-AMAZON_LINK = os.environ.get("AMAZON_LINK", "https://amzn.to/4shg6Hn")
+AMAZON_LINK = os.environ.get("AMAZON_LINK", "https://amzn.to/4shg6Hn?marker=787950")
 
 BLOGGER_BLOG_ID = os.environ.get("BLOGGER_BLOG_ID")
 BLOGGER_CLIENT_ID = os.environ.get("BLOGGER_CLIENT_ID")
