@@ -1,16 +1,12 @@
-name: Retired legacy workflow - use TRTT News Blogger Drafts
+# DISABLED - Content synchronization to GitHub markdown is disabled to eliminate merge conflicts.
+name: GitHub to Blogger Content Sync [DISABLED]
+
 on:
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
-  retired:
+  disabled_notice:
     runs-on: ubuntu-latest
     steps:
-      - name: Explain retirement
-        run: |
-          echo "::error::This legacy workflow is retired to prevent duplicate publishers, live publishing, and untracked pushes."
-          echo "Use .github/workflows/trtt-english-news-drafts.yml for the single verified DRAFT-only workflow."
-          exit 1
+      - name: Workflow disabled notice
+        run: echo "This workflow is disabled to prevent background sync conflicts on main."

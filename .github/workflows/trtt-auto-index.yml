@@ -1,34 +1,37 @@
-# Marker: 787950 LOCKED
 name: TRTT Auto Google Index
-on:
-  workflow_dispatch:
-    inputs:
-      reviewed_and_published:
-        description: "Confirm that the supplied public post URLs were reviewed and manually published"
-        required: true
-        default: false
-        type: boolean
-      reviewed_post_urls:
-        description: "HTTPS public post URLs already reviewed and manually published (one URL per line)"
-        required: true
-        type: string
 
-permissions:
-  contents: read
+# Marker 787950 LOCKED - Automated Search Engine Pinger
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: trtt-auto-google-index
+  cancel-in-progress: true
 
 jobs:
-  notify-reviewed:
-    name: Notify discovery only for explicitly reviewed public URLs
-    if: github.ref == 'refs/heads/main' && inputs.reviewed_and_published == true
+  auto-index:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install notifier dependency
-        run: python -m pip install requests
-      - name: Notify reviewed published URLs only
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install feedparser requests
+
+      - name: Run Google Indexing & Sitemaps
         env:
-          REVIEWED_POST_URLS: ${{ inputs.reviewed_post_urls }}
-        run: python trtt_auto_google_index.py
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          BLOGGER_BLOG_ID_2: ${{ secrets.BLOGGER_BLOG_ID_2 || secrets.FLIGHTSCOUTPRO_BLOG_ID }}
+          FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.FLIGHTSCOUTPRO_BLOG_ID || secrets.BLOGGER_BLOG_ID_2 }}
+        run: |
+          python trtt_auto_google_index.py

@@ -1,0 +1,36 @@
+{
+  "target_blog": "FlightScoutPro",
+  "blog_url": "https://flightscoutpro.blogspot.com",
+  "is_draft": true,
+  "batch_size": 1,
+  "date": "2026-11-08",
+  "rotation_route": "Milan to Cagliari (MIL to CAG)",
+  "marker": "787950 LOCKED",
+  "marker_hex": "373837393530",
+  "meta": {
+    "title": "Milan to Cagliari Flights: Malpensa & Bergamo Routes, EC 261 Rules & Winter Schedule",
+    "search_description": "Comprehensive winter 2026 flight guide from Milan MXP/BGY to Cagliari CAG. Low fares, EC 261 passenger claim rules, and onward Sardinia Sanluri connections.",
+    "labels": ["FlightScoutPro", "Milan", "Cagliari", "EC 261", "Travel News"],
+    "permalink_slug": "milan-cagliari-flight-guide-ec261-2026"
+  },
+  "official_source": {
+    "name": "ENAC (Ente Nazionale per l'Aviazione Civile)",
+    "url": "https://www.enac.gov.it",
+    "regulation": "Regulation (EC) No 261/2004"
+  },
+  "affiliate_links": {
+    "aviasales": "https://aviasales.tp.st/Fb8U9yav?marker=787950&sub_id=flightscoutpro_mil_cag",
+    "airhelp": "https://airhelp.tp.st/tA1pU0Vf?marker=787950&sub_id=flightscoutpro_mil_cag",
+    "kiwitaxi": "https://kiwitaxi.tp.st/tIZcbMOB?marker=787950&sub_id=flightscoutpro_mil_cag&promo_id=4558",
+    "airalo": "https://airalo.tp.st/ZZoQC7Mz?marker=787950&sub_id=flightscoutpro_mil_cag",
+    "hotel": "https://www.hotel-bernini.it",
+    "amazon": "https://amzn.to/4shg6Hn?marker=787950",
+    "vercel_showroom": "https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950"
+  },
+  "author": {
+    "name": "Muntasir Rahman",
+    "role": "Owner & Lead Aviation Intelligence Editor",
+    "location": "Dhaka, Bangladesh",
+    "dispatch_hub": "Sanluri, Sardinia, Italy (SS131 to CAG Elmas Airport)"
+  }
+}

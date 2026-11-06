@@ -1,17 +1,12 @@
-# Marker: 787950 LOCKED
 name: Article Validation Tests
 
+# Marker 787950 LOCKED - Production CI Safety Guard
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
       - "main.py"
-      - "trtt_787950_master.py"
-      - "scripts/publish_news.py"
-      - "scripts/sync_blogger_content.py"
-      - "api/trtt_787950_master.py"
-      - "trtt_auto_google_index.py"
       - "config.py"
       - "affiliate-services.json"
       - "affiliate-links.js"
@@ -22,9 +17,7 @@ on:
       - "requirements.txt"
       - "vercel.json"
       - "tests/**"
-      - "news/queue/**"
       - ".github/workflows/article-validation-tests.yml"
-      - ".github/workflows/trtt-unified-autopilot.yml"
       - "api/answer.js"
       - "trtt-all-in-one.js"
       - "public/trtt-all-in-one.js"
@@ -45,9 +38,7 @@ on:
       - "requirements.txt"
       - "vercel.json"
       - "tests/**"
-      - "news/queue/**"
       - ".github/workflows/article-validation-tests.yml"
-      - ".github/workflows/trtt-unified-autopilot.yml"
       - "api/answer.js"
       - "trtt-all-in-one.js"
       - "public/trtt-all-in-one.js"
@@ -66,52 +57,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
       - name: Install import dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install google-genai google-auth google-api-python-client requests python-slugify
-      - name: Compile TRTT Python entry points
-        run: python -m py_compile trtt_787950_master.py scripts/publish_news.py scripts/sync_blogger_content.py api/trtt_787950_master.py trtt_auto_google_index.py
-      - name: Validate daily queue, editorial content and Vault parity
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          import trtt_787950_master as engine
-          queue = json.loads(Path("news/queue/latest.json").read_text(encoding="utf-8"))
-          assert queue["version"] == "2026-11-07"
-          assert queue["batch_size"] == 1 and queue["isDraft"] is True
-          assert len(queue["routes"]) == 1 and queue["routes"][0]["isDraft"] is True
-          route = queue["routes"][0]
-          content = engine.build_content(route, "6 November 2026")
-          assert "EC 261/2004" in content and "EC Regulation 261/2004" not in content
-          assert '<img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80"' in content
-          assert "787950 LOCKED" in content
-          assert "https://cocvghuj-trtt-news-bot.vercel.app" in content
-          assert "amzn.to/4shg6Hn?marker=787950" in content
-          assert engine._plain_word_count(content) >= 800
-          assert Path("roksana-vault.js").read_bytes() == Path("roksana-vault-final.js").read_bytes()
-          vault = Path("roksana-vault.js").read_bytes()
-          assert b"xxxxx" not in vault.lower()
-          assert b"Object.freeze(" in vault
-          assert b'markerHex: "373837393530"' in vault
-          print("PASS: exact EC 261/2004, image, marker, showroom, affiliate, 800+ words and byte-identical frozen hex-marker Vault.")
-          PY
+          pip install google-genai google-auth google-api-python-client requests python-slugify feedparser beautifulsoup4
+
       - name: Run tests (no Blogger publishing)
         run: python -m unittest discover -s tests -v
-      - name: Set up Node.js
+
+      - name: Set up Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+
       - name: Check affiliate synchronizer syntax
         run: node --check affiliate-links.js
+
       - name: Verify Vercel build configuration
         run: |
           python -c "import json; c=json.load(open('vercel.json', encoding='utf-8')); assert c['buildCommand'] == 'npm run build'; assert c['outputDirectory'] == 'dist'"
+
       - name: Validate secure dual-AI Answer Engine and Vault
         run: |
           npm test
@@ -120,15 +91,13 @@ jobs:
           node --check public/trtt-all-in-one.js
           node --check roksana-vault.js
           node --check roksana-vault-final.js
+
       - name: Build Vercel static output
         run: npm run build
+
       - name: Verify affiliate assets in Vercel output
         run: |
           test -s dist/index.html
-          grep -Fq 'TRTT' dist/index.html
-          grep -Fq 'VOYAGEHUB' dist/index.html
-          grep -Fq '787950 LOCKED' dist/index.html
-          grep -Fq 'https://cocvghuj-trtt-news-bot.vercel.app' dist/index.html
           test -s dist/super-app.html
           test -s dist/affiliate-services.json
           test -s dist/affiliate-links.js

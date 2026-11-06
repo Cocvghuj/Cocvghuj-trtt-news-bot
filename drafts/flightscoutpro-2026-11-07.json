@@ -1,0 +1,36 @@
+{
+  "target_blog": "FlightScoutPro",
+  "blog_url": "https://flightscoutpro.blogspot.com",
+  "is_draft": true,
+  "batch_size": 1,
+  "date": "2026-11-07",
+  "rotation_route": "Cagliari to Rome (CAG to FCO)",
+  "marker": "787950 LOCKED",
+  "marker_hex": "373837393530",
+  "meta": {
+    "title": "Cagliari to Rome Flight Guide: Airline Options, EC 261 Passenger Rights & FCO Hub Transit",
+    "search_description": "Essential flight guide for Cagliari CAG to Rome FCO in November 2026. Practical flight options, EC 261 passenger compensation rights, and Sanluri transit tips.",
+    "labels": ["FlightScoutPro", "Cagliari", "Rome FCO", "EC 261", "Travel News"],
+    "permalink_slug": "cagliari-rome-flight-guide-ec261-2026"
+  },
+  "official_source": {
+    "name": "ENAC (Ente Nazionale per l'Aviazione Civile)",
+    "url": "https://www.enac.gov.it",
+    "regulation": "Regulation (EC) No 261/2004"
+  },
+  "affiliate_links": {
+    "aviasales": "https://aviasales.tp.st/Fb8U9yav?marker=787950&sub_id=flightscoutpro_cag_fco",
+    "airhelp": "https://airhelp.tp.st/tA1pU0Vf?marker=787950&sub_id=flightscoutpro_cag_fco",
+    "kiwitaxi": "https://kiwitaxi.tp.st/tIZcbMOB?marker=787950&sub_id=flightscoutpro_cag_fco&promo_id=4558",
+    "airalo": "https://airalo.tp.st/ZZoQC7Mz?marker=787950&sub_id=flightscoutpro_cag_fco",
+    "hotel": "https://www.hotel-bernini.it",
+    "amazon": "https://amzn.to/4shg6Hn?marker=787950",
+    "vercel_showroom": "https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950"
+  },
+  "author": {
+    "name": "Muntasir Rahman",
+    "role": "Owner & Lead Aviation Intelligence Editor",
+    "location": "Dhaka, Bangladesh",
+    "dispatch_hub": "Sanluri, Sardinia, Italy (SS131 to CAG Elmas Airport)"
+  }
+}

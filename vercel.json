@@ -1,4 +1,6 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "cleanUrls": true,
@@ -13,12 +15,12 @@
       ]
     }
   ],
-  "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
     "api/answer.js": {
       "maxDuration": 30
     },
     "api/trtt_787950_master.py": {
+      "runtime": "@vercel/python@3.9.0",
       "maxDuration": 30
     }
   },
@@ -32,5 +34,5 @@
       "destination": "/index.html"
     }
   ],
-  "framework": "vite"
+  "marker": "787950 LOCKED"
 }

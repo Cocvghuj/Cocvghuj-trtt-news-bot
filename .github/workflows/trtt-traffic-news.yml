@@ -1,16 +1,13 @@
-name: Retired legacy workflow - use TRTT News Blogger Drafts
+# DISABLED - Redundant with 'TRTT Master Servant - 3x DAILY'.
+# Disabled to completely eliminate double-posting and schedule race conditions.
+name: TRTT TRAFFIC + NEWS - 3x DAILY [DISABLED]
+
 on:
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
-  retired:
+  disabled_notice:
     runs-on: ubuntu-latest
     steps:
-      - name: Explain retirement
-        run: |
-          echo "::error::This legacy workflow is retired to prevent duplicate publishers, live publishing, and untracked pushes."
-          echo "Use .github/workflows/trtt-english-news-drafts.yml for the single verified DRAFT-only workflow."
-          exit 1
+      - name: Workflow disabled notice
+        run: echo "This workflow is disabled because its tasks are handled by TRTT Master Servant - 3x DAILY."
