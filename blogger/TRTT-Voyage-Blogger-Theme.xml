@@ -6620,7 +6620,5 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 })();
 //]]>
 </script>
-<!-- TRTT VOYAGE FINAL MENU VALID (ALL MENUS + ALL TOOLS + VERCEL CONNECTED) -->
-<script src='https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@f09c9e1cd1244d91bc4e6c1d361af13ce73ffe43/trtt-final-menu-valid.js'></script>
 </body>
 </html>
