@@ -63,7 +63,7 @@
       "#trtt-final-menu{position:relative;z-index:50;width:100%;background:linear-gradient(110deg,#101b36 0%,#172b52 65%,#243b66 100%);border-top:1px solid rgba(255,255,255,.1);border-bottom:3px solid #ff2e63;box-shadow:0 8px 26px rgba(15,23,42,.12);font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;box-sizing:border-box}",
       "#trtt-final-menu *{box-sizing:border-box}",
       "#trtt-final-menu .trtt-bar{max-width:1320px;min-height:62px;margin:0 auto;padding:8px 24px;display:flex;align-items:center;justify-content:flex-end;gap:18px;position:relative}",
-      "#trtt-final-menu .trtt-logo-txt{color:#fff;font-weight:900;font-size:17px;letter-spacing:.08em;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;gap:10px}",
+      "#trtt-final-menu .trtt-logo-txt{display:none!important}",
       "",
       "#trtt-final-menu .trtt-ham{display:none;border:1px solid rgba(255,255,255,.22);border-radius:12px;background:rgba(255,255,255,.08);color:#fff;font-size:23px;line-height:1;padding:9px 12px;cursor:pointer}",
       "#trtt-final-menu .trtt-links{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;list-style:none;margin:0;padding:0;gap:4px}",
