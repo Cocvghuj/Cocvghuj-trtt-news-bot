@@ -6,7 +6,7 @@ on:
       - trtt-voyage-rebrand-draft
   pull_request:
     branches:
-      - trtt-voyage-rebrand-draft
+      - main
   workflow_dispatch:
 
 permissions:
