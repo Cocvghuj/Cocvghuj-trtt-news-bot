@@ -132,13 +132,14 @@ function stopPhotos(){if(photoTimer){clearInterval(photoTimer);photoTimer=null;}
 function toggle(open){
 root.classList.toggle("tv-open",open);
 trigger.setAttribute("aria-expanded",String(open));
-document.body.style.overflow=open?"hidden":previousBodyOverflow;
 if(open){
 focusBefore=document.activeElement;
 previousBodyOverflow=document.body.style.overflow;
+document.body.style.overflow="hidden";
 startPhotos();
 close.focus();
 }else{
+document.body.style.overflow=previousBodyOverflow;
 stopPhotos();
 if(focusBefore&&focusBefore.focus){focusBefore.focus();}else{trigger.focus();}
 }
