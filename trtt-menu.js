@@ -3,7 +3,7 @@
 "use strict";
 
 /* Version-aware singleton: safely replaces the older 320px menu. */
-const VERSION="TRTT-THINKING-ROOM-2026-11-07-04";
+const VERSION="TRTT-THINKING-ROOM-2026-11-07-05";
 if(window.__TRTT_VOYAGE_MENU_VERSION__===VERSION)return;
 try{if(typeof window.__TRTT_VOYAGE_MENU_CLEANUP__==="function")window.__TRTT_VOYAGE_MENU_CLEANUP__();}catch(_){}
 try{
@@ -93,8 +93,9 @@ const css=[
 const st=document.createElement("style");
 st.id="trtt-voyage-menu-style";
 st.textContent=css;
-st.textContent += "#trtt-voyage-menu :is(button,a,input):focus-visible{outline:3px solid #a55eea!important;outline-offset:3px!important}#trtt-voyage-menu .tv-card:active,#trtt-voyage-menu .tv-ai:active{transform:scale(.985)}#trtt-voyage-menu .tv-search input:focus-visible{outline:none!important}";
+st.textContent += "#trtt-voyage-menu :is(button,a,input):focus-visible{outline:3px solid #a55eea!important;outline-offset:3px!important}#trtt-voyage-menu .tv-card:active,#trtt-voyage-menu .tv-ai:active{transform:scale(.985)}#trtt-voyage-menu .tv-search input:focus-visible{outline:none!important}#trtt-voyage-menu .tv-search:focus-within{outline:2px solid #a55eea;outline-offset:2px}#trtt-voyage-menu .tv-search input::placeholder{color:#6f6a75;opacity:1}#trtt-voyage-menu .tv-card[hidden]{display:none!important}#trtt-voyage-menu .tv-category-empty{grid-column:1/-1;padding:22px 16px;border:1px dashed #d9cbd8;border-radius:16px;text-align:center;color:#625b68;background:#faf7fb;font-size:14px}#trtt-voyage-menu .tv-trigger:focus-visible{outline:3px solid #a55eea;outline-offset:4px}";
 st.textContent += "#trtt-voyage-menu .tv-live-photo{transition:opacity 1.2s ease}#trtt-voyage-menu .tv-live-photo-next{position:absolute;inset:-5%;z-index:-2;background:center/cover no-repeat;opacity:0;filter:saturate(1.15) contrast(1.03);animation:tv-photo-kenburns 10s ease-in-out infinite alternate;transition:opacity 1.2s ease}#trtt-voyage-menu .tv-live-photo-next.tv-photo-active{opacity:.34}#trtt-voyage-menu .tv-live-photo.tv-photo-fade{opacity:0}#trtt-voyage-menu .tv-voyage-footer{position:relative;isolation:isolate;overflow:hidden;min-height:86px;margin:17px 0 0;padding:16px 18px;border:1px solid #eee7f0;border-radius:18px;background:linear-gradient(110deg,#fff8ef,#fff1f5 48%,#f4efff);text-align:center}#trtt-voyage-menu .tv-voyage-track{position:absolute;inset:0;z-index:-1;overflow:hidden;opacity:.75}#trtt-voyage-menu .tv-footer-cloud{position:absolute;top:7px;left:-18%;font-size:23px;opacity:.55;animation:tv-cloud-pass 18s linear infinite}#trtt-voyage-menu .tv-footer-plane{position:absolute;top:13px;left:-8%;font-size:19px;animation:tv-plane-pass 8s linear infinite}#trtt-voyage-menu .tv-footer-road{position:absolute;left:0;right:0;bottom:0;height:16px;background:repeating-linear-gradient(90deg,#a55eea55 0 24px,transparent 24px 43px),linear-gradient(#30313d,#30313d);background-size:43px 2px,100% 100%;background-position:0 7px,0 0;background-repeat:repeat-x;animation:tv-footer-road 1.2s linear infinite}#trtt-voyage-menu .tv-footer-wave{position:absolute;bottom:12px;left:-10%;width:120%;height:20px;border-radius:50%;border-top:3px solid #42c99a9c;animation:tv-footer-wave 4s ease-in-out infinite alternate}#trtt-voyage-menu .tv-voyage-caption{font-size:11px;font-weight:850;letter-spacing:.7px;color:#484458}@keyframes tv-plane-pass{0%{transform:translateX(-10vw) translateY(9px)}100%{transform:translateX(115vw) translateY(-4px)}}@keyframes tv-cloud-pass{0%{transform:translateX(-10vw)}100%{transform:translateX(120vw)}}@keyframes tv-footer-road{to{background-position:43px 7px,0 0}}@keyframes tv-footer-wave{0%{transform:translateX(-2%)}100%{transform:translateX(3%)}}#trtt-voyage-menu.tv-dark .tv-screen{background:#0f0f12;color:#f2f0f5}#trtt-voyage-menu.tv-dark .tv-bar{background:#121216ed;border-color:#29262f}#trtt-voyage-menu.tv-dark .tv-brand{color:#f5f2f7}#trtt-voyage-menu.tv-dark .tv-theme{background:#201e25;border-color:#39333f;color:#ffcf80}#trtt-voyage-menu.tv-dark .tv-close{background:#242229;color:#fff}#trtt-voyage-menu.tv-dark .tv-search{background:#1b1a20;border-color:#34303a}#trtt-voyage-menu.tv-dark .tv-search input{color:#f4f0f6}#trtt-voyage-menu.tv-dark .tv-heading h2,#trtt-voyage-menu.tv-dark .tv-detail h2{color:#f5f2f7}#trtt-voyage-menu.tv-dark .tv-heading p,#trtt-voyage-menu.tv-dark .tv-detail p{color:#aaa4b2}#trtt-voyage-menu.tv-dark .tv-card{background:linear-gradient(145deg,#1b1a20,#141318);border-color:#38313e;box-shadow:0 8px 25px #0008}#trtt-voyage-menu.tv-dark .tv-title{color:#f5f1f8}#trtt-voyage-menu.tv-dark .tv-desc{color:#aaa4b2}#trtt-voyage-menu.tv-dark .tv-ico{background:#30202a}#trtt-voyage-menu.tv-dark .tv-ai{box-shadow:0 0 25px #ff6b8b40,0 0 40px #a55eea20}#trtt-voyage-menu.tv-dark .tv-live-stage{background:linear-gradient(135deg,#17151c,#111116 55%,#17131a);border-color:#39313e;box-shadow:0 0 34px #a55eea18}#trtt-voyage-menu.tv-dark .tv-live-wordmark>span{filter:drop-shadow(0 0 9px #ff9f43a0) drop-shadow(0 0 17px #a55eea90) brightness(1.2)}#trtt-voyage-menu.tv-dark .tv-live-wordmark i{background:#19171dcc;border-color:#ffffff26;color:#f5eaf7}#trtt-voyage-menu.tv-dark .tv-live-copy .tv-eyebrow{color:#e5d9ed;border-color:#ffffff26;background:#ffffff0c}#trtt-voyage-menu.tv-dark .tv-live-copy h1{color:#f8f3fb}#trtt-voyage-menu.tv-dark .tv-live-copy p,#trtt-voyage-menu.tv-dark .tv-typing{color:#c2b9cb}#trtt-voyage-menu.tv-dark .tv-voyage-footer{background:linear-gradient(110deg,#211b18,#24181f 48%,#1e1928);border-color:#403344}#trtt-voyage-menu.tv-dark .tv-voyage-caption,#trtt-voyage-menu.tv-dark .tv-credit,#trtt-voyage-menu.tv-dark .tv-disclosure{color:#eee2f5}#trtt-voyage-menu.tv-dark .tv-post{background:#19181e;border-color:#39313e}#trtt-voyage-menu.tv-dark .tv-post a{color:#f5f1f8}#trtt-voyage-menu.tv-dark .tv-status{border-color:#51465a;color:#c1b6ca}#trtt-voyage-menu.tv-dark .tv-back{background:#211f26;border-color:#403944;color:#f3edf7}";
+st.textContent += "#trtt-voyage-menu.tv-dark .tv-trigger{background:#19171f;border-color:#3c3443;box-shadow:0 7px 25px #0009}#trtt-voyage-menu.tv-dark .tv-trigger svg{stroke:#f7effa}#trtt-voyage-menu.tv-dark .tv-search input::placeholder{color:#c0b7c7}#trtt-voyage-menu.tv-dark .tv-category-empty{background:#1b1820;border-color:#51435a;color:#e4d8eb}#trtt-voyage-menu.tv-dark .tv-credit a{color:#d7a8ff}#trtt-voyage-menu.tv-dark .tv-lock{background:#38202b;color:#ffb2c4}@media(max-width:380px){#trtt-voyage-menu .tv-bar{gap:6px;padding-left:9px;padding-right:9px}#trtt-voyage-menu .tv-brand{font-size:13px}#trtt-voyage-menu .tv-lock{font-size:7px}#trtt-voyage-menu .tv-theme{width:34px;height:34px;flex-basis:34px}#trtt-voyage-menu .tv-close{width:35px;height:35px;flex-basis:35px}#trtt-voyage-menu .tv-card{padding:12px;min-height:150px}#trtt-voyage-menu .tv-ico{width:39px;height:39px}}";
 document.head.appendChild(st);
 
 const cards=CFG.cats.map(c=>
@@ -120,17 +121,23 @@ detail=root.querySelector(".tv-detail"),
 posts=root.querySelector(".tv-posts"),
 detailTitle=detail.querySelector("h2");
 
-let req=0,focusBefore=null,previousBodyOverflow="",photoTimer=null,photoIndex=0,reducedMotion=!!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches),activePhoto=root.querySelector(".tv-live-photo"),nextPhoto=root.querySelector(".tv-live-photo-next");
+let req=0,focusBefore=null,previousBodyOverflow="",photoTimer=null,photoSwapTimer=null,photoIndex=0,reducedMotion=!!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches),activePhoto=root.querySelector(".tv-live-photo"),nextPhoto=root.querySelector(".tv-live-photo-next");
 const motionQuery=window.matchMedia?window.matchMedia("(prefers-reduced-motion: reduce)"):null;
 const THEME_KEY="trtt-voyage:theme";
 function applyTheme(dark){root.classList.toggle("tv-dark",dark);themeButton.textContent=dark?"☀️":"🌙";themeButton.setAttribute("aria-label",dark?"Switch to light mode":"Switch to dark mode");try{localStorage.setItem(THEME_KEY,dark?"dark":"light");}catch(_){}}
 try{applyTheme(localStorage.getItem(THEME_KEY)==="dark");}catch(_){applyTheme(false);}
 themeButton.addEventListener("click",()=>applyTheme(!root.classList.contains("tv-dark")));
+screen.setAttribute("aria-hidden","true");
+screen.inert=true;
+trigger.setAttribute("aria-controls","trtt-voyage-menu-screen");
+screen.id="trtt-voyage-menu-screen";
 function startPhotos(){if(photoTimer||reducedMotion||document.hidden)return;photoTimer=setInterval(()=>{photoIndex=(photoIndex+1)%VOYAGE_PHOTOS.length;const url=VOYAGE_PHOTOS[photoIndex],probe=new Image();probe.onload=()=>{nextPhoto.style.backgroundImage="url('"+url+"')";nextPhoto.classList.add("tv-photo-active");activePhoto.classList.add("tv-photo-fade");const old=activePhoto;activePhoto=nextPhoto;nextPhoto=old;setTimeout(()=>{nextPhoto.classList.remove("tv-photo-active","tv-photo-fade");},1300);};probe.src=url;},6000);}
-function stopPhotos(){if(photoTimer){clearInterval(photoTimer);photoTimer=null;}}
+function stopPhotos(){if(photoTimer){clearInterval(photoTimer);photoTimer=null;}if(photoSwapTimer){clearTimeout(photoSwapTimer);photoSwapTimer=null;}nextPhoto.classList.remove("tv-photo-active","tv-photo-fade");activePhoto.classList.remove("tv-photo-fade");}
 
 function toggle(open){
 root.classList.toggle("tv-open",open);
+screen.setAttribute("aria-hidden",String(!open));
+screen.inert=!open;
 trigger.setAttribute("aria-expanded",String(open));
 if(open){
 focusBefore=document.activeElement;
@@ -147,14 +154,18 @@ if(focusBefore&&focusBefore.focus){focusBefore.focus();}else{trigger.focus();}
 
 function status(msg){
 posts.replaceChildren();
+posts.setAttribute("aria-busy","false");
 const p=document.createElement("div");
 p.className="tv-status";
+p.setAttribute("role","status");
+p.setAttribute("aria-live","polite");
 p.textContent=msg;
 posts.appendChild(p);
 }
 
 function render(items){
 posts.replaceChildren();
+posts.setAttribute("aria-busy","false");
 if(!items.length){
 status("No posts found in this category yet.");
 return;
@@ -186,7 +197,9 @@ posts.appendChild(card);
 
 async function load(url,label){
 const id=++req;
+posts.setAttribute("aria-busy","true");
 status("Loading "+label+"…");
+posts.setAttribute("aria-busy","true");
 try{
 const response=await fetch(url,{
 credentials:"omit",
@@ -251,11 +264,17 @@ b.addEventListener("click",()=>choose(b.dataset.category))
 search.addEventListener("input",()=>{
 if(!home.hidden){
 const q=search.value.trim().toLocaleLowerCase();
-root.querySelectorAll(".tv-card").forEach(b=>
-b.hidden=!!q&&
-!b.dataset.category.toLocaleLowerCase().includes(q)&&
-!b.querySelector(".tv-desc").textContent.toLocaleLowerCase().includes(q)
-);
+let visible=0;
+root.querySelectorAll(".tv-card").forEach(b=>{
+const haystack=(b.dataset.category+" "+b.querySelector(".tv-desc").textContent).toLocaleLowerCase();
+b.hidden=!!q&&!haystack.includes(q);
+if(!b.hidden)visible++;
+});
+let empty=home.querySelector(".tv-category-empty");
+if(q&&!visible){
+if(!empty){empty=document.createElement("div");empty.className="tv-category-empty";empty.setAttribute("role","status");empty.setAttribute("aria-live","polite");home.querySelector(".tv-grid").appendChild(empty);}
+empty.textContent="No categories match “"+search.value.trim()+"”. Try flights, luggage, eSIM, cars, tours or gear.";
+}else if(empty){empty.remove();}
 }
 });
 
@@ -266,16 +285,13 @@ if(e.key==="Enter"&&search.value.trim())searchPosts(search.value.trim());
 function onDocumentKeydown(e){
 if(e.key==="Escape"&&root.classList.contains("tv-open"))toggle(false);
 if(e.key==="Tab"&&root.classList.contains("tv-open")){
-const f=Array.from(screen.querySelectorAll("a[href],button:not([disabled]),input:not([disabled])"))
-.filter(x=>!x.closest("[hidden]"));
-if(!f.length)return;
-if(e.shiftKey&&document.activeElement===f[0]){
-e.preventDefault();
-f[f.length-1].focus();
-}else if(!e.shiftKey&&document.activeElement===f[f.length-1]){
-e.preventDefault();
-f[0].focus();
-}
+const f=Array.from(screen.querySelectorAll("a[href],button:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex=\"-1\"])"))
+.filter(x=>!x.closest("[hidden]")&&!x.hasAttribute("inert")&&x.getAttribute("aria-hidden")!=="true");
+if(!f.length){e.preventDefault();close.focus();return;}
+const first=f[0],last=f[f.length-1],active=document.activeElement;
+if(!screen.contains(active)){e.preventDefault();first.focus();}
+else if(e.shiftKey&&active===first){e.preventDefault();last.focus();}
+else if(!e.shiftKey&&active===last){e.preventDefault();first.focus();}
 }
 }
 function onVisibilityChange(){if(document.hidden)stopPhotos();else if(root.classList.contains("tv-open"))startPhotos();}
@@ -285,6 +301,7 @@ document.addEventListener("visibilitychange",onVisibilityChange);
 if(motionQuery){if(motionQuery.addEventListener)motionQuery.addEventListener("change",onMotionChange);else if(motionQuery.addListener)motionQuery.addListener(onMotionChange);}
 window.__TRTT_VOYAGE_MENU_CLEANUP__=function(){
 stopPhotos();
+++req;
 document.removeEventListener("keydown",onDocumentKeydown);
 document.removeEventListener("visibilitychange",onVisibilityChange);
 if(motionQuery){if(motionQuery.removeEventListener)motionQuery.removeEventListener("change",onMotionChange);else if(motionQuery.removeListener)motionQuery.removeListener(onMotionChange);}
