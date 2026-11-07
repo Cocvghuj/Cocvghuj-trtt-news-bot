@@ -3,7 +3,7 @@
 "use strict";
 
 /* Version-aware singleton: safely replaces the older 320px menu. */
-const VERSION="TRTT-LIVE-MOTION-2026-11-07-02";
+const VERSION="TRTT-THINKING-ROOM-2026-11-07-03";
 if(window.__TRTT_VOYAGE_MENU_VERSION__===VERSION)return;
 try{
   var previousRoot=document.getElementById("trtt-voyage-menu");
