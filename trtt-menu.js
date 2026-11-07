@@ -1,10 +1,14 @@
 (function(){
 "use strict";
 
-/* TRTT VOYAGE MENU: singleton + targeted legacy cleanup */
-if(window.__TRTT_VOYAGE_MENU__)return;
-window.__TRTT_VOYAGE_MENU__=true;
+/* Version-aware singleton: safely replaces the older 320px menu. */
+const VERSION="f75cea2a876d5e68f95a7c33c6789810080be4d1";
+if(window.__TRTT_VOYAGE_MENU_VERSION__===VERSION)return;
 try{
+  var previousRoot=document.getElementById("trtt-voyage-menu");
+  if(previousRoot && !previousRoot.querySelector(".tv-live-stage"))previousRoot.remove();
+  document.getElementById("trtt-voyage-filter-title")?.remove();
+  if(document.body)document.body.classList.remove("tv-filtering");
   [
     "#trtt-old-menu","#trtt-side-menu","#trtt-menu",
     "#trtt-voyage-sidebar","#trtt-voyage-side-menu",
@@ -13,9 +17,10 @@ try{
   ].forEach(function(selector){
     document.querySelectorAll(selector).forEach(function(node){node.remove();});
   });
-  var previousRoot=document.getElementById("trtt-voyage-menu");
-  if(previousRoot)previousRoot.remove();
 }catch(_){}
+if(document.getElementById("trtt-voyage-menu"))return;
+window.__TRTT_VOYAGE_MENU__=true;
+window.__TRTT_VOYAGE_MENU_VERSION__=VERSION;
 
 const LOCK=Object.freeze({marker:"787950"});
 
