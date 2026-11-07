@@ -88,9 +88,15 @@ function infiniteScroll(){
  mo.observe(grid,{childList:true,subtree:true});
  pager.addEventListener("click",function(e){if(e.target.closest("#load-more-link")){busy=true;count=grid.querySelectorAll(".index-post").length;}});
 }
+function watchLegacy(){
+ var observer=new MutationObserver(function(){
+  ["trtt-future-world","trtt-final-menu","trtt-final-menu-styles","trtt-future-ribbon"].forEach(function(id){var el=document.getElementById(id);if(el)el.remove();});
+ });
+ observer.observe(document.body,{childList:true,subtree:true});
+}
 function start(){
  if(!document.body||!document.head)return;
- removeLegacy();styles();
+ removeLegacy();styles();watchLegacy();
  var menu=makeMenu(),attempt=0;
  function mount(){
   ["trtt-future-world","trtt-final-menu","trtt-final-menu-styles","trtt-future-ribbon"].forEach(function(id){var el=document.getElementById(id);if(el)el.remove();});
