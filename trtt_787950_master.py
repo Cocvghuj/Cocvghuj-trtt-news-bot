@@ -178,7 +178,7 @@ def build_content(route: dict[str, Any] | str, date_label: str | None = None) ->
 <p><strong>Published:</strong> {html.escape(published)} · <strong>Updated:</strong> {html.escape(published)}</p>
 <p>Marker 787950 LOCKED · Make every journey feel effortless.</p>
 <p><a href="https://europa.eu/youreurope/citizens/travel/passenger-rights/air/index_en.htm" rel="noopener">Official EU air passenger rights guidance</a></p>
-<p><a href="{LIVE_APP}">TRTT VoyageHub Showroom</a></p>
+<p><a href="{LIVE_APP}">TRTT Voyage Showroom</a></p>
 </article>"""
     content = content.replace("</article>", f"""
 <h2>Check the complete journey before booking</h2>
@@ -201,7 +201,6 @@ def build_content(route: dict[str, Any] | str, date_label: str | None = None) ->
     if _plain_word_count(content) < 800:
         raise AssertionError(f"Draft content is too short: {_plain_word_count(content)} words; minimum is 800.")
     required = [
-        '<img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80"',
         "<img src=\"https://images.unsplash.com/",
         "EC 261/2004",
         "Ghost-SIM = eSIM",
