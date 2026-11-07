@@ -1,80 +1,48 @@
-/* TRTT responsive Blogger navigation — accessible, duplicate-safe */
-(function () {
-  "use strict";
-  if (window.__TRTT_MENU_V2__) return;
-  window.__TRTT_MENU_V2__ = true;
-
-  var allowed = ["trttnews24bd.blogspot.com", "trttnews24bd.com", "www.trttnews24bd.com"];
-  var host = location.hostname.toLowerCase();
-  if (!allowed.some(function (domain) { return host === domain || host.endsWith("." + domain); })) return;
-
-  function mount() {
-    if (!document.body || document.getElementById("trtt-menu")) return;
-
-    var style = document.createElement("style");
-    style.id = "trtt-menu-responsive-style";
-    style.textContent = [
-      "#trtt-menu{position:sticky;top:0;z-index:99999;background:#fff;border-bottom:3px solid #ef476f;box-shadow:0 8px 24px rgba(20,33,61,.10);font-family:Arial,sans-serif}",
-      "#trtt-menu *{box-sizing:border-box}",
-      "#trtt-menu .menu-wrap{max-width:1240px;min-height:68px;margin:auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:18px}",
-      "#trtt-menu .logo{display:flex;align-items:center;gap:9px;flex-shrink:0;color:#14213d;font-size:17px;font-weight:900;letter-spacing:.04em;text-decoration:none}",
-      "#trtt-menu .logo-mark{width:36px;height:36px;display:grid;place-items:center;border-radius:11px;background:linear-gradient(135deg,#ef476f,#ffc857);color:#14213d;font-size:19px}",
-      "#trtt-menu .links{display:flex;align-items:center;justify-content:flex-end;gap:5px}",
-      "#trtt-menu .links a{display:block;padding:10px 13px;border-radius:10px;color:#33415c;text-decoration:none;font-size:13px;font-weight:750;transition:background .18s,color .18s,transform .18s}",
-      "#trtt-menu .links a:hover,#trtt-menu .links a:focus-visible{background:#fff0f3;color:#d93660;outline:none}",
-      "#trtt-menu .menu-toggle{display:none;align-items:center;justify-content:center;gap:9px;min-width:44px;min-height:44px;padding:9px 12px;border:1px solid #e7eaf1;border-radius:12px;background:#fff;color:#14213d;font-size:13px;font-weight:800;cursor:pointer}",
-      "#trtt-menu .menu-toggle-icon{display:grid;gap:4px}",
-      "#trtt-menu .menu-toggle-icon i{display:block;width:18px;height:2px;border-radius:2px;background:#14213d;transition:transform .2s,opacity .2s}",
-      "#trtt-menu .menu-toggle[aria-expanded=true] .menu-toggle-icon i:first-child{transform:translateY(6px) rotate(45deg)}",
-      "#trtt-menu .menu-toggle[aria-expanded=true] .menu-toggle-icon i:nth-child(2){opacity:0}",
-      "#trtt-menu .menu-toggle[aria-expanded=true] .menu-toggle-icon i:last-child{transform:translateY(-6px) rotate(-45deg)}",
-      "@media(max-width:760px){#trtt-menu .menu-wrap{min-height:64px;padding:9px 14px;flex-wrap:wrap;gap:8px}#trtt-menu .logo{font-size:15px}#trtt-menu .menu-toggle{display:flex}#trtt-menu .links{display:none;order:3;flex:0 0 100%;width:100%;padding:8px;background:#fff;border:1px solid #edf0f5;border-radius:15px;box-shadow:0 12px 28px rgba(20,33,61,.10);flex-direction:column;align-items:stretch;gap:3px}#trtt-menu .links.is-open{display:flex}#trtt-menu .links a{padding:13px 14px;border-radius:10px;font-size:14px}#trtt-menu .links a+a{border-top:1px solid #f3f4f7}}",
-      "@media(prefers-reduced-motion:reduce){#trtt-menu *{transition:none!important}}"
-    ].join("");
-    document.head.appendChild(style);
-
-    var nav = document.createElement("nav");
-    nav.id = "trtt-menu";
-    nav.setAttribute("aria-label", "TRTT main navigation");
-    nav.innerHTML =
-      '<div class="menu-wrap">' +
-        '<a class="logo" href="/" aria-label="TRTT Voyage home"><span class="logo-mark">T</span><span>TRTT VOYAGE</span></a>' +
-        '<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="trtt-menu-links">' +
-          '<span class="menu-toggle-icon" aria-hidden="true"><i></i><i></i><i></i></span><span>Menu</span>' +
-        '</button>' +
-        '<div class="links" id="trtt-menu-links">' +
-          '<a href="/">Home</a><a href="/search/label/TRTT%20News">TRTT News</a>' +
-          '<a href="/search/label/Travel">Travel</a><a href="/search/label/Voyage">Voyage Hub</a>' +
-          '<a href="/p/about.html">About</a>' +
-        '</div>' +
-      '</div>';
-    document.body.insertBefore(nav, document.body.firstChild);
-
-    var toggle = nav.querySelector(".menu-toggle");
-    var links = nav.querySelector(".links");
-    function closeMenu() {
-      toggle.setAttribute("aria-expanded", "false");
-      links.classList.remove("is-open");
-    }
-    toggle.addEventListener("click", function () {
-      var open = toggle.getAttribute("aria-expanded") !== "true";
-      toggle.setAttribute("aria-expanded", String(open));
-      links.classList.toggle("is-open", open);
-    });
-    links.addEventListener("click", function (event) {
-      if (event.target.closest("a")) closeMenu();
-    });
-    document.addEventListener("keydown", function (event) {
-      if (event.key === "Escape") closeMenu();
-    });
-    window.addEventListener("resize", function () {
-      if (window.innerWidth > 760) closeMenu();
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mount, { once: true });
-  } else {
-    mount();
-  }
+(function(){"use strict";if(window.__TRTT_VOYAGE_MENU__)return;window.__TRTT_VOYAGE_MENU__=true;
+const LOCK=Object.freeze({marker:"787950"}),C=Object.freeze({home:"https://trttnews24bd.blogspot.com/",ai:"https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950",key:"trtt-voyage:last-category",cats:Object.freeze(["Flights & Partner Platform","Passenger Support & Luggage","eSIM & Connectivity","Cars & Transfers","Tours & Experiences","Travel Gear"]),photo:"https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=900&q=75"});
+const marked=u=>{const x=new URL(u,C.home);x.searchParams.set("marker",LOCK.marker);return x.href;};
+function mount(){if(!document.body||document.getElementById("trtt-voyage-menu"))return;
+const s=document.createElement("style");s.textContent=\`
+#trtt-voyage-menu,#trtt-voyage-menu *{box-sizing:border-box}#trtt-voyage-menu{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:#242536}
+#trtt-voyage-menu .tv-trigger{position:fixed;z-index:2147483000;left:16px;top:16px;width:48px;height:48px;border:1px solid #f0e8eb;border-radius:16px;background:#fffffff2;box-shadow:0 5px 22px #27304718;display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(14px)}
+#trtt-voyage-menu .tv-trigger svg{width:22px;height:22px;stroke:#25283a;stroke-width:2;fill:none;stroke-linecap:round}
+#trtt-voyage-menu .tv-shade{position:fixed;inset:0;z-index:2147483001;background:#1618247a;opacity:0;visibility:hidden;transition:opacity .22s,visibility .22s}
+#trtt-voyage-menu .tv-panel{position:fixed;z-index:2147483002;inset:0 auto 0 0;width:320px;max-width:85vw;height:100vh;height:100dvh;background:#fff;box-shadow:18px 0 55px #11182724;transform:translateX(-105%);transition:transform .26s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;overflow:hidden}
+#trtt-voyage-menu.tv-open .tv-shade{opacity:1;visibility:visible}#trtt-voyage-menu.tv-open .tv-panel{transform:translateX(0)}
+#trtt-voyage-menu .tv-head{height:76px;min-height:76px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f1edf0}
+#trtt-voyage-menu .tv-brand{display:flex;align-items:center;gap:9px;color:#202332;text-decoration:none;font-size:17px;font-weight:850;letter-spacing:-.6px}
+#trtt-voyage-menu .tv-mark{width:37px;height:37px;border-radius:13px;background:linear-gradient(145deg,#ff6b8b,#ff9aab);display:grid;place-items:center;color:white;font-size:21px;font-weight:900}
+#trtt-voyage-menu .tv-lock{padding:5px 6px;border-radius:7px;background:#fff0f3;color:#df4d70;font-size:9px;font-weight:850;white-space:nowrap}
+#trtt-voyage-menu .tv-close{width:38px;height:38px;border:0;border-radius:12px;background:#f7f6f7;color:#343443;font-size:25px;line-height:1;cursor:pointer}
+#trtt-voyage-menu .tv-scroll{overflow:auto;overscroll-behavior:contain;padding:16px;flex:1}
+#trtt-voyage-menu .tv-photo{height:126px;border-radius:17px;background:#f8dce3 url("https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=900&q=75") center 48%/cover no-repeat;position:relative;overflow:hidden;margin-bottom:18px}
+#trtt-voyage-menu .tv-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#1c233b85,transparent 90%)}#trtt-voyage-menu .tv-photo span{position:absolute;z-index:1;left:15px;bottom:14px;color:#fff;font-size:17px;font-weight:800}
+#trtt-voyage-menu .tv-search{height:46px;display:flex;align-items:center;gap:9px;padding:0 13px;border:1px solid #eee9ec;border-radius:13px;background:#faf9fa;margin:0 0 20px}
+#trtt-voyage-menu .tv-search svg{width:18px;height:18px;stroke:#85838b;fill:none;stroke-width:2}#trtt-voyage-menu .tv-search input{min-width:0;width:100%;border:0;outline:0;background:transparent;color:#292938;font:500 13px system-ui}
+#trtt-voyage-menu .tv-label{margin:0 0 9px 3px;color:#9a9299;font-size:10px;font-weight:850;letter-spacing:1.15px;text-transform:uppercase}#trtt-voyage-menu .tv-categories{display:grid;gap:5px}
+#trtt-voyage-menu .tv-category{width:100%;min-height:49px;padding:8px 10px;display:flex;align-items:center;gap:11px;border:0;border-radius:12px;background:#fff;text-align:left;color:#333341;font:650 13px system-ui;cursor:pointer}
+#trtt-voyage-menu .tv-category:hover,#trtt-voyage-menu .tv-category[aria-current=true]{background:#fff0f3;color:#d94e70}#trtt-voyage-menu .tv-icon{width:31px;height:31px;display:grid;place-items:center;border-radius:10px;background:#f8f6f7;font-size:16px;flex:0 0 31px}
+#trtt-voyage-menu .tv-arrow{margin-left:auto;color:#b5aeb4;font-size:18px}#trtt-voyage-menu .tv-ai{display:flex;align-items:center;justify-content:center;width:100%;min-height:49px;margin-top:18px;border:0;border-radius:14px;background:#ff6b8b;color:#fff;text-decoration:none;font-size:13px;font-weight:800;box-shadow:0 7px 16px #ff6b8b30}
+#trtt-voyage-menu .tv-foot{padding:13px 17px 17px;border-top:1px solid #f1edf0;color:#99939a;font-size:10px;line-height:1.55}
+#trtt-voyage-menu .tv-results{max-width:1120px;margin:24px auto;padding:0 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}#trtt-voyage-menu .tv-results[hidden]{display:none}
+#trtt-voyage-menu .tv-result{overflow:hidden;border:1px solid #f0edf0;border-radius:16px;background:#fff;box-shadow:0 5px 20px #25243a0a}#trtt-voyage-menu .tv-result img{display:block;width:100%;height:145px;object-fit:cover;background:#f8e8ed}
+#trtt-voyage-menu .tv-result h3{margin:12px 14px 16px;font-size:15px;line-height:1.4}#trtt-voyage-menu .tv-result a{color:#292938;text-decoration:none}#trtt-voyage-menu .tv-status{grid-column:1/-1;padding:22px;text-align:center;color:#817982;font-size:13px}
+@media(max-width:480px){#trtt-voyage-menu .tv-trigger{left:12px;top:12px;width:46px;height:46px}#trtt-voyage-menu .tv-panel{max-width:85vw}#trtt-voyage-menu .tv-results{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){#trtt-voyage-menu *,#trtt-voyage-menu *:before,#trtt-voyage-menu *:after{transition:none!important}}
+\`;document.head.appendChild(s);
+const r=document.createElement("div");r.id="trtt-voyage-menu";r.innerHTML=\`
+<button class="tv-trigger" type="button" aria-label="Open TRTT Voyage menu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button><div class="tv-shade" aria-hidden="true"></div>
+<aside class="tv-panel" role="dialog" aria-modal="true" aria-label="TRTT Voyage navigation"><header class="tv-head"><a class="tv-brand" href="\${marked(C.home)}"><span class="tv-mark">T</span><span>TRTT Voyage</span><span class="tv-lock">787950 LOCKED</span></a><button class="tv-close" type="button" aria-label="Close menu">×</button></header>
+<div class="tv-scroll"><div class="tv-photo" role="img" aria-label="Travel destination"><span>Go beyond the ordinary.</span></div><label class="tv-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input type="search" autocomplete="off" placeholder="Search trips, support, gear..." aria-label="Search travel categories"></label><p class="tv-label">Explore travel</p><div class="tv-categories">\${C.cats.map((n,i)=>'<button class="tv-category" type="button" data-category="'+n.replace(/&/g,"&amp;")+'"><span class="tv-icon" aria-hidden="true">'+["✈","🧳","📶","🚘","🗺","🎒"][i]+'</span><span>'+n+'</span><span class="tv-arrow" aria-hidden="true">›</span></button>').join("")}</div><a class="tv-ai" href="\${C.ai}" target="_blank" rel="noopener noreferrer">✦ &nbsp; AI Playground Only ↗</a></div><footer class="tv-foot">Disclosure: As an Amazon Associate and Travelpayouts partner, TRTT Voyage earns from qualifying purchases.</footer></aside><section class="tv-results" hidden aria-live="polite" aria-label="Filtered travel posts"></section>\`;document.body.appendChild(r);
+const trigger=r.querySelector(".tv-trigger"),close=r.querySelector(".tv-close"),shade=r.querySelector(".tv-shade"),panel=r.querySelector(".tv-panel"),search=r.querySelector("input"),results=r.querySelector(".tv-results");let req=0;
+function open(v){r.classList.toggle("tv-open",v);trigger.setAttribute("aria-expanded",String(v));if(v)close.focus();else trigger.focus();}
+trigger.addEventListener("click",()=>open(!r.classList.contains("tv-open")));close.addEventListener("click",()=>open(false));shade.addEventListener("click",()=>open(false));
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&r.classList.contains("tv-open"))open(false);if(e.key==="Tab"&&r.classList.contains("tv-open")){const f=[...panel.querySelectorAll("a,button,input")];if(e.shiftKey&&document.activeElement===f[0]){e.preventDefault();f[f.length-1].focus();}else if(!e.shiftKey&&document.activeElement===f[f.length-1]){e.preventDefault();f[0].focus();}}});
+function status(m){results.hidden=false;results.replaceChildren();const p=document.createElement("p");p.className="tv-status";p.textContent=m;results.appendChild(p);}
+function render(entries){results.replaceChildren();if(!entries.length){status("No posts found in this category yet.");return;}entries.forEach(e=>{const title=e.title?.$t||"Travel story",alt=(e.link||[]).find(x=>x.rel==="alternate"&&x.type==="text/html"),href=alt?marked(alt.href):marked(C.home),src=e.media$thumbnail?.url?.replace(/\\/s\\d+(-c)?\\//,"/s640/")||C.photo,card=document.createElement("article"),img=document.createElement("img"),h=document.createElement("h3"),a=document.createElement("a");card.className="tv-result";img.loading="lazy";img.decoding="async";img.alt="";img.src=src;a.href=href;a.textContent=title;h.appendChild(a);card.append(img,h);results.appendChild(card);});results.hidden=false;}
+async function choose(cat){try{localStorage.setItem(C.key,cat);}catch(_){}r.querySelectorAll(".tv-category").forEach(b=>b.setAttribute("aria-current",String(b.dataset.category===cat)));open(false);status("Loading "+cat+"…");const id=++req;try{const u=new URL("/feeds/posts/default/-/"+encodeURIComponent(cat),C.home);u.searchParams.set("alt","json");u.searchParams.set("max-results","24");u.searchParams.set("marker",LOCK.marker);const res=await fetch(u.href,{credentials:"omit",cache:"default",headers:{Accept:"application/json"}});if(!res.ok)throw Error();const data=await res.json();if(id!==req)return;document.getElementById("trtt-voyage-filter-title")?.remove();const h=document.createElement("h2");h.id="trtt-voyage-filter-title";h.textContent=cat;h.style.cssText="max-width:1120px;margin:28px auto 0;padding:0 16px;font:800 21px/1.3 system-ui;color:#292938";r.parentNode.insertBefore(h,r.nextSibling);render(data?.feed?.entry||[]);results.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});}catch(_){if(id===req)status("Posts could not be loaded. Please check your connection and try again.");}}
+r.querySelectorAll(".tv-category").forEach(b=>b.addEventListener("click",()=>choose(b.dataset.category)));search.addEventListener("input",()=>{const q=search.value.trim().toLocaleLowerCase();r.querySelectorAll(".tv-category").forEach(b=>b.hidden=!!q&&!b.dataset.category.toLocaleLowerCase().includes(q));});
+try{const saved=localStorage.getItem(C.key);if(C.cats.includes(saved)){const b=[...r.querySelectorAll(".tv-category")].find(x=>x.dataset.category===saved);if(b)b.setAttribute("aria-current","true");}}catch(_){}
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount,{once:true});else mount();
 })();
