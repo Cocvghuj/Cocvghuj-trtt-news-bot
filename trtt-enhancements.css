@@ -1,0 +1,210 @@
+/*!
+ * TRTT Voyage Enhancements
+ * Version: TRTT-ENHANCEMENTS-2026-11-07-01
+ * Brand colours: Jackfruit, Pink, Onion, Evergreen.
+ */
+:root {
+  --trtt-jackfruit: #ff9f43;
+  --trtt-pink: #ff6b8b;
+  --trtt-onion: #a55eea;
+  --trtt-evergreen: #42c99a;
+  --trtt-ink: #24202b;
+  --trtt-paper: #ffffff;
+  --trtt-muted: #6f6878;
+  --trtt-border: rgba(165, 94, 234, .20);
+}
+
+/* Header and footer logo sizing. Theme-specific selectors may need adjustment. */
+#Header1 img, #header-inner img, .header-logo img, .site-logo img,
+header .widget.Header img, .header-widget img {
+  width: 250px !important;
+  max-width: min(250px, 80vw) !important;
+  height: auto !important;
+  object-fit: contain;
+}
+#Footer1 img, .footer-logo img, .about-logo img, footer .widget img {
+  width: 180px !important;
+  max-width: min(180px, 65vw) !important;
+  height: auto !important;
+  object-fit: contain;
+}
+
+/* Search box */
+.trtt-enh-search {
+  box-sizing: border-box;
+  max-width: 800px;
+  margin: 18px auto 22px;
+  padding: 16px;
+  border: 1px solid var(--trtt-border);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255,159,67,.10), rgba(165,94,234,.09), rgba(66,201,154,.08));
+}
+.trtt-enh-search-label {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--trtt-onion);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .13em;
+}
+.trtt-enh-search-row { display: flex; gap: 8px; }
+.trtt-enh-search input {
+  box-sizing: border-box;
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--trtt-border);
+  border-radius: 12px;
+  background: var(--trtt-paper);
+  color: var(--trtt-ink);
+  font: inherit;
+}
+.trtt-enh-search button {
+  padding: 11px 17px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--trtt-onion);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Article reading layout */
+.trtt-enh-article {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 800px !important;
+  margin-right: auto !important;
+  margin-left: auto !important;
+  color: var(--trtt-ink);
+  font-size: 16px;
+  line-height: 1.78;
+  overflow-wrap: anywhere;
+}
+.trtt-enh-article p {
+  margin: 0 0 1.05em;
+  font-size: 15px;
+  line-height: 1.78;
+}
+.trtt-enh-article .trtt-enh-hook {
+  font-size: 17px;
+  line-height: 1.7;
+  font-weight: 600;
+}
+.trtt-enh-article img {
+  max-width: 100%;
+  height: auto;
+}
+.trtt-enh-article .trtt-enh-first-photo {
+  display: block;
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  margin: 14px auto 22px;
+  border-radius: 16px;
+}
+.trtt-enh-article h2 { margin-top: 1.8em; line-height: 1.3; }
+.trtt-enh-article h3 { margin-top: 1.35em; line-height: 1.35; }
+.trtt-enh-article a { color: var(--trtt-onion); text-underline-offset: 3px; }
+
+/* Auto table of contents */
+.trtt-enh-toc {
+  margin: 20px 0 26px;
+  padding: 17px 20px;
+  border: 1px solid var(--trtt-border);
+  border-left: 4px solid var(--trtt-pink);
+  border-radius: 15px;
+  background: rgba(165, 94, 234, .055);
+}
+.trtt-enh-toc > strong { display: block; margin-bottom: 8px; color: var(--trtt-onion); }
+.trtt-enh-toc ol { margin: 0; padding-left: 22px; }
+.trtt-enh-toc li { margin: 5px 0; }
+.trtt-enh-toc .trtt-enh-toc-sub { margin-left: 14px; font-size: .94em; }
+.trtt-enh-article h2, .trtt-enh-article h3 { scroll-margin-top: 24px; }
+
+/* Related posts */
+.trtt-enh-related {
+  margin: 28px 0 20px;
+  padding: 18px;
+  border: 1px solid var(--trtt-border);
+  border-radius: 16px;
+  background: rgba(255,159,67,.07);
+}
+.trtt-enh-related h2 { margin: 0 0 12px; font-size: 20px; }
+.trtt-enh-related ul { margin: 0; padding-left: 20px; }
+.trtt-enh-related li { margin: 8px 0; }
+
+/* Single Vercel card and legal footer */
+.trtt-enh-vercel {
+  margin: 24px 0 16px;
+  padding: 17px 19px;
+  border: 1px solid rgba(165,94,234,.32);
+  border-radius: 16px;
+  background: linear-gradient(120deg, rgba(255,107,139,.10), rgba(165,94,234,.11), rgba(66,201,154,.09));
+}
+.trtt-enh-vercel a {
+  color: var(--trtt-onion) !important;
+  font-weight: 800;
+  text-decoration: none;
+}
+.trtt-enh-disclosure, .trtt-enh-credit {
+  color: var(--trtt-muted);
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+}
+.trtt-enh-credit { margin-top: 5px !important; }
+
+/* Dark mode: device preference and the local 7 PM–7 AM fallback. */
+html.trtt-enh-dark,
+html.trtt-enh-dark body {
+  background: #0f0f12 !important;
+  color: #f2f0f5 !important;
+}
+html.trtt-enh-dark .trtt-enh-article,
+html.trtt-enh-dark .post-body,
+html.trtt-enh-dark .post-outer,
+html.trtt-enh-dark .post,
+html.trtt-enh-dark .blog-posts {
+  background-color: #0f0f12 !important;
+  color: #f2f0f5 !important;
+}
+html.trtt-enh-dark .trtt-enh-article p,
+html.trtt-enh-dark .trtt-enh-article li,
+html.trtt-enh-dark .trtt-enh-article h1,
+html.trtt-enh-dark .trtt-enh-article h2,
+html.trtt-enh-dark .trtt-enh-article h3,
+html.trtt-enh-dark .trtt-enh-disclosure,
+html.trtt-enh-dark .trtt-enh-credit {
+  color: #f2f0f5 !important;
+}
+html.trtt-enh-dark .trtt-enh-article a,
+html.trtt-enh-dark .trtt-enh-toc a,
+html.trtt-enh-dark .trtt-enh-related a,
+html.trtt-enh-dark .trtt-enh-vercel a {
+  color: #d7a8ff !important;
+}
+html.trtt-enh-dark .trtt-enh-search,
+html.trtt-enh-dark .trtt-enh-toc,
+html.trtt-enh-dark .trtt-enh-related,
+html.trtt-enh-dark .trtt-enh-vercel {
+  background-color: #19171f !important;
+}
+html.trtt-enh-dark .trtt-enh-search input {
+  background: #24212b;
+  color: #f2f0f5;
+  border-color: #51445f;
+}
+
+/* Native system dark preference also applies before JavaScript initializes. */
+@media (prefers-color-scheme: dark) {
+  html:not(.trtt-enh-light) body { background-color: #0f0f12; color: #f2f0f5; }
+}
+@media (max-width: 600px) {
+  .trtt-enh-search-row { flex-direction: column; }
+  .trtt-enh-search button { width: 100%; }
+  .trtt-enh-article { padding-right: 12px; padding-left: 12px; font-size: 15px; }
+  .trtt-enh-article p { font-size: 14px; }
+  #Header1 img, #header-inner img, .header-logo img, .site-logo img,
+  header .widget.Header img, .header-widget img { max-width: 72vw !important; }
+}
