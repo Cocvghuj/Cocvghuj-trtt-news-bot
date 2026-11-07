@@ -18,9 +18,6 @@
   "functions": {
     "api/answer.js": {
       "maxDuration": 30
-    },
-    "api/trtt_787950_master.py": {
-      "maxDuration": 30
     }
   },
   "rewrites": [
