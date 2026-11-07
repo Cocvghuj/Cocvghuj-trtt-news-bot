@@ -3,15 +3,13 @@ import os
 import io
 import tempfile
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 from contextlib import redirect_stdout
 from pathlib import Path
 from unittest import mock
 from zoneinfo import ZoneInfo
 
 import trtt_787950_master as engine
-import api.trtt_787950_master as status_api
-from http.server import BaseHTTPRequestHandler
 
 
 class FakeRequest:
@@ -53,35 +51,54 @@ class FakeService:
         return self.posts_api
 
 
-class DraftEngineRegressionTests(unittest.TestCase):
-    def test_vercel_python_api_uses_supported_http_handler_and_exports_engine(self):
-        self.assertTrue(issubclass(status_api.handler, BaseHTTPRequestHandler))
-        self.assertTrue(callable(status_api.build_content))
-        self.assertTrue(callable(status_api.build))
-        self.assertTrue(callable(status_api.find_duplicate_post))
-        self.assertTrue(callable(status_api.main))
+def make_queue(today):
+    route = {
+        "from": "Cagliari",
+        "to": "Bergamo",
+        "iata_from": "CAG",
+        "iata_to": "BGY",
+        "date": today.date().isoformat(),
+        "price": "€19 (unverified queue lead)",
+        "airline": "Verify operating carrier",
+        "image_url": "https://images.unsplash.com/photo-test-route?w=800",
+        "category": "Flight News",
+        "isDraft": True,
+    }
+    days = []
+    for offset in range(30):
+        day = (today.date() + timedelta(days=offset)).isoformat()
+        if offset == 0:
+            days.append({"date": day, "status": "ready", "route": route})
+        else:
+            days.append({"date": day, "status": "pending", "route": None})
+    return {
+        "version": today.date().isoformat(),
+        "start_date": days[0]["date"],
+        "end_date": days[-1]["date"],
+        "batch_size": 1,
+        "isDraft": True,
+        "require_marker": "787950 LOCKED",
+        "days": days,
+    }
 
-    def test_empty_queue_generates_today_fallback_instead_of_zero_skip(self):
+
+class DraftEngineRegressionTests(unittest.TestCase):
+    def test_empty_queue_fails_closed_instead_of_inventing_a_route(self):
+        fixed_now = datetime(2026, 11, 7, 0, 1, tzinfo=ZoneInfo("Europe/Rome"))
         with tempfile.TemporaryDirectory() as directory:
-            queue_path = Path(directory) / "latest.json"
+            queue_path = Path(directory) / "30days.json"
             queue_path.write_text(json.dumps({
-                "version": "2026-11-07",
-                "batch_size": 1,
                 "isDraft": True,
-                "require_image": True,
+                "batch_size": 1,
                 "require_marker": "787950 LOCKED",
-                "routes": [],
+                "days": [],
             }), encoding="utf-8")
-            fixed_now = datetime(2026, 11, 7, 0, 1, tzinfo=ZoneInfo("Europe/Rome"))
             with (
                 mock.patch.object(engine, "QUEUE_FILE", queue_path),
                 mock.patch.object(engine, "publish_date", return_value=fixed_now),
             ):
-                _, route = engine._load_today_route()
-            self.assertEqual(route["from"], "Cagliari")
-            self.assertEqual(route["to"], "Bergamo")
-            self.assertEqual(route["date"], "2026-11-07")
-            self.assertIs(route["isDraft"], True)
+                with self.assertRaisesRegex(AssertionError, "exactly 30 dated entries"):
+                    engine._load_today_route()
 
     def test_history_keeps_latest_12_and_shifts_oldest(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -94,32 +111,16 @@ class DraftEngineRegressionTests(unittest.TestCase):
             self.assertEqual(result, initial[1:] + ["new-route"])
             self.assertEqual(len(result), 12)
 
-    def test_today_override_ignores_history_and_creates_both_drafts(self):
-        route = {
-            "from": "Cagliari", "to": "Bergamo",
-            "iata_from": "CAG", "iata_to": "BGY",
-            "date": "2026-11-07", "price": "€19",
-            "airline": "Ryanair", "isDraft": True,
-        }
-        queue = {
-            "version": "2026-11-07",
-            "generated_at": "2026-11-07T22:50:00+01:00",
-            "routes": [route],
-            "batch_size": 1,
-            "isDraft": True,
-            "require_image": True,
-            "require_marker": "787950 LOCKED",
-        }
-        fixed_now = datetime(2026, 11, 7, 23, 0, tzinfo=ZoneInfo("Europe/Rome"))
+    def test_main_creates_exactly_one_verified_draft_for_the_ready_queue_entry(self):
+        fixed_now = datetime(2026, 11, 7, 12, 0, tzinfo=ZoneInfo("Europe/Rome"))
         service = FakeService()
         with tempfile.TemporaryDirectory() as directory:
-            queue_path = Path(directory) / "latest.json"
+            queue_path = Path(directory) / "30days.json"
             history_path = Path(directory) / "drafted_history.txt"
-            queue_path.write_text(json.dumps(queue), encoding="utf-8")
-            history_path.write_text("Cagliari to Bergamo | 2026-11-07\n", encoding="utf-8")
+            queue_path.write_text(json.dumps(make_queue(fixed_now)), encoding="utf-8")
+            history_path.write_text("", encoding="utf-8")
             env = {
                 "BLOGGER_BLOG_ID": "main-blog",
-                "FLIGHTSCOUTPRO_BLOG_ID": "partner-blog",
                 "BLOGGER_CLIENT_ID": "client",
                 "BLOGGER_CLIENT_SECRET": "secret",
                 "BLOGGER_REFRESH_TOKEN": "refresh",
@@ -134,16 +135,38 @@ class DraftEngineRegressionTests(unittest.TestCase):
                 output = io.StringIO()
                 with redirect_stdout(output):
                     self.assertEqual(engine.main(), 0)
-            self.assertIn("Republish allowed - today's date override", output.getvalue())
-            self.assertIn("SUCCESS: Draft created - trttnews24bd - Post ID: main-blog-draft-1", output.getvalue())
-            self.assertIn("SUCCESS: Draft created - flightscoutpro - Post ID: partner-blog-draft-1", output.getvalue())
-            self.assertEqual(len(service.posts_api.insert_calls), 2)
-            self.assertTrue(all(call["isDraft"] is True for call in service.posts_api.insert_calls))
-            self.assertEqual(
-                {call["blogId"] for call in service.posts_api.insert_calls},
-                {"main-blog", "partner-blog"},
-            )
-            self.assertIn("Cagliari to Bergamo | 2026-11-07", history_path.read_text(encoding="utf-8"))
+
+            self.assertIn("CONFIRMED: One Blogger DRAFT created", output.getvalue())
+            self.assertEqual(len(service.posts_api.insert_calls), 1)
+            call = service.posts_api.insert_calls[0]
+            self.assertEqual(call["blogId"], "main-blog")
+            self.assertIs(call["isDraft"], True)
+            self.assertIn("2026-11-07 | Cagliari to Bergamo | 2026-11-07", history_path.read_text(encoding="utf-8"))
+
+    def test_daily_guard_skips_a_second_draft_for_the_same_date(self):
+        fixed_now = datetime(2026, 11, 7, 12, 0, tzinfo=ZoneInfo("Europe/Rome"))
+        with tempfile.TemporaryDirectory() as directory:
+            queue_path = Path(directory) / "30days.json"
+            history_path = Path(directory) / "drafted_history.txt"
+            queue_path.write_text(json.dumps(make_queue(fixed_now)), encoding="utf-8")
+            history_path.write_text("2026-11-07 | Cagliari to Bergamo | 2026-11-07\n", encoding="utf-8")
+            env = {
+                "BLOGGER_BLOG_ID": "main-blog",
+                "BLOGGER_CLIENT_ID": "client",
+                "BLOGGER_CLIENT_SECRET": "secret",
+                "BLOGGER_REFRESH_TOKEN": "refresh",
+            }
+            with (
+                mock.patch.object(engine, "QUEUE_FILE", queue_path),
+                mock.patch.object(engine, "HISTORY_FILE", history_path),
+                mock.patch.object(engine, "publish_date", return_value=fixed_now),
+                mock.patch.object(engine, "build", side_effect=AssertionError("Must not connect to Blogger")),
+                mock.patch.dict(os.environ, env, clear=True),
+            ):
+                output = io.StringIO()
+                with redirect_stdout(output):
+                    self.assertEqual(engine.main(), 0)
+            self.assertIn("SKIP: A daily draft was already confirmed", output.getvalue())
 
     def test_live_duplicate_is_rejected_and_never_changed(self):
         service = FakeService()
@@ -154,7 +177,7 @@ class DraftEngineRegressionTests(unittest.TestCase):
         }]
         with self.assertRaisesRegex(AssertionError, "refusing unsafe action"):
             engine._create_or_recover_draft(
-                service, "main-blog", "Existing dated title", "<p>Draft</p>"
+                service, "main-blog", "Existing dated title", "<p>Draft</p>", "Flight News"
             )
         self.assertEqual(service.posts_api.insert_calls, [])
 
