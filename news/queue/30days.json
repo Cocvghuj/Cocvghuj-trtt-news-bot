@@ -1,28 +1,12 @@
 {
-  "version": "2026-11-08",
-  "start_date": "2026-11-06",
-  "end_date": "2026-12-07",
+  "version": "2026-11-07",
+  "start_date": "2026-11-07",
+  "end_date": "2026-12-06",
   "generated_at": "2026-11-06T17:00:00+01:00",
   "batch_size": 1,
   "isDraft": true,
   "require_marker": "787950 LOCKED",
   "days": [
-    {
-      "date": "2026-11-06",
-      "status": "ready",
-      "route": {
-        "from": "Cagliari",
-        "to": "Bergamo",
-        "iata_from": "CAG",
-        "iata_to": "BGY",
-        "date": "2026-11-06",
-        "price": "€19",
-        "airline": "Ryanair",
-        "image_url": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop&q=80",
-        "category": "Flight News",
-        "isDraft": true
-      }
-    },
     {
       "date": "2026-11-07",
       "status": "ready",
@@ -192,11 +176,6 @@
     },
     {
       "date": "2026-12-06",
-      "status": "pending",
-      "route": null
-    },
-    {
-      "date": "2026-12-07",
       "status": "pending",
       "route": null
     }

@@ -1,68 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aviasales Global Flight Search &amp; Route Matrix • TRTT VoyageHub</title>
-  <meta name="description" content="Search 700+ airlines across Europe, Gulf, and Asia with locked Marker 787950 and fare comparison across available providers." />
-  <link rel="icon" href="/trtt-original-logo.jpeg" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { background: #0d1117; color: #e6edf3; font-family: system-ui, -apple-system, sans-serif; }
-    .glass-card { background: #161b22; border: 1px solid #30363d; border-radius: 20px; }
-  </style>
-</head>
-<body class="min-h-screen flex flex-col antialiased">
-  <header class="border-b border-[#30363d] bg-[#010409] p-4">
-    <div class="max-w-4xl mx-auto flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2 font-black text-sm">
-        <span>✈️</span> <span>TRTT FLIGHT RADAR</span>
-      </a>
-      <span class="text-xs bg-[#FFD700] text-black font-bold px-2.5 py-1 rounded">MARKER 787950 LOCKED</span>
-    </div>
-  </header>
-
-  <main class="max-w-4xl mx-auto px-4 py-10 flex-1 w-full space-y-8">
-    <div class="text-center space-y-3">
-      <span class="text-xs bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-3 py-1 rounded-full font-bold">
-        Aviasales Metasearch Matrix • Fb8U9yav
-      </span>
-      <h1 class="text-3xl sm:text-4xl font-black text-white">Compare 700+ Airlines with Zero Surcharges</h1>
-      <p class="text-sm text-slate-400 max-w-xl mx-auto">
-        Search direct and codeshare routes connecting the Gulf (Doha, Dubai) and all European transit hubs (Rome, Milan, Frankfurt, London).
-      </p>
-    </div>
-
-    <!-- Search Tool Box -->
-    <div class="glass-card p-6 shadow-xl space-y-4">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label class="text-xs font-bold text-slate-400 block mb-1">Departure City (Origin)</label>
-          <input type="text" id="origin" value="Doha (DOH)" class="w-full bg-[#0d1117] border border-[#30363d] rounded-xl px-4 py-3 text-sm text-white focus:border-sky-500 outline-none" />
-        </div>
-        <div>
-          <label class="text-xs font-bold text-slate-400 block mb-1">Destination City</label>
-          <input type="text" id="dest" value="Rome (FCO)" class="w-full bg-[#0d1117] border border-[#30363d] rounded-xl px-4 py-3 text-sm text-white focus:border-sky-500 outline-none" />
-        </div>
-      </div>
-
-      <div class="pt-2">
-        <a id="search-btn" href="https://aviasales.tp.st/Fb8U9yav?marker=787950&sub_id=tool_flight_search" target="_blank" rel="sponsored nofollow noopener"
-           class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black text-sm py-4 rounded-xl text-center shadow-lg transition">
-          Search Lowest Fares on Aviasales &rarr;
-        </a>
-      </div>
-
-      <div class="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-[#30363d]">
-        <span>✓ Direct Ticket Issuance</span>
-        <span>✓ Baggage Policy Checker</span>
-        <span>✓ Marker 787950 Verified</span>
-      </div>
-    </div>
-  </main>
-
-  <footer class="border-t border-[#30363d] bg-[#010409] py-4 text-center text-xs text-slate-500">
-    TRTT VoyageHub • Protocol 26391/2026 • Marker 787950 Locked
-  </footer>
-</body>
-</html>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ffffff"><title>Flight Search | TRTT Voyage</title><meta name="description" content="Search flight options from Sardinia and compare current fares with the provider."><script src="https://cdn.tailwindcss.com"></script><style>body{background:#fff;color:#111;font-family:system-ui,-apple-system,sans-serif}.panel{background:#f8fafc;border:1px solid #e2e8f0;border-radius:18px}.field{width:100%;background:#fff;border:1px solid #cbd5e1;border-radius:10px;padding:13px;color:#111}.field:focus{outline:2px solid #0EA5E9;border-color:#0EA5E9}.orange{color:#FF6B00}</style></head>
+<body class="min-h-screen flex flex-col"><header class="border-b border-slate-200 p-4"><div class="max-w-4xl mx-auto flex items-center justify-between"><a href="/" class="font-black tracking-widest">TRTT VOYAGE</a><span class="text-xs font-bold text-slate-500">SARDINIA → EUROPE</span></div></header>
+<main class="max-w-3xl mx-auto px-4 py-12 flex-1 w-full"><div class="text-center mb-8"><p class="text-xs tracking-widest font-black text-sky-600">FLIGHT SEARCH</p><h1 class="text-4xl font-black mt-3">Find your next flight</h1><p class="text-slate-600 mt-3">Search current options. The airline or booking provider confirms the final fare and baggage conditions.</p></div>
+<section class="panel p-6 shadow-sm"><form id="flight-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4"><label class="text-sm font-bold">From<input id="origin" name="origin" class="field mt-2" placeholder="Cagliari (CAG)" required></label><label class="text-sm font-bold">To<input id="dest" name="dest" class="field mt-2" placeholder="Rome" required></label><label class="text-sm font-bold sm:col-span-2">Departure date<input id="date" name="date" type="date" class="field mt-2" required></label><button class="sm:col-span-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black py-4" type="submit">Compare available flights ↗</button></form><p class="text-xs text-slate-500 mt-4">You will continue to the flight-search provider. Availability and prices can change before booking.</p></section>
+<div class="text-center mt-8"><a href="/" class="text-sm font-bold text-sky-700">← Back to TRTT Voyage</a></div></main><footer class="border-t border-slate-200 py-5 text-center text-xs text-slate-500">TRTT Voyage · Sanluri, Sardinia · Marker 787950 LOCKED</footer>
+<script>
+(function(){var q=new URLSearchParams(location.search);var origin=document.getElementById('origin'),dest=document.getElementById('dest'),date=document.getElementById('date');origin.value=q.get('origin')||'Cagliari (CAG)';dest.value=q.get('dest')||'';date.value=q.get('date')||'';date.required=true;document.getElementById('flight-form').addEventListener('submit',function(e){e.preventDefault();function code(value){var m=value.match(/\(([A-Za-z]{3})\)/);if(m)return m[1].toUpperCase();var exact=value.trim().match(/^[A-Za-z]{3}$/);return exact?exact[0].toUpperCase():null;}var from=code(origin.value),to=code(dest.value);if(!from||!to){alert('Please include a 3-letter airport code, for example Cagliari (CAG) or Rome (ROM).');return;}if(!date.value){alert('Please choose your departure date.');date.focus();return;}var d=new Date(date.value+'T12:00:00');var dd=String(d.getDate()).padStart(2,'0'),mm=String(d.getMonth()+1).padStart(2,'0');var route=from+dd+mm+to+'1';var url='https://www.aviasales.com/search/'+route+'?marker=787950';window.open(url,'_blank','noopener');});})();
+</script></body></html>

@@ -122,3 +122,32 @@ body:before{content:"";display:block;height:4px;background:linear-gradient(90deg
  #main-wrapper .blog-posts .grid-posts>.index-post:first-child .post-info{padding:17px!important}
  #sidebar-wrapper{display:none!important}
 }
+
+/* TRTT Voyage brand refinement — blue, orange, white */
+:root{--tv-ink:#111111;--tv-paper:#ffffff;--tv-card:#ffffff;--tv-muted:#64748b;--tv-line:#e2e8f0;--tv-red:#FF6B00;--tv-navy:#0EA5E9}
+html,body{background:#fff!important;color:#111!important}
+#header-wrap{background:#fff!important;border-bottom:1px solid #e2e8f0!important}
+#header h1,.header-widget h1,.header-widget .title{color:#111!important}
+#header .description,.header-widget .description{color:#64748b!important}
+#trtt-future-world .tf-wrap{background:#fff!important;color:#111!important}
+#trtt-future-world .tf-top{border-color:#e2e8f0!important}
+#trtt-future-world .tf-monogram{background:#0EA5E9!important;color:#fff!important}
+#trtt-future-world .tf-brand{color:#111!important}
+#trtt-future-world .tf-eyebrow{color:#0EA5E9!important}
+#trtt-future-world .tf-intro h2{color:#111!important}
+#trtt-future-world .tf-intro h2 em{color:#0EA5E9!important}
+#trtt-future-world .tf-intro p,#trtt-future-world .tf-text small{color:#64748b!important}
+#trtt-future-world .tf-link{border-color:#e2e8f0!important}
+#trtt-future-world .tf-link:hover{background:#f0f9ff!important}
+#trtt-future-world .tf-num,#trtt-future-world .tf-arrow{color:#FF6B00!important}
+#trtt-future-world .tf-close{color:#111!important;border-color:#e2e8f0!important}
+#trtt-future-world .tf-foot{border-color:#e2e8f0!important;color:#64748b!important}
+#main-wrapper .grid-posts>.index-post{background:#fff!important;border:1px solid #e2e8f0!important}
+#main-wrapper .index-post .post-title a,#main-wrapper .index-post h2 a{color:#111!important}
+#main-wrapper .index-post .post-title a:hover{color:#0EA5E9!important}
+#main-wrapper .index-post .post-snippet,#main-wrapper .index-post .post-info{color:#475569!important}
+#main-wrapper .post-body{color:#111!important}
+#main-wrapper .post-body a{color:#0EA5E9!important}
+#main-wrapper .post-body strong,#main-wrapper .post-body .price{color:#FF6B00!important}
+#sidebar-wrapper .widget{background:#fff!important;border-color:#e2e8f0!important}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

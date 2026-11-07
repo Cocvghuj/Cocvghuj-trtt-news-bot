@@ -1,10 +1,18 @@
 (function(){
 "use strict";
-var ROOT="trtt-future-world",STYLE="trtt-future-world-ui",CSS_URL="https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@be48117f5e1ac14732cf8fcce6dc72655903ac06/trtt-future-blog.css";
-var HUB="https://cocvghuj-trtt-news-bot.vercel.app/";
+var ROOT="trtt-future-world",STYLE="trtt-future-world-ui",CSS_URL="https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@2e478198f620cdfd8522833c1a41860331d8deda/trtt-future-blog.css";
+var HUB="https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950";
 var LINKS=[
- {title:"About Us",desc:"Who we are, what we believe and why we travel",href:"/p/about-us.html"},
- {title:"TRTT Voyage Hub",desc:"Your gateway to tools, routes and the wider TRTT world",href:HUB,external:true}
+ {title:"Home",desc:"Return to the TRTT Voyage travel desk",href:"/"},
+ {title:"Flight News",desc:"Route updates and practical flight information",href:"/search/label/Flights"},
+ {title:"Passenger Rights",desc:"Understand your options when flights are disrupted",href:"/search/label/Passenger%20Rights"},
+ {title:"eSIM & Stay Connected",desc:"Connectivity guidance for trips across Europe",href:"/search/label/eSIM"},
+ {title:"Ride & Stay",desc:"Airport transfers and accommodation guidance",href:"/search/label/Ride%20%26%20Stay"},
+ {title:"Tour & Experience",desc:"Ideas and guides for memorable days out",href:"/search/label/Tour%20%26%20Experience"},
+ {title:"Sanluri Diary",desc:"Local notes from Sanluri and Sardinia",href:"/search/label/Sanluri%20Diary"},
+ {title:"About Us",desc:"Who we are and what TRTT Voyage stands for",href:"/p/about-us.html"},
+ {title:"Contact",desc:"Get in touch with TRTT Voyage",href:"/p/contact.html"},
+ {title:"Travel Tools",desc:"Open the TRTT Voyage interactive travel toolkit",href:HUB,external:true}
 ];
 function sharpenHeaderLogo(){
  var img=document.querySelector("#header .header-image-wrapper img,.header-widget .header-image-wrapper img");
@@ -29,9 +37,9 @@ function build(){
  var closeBtn=document.createElement("button");closeBtn.className="tf-close";closeBtn.type="button";closeBtn.setAttribute("aria-label","Close navigation");closeBtn.textContent="×";
  top.appendChild(brand);top.appendChild(closeBtn);
  var intro=document.createElement("div");intro.className="tf-intro";
- var eyebrow=document.createElement("div");eyebrow.className="tf-eyebrow";eyebrow.textContent="A DIFFERENT WAY TO EXPLORE";
- var h=document.createElement("h2");h.textContent="The world is\nnot a checklist."; 
- var p=document.createElement("p");p.textContent="Thoughtful travel stories, useful details and a little inspiration for the road ahead.";
+ var eyebrow=document.createElement("div");eyebrow.className="tf-eyebrow";eyebrow.textContent="SARDINIA TO EUROPE · TRTT VOYAGE";
+ var h=document.createElement("h2");h.textContent="Make every journey\nfeel effortless."; 
+ var p=document.createElement("p");p.textContent="Sardinia থেকে ইউরোপের সস্তা ফ্লাইট — practical travel details, passenger rights and useful tools in one place.";
  intro.appendChild(eyebrow);intro.appendChild(h);intro.appendChild(p);
  var body=document.createElement("div");body.className="tf-body";
  var list=document.createElement("nav");list.className="tf-list";list.setAttribute("aria-label","Explore TRTT");

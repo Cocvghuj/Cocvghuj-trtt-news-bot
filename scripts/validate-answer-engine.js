@@ -32,6 +32,7 @@ assert.ok(!api.includes('temperature: 0.2') && !api.includes('max_tokens: 900'),
 assert.ok(browser.includes('/api/answer'), 'Browser client must call the Answer Engine API.');
 assert.ok(browser.includes('https://cocvghuj-trtt-news-bot.vercel.app/api/answer'), 'Browser API endpoint changed; review before changing it.');
 assert.ok(build.includes("'api'"), 'Static build must exclude server-only API source.');
+assert.ok(build.includes("'scripts'"), 'Static build must exclude private validation and automation scripts.');
 assert.equal(vercel.outputDirectory, 'dist', 'Vercel output directory must remain dist.');
 assert.equal(vercel.functions?.['api/answer.js']?.maxDuration, 30, 'Answer API maxDuration must remain 30 seconds.');
 

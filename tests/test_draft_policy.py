@@ -1,6 +1,7 @@
 import json
 import re
 import unittest
+from datetime import date, timedelta
 from pathlib import Path
 
 import trtt_787950_master as engine
@@ -49,8 +50,8 @@ class DraftOnlyPolicyTests(unittest.TestCase):
             with self.subTest(required=required):
                 self.assertIn(required, content)
         self.assertNotIn("EC Regulation 261/2004", content)
-        self.assertIn("TRTT VoyageHub Showroom", content)
-        self.assertGreater(content.index("TRTT VoyageHub Showroom"), content.index("Useful travel tools"))
+        self.assertIn("TRTT Voyage Showroom", content)
+        self.assertGreater(content.index("TRTT Voyage Showroom"), content.index("Useful travel tools"))
         self.assertGreaterEqual(engine._plain_word_count(content), 800)
         self.assertNotIn("xxxxx", content)
 
@@ -65,15 +66,33 @@ class DraftOnlyPolicyTests(unittest.TestCase):
         self.assertIn("Revenue Protection Protocol", source)
         self.assertIn('markerHex: "373837393530"', source)
 
-    def test_daily_route_queue_has_one_dated_draft_route(self):
-        queue = json.loads(Path("news/queue/latest.json").read_text(encoding="utf-8"))
-        self.assertEqual(queue["version"], "2026-11-07")
+    def test_daily_route_queue_has_30_contiguous_draft_days(self):
+        queue = json.loads(Path("news/queue/30days.json").read_text(encoding="utf-8"))
         self.assertEqual(queue["batch_size"], 1)
         self.assertIs(queue["isDraft"], True)
         self.assertEqual(queue["require_marker"], "787950 LOCKED")
-        self.assertEqual(len(queue["routes"]), 1)
-        self.assertEqual(queue["routes"][0]["date"], "2026-11-07")
-        self.assertIs(queue["routes"][0]["isDraft"], True)
+        days = queue["days"]
+        self.assertEqual(len(days), 30)
+        start = date.fromisoformat(queue["start_date"])
+        expected_dates = [(start + timedelta(days=offset)).isoformat() for offset in range(30)]
+        self.assertEqual([item["date"] for item in days], expected_dates)
+        self.assertEqual(days[-1]["date"], queue["end_date"])
+        today = engine.target_date()
+        matches = [item for item in days if item["date"] == today]
+        self.assertEqual(len(matches), 1, "The active 30-day queue must include today's date exactly once.")
+        self.assertEqual(matches[0]["status"], "ready")
+        self.assertIs(matches[0]["route"]["isDraft"], True)
+
+    def test_content_accepts_a_non_default_https_image(self):
+        route = {
+            "from": "Cagliari", "to": "Rome",
+            "iata_from": "CAG", "iata_to": "FCO",
+            "date": "2026-11-07", "price": "Unverified lead",
+            "airline": "Verify operating carrier", "isDraft": True,
+            "image_url": "https://images.unsplash.com/photo-custom-route-image?w=800",
+        }
+        content = engine.build_content(route)
+        self.assertIn('<img src="https://images.unsplash.com/photo-custom-route-image?w=800"', content)
 
     def test_daily_focus_varies(self):
         self.assertNotEqual(engine.daily_focus(1), engine.daily_focus(2))

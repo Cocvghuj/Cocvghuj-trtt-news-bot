@@ -44,6 +44,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Run regression tests and static build checks
+        if: github.event_name == 'workflow_dispatch' || steps.clock.outputs.hour == '07'
+        run: |
+          python -m unittest discover -s tests -v
+          npm test
+          npm run build
+
       - name: Create one verified Blogger draft
         if: github.event_name == 'workflow_dispatch' || steps.clock.outputs.hour == '07'
         env:
