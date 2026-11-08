@@ -434,7 +434,7 @@ html[data-trtt-mode='night'] .trtt-slide-control { background: #22222a; color: #
   <header class='trtt-header'>
     <div class='trtt-shell trtt-header-inner'>
       <div class='trtt-logo-slot'>
-        <b:section id='header-logo' maxwidgets='1' name='Logo Image (max 250px)' showaddelement='yes'/>
+        <b:section id='headerlogo' maxwidgets='1' name='Logo Image (max 250px)' showaddelement='yes'/>
       </div>
       <div class='trtt-header-tools'>
         <a class='trtt-brand' expr:href='data:blog.homepageUrl'><data:blog.title/></a>
@@ -1387,7 +1387,7 @@ html[data-trtt-mode='night'] .trtt-slide-control { background: #22222a; color: #
       </aside>
     </div>
     <div class='trtt-shell trtt-gadget-area'>
-      <b:section class='trtt-section' id='below-posts' maxwidgets='6' name='Below Posts Gadgets' showaddelement='yes'/>
+      <b:section class='trtt-section' id='belowposts' maxwidgets='6' name='Below Posts Gadgets' showaddelement='yes'/>
     </div>
   </main>
 
