@@ -593,3 +593,117 @@ html.trtt-enh-dark .trtt-team-credit { color: #aeb8c4; }
     animation-duration: .01ms !important;
   }
 }
+
+
+/* TRTT MAC-787950 — lightweight auto-news ticker and route bubbles */
+.trtt-news-ticker { margin: 0 0 22px; overflow: hidden; }
+.trtt-news-viewport { overflow: hidden; border-radius: 18px; background: #0b2744; }
+.trtt-news-track {
+  display: flex;
+  width: max-content;
+  gap: 12px;
+  padding: 8px;
+  animation: trttTickerToRight 42s linear infinite;
+}
+.trtt-news-viewport:hover .trtt-news-track,
+.trtt-news-viewport:focus-within .trtt-news-track { animation-play-state: paused; }
+.trtt-news-slide {
+  position: relative;
+  display: flex;
+  width: clamp(230px, 32vw, 340px);
+  min-height: 158px;
+  align-items: flex-end;
+  padding: 16px;
+  overflow: hidden;
+  border-radius: 13px;
+  background-color: #194c70;
+  background-position: center;
+  background-size: cover;
+  color: #fff !important;
+  text-decoration: none;
+}
+.trtt-news-slide-title { max-width: 100%; color: #fff; font-size: 15px; line-height: 1.3; text-shadow: 0 2px 8px rgba(0,0,0,.45); }
+@keyframes trttTickerToRight { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+.trtt-bubbles-hub {
+  margin: 0 0 52px;
+  padding: clamp(20px, 3vw, 32px);
+  border: 1px solid rgba(18,54,90,.09);
+  border-radius: 22px;
+  background: linear-gradient(130deg, #f4f8fc, #fff8ef);
+}
+.trtt-bubbles-hub h2 { margin-bottom: 10px; }
+.trtt-bubble-grid { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 10px; }
+.trtt-bubble {
+  display: flex;
+  min-height: 82px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid #e1e9f0;
+  border-radius: 18px;
+  background: #fff;
+  color: #12365a;
+  font: inherit;
+  cursor: pointer;
+  box-shadow: 0 5px 16px rgba(18,54,90,.05);
+}
+.trtt-bubble:hover, .trtt-bubble:focus-visible { border-color: #ff9f43; outline: none; transform: translateY(-2px); }
+.trtt-bubble-icon { font-size: 22px; line-height: 1; }
+.trtt-bubble strong { font-size: 12px; }
+.trtt-bubble-routes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 15px;
+  padding: 14px;
+  border-radius: 15px;
+  background: rgba(255,255,255,.88);
+}
+.trtt-bubble-routes h3 { flex-basis: 100%; margin: 0; color: #12365a; font-size: 15px; }
+.trtt-bubble-route {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  padding: 9px 13px;
+  border: 1px solid #e3eaf0;
+  border-radius: 999px;
+  background: #fff;
+  color: #12365a !important;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+}
+.trtt-bubble-route:hover { border-color: #ff9f43; background: #fff8ef; }
+.trtt-mac-credit { margin: 16px 0 0 !important; color: #667789; font-size: 11px; font-weight: 700; }
+.trtt-grid-toggle {
+  min-height: 38px;
+  margin: 0 0 14px;
+  padding: 8px 13px;
+  border: 1px solid #d8e3ed;
+  border-radius: 999px;
+  background: #fff;
+  color: #12365a;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.trtt-recent-grid.is-compact { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 9px; }
+.trtt-recent-grid.is-compact .trtt-recent-content { padding: 11px; }
+.trtt-recent-grid.is-compact .trtt-recent-excerpt { display: none; }
+
+html.trtt-enh-dark .trtt-bubbles-hub { border-color: #344354; background: linear-gradient(130deg, #182838, #29251f); }
+html.trtt-enh-dark .trtt-bubble, html.trtt-enh-dark .trtt-bubble-routes,
+html.trtt-enh-dark .trtt-bubble-route, html.trtt-enh-dark .trtt-grid-toggle { border-color: #435366; background: #182331; color: #edf4fb !important; }
+html.trtt-enh-dark .trtt-bubble-routes h3 { color: #edf4fb; }
+html.trtt-enh-dark .trtt-mac-credit { color: #b5c1ce; }
+
+@media (max-width: 760px) {
+  .trtt-bubble-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .trtt-news-slide { width: 245px; min-height: 140px; }
+  .trtt-recent-grid.is-compact { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trtt-news-track { animation: none; }
+}
