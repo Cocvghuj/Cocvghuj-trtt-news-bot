@@ -5,7 +5,7 @@
 (function () {
   "use strict";
 
-  var VERSION = "TRTT-ENHANCEMENTS-2026-11-08-03";
+  var VERSION = "TRTT-MAC-787950-2026-11-08-01";
   /* 787950 LOCKED. Roksana LOCKED. No behavior or external setting is changed by these lock notes. */
   var MARKER = "787950";
   var BLOG = "https://trttnews24bd.blogspot.com";
@@ -120,7 +120,7 @@
       var next = node.nodeValue.replace(pattern, function (_, name) {
         count++;
         return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-      });
+      }).replace(/Feb,\s*30 december 2022 in poland,?/gi, "30 December 2022 in Poland");
       if (next !== node.nodeValue) node.nodeValue = next;
     });
     return count;
@@ -323,12 +323,89 @@
     }
   }
 
+  function buildNewsTicker() {
+    var section = element("section", "trtt-news-ticker");
+    section.appendChild(element("p", "trtt-eyebrow", "LATEST TRTT NEWS"));
+    var viewport = element("div", "trtt-news-viewport");
+    var track = element("div", "trtt-news-track");
+    viewport.appendChild(track);
+    section.appendChild(viewport);
+    return { section: section, track: track };
+  }
+
+  function renderNewsTicker(track, data) {
+    var recent = entries(data).slice(0, 8);
+    track.textContent = "";
+    var cards = [];
+    recent.forEach(function (entry) {
+      var url = entryUrl(entry);
+      if (!url) return;
+      var title = entry.title && entry.title.$t ? entry.title.$t : "Read latest story";
+      var card = element("a", "trtt-news-slide");
+      card.href = url;
+      var imageUrl = getEntryImage(entry);
+      if (imageUrl) {
+        card.style.backgroundImage = "linear-gradient(0deg, rgba(5,20,35,.84), rgba(5,20,35,.04) 78%), url('" + imageUrl.replace(/'/g, "%27") + "')";
+      }
+      card.appendChild(element("strong", "trtt-news-slide-title", title));
+      cards.push(card);
+    });
+    cards.concat(cards.map(function (card) { return card.cloneNode(true); })).forEach(function (card) {
+      track.appendChild(card);
+    });
+    if (!cards.length) track.appendChild(element("p", "trtt-recent-loading", "New stories will appear here soon."));
+  }
+
+  function buildBubblesHub() {
+    var section = element("section", "trtt-bubbles-hub");
+    section.appendChild(element("p", "trtt-eyebrow", "THINKING ROOM · TRTT BUBBLES HUB"));
+    section.appendChild(element("h2", "", "Choose a travel route"));
+    section.appendChild(element("p", "trtt-section-intro", "Pick a bubble, then choose the route or service that suits your journey."));
+    var bubbles = element("div", "trtt-bubble-grid");
+    var routes = {
+      Flight: ["Cagliari → Rome", "Cagliari → Bergamo", "Rome → Warsaw"],
+      Ride: ["Sanluri → Cagliari Airport", "Sanluri → Beach"],
+      eSIM: ["Italy eSIM", "Bangladesh eSIM"],
+      Tour: ["Cagliari experiences", "Sardinia day trips"],
+      Shop: ["Travel essentials", "Airport travel gear"],
+      Night: ["Airport hotel", "Late-arrival stay"]
+    };
+    var icons = { Flight: "✈", Ride: "🚘", eSIM: "◉", Tour: "◎", Shop: "🛍", Night: "☾" };
+    var panel = element("div", "trtt-bubble-routes");
+    panel.setAttribute("aria-live", "polite");
+    panel.hidden = true;
+    Object.keys(routes).forEach(function (name) {
+      var bubble = element("button", "trtt-bubble", "");
+      bubble.type = "button";
+      bubble.appendChild(element("span", "trtt-bubble-icon", icons[name]));
+      bubble.appendChild(element("strong", "", name));
+      bubble.addEventListener("click", function () {
+        panel.textContent = "";
+        panel.hidden = false;
+        panel.appendChild(element("h3", "", name + " routes"));
+        routes[name].forEach(function (route) {
+          var link = element("a", "trtt-bubble-route", route + " →");
+          link.href = VERCEL + "&tool=" + encodeURIComponent(name.toLowerCase()) + "&route=" + encodeURIComponent(route);
+          link.target = "_blank";
+          link.rel = "noopener";
+          panel.appendChild(link);
+        });
+      });
+      bubbles.appendChild(bubble);
+    });
+    section.append(bubbles, panel);
+    section.appendChild(element("p", "trtt-mac-credit", "Made by MAC — Muse, Abu, ChatGPT — TRTT MAC-787950 LOCKED!"));
+    return section;
+  }
+
   function addHomepageExperience() {
     if (document.querySelector(".trtt-home-experience")) return;
     var anchor = find([".blog-posts", ".blog-posts.hfeed", ".main .widget.Blog", "#Blog1", "main", "#main", "#content"]);
     if (!anchor) return;
 
     var page = element("div", "trtt-home-experience");
+    var ticker = buildNewsTicker();
+    page.appendChild(ticker.section);
     var hero = element("section", "trtt-home-hero");
     var heroCopy = element("div", "trtt-home-hero-copy");
     heroCopy.appendChild(element("p", "trtt-eyebrow", "SANLURI TO WORLD"));
@@ -349,12 +426,14 @@
     page.appendChild(hero);
     page.appendChild(buildFlightSearch());
     page.appendChild(buildCategories());
+    page.appendChild(buildBubblesHub());
     page.appendChild(buildVoyageHub());
     var recent = buildRecentPosts();
     page.appendChild(recent.section);
 
     anchor.parentNode.insertBefore(page, anchor);
     fetchFeed().then(function (data) {
+      renderNewsTicker(ticker.track, data);
       renderRecentPosts(recent.grid, data);
       var isFeedAnchor = anchor.matches && anchor.matches(".blog-posts, #Blog1, .main .widget.Blog");
       if (isFeedAnchor && entries(data).length && anchor.parentNode) {
