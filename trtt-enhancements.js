@@ -58,14 +58,18 @@
     return find([".post-body", ".post-body-container", ".entry-content", ".post-content"]);
   }
 
+  var feedPromise = null;
   function fetchFeed() {
-    return fetch(FEED + "?alt=json&max-results=150", {
-      credentials: "omit",
-      cache: "default"
-    }).then(function (response) {
-      if (!response.ok) throw new Error("Blogger feed unavailable");
-      return response.json();
-    });
+    if (!feedPromise) {
+      feedPromise = fetch(FEED + "?alt=json&max-results=150", {
+        credentials: "omit",
+        cache: "default"
+      }).then(function (response) {
+        if (!response.ok) throw new Error("Blogger feed unavailable");
+        return response.json();
+      });
+    }
+    return feedPromise;
   }
 
   function entries(data) {
@@ -391,11 +395,18 @@
     Array.prototype.forEach.call(images, function (photo, index) {
       photo.loading = index === 0 ? "eager" : "lazy";
       photo.decoding = "async";
+      var original = photo.getAttribute("src") || photo.src;
+      var medium = imageAtSize(original, 480);
+      var large = imageAtSize(original, 800);
+      var high = imageAtSize(original, 1200);
+      if (high && high !== original) {
+        photo.srcset = medium + " 480w, " + large + " 800w, " + high + " 1200w";
+        photo.sizes = "(max-width: 800px) 100vw, 800px";
+      }
       if (index === 0) {
         photo.classList.add("trtt-enh-first-photo");
         photo.fetchPriority = "high";
-        var upgraded = imageAtSize(photo.getAttribute("src") || photo.src, 1200);
-        if (upgraded && upgraded !== photo.src) photo.src = upgraded;
+        if (large && large !== original) photo.src = large;
       }
     });
     var firstParagraph = body.querySelector("p");
