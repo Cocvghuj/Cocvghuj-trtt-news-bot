@@ -103,6 +103,7 @@
         if (!parent || parent.closest("script, style, textarea, code, pre, noscript")) {
           return NodeFilter.FILTER_REJECT;
         }
+        pattern.lastIndex = 0;
         return pattern.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
       }
     });
@@ -173,7 +174,9 @@
     var section = element("section", "trtt-home-flight");
     section.setAttribute("aria-labelledby", "trtt-flight-title");
     section.appendChild(element("p", "trtt-eyebrow", "PLAN YOUR NEXT JOURNEY"));
-    section.appendChild(element("h2", "", "Where would you like to go?"));
+    var flightHeading = element("h2", "", "Where would you like to go?");
+    flightHeading.id = "trtt-flight-title";
+    section.appendChild(flightHeading);
     var form = element("form", "trtt-flight-form");
     form.setAttribute("role", "search");
     var fromWrap = element("label", "trtt-flight-field");
@@ -336,7 +339,7 @@
     var heroVisual = element("div", "trtt-home-hero-visual");
     heroVisual.appendChild(element("span", "trtt-hero-orbit trtt-hero-orbit-one", "✈"));
     heroVisual.appendChild(element("span", "trtt-hero-orbit trtt-hero-orbit-two", "TRTT"));
-    heroVisual.appendChild(element("span", "trtt-hero-stamp", "SANLURI<br>TO WORLD"));
+    heroVisual.appendChild(element("span", "trtt-hero-stamp", "SANLURI TO WORLD"));
     hero.append(heroCopy, heroVisual);
     page.appendChild(hero);
     page.appendChild(buildFlightSearch());
@@ -348,9 +351,12 @@
     anchor.parentNode.insertBefore(page, anchor);
     fetchFeed().then(function (data) {
       renderRecentPosts(recent.grid, data);
-      if (anchor.classList) anchor.classList.add("trtt-home-original-feed-hidden");
-      var pager = find([".blog-pager", ".blog-pager-older", ".blog-pager-newer"]);
-      if (pager) pager.classList.add("trtt-home-original-feed-hidden");
+      var isFeedAnchor = anchor.matches && anchor.matches(".blog-posts, #Blog1, .main .widget.Blog");
+      if (isFeedAnchor) {
+        anchor.classList.add("trtt-home-original-feed-hidden");
+        var pager = find([".blog-pager", ".blog-pager-older", ".blog-pager-newer"]);
+        if (pager) pager.classList.add("trtt-home-original-feed-hidden");
+      }
     }).catch(function () {
       recent.grid.textContent = "";
       recent.grid.appendChild(element("p", "trtt-recent-loading", "Browse all stories from the TRTT Voyage archive."));
