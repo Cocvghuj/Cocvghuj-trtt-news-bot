@@ -1,0 +1,25 @@
+<!-- TRTT MAC-787950 LOCKED | One-gadget Blogger enhancement loader
+     Loads the separately maintained JS and CSS from GitHub.
+     Does not edit Blogger Theme XML, existing menu gadget, or Vercel deployment.
+-->
+<style id="trtt-mac-loader-style">
+#trtt-mac-loader-status{display:none}
+</style>
+<link rel="stylesheet" href="https://raw.githubusercontent.com/Cocvghuj/Cocvghuj-trtt-news-bot/main/trtt-enhancements.css">
+<div id="trtt-mac-loader-status" aria-hidden="true"></div>
+<script>
+(function(){
+  "use strict";
+  if (window.__TRTT_MAC_787950_LOADER__) return;
+  window.__TRTT_MAC_787950_LOADER__ = true;
+  var src = "https://raw.githubusercontent.com/Cocvghuj/Cocvghuj-trtt-news-bot/main/trtt-enhancements.js";
+  var script = document.createElement("script");
+  script.src = src;
+  script.defer = true;
+  script.onerror = function(){
+    window.__TRTT_MAC_787950_LOADER__ = false;
+    if (window.console && console.warn) console.warn("TRTT MAC enhancement could not load. Please retry after checking the GitHub raw file.");
+  };
+  document.head.appendChild(script);
+})();
+</script>
