@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:css='false' b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true' b:templateVersion='1.0.0'
+      expr:dir='data:blog.languageDirection'
+      xmlns='http://www.w3.org/1999/xhtml'
+      xmlns:b='http://www.google.com/2005/gml/b'
+      xmlns:data='http://www.google.com/2005/gml/data'
+      xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <meta content='width=device-width, initial-scale=1, viewport-fit=cover' name='viewport'/>
+  <b:include data='blog' name='all-head-content'/>
+  <title><data:blog.pageTitle/></title>
+  <b:skin><![CDATA[
+/*
+-----------------------------------------------
+TRTT Lightweight Master Theme
+Project: TRTT Voyage — Sanluri to World
+Build: MAC-787950 / Foundation 01
+Design: mobile-first, minimal, gadget-friendly
+-----------------------------------------------
+*/
+:root {
+  --trtt-ink: #172b4d;
+  --trtt-muted: #64748b;
+  --trtt-blue: #075985;
+  --trtt-sky: #eaf6ff;
+  --trtt-orange: #ff9f43;
+  --trtt-pink: #ff6b8b;
+  --trtt-purple: #a55eea;
+  --trtt-green: #42c99a;
+  --trtt-line: #e5edf4;
+  --trtt-paper: #ffffff;
+  --trtt-page: #f5f8fc;
+  --trtt-radius: 16px;
+  --trtt-width: 1120px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--trtt-page);
+  color: var(--trtt-ink);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--trtt-blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; height: auto; }
+button, input, select, textarea { font: inherit; }
+.trtt-shell { width: min(var(--trtt-width), calc(100% - 32px)); margin: 0 auto; }
+.trtt-header {
+  background: var(--trtt-paper);
+  border-bottom: 1px solid var(--trtt-line);
+}
+.trtt-header-inner { padding: 22px 0; }
+.trtt-brand { display: inline-block; color: var(--trtt-blue); font-size: 26px; font-weight: 800; letter-spacing: -.6px; }
+.trtt-description { margin: 3px 0 0; color: var(--trtt-muted); font-size: 13px; }
+.trtt-main { padding: 28px 0 44px; min-height: 55vh; }
+.trtt-layout { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; align-items: start; }
+.trtt-content, .trtt-sidebar { min-width: 0; }
+.trtt-section { min-width: 0; }
+.trtt-section .widget { margin: 0 0 20px; }
+.trtt-section .widget-content { min-width: 0; }
+.trtt-sidebar .widget, .trtt-gadget-area .widget {
+  background: var(--trtt-paper);
+  border: 1px solid var(--trtt-line);
+  border-radius: var(--trtt-radius);
+  padding: 16px;
+  margin: 0 0 16px;
+}
+.trtt-sidebar h2, .trtt-gadget-area h2 { margin: 0 0 12px; font-size: 17px; }
+.blog-posts, .post-outer-container { min-width: 0; }
+.post-outer, .post-outer-container .post-outer {
+  background: var(--trtt-paper);
+  border: 1px solid var(--trtt-line);
+  border-radius: var(--trtt-radius);
+  padding: clamp(18px, 3vw, 30px);
+  margin: 0 0 20px;
+  overflow-wrap: anywhere;
+}
+h1, h2, h3, h4 { line-height: 1.3; }
+.post-title, .entry-title { color: var(--trtt-ink); font-size: clamp(23px, 4vw, 34px); line-height: 1.25; margin: 0 0 14px; }
+.post-title a, .entry-title a { color: inherit; }
+.post-body { overflow-wrap: anywhere; }
+.post-body img { border-radius: 12px; }
+.post-footer, .post-header, .post-meta { color: var(--trtt-muted); font-size: 13px; }
+.trtt-footer { background: #10243d; color: #dbe7f3; padding: 28px 0; }
+.trtt-footer a { color: #fff; }
+.trtt-footer p { margin: 0; font-size: 13px; }
+.trtt-footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: center; }
+#navbar-iframe { display: none !important; }
+@media (max-width: 800px) {
+  .trtt-layout { grid-template-columns: minmax(0, 1fr); }
+  .trtt-sidebar:empty { display: none; }
+}
+@media (max-width: 520px) {
+  .trtt-shell { width: min(100% - 22px, var(--trtt-width)); }
+  .trtt-header-inner { padding: 17px 0; }
+  .trtt-brand { font-size: 23px; }
+  .trtt-main { padding: 18px 0 30px; }
+  .post-outer, .post-outer-container .post-outer { padding: 17px; border-radius: 13px; }
+}
+]]></b:skin>
+</head>
+<body>
+  <header class='trtt-header'>
+    <div class='trtt-shell trtt-header-inner'>
+      <a class='trtt-brand' expr:href='data:blog.homepageUrl'><data:blog.title/></a>
+      <b:if cond='data:blog.description'>
+        <p class='trtt-description'><data:blog.description/></p>
+      </b:if>
+    </div>
+  </header>
+
+  <main class='trtt-main'>
+    <div class='trtt-shell trtt-layout'>
+      <div class='trtt-content'>
+        <b:section class='trtt-section' id='main' maxwidgets='1' name='Main Posts' showaddelement='no'>
+          <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2' visible='true'/>
+        </b:section>
+      </div>
+      <aside class='trtt-sidebar'>
+        <b:section class='trtt-section' id='sidebar' maxwidgets='8' name='Sidebar Gadgets' showaddelement='yes'/>
+      </aside>
+    </div>
+    <div class='trtt-shell trtt-gadget-area'>
+      <b:section class='trtt-section' id='below-posts' maxwidgets='6' name='Below Posts Gadgets' showaddelement='yes'/>
+    </div>
+  </main>
+
+  <footer class='trtt-footer'>
+    <div class='trtt-shell trtt-footer-inner'>
+      <p><strong>TRTT Voyage</strong> — Sanluri to World</p>
+      <p>Made by MAC — Muse, Abu, ChatGPT — TRTT MAC-787950 LOCKED!</p>
+    </div>
+  </footer>
+</body>
+</html>
