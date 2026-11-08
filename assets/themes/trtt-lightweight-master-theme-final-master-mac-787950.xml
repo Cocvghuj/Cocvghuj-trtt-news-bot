@@ -1768,7 +1768,7 @@ html[data-trtt-mode='night'] .trtt-slide-control { background: #22222a; color: #
       var voyage = document.getElementById('trtt-live-voyage');
       if (voyage) voyage.href = home;
     }
-    loadLivePhotos();
+    // Live photos are loaded only when the visitor opens Thinking Room.
   }());
 
 //]]>
