@@ -534,7 +534,6 @@ html.trtt-enh-dark .trtt-enh-search input {
 .trtt-recent-excerpt { margin-bottom: 12px !important; color: #718091; font-size: 12px; line-height: 1.6; }
 .trtt-recent-read { display: inline-block; color: #b76512 !important; font-size: 11px; font-weight: 900; }
 .trtt-recent-loading { color: #758291; font-size: 13px; }
-.trtt-home-original-feed-hidden { display: none !important; }
 
 /* Dark appearance */
 html.trtt-enh-dark .trtt-home-experience { color: #f1f4f8; }
