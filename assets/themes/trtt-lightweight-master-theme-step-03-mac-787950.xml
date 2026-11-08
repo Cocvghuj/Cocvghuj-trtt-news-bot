@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:css='false' b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true' b:templateVersion='1.0.0'
+      expr:dir='data:blog.languageDirection'
+      xmlns='http://www.w3.org/1999/xhtml'
+      xmlns:b='http://www.google.com/2005/gml/b'
+      xmlns:data='http://www.google.com/2005/gml/data'
+      xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <meta content='width=device-width, initial-scale=1, viewport-fit=cover' name='viewport'/>
+  <b:include data='blog' name='all-head-content'/>
+  <title><data:blog.pageTitle/></title>
+  <b:skin><![CDATA[
+/*
+-----------------------------------------------
+TRTT Lightweight Master Theme
+Project: TRTT Voyage — Sanluri to World
+Build: MAC-787950 / Foundation 01
+Design: mobile-first, minimal, gadget-friendly
+-----------------------------------------------
+*/
+:root {
+  --trtt-ink: #172b4d;
+  --trtt-muted: #64748b;
+  --trtt-blue: #075985;
+  --trtt-sky: #eaf6ff;
+  --trtt-orange: #ff9f43;
+  --trtt-pink: #ff6b8b;
+  --trtt-purple: #a55eea;
+  --trtt-green: #42c99a;
+  --trtt-line: #e5edf4;
+  --trtt-paper: #ffffff;
+  --trtt-page: #ffffff;
+  --trtt-radius: 16px;
+  --trtt-width: 1120px;
+}
+.post-body, .post-body p, .post-body li { font-size: 16px; }
+.post-meta, .post-footer, .post-header, .trtt-description { font-size: 14px; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--trtt-page);
+  color: var(--trtt-ink);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--trtt-blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; height: auto; }
+button, input, select, textarea { font: inherit; }
+.trtt-shell { width: min(var(--trtt-width), calc(100% - 32px)); margin: 0 auto; }
+.trtt-header {
+  background: var(--trtt-paper);
+  border-bottom: 1px solid var(--trtt-line);
+}
+.trtt-header-inner { padding: 18px 0; display: grid; grid-template-columns: 250px minmax(0,1fr); gap: 20px; align-items: center; }
+.trtt-logo-slot { width: 250px; max-width: 100%; min-height: 54px; display: flex; align-items: center; }
+.trtt-logo-slot img { display: block; width: 100%; max-width: 250px; height: auto; object-fit: contain; }
+.trtt-header-tools { min-width: 0; }
+.trtt-search { display: flex; width: 100%; max-width: 480px; gap: 8px; margin-top: 12px; }
+.trtt-search input[type='search'] { font-size: 16px; }
+.trtt-search button { min-height: 42px; cursor: pointer; }
+.trtt-search input[type='search'] { min-width: 0; flex: 1; padding: 11px 14px; border: 1px solid var(--trtt-line); border-radius: 999px; background: var(--trtt-paper); color: var(--trtt-ink); }
+.trtt-search button { border: 0; border-radius: 999px; padding: 0 17px; background: var(--trtt-blue); color: #fff; font-weight: 700; }
+.trtt-side-menu { list-style: none; margin: 0; padding: 0; }
+.trtt-side-menu li + li { border-top: 1px solid var(--trtt-line); }
+.trtt-side-menu a { display: block; padding: 9px 2px; font-weight: 600; color: var(--trtt-ink); }
+.trtt-toc { background: var(--trtt-sky); border: 1px solid var(--trtt-line); border-radius: 12px; padding: 14px 18px; margin: 18px 0 24px; }
+.trtt-toc-title { font-weight: 800; margin: 0 0 8px; }
+.trtt-toc ol { margin: 0; padding-left: 22px; }
+.trtt-toc .trtt-toc-sub { margin-left: 16px; font-size: .95em; }
+.trtt-related { border-top: 1px solid var(--trtt-line); margin-top: 28px; padding-top: 18px; }
+.trtt-related h3 { margin: 0 0 10px; font-size: 19px; }
+.trtt-related ul { margin: 0; padding-left: 20px; }
+.trtt-disclosure { margin-top: 24px; padding: 12px 14px; border-left: 3px solid var(--trtt-orange); background: var(--trtt-sky); color: var(--trtt-muted); font-size: 14px; border-radius: 0 9px 9px 0; }
+html[data-trtt-mode='day'] { --trtt-page: #ffffff; --trtt-paper: #ffffff; --trtt-ink: #172b4d; }
+html[data-trtt-mode='night'] { --trtt-page: #0f0f12; --trtt-paper: #18181d; --trtt-ink: #f1f1f4; }
+html[data-trtt-mode='night'] body { background: var(--trtt-page); color: var(--trtt-ink); }
+html[data-trtt-mode='night'] .trtt-header,
+html[data-trtt-mode='night'] .post-outer,
+html[data-trtt-mode='night'] .post-outer-container .post-outer,
+html[data-trtt-mode='night'] .trtt-sidebar .widget,
+html[data-trtt-mode='night'] .trtt-gadget-area .widget { background: #18181d; color: #f1f1f4; border-color: #303039; }
+html[data-trtt-mode='night'] .trtt-brand,
+html[data-trtt-mode='night'] .post-title,
+html[data-trtt-mode='night'] .entry-title,
+html[data-trtt-mode='night'] .post-title a,
+html[data-trtt-mode='night'] .entry-title a,
+html[data-trtt-mode='night'] .trtt-side-menu a { color: #f1f1f4; }
+html[data-trtt-mode='night'] .trtt-description,
+html[data-trtt-mode='night'] .post-meta,
+html[data-trtt-mode='night'] .post-footer { color: #b4b4c0; }
+html[data-trtt-mode='night'] .trtt-search input[type='search'] { background: #22222a; border-color: #41414b; color: #fff; }
+html[data-trtt-mode='night'] .trtt-toc,
+html[data-trtt-mode='night'] .trtt-disclosure { background: #20202a; border-color: #393946; color: #dedee7; }
+html[data-trtt-mode='night'] .trtt-related { border-color: #393946; }
+
+.trtt-brand { display: inline-block; color: var(--trtt-blue); font-size: 26px; font-weight: 800; letter-spacing: -.6px; }
+.trtt-description { margin: 3px 0 0; color: var(--trtt-muted); font-size: 13px; }
+.trtt-main { padding: 28px 0 44px; min-height: 55vh; }
+.trtt-layout { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; align-items: start; }
+.trtt-content, .trtt-sidebar { min-width: 0; }
+.trtt-section { min-width: 0; }
+.trtt-section .widget { margin: 0 0 20px; }
+.trtt-section .widget-content { min-width: 0; }
+.trtt-sidebar .widget, .trtt-gadget-area .widget {
+  background: var(--trtt-paper);
+  border: 1px solid var(--trtt-line);
+  border-radius: var(--trtt-radius);
+  padding: 16px;
+  margin: 0 0 16px;
+}
+.trtt-sidebar h2, .trtt-gadget-area h2 { margin: 0 0 12px; font-size: 17px; }
+.blog-posts, .post-outer-container { min-width: 0; }
+.post-outer, .post-outer-container .post-outer {
+  background: var(--trtt-paper);
+  border: 1px solid var(--trtt-line);
+  border-radius: var(--trtt-radius);
+  padding: clamp(18px, 3vw, 30px);
+  margin: 0 0 20px;
+  overflow-wrap: anywhere;
+}
+h1, h2, h3, h4 { line-height: 1.3; }
+.post-title, .entry-title { color: var(--trtt-ink); font-size: 22px; font-weight: 800; line-height: 1.3; margin: 0 0 14px; }
+.post-title a, .entry-title a { color: inherit; }
+.post-body { overflow-wrap: anywhere; }
+.post-body img { border-radius: 12px; }
+.post-footer, .post-header, .post-meta { color: var(--trtt-muted); font-size: 13px; }
+.trtt-footer { background: #10243d; color: #dbe7f3; padding: 28px 0; }
+.trtt-footer a { color: #fff; }
+.trtt-footer p { margin: 0; font-size: 14px; }
+.trtt-footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: center; }
+#navbar-iframe { display: none !important; }
+@media (max-width: 800px) {
+  .trtt-layout { grid-template-columns: minmax(0, 1fr); }
+  .trtt-sidebar:empty { display: none; }
+}
+@media (max-width: 520px) {
+  .trtt-shell { width: min(100% - 22px, var(--trtt-width)); }
+  .trtt-header-inner { padding: 17px 0; grid-template-columns: minmax(0,1fr); gap: 10px; }
+  .trtt-logo-slot { width: 250px; }
+  .trtt-search { max-width: none; }
+  .trtt-brand { font-size: 23px; }
+  .trtt-main { padding: 18px 0 30px; }
+  .post-outer, .post-outer-container .post-outer { padding: 17px; border-radius: 13px; }
+}
+
+/* Step 03 — homepage modules */
+.trtt-home-bubbles { margin: 0 0 22px; }
+.trtt-module-heading { margin: 0 0 12px; color: var(--trtt-ink); font-size: 20px; font-weight: 800; }
+.trtt-bubble-grid { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 10px; }
+.trtt-bubble { min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; min-height: 104px; padding: 12px 6px; border-radius: 16px; color: #172b4d; text-align: center; font-weight: 800; border: 1px solid rgba(0,0,0,.05); transition: transform .18s ease; }
+.trtt-bubble:hover { transform: translateY(-2px); text-decoration: none; }
+.trtt-bubble-icon { font-size: 26px; line-height: 1.2; }
+.trtt-bubble small { font-size: 14px; font-weight: 600; }
+.trtt-bubble-flight { background: #ff9f43; }
+.trtt-bubble-ride { background: #ff6b8b; }
+.trtt-bubble-esim { background: #a55eea; color: #fff; }
+.trtt-bubble-tour { background: #42c99a; }
+.trtt-bubble-shop { background: #eaf6ff; }
+.trtt-bubble-night { background: #20202a; color: #fff; }
+.trtt-home-hero, .trtt-top-news, .trtt-recent-grid { margin: 0 0 24px; min-width: 0; }
+.trtt-hero-card { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); gap: 0; overflow: hidden; border: 1px solid var(--trtt-line); border-radius: var(--trtt-radius); background: var(--trtt-paper); }
+.trtt-hero-media { display: block; min-height: 250px; background: var(--trtt-sky); }
+.trtt-hero-media img { display: block; width: 100%; height: 100%; min-height: 250px; object-fit: cover; }
+.trtt-hero-copy { padding: clamp(18px,3vw,28px); display: flex; flex-direction: column; justify-content: center; }
+.trtt-kicker { color: var(--trtt-muted); font-size: 14px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.trtt-hero-title { margin: 8px 0 10px; font-size: clamp(22px,3vw,30px); line-height: 1.25; font-weight: 800; }
+.trtt-hero-title a { color: var(--trtt-ink); }
+.trtt-card-summary { color: var(--trtt-muted); font-size: 15px; line-height: 1.6; margin: 0; }
+.trtt-card-date { display: block; margin-top: 12px; color: var(--trtt-muted); font-size: 14px; }
+.trtt-slide-frame { position: relative; padding: 18px 54px; border: 1px solid var(--trtt-line); border-radius: var(--trtt-radius); background: var(--trtt-paper); min-height: 104px; }
+.trtt-slide { display: none; }
+.trtt-slide.is-active { display: block; }
+.trtt-slide a { color: var(--trtt-ink); font-size: 18px; line-height: 1.4; font-weight: 800; }
+.trtt-slide time { display: block; margin-top: 5px; color: var(--trtt-muted); font-size: 14px; }
+.trtt-slide-control { position: absolute; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border: 1px solid var(--trtt-line); border-radius: 50%; background: var(--trtt-paper); color: var(--trtt-ink); cursor: pointer; }
+.trtt-slide-prev { left: 10px; }
+.trtt-slide-next { right: 10px; }
+.trtt-recent-cards { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+.trtt-recent-card { min-width: 0; overflow: hidden; border: 1px solid var(--trtt-line); border-radius: 14px; background: var(--trtt-paper); }
+.trtt-recent-image { display: block; aspect-ratio: 16/9; background: var(--trtt-sky); }
+.trtt-recent-image img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.trtt-recent-copy { padding: 13px; }
+.trtt-recent-copy a { color: var(--trtt-ink); font-size: 16px; line-height: 1.4; font-weight: 800; }
+html[data-trtt-mode='night'] .trtt-module-heading,
+html[data-trtt-mode='night'] .trtt-hero-title a,
+html[data-trtt-mode='night'] .trtt-slide a,
+html[data-trtt-mode='night'] .trtt-recent-copy a { color: #f1f1f4; }
+html[data-trtt-mode='night'] .trtt-hero-card,
+html[data-trtt-mode='night'] .trtt-slide-frame,
+html[data-trtt-mode='night'] .trtt-recent-card { background: #18181d; border-color: #303039; }
+html[data-trtt-mode='night'] .trtt-slide-control { background: #22222a; color: #fff; border-color: #41414b; }
+@media (max-width: 900px) {
+  .trtt-bubble-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .trtt-recent-cards { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 560px) {
+  .trtt-hero-card { grid-template-columns: minmax(0,1fr); }
+  .trtt-hero-media, .trtt-hero-media img { min-height: 190px; max-height: 230px; }
+  .trtt-bubble-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+  .trtt-bubble { min-height: 92px; }
+  .trtt-recent-cards { grid-template-columns: minmax(0,1fr); }
+  .trtt-slide-frame { padding: 16px 48px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trtt-bubble { transition: none; }
+  .trtt-bubble:hover { transform: none; }
+}
+
+]]></b:skin>
+</head>
+<body>
+  <header class='trtt-header'>
+    <div class='trtt-shell trtt-header-inner'>
+      <div class='trtt-logo-slot'>
+        <b:section id='header-logo' maxwidgets='1' name='Logo Image (max 250px)' showaddelement='yes'/>
+      </div>
+      <div class='trtt-header-tools'>
+        <a class='trtt-brand' expr:href='data:blog.homepageUrl'><data:blog.title/></a>
+        <b:if cond='data:blog.description'>
+          <p class='trtt-description'><data:blog.description/></p>
+        </b:if>
+        <form class='trtt-search' expr:action='data:blog.homepageUrl + "search"' method='get' role='search'>
+          <input aria-label='Search TRTT Voyage' name='q' placeholder='Find Your Next Journey' type='search'/>
+          <button type='submit'>Search</button>
+        </form>
+      </div>
+    </div>
+  </header>
+
+  <main class='trtt-main'>
+    <div class='trtt-shell trtt-layout'>
+      <div class='trtt-content'>
+
+        <b:if cond='data:blog.url == data:blog.homepageUrl'>
+          <div class='trtt-homepage-modules' expr:data-home='data:blog.homepageUrl'>
+            <section class='trtt-home-bubbles' aria-label='Explore travel categories'>
+              <h2 class='trtt-module-heading'>Explore Your Journey</h2>
+              <div class='trtt-bubble-grid'>
+                <a class='trtt-bubble trtt-bubble-flight' expr:href='data:blog.homepageUrl + "search/label/Flight%20News"'><span class='trtt-bubble-icon' aria-hidden='true'>✈️</span><span>Flight</span><small>Air routes</small></a>
+                <a class='trtt-bubble trtt-bubble-ride' expr:href='data:blog.homepageUrl + "search/label/Ride%20%26%20Stay"'><span class='trtt-bubble-icon' aria-hidden='true'>🚆</span><span>Ride</span><small>Move &amp; stay</small></a>
+                <a class='trtt-bubble trtt-bubble-esim' expr:href='data:blog.homepageUrl + "search/label/eSIM"'><span class='trtt-bubble-icon' aria-hidden='true'>📶</span><span>eSIM</span><small>Stay connected</small></a>
+                <a class='trtt-bubble trtt-bubble-tour' expr:href='data:blog.homepageUrl + "search/label/Tour"'><span class='trtt-bubble-icon' aria-hidden='true'>🧭</span><span>Tour</span><small>Find places</small></a>
+                <a class='trtt-bubble trtt-bubble-shop' expr:href='data:blog.homepageUrl + "search/label/Shop"'><span class='trtt-bubble-icon' aria-hidden='true'>🛍️</span><span>Shop</span><small>Travel gear</small></a>
+                <a class='trtt-bubble trtt-bubble-night' expr:href='data:blog.homepageUrl + "search/label/Night"'><span class='trtt-bubble-icon' aria-hidden='true'>🌙</span><span>Night</span><small>Night journeys</small></a>
+              </div>
+            </section>
+            <section class='trtt-home-hero' id='trtt-home-hero' hidden='hidden' aria-label='Featured story'>
+              <h2 class='trtt-module-heading'>Featured Story</h2>
+              <div class='trtt-hero-slot' id='trtt-hero-slot'></div>
+            </section>
+            <section class='trtt-top-news' id='trtt-top-news' hidden='hidden' aria-label='Top news'>
+              <h2 class='trtt-module-heading'>Top News</h2>
+              <div class='trtt-slide-frame' id='trtt-slide-frame' aria-live='polite'>
+                <button class='trtt-slide-control trtt-slide-prev' id='trtt-slide-prev' type='button' aria-label='Previous story'>‹</button>
+                <div class='trtt-slide-list' id='trtt-slide-list'></div>
+                <button class='trtt-slide-control trtt-slide-next' id='trtt-slide-next' type='button' aria-label='Next story'>›</button>
+              </div>
+            </section>
+          </div>
+        </b:if>
+        <b:if cond='data:blog.pageType == "item"'>
+          <div class='trtt-post-tools' expr:data-home='data:blog.homepageUrl' hidden='hidden'>
+            <b:loop values='data:posts' var='post'>
+              <b:loop values='data:post.labels' var='label'>
+                <span class='trtt-post-label' expr:data-label='data:label.name'></span>
+              </b:loop>
+            </b:loop>
+          </div>
+        </b:if>
+        <b:section class='trtt-section' id='main' maxwidgets='1' name='Main Posts' showaddelement='no'>
+          <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2' visible='true'/>
+        </b:section>
+
+        <b:if cond='data:blog.url == data:blog.homepageUrl'>
+          <section class='trtt-recent-grid' id='trtt-recent-grid' hidden='hidden' aria-label='Recent posts'>
+            <h2 class='trtt-module-heading'>More Recent Posts</h2>
+            <div class='trtt-recent-cards' id='trtt-recent-cards'></div>
+          </section>
+        </b:if>
+      </div>
+      <aside class='trtt-sidebar'>
+        <div class='widget'>
+          <h2>Explore TRTT Voyage</h2>
+          <ul class='trtt-side-menu'>
+            <li><a expr:href='data:blog.homepageUrl'>Home</a></li>
+            <li><a expr:href='data:blog.homepageUrl + "search/label/Flight%20News"'>Flight News</a></li>
+            <li><a expr:href='data:blog.homepageUrl + "search/label/Passenger%20Rights"'>Passenger Rights</a></li>
+            <li><a expr:href='data:blog.homepageUrl + "search/label/eSIM"'>eSIM &amp; Stay Connected</a></li>
+            <li><a expr:href='data:blog.homepageUrl + "search/label/Ride%20%26%20Stay"'>Ride &amp; Stay</a></li>
+            <li><a expr:href='data:blog.homepageUrl + "search/label/Sanluri%20Diary"'>Sanluri Diary</a></li>
+          </ul>
+        </div>
+        <b:section class='trtt-section' id='sidebar' maxwidgets='8' name='Sidebar Gadgets' showaddelement='yes'/>
+      </aside>
+    </div>
+    <div class='trtt-shell trtt-gadget-area'>
+      <b:section class='trtt-section' id='below-posts' maxwidgets='6' name='Below Posts Gadgets' showaddelement='yes'/>
+    </div>
+  </main>
+
+  <footer class='trtt-footer'>
+    <div class='trtt-shell trtt-footer-inner'>
+      <p><strong>TRTT Voyage</strong> — Sanluri to World</p>
+      <p>Made by MAC — Muse, Abu, ChatGPT — TRTT MAC-787950 LOCKED!</p>
+    </div>
+  </footer>
+  <script type='text/javascript'>
+//<![CDATA[
+(function () {
+  'use strict';
+  function applyClockMode() {
+    var hour = new Date().getHours();
+    var night = hour >= 19 || hour < 7;
+    document.documentElement.setAttribute('data-trtt-mode', night ? 'night' : 'day');
+  }
+  applyClockMode();
+  window.setInterval(applyClockMode, 60000);
+
+  function makeTOC() {
+    var body = document.querySelector('.post-body');
+    if (!body) return;
+    var headings = body.querySelectorAll('h2, h3');
+    if (headings.length < 2) return;
+    var nav = document.createElement('nav');
+    nav.className = 'trtt-toc';
+    nav.setAttribute('aria-label', 'Table of contents');
+    var title = document.createElement('p');
+    title.className = 'trtt-toc-title';
+    title.textContent = 'In This Article';
+    nav.appendChild(title);
+    var list = document.createElement('ol');
+    Array.prototype.forEach.call(headings, function (heading, index) {
+      if (!heading.id) heading.id = 'trtt-section-' + (index + 1);
+      var item = document.createElement('li');
+      if (heading.tagName.toLowerCase() === 'h3') item.className = 'trtt-toc-sub';
+      var link = document.createElement('a');
+      link.href = '#' + heading.id;
+      link.textContent = (heading.textContent || '').trim();
+      item.appendChild(link);
+      list.appendChild(item);
+    });
+    nav.appendChild(list);
+    body.insertBefore(nav, body.firstChild);
+  }
+
+  function addDisclosure() {
+    var body = document.querySelector('.post-body');
+    if (!body) return;
+    var wording = 'Disclosure: As an Amazon Associate and Travelpayouts partner, TRTT Voyage earns from qualifying purchases.';
+    if ((body.textContent || '').indexOf(wording) !== -1) return;
+    var box = document.createElement('p');
+    box.className = 'trtt-disclosure';
+    box.textContent = wording;
+    body.appendChild(box);
+  }
+
+  function addRelated() {
+    var body = document.querySelector('.post-body');
+    var meta = document.querySelector('.trtt-post-tools');
+    if (!body || !meta) return;
+    var home = meta.getAttribute('data-home');
+    var labels = Array.prototype.map.call(meta.querySelectorAll('.trtt-post-label'), function (node) {
+      return node.getAttribute('data-label');
+    }).filter(Boolean);
+    if (!home || !labels.length) return;
+    var label = labels[0];
+    var url = home.replace(/\/$/, '') + '/feeds/posts/default/-/' + encodeURIComponent(label) + '?alt=json&max-results=6';
+    fetch(url, { credentials: 'same-origin' }).then(function (response) {
+      if (!response.ok) throw new Error('Feed unavailable');
+      return response.json();
+    }).then(function (data) {
+      var entries = data && data.feed && data.feed.entry ? data.feed.entry : [];
+      var current = window.location.href.split('?')[0].replace(/\/$/, '');
+      var links = [];
+      entries.forEach(function (entry) {
+        var alternate = (entry.link || []).filter(function (item) { return item.rel === 'alternate'; })[0];
+        if (!alternate || alternate.href.split('?')[0].replace(/\/$/, '') === current) return;
+        links.push({ title: entry.title && entry.title.$t ? entry.title.$t : 'Related article', href: alternate.href });
+      });
+      if (!links.length) return;
+      var section = document.createElement('section');
+      section.className = 'trtt-related';
+      var heading = document.createElement('h3');
+      heading.textContent = 'Related Posts';
+      section.appendChild(heading);
+      var list = document.createElement('ul');
+      links.slice(0, 4).forEach(function (item) {
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = item.href;
+        a.textContent = item.title;
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+      section.appendChild(list);
+      body.appendChild(section);
+    }).catch(function () { /* Keep the post clean if the feed is unavailable. */ });
+  }
+
+
+  function feedText(entry) {
+    var raw = entry && entry.summary && entry.summary.$t ? entry.summary.$t : (entry && entry.content && entry.content.$t ? entry.content.$t : '');
+    return String(raw).replace(/<[^>]*>/g, ' ').replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/\s+/g, ' ').trim();
+  }
+
+  function feedImage(entry) {
+    var thumb = entry && entry.media$thumbnail && entry.media$thumbnail.url ? entry.media$thumbnail.url : '';
+    if (thumb) return thumb.replace(/\/s\d+(-c)?\//, '/s640/');
+    var raw = entry && entry.content && entry.content.$t ? entry.content.$t : '';
+    var match = String(raw).match(/<img[^>]+src=[\"']([^\"']+)[\"']/i);
+    return match ? match[1] : '';
+  }
+
+  function feedLink(entry) {
+    var links = entry && entry.link ? entry.link : [];
+    for (var i = 0; i < links.length; i++) {
+      if (links[i].rel === 'alternate' && links[i].href) return links[i].href;
+    }
+    return '';
+  }
+
+  function feedDate(entry) {
+    var raw = entry && entry.published && entry.published.$t ? entry.published.$t : '';
+    if (!raw) return null;
+    var date = new Date(raw);
+    if (isNaN(date.getTime())) return null;
+    return { iso: date.toISOString(), label: date.toLocaleDateString() };
+  }
+
+  function makeText(tag, className, value) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    node.textContent = value || '';
+    return node;
+  }
+
+  function makeArticle(entry, className, includeImage, eager) {
+    var url = feedLink(entry);
+    if (!url) return null;
+    var title = entry.title && entry.title.$t ? entry.title.$t : 'TRTT Voyage story';
+    var card = document.createElement('article');
+    card.className = className;
+    var imageUrl = includeImage ? feedImage(entry) : '';
+    if (imageUrl) {
+      var imageLink = document.createElement('a');
+      imageLink.className = className === 'trtt-hero-card' ? 'trtt-hero-media' : 'trtt-recent-image';
+      imageLink.href = url;
+      var image = document.createElement('img');
+      image.src = imageUrl;
+      image.alt = title;
+      image.loading = eager ? 'eager' : 'lazy';
+      image.decoding = 'async';
+      if (eager) image.setAttribute('fetchpriority', 'high');
+      imageLink.appendChild(image);
+      card.appendChild(imageLink);
+    }
+    var copy = document.createElement('div');
+    copy.className = className === 'trtt-hero-card' ? 'trtt-hero-copy' : 'trtt-recent-copy';
+    if (className === 'trtt-hero-card') copy.appendChild(makeText('span','trtt-kicker','TRTT Voyage • Featured'));
+    var heading = document.createElement(className === 'trtt-hero-card' ? 'h2' : 'h3');
+    heading.className = className === 'trtt-hero-card' ? 'trtt-hero-title' : '';
+    var titleLink = document.createElement('a');
+    titleLink.href = url;
+    titleLink.textContent = title;
+    heading.appendChild(titleLink);
+    copy.appendChild(heading);
+    if (className === 'trtt-hero-card') {
+      var summary = feedText(entry);
+      if (summary) copy.appendChild(makeText('p','trtt-card-summary',summary.slice(0,190) + (summary.length > 190 ? '…' : '')));
+    }
+    var date = feedDate(entry);
+    if (date) {
+      var time = document.createElement('time');
+      time.className = 'trtt-card-date';
+      time.dateTime = date.iso;
+      time.textContent = date.label;
+      copy.appendChild(time);
+    }
+    card.appendChild(copy);
+    return card;
+  }
+
+  function setupTopSlider(entries) {
+    var section = document.getElementById('trtt-top-news');
+    var list = document.getElementById('trtt-slide-list');
+    var frame = document.getElementById('trtt-slide-frame');
+    if (!section || !list || !entries.length) return;
+    var slides = [];
+    entries.forEach(function (entry, index) {
+      var url = feedLink(entry);
+      if (!url) return;
+      var item = document.createElement('div');
+      item.className = 'trtt-slide' + (slides.length === 0 ? ' is-active' : '');
+      var title = entry.title && entry.title.$t ? entry.title.$t : 'TRTT Voyage story';
+      var link = document.createElement('a');
+      link.href = url;
+      link.textContent = title;
+      item.appendChild(link);
+      var date = feedDate(entry);
+      if (date) {
+        var time = document.createElement('time');
+        time.dateTime = date.iso;
+        time.textContent = date.label;
+        item.appendChild(time);
+      }
+      list.appendChild(item);
+      slides.push(item);
+    });
+    if (!slides.length) return;
+    section.hidden = false;
+    if (slides.length < 2) return;
+    var current = 0;
+    var timer = null;
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function show(index) {
+      current = (index + slides.length) % slides.length;
+      slides.forEach(function (slide, i) {
+        slide.classList.toggle('is-active', i === current);
+      });
+    }
+    function stop() {
+      if (timer) window.clearInterval(timer);
+      timer = null;
+    }
+    function start() {
+      stop();
+      if (!reduced && !document.hidden) timer = window.setInterval(function () { show(current + 1); }, 5500);
+    }
+    var prev = document.getElementById('trtt-slide-prev');
+    var next = document.getElementById('trtt-slide-next');
+    if (prev) prev.addEventListener('click', function () { show(current - 1); start(); });
+    if (next) next.addEventListener('click', function () { show(current + 1); start(); });
+    if (frame) {
+      frame.addEventListener('mouseenter', stop);
+      frame.addEventListener('mouseleave', start);
+      frame.addEventListener('focusin', stop);
+      frame.addEventListener('focusout', start);
+    }
+    document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else start(); });
+    start();
+  }
+
+  function loadHomepageModules() {
+    var root = document.querySelector('.trtt-homepage-modules');
+    if (!root) return;
+    var home = root.getAttribute('data-home');
+    if (!home) return;
+    var url = home.replace(/\/$/, '') + '/feeds/posts/default?alt=json&max-results=13';
+    fetch(url, { credentials: 'same-origin' }).then(function (response) {
+      if (!response.ok) throw new Error('Blogger feed unavailable');
+      return response.json();
+    }).then(function (data) {
+      var entries = data && data.feed && data.feed.entry ? data.feed.entry : [];
+      if (!entries.length) return;
+      var hero = document.getElementById('trtt-home-hero');
+      var heroSlot = document.getElementById('trtt-hero-slot');
+      if (hero && heroSlot) {
+        var heroCard = makeArticle(entries[0], 'trtt-hero-card', true, true);
+        if (heroCard) {
+          heroSlot.appendChild(heroCard);
+          hero.hidden = false;
+        }
+      }
+      setupTopSlider(entries.slice(1, 5));
+      var grid = document.getElementById('trtt-recent-grid');
+      var gridCards = document.getElementById('trtt-recent-cards');
+      if (grid && gridCards) {
+        entries.slice(7, 13).forEach(function (entry) {
+          var card = makeArticle(entry, 'trtt-recent-card', true, false);
+          if (card) gridCards.appendChild(card);
+        });
+        if (gridCards.children.length) grid.hidden = false;
+      }
+    }).catch(function () {
+      /* Feed failures leave the Blogger post list and category links intact. */
+    });
+  }
+
+  function init() {
+    loadHomepageModules();
+    makeTOC();
+    addDisclosure();
+    addRelated();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+}());
+//]]>
+  </script>
+</body>
+</html>
