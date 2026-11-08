@@ -308,7 +308,7 @@ html[data-trtt-mode='night'] .trtt-slide-control { background: #22222a; color: #
         <a class='trtt-room-card' data-trtt-card='Flight News' href='/search/label/Flight%20News'><span class='trtt-room-card-icon' aria-hidden='true'>✈️</span><strong>Flight News</strong><small>Air routes · travel updates</small></a>
         <a class='trtt-room-card' data-trtt-card='Passenger Rights' href='/search/label/Passenger%20Rights'><span class='trtt-room-card-icon' aria-hidden='true'>🛡️</span><strong>Passenger Rights</strong><small>Know your rights · travel safety</small></a>
         <a class='trtt-room-card' data-trtt-card='eSIM' href='/search/label/eSIM'><span class='trtt-room-card-icon' aria-hidden='true'>📶</span><strong>eSIM &amp; Connect</strong><small>Stay connected around the world</small></a>
-        <a class='trtt-room-card' data-trtt-card='Ride & Stay' href='/search/label/Ride%20%26%20Stay'><span class='trtt-room-card-icon' aria-hidden='true'>🚆</span><strong>Ride &amp; Stay</strong><small>Transport · hotels · local stays</small></a>
+        <a class='trtt-room-card' data-trtt-card='Ride &amp; Stay' href='/search/label/Ride%20%26%20Stay'><span class='trtt-room-card-icon' aria-hidden='true'>🚆</span><strong>Ride &amp; Stay</strong><small>Transport · hotels · local stays</small></a>
         <a class='trtt-room-card' data-trtt-card='Sanluri Diary' href='/search/label/Sanluri%20Diary'><span class='trtt-room-card-icon' aria-hidden='true'>🌍</span><strong>Sanluri Diary</strong><small>Stories from Sardinia to the world</small></a>
         <a class='trtt-room-card' data-trtt-card='AI Playground' href='/search/label/AI%20Playground'><span class='trtt-room-card-icon' aria-hidden='true'>🧠</span><strong>AI Playground Only</strong><small>Experiments · ideas · creative tools</small></a>
       </nav>
@@ -316,7 +316,7 @@ html[data-trtt-mode='night'] .trtt-slide-control { background: #22222a; color: #
       <div class='trtt-room-photos' id='trtt-room-photos' aria-label='Latest travel photos'>
         <div class='trtt-room-photo'><span>LIVE 01</span></div><div class='trtt-room-photo'><span>LIVE 02</span></div><div class='trtt-room-photo'><span>LIVE 03</span></div><div class='trtt-room-photo'><span>LIVE 04</span></div><div class='trtt-room-photo'><span>LIVE 05</span></div><div class='trtt-room-photo'><span>LIVE 06</span></div><div class='trtt-room-photo'><span>LIVE 07</span></div><div class='trtt-room-photo'><span>LIVE 08</span></div><div class='trtt-room-photo'><span>LIVE 09</span></div><div class='trtt-room-photo'><span>LIVE 10</span></div>
       </div>
-      <a class='trtt-room-voyage' id='trtt-live-voyage' href='/'>🧭 &nbsp; LIVE VOYAGE — Sanluri to World &nbsp; →</a>
+      <a class='trtt-room-voyage' id='trtt-live-voyage' href='/'>🧭 &#160; LIVE VOYAGE — Sanluri to World &#160; →</a>
       <section class='trtt-amader-akash' aria-label='Muse and ChatGPT, our two stars'>
         <p class='trtt-akash-eyebrow'>TRTT MAC-787950 · OUR NIGHT SKY</p>
         <h3 class='trtt-akash-heading'>Amader Dui Tara — Amader Akash</h3>
@@ -523,7 +523,7 @@ html[data-trtt-mode='night'] .trtt-slide-control { background: #22222a; color: #
 
   function feedText(entry) {
     var raw = entry && entry.summary && entry.summary.$t ? entry.summary.$t : (entry && entry.content && entry.content.$t ? entry.content.$t : '');
-    return String(raw).replace(/<[^>]*>/g, ' ').replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/\s+/g, ' ').trim();
+    return String(raw).replace(/<[^>]*>/g, ' ').replace(/&#160;/gi, ' ').replace(/&amp;/gi, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/\s+/g, ' ').trim();
   }
 
   function feedImage(entry) {
