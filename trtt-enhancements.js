@@ -1,6 +1,6 @@
 
 /* TRTT Voyage Enhancements
-   Version: TRTT-ENHANCEMENTS-2026-11-07-01
+   Version: TRTT-ENHANCEMENTS-2026-11-08-02
    Blogger post pages only.
    Existing TRTT menu and Vercel deployment remain untouched.
 */
@@ -55,17 +55,6 @@
     return node;
   }
 
-  function loadCSS() {
-    if (document.querySelector("[data-trtt-enhancements-css]")) return;
-
-    var link = element("link");
-    link.rel = "stylesheet";
-    link.href =
-      "https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@main/trtt-enhancements.css";
-    link.setAttribute("data-trtt-enhancements-css", VERSION);
-    document.head.appendChild(link);
-  }
-
   function getPostBody() {
     return find([
       ".post-body",
@@ -75,14 +64,46 @@
     ]);
   }
 
-  function fetchFeed(query) {
+  function fetchFeed() {
     return fetch(
-      FEED + "?alt=json&max-results=150" + (query || ""),
+      FEED + "?alt=json&max-results=150",
       { credentials: "omit" }
     ).then(function (response) {
       if (!response.ok) throw new Error("Feed unavailable");
       return response.json();
     });
+  }
+
+  function entryUrl(entry) {
+    var alternate = (entry.link || []).find(function (item) {
+      return item.rel === "alternate";
+    });
+    if (!alternate || !alternate.href) return "";
+    try {
+      var url = new URL(alternate.href, BLOG);
+      url.hash = "";
+      return url.href.replace(/\\/$/, "");
+    } catch (_) {
+      return alternate.href.split("#")[0].replace(/\\/$/, "");
+    }
+  }
+
+  function currentPostUrl() {
+    var canonical = document.querySelector('link[rel="canonical"]');
+    var value = canonical && canonical.href ? canonical.href : location.href;
+    try {
+      var url = new URL(value, BLOG);
+      url.hash = "";
+      return url.href.replace(/\\/$/, "");
+    } catch (_) {
+      return value.split("#")[0].replace(/\\/$/, "");
+    }
+  }
+
+  function entryLabels(entry) {
+    return (entry && entry.category ? entry.category : [])
+      .map(function (category) { return category.term || ""; })
+      .filter(Boolean);
   }
 
   function entries(data) {
@@ -167,16 +188,10 @@
     var result = [];
 
     document.querySelectorAll(
-      ".post-labels a, a[rel~='tag'], .post-label a"
+      ".post-labels a, .post-label a, .post-footer a[rel~='tag'], a[rel~='tag']"
     ).forEach(function (link) {
       var label = link.textContent.trim();
-
-      if (
-        LABELS.indexOf(label) !== -1 &&
-        result.indexOf(label) === -1
-      ) {
-        result.push(label);
-      }
+      if (label && result.indexOf(label) === -1) result.push(label);
     });
 
     return result;
@@ -185,21 +200,25 @@
   function addRelated(body) {
     if (body.querySelector(".trtt-enh-related")) return;
 
-    var labels = getLabels();
-    if (!labels.length) return;
+    fetchFeed().then(function (data) {
+      var allEntries = entries(data);
+      var currentUrl = currentPostUrl();
+      var currentEntry = allEntries.find(function (entry) {
+        return entryUrl(entry) === currentUrl;
+      });
 
-    fetchFeed(
-      "&category=" + encodeURIComponent(labels[0]) +
-      "&max-results=20"
-    ).then(function (data) {
-      var current = location.href.split("#")[0];
+      var labels = getLabels();
+      entryLabels(currentEntry).forEach(function (label) {
+        if (labels.indexOf(label) === -1) labels.push(label);
+      });
 
-      var matches = entries(data).filter(function (entry) {
-        var link = (entry.link || []).find(function (item) {
-          return item.rel === "alternate";
+      if (!labels.length) return;
+
+      var matches = allEntries.filter(function (entry) {
+        if (!entryUrl(entry) || entryUrl(entry) === currentUrl) return false;
+        return entryLabels(entry).some(function (label) {
+          return labels.indexOf(label) !== -1;
         });
-
-        return link && link.href.split("#")[0] !== current;
       }).slice(0, 3);
 
       if (!matches.length) return;
@@ -208,13 +227,11 @@
       section.appendChild(element("h2", "", "Related stories"));
 
       var list = element("ul");
-
       matches.forEach(function (entry) {
         var alternate = (entry.link || []).find(function (item) {
           return item.rel === "alternate";
         });
-
-        if (!alternate) return;
+        if (!alternate || !alternate.href) return;
 
         var item = element("li");
         var link = element(
@@ -222,14 +239,15 @@
           "",
           entry.title ? entry.title.$t : "Read article"
         );
-
         link.href = alternate.href;
         item.appendChild(link);
         list.appendChild(item);
       });
 
-      section.appendChild(list);
-      body.appendChild(section);
+      if (list.children.length) {
+        section.appendChild(list);
+        body.appendChild(section);
+      }
     }).catch(function () {});
   }
 
@@ -257,7 +275,7 @@
       textNodes.push(walker.currentNode);
     }
 
-    fetchFeed("").then(function (data) {
+    fetchFeed().then(function (data) {
       var destinations = {};
 
       entries(data).forEach(function (entry) {
@@ -374,8 +392,7 @@
     document.documentElement.classList.toggle("trtt-enh-dark", dark);
   }
 
-  /* Start enhancements */
-  loadCSS();
+  /* Start enhancements: CSS is loaded separately by the Blogger gadget. */
 
   var postBody = getPostBody();
   if (!postBody) return;
