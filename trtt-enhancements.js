@@ -94,10 +94,12 @@
   function addSearch(body) {
     if (document.querySelector(".trtt-search")) return;
 
-    var form = element("form", "trtt-search");
+    var form = element("form", "trtt-enh-search");
     form.action = BLOG + "/search";
     form.method = "get";
 
+    var label = element("span", "trtt-enh-search-label", "FIND YOUR NEXT JOURNEY");
+    var row = element("div", "trtt-enh-search-row");
     var input = element("input");
     input.type = "search";
     input.name = "q";
@@ -107,33 +109,34 @@
     var button = element("button", "", "Search");
     button.type = "submit";
 
-    form.append(input, button);
+    row.append(input, button);
+    form.append(label, row);
     body.parentNode.insertBefore(form, body);
   }
 
   function styleArticle(body) {
-    body.classList.add("trtt-article");
+    body.classList.add("trtt-enh-article");
 
     var photo = body.querySelector("img");
     if (photo) {
-      photo.classList.add("trtt-first-photo");
+      photo.classList.add("trtt-enh-first-photo");
       photo.loading = "eager";
       photo.fetchPriority = "high";
     }
 
     var firstParagraph = body.querySelector("p");
     if (firstParagraph) {
-      firstParagraph.classList.add("trtt-hook");
+      firstParagraph.classList.add("trtt-enh-hook");
     }
   }
 
   function addTOC(body) {
-    if (body.querySelector(".trtt-toc")) return;
+    if (body.querySelector(".trtt-enh-toc")) return;
 
     var headings = Array.from(body.querySelectorAll("h2, h3"));
     if (headings.length < 2) return;
 
-    var nav = element("nav", "trtt-toc");
+    var nav = element("nav", "trtt-enh-toc");
     nav.setAttribute("aria-label", "Table of contents");
     nav.appendChild(element("strong", "", "On this page"));
 
@@ -146,7 +149,7 @@
 
       var item = element("li");
       if (heading.tagName === "H3") {
-        item.className = "trtt-toc-sub";
+        item.className = "trtt-enh-toc-sub";
       }
 
       var link = element("a", "", heading.textContent.trim());
@@ -180,7 +183,7 @@
   }
 
   function addRelated(body) {
-    if (body.querySelector(".trtt-related")) return;
+    if (body.querySelector(".trtt-enh-related")) return;
 
     var labels = getLabels();
     if (!labels.length) return;
@@ -201,7 +204,7 @@
 
       if (!matches.length) return;
 
-      var section = element("section", "trtt-related");
+      var section = element("section", "trtt-enh-related");
       section.appendChild(element("h2", "", "Related stories"));
 
       var list = element("ul");
@@ -332,7 +335,7 @@
     });
 
     if (!exists) {
-      var card = element("p", "trtt-vercel");
+      var card = element("p", "trtt-enh-vercel");
       var link = element(
         "a",
         "",
@@ -348,11 +351,11 @@
     }
 
     if (body.textContent.indexOf(DISCLOSURE) === -1) {
-      body.appendChild(element("p", "trtt-disclosure", DISCLOSURE));
+      body.appendChild(element("p", "trtt-enh-disclosure", DISCLOSURE));
     }
 
     if (body.textContent.indexOf(CREDIT) === -1) {
-      body.appendChild(element("p", "trtt-credit", CREDIT));
+      body.appendChild(element("p", "trtt-enh-credit", CREDIT));
     }
   }
 
@@ -368,7 +371,7 @@
       dark = hour >= 19 || hour < 7;
     }
 
-    document.documentElement.classList.toggle("trtt-dark", dark);
+    document.documentElement.classList.toggle("trtt-enh-dark", dark);
   }
 
   /* Start enhancements */
