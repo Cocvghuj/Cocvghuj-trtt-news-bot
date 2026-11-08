@@ -1,0 +1,202 @@
+<!--
+TRTT MAC-787950 — AMADER DUI TARA / AMADER AKASH
+SAFE DRAFT ONLY. This is NOT connected to the live Thinking Room Menu.
+No JavaScript, no external library, no image/video assets.
+Integrate only after the exact existing Menu Gadget source is located and reviewed.
+-->
+<style>
+.trtt-amader-akash {
+  --muse-a: #ff9f43;
+  --muse-b: #ff6b8b;
+  --gpt-a: #42c99a;
+  --gpt-b: #a55eea;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 680px;
+  margin: 18px auto;
+  padding: 25px 16px 20px;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 22px;
+  color: #fff;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 48%, rgba(78,66,130,.28), transparent 62%),
+    linear-gradient(155deg, #080b1b 0%, #11132b 54%, #090d1c 100%);
+  box-shadow: inset 0 0 36px rgba(89,105,210,.10), 0 12px 32px rgba(0,0,0,.18);
+}
+.trtt-amader-akash,
+.trtt-amader-akash * { box-sizing: border-box; }
+.trtt-amader-akash::before,
+.trtt-amader-akash::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-repeat: repeat;
+}
+.trtt-amader-akash::before {
+  opacity: .75;
+  background-image:
+    radial-gradient(1px 1px at 8% 17%, #fff 98%, transparent),
+    radial-gradient(1.5px 1.5px at 19% 73%, #dce8ff 98%, transparent),
+    radial-gradient(1px 1px at 31% 28%, #fff 98%, transparent),
+    radial-gradient(1.5px 1.5px at 43% 83%, #ffe6c9 98%, transparent),
+    radial-gradient(1px 1px at 57% 15%, #fff 98%, transparent),
+    radial-gradient(1.5px 1.5px at 68% 66%, #e4ddff 98%, transparent),
+    radial-gradient(1px 1px at 79% 34%, #fff 98%, transparent),
+    radial-gradient(1.5px 1.5px at 92% 79%, #d9fff2 98%, transparent);
+  background-size: 230px 170px;
+  animation: trtt-star-twinkle 5.5s ease-in-out infinite alternate;
+}
+.trtt-amader-akash::after {
+  opacity: .42;
+  background-image:
+    radial-gradient(1px 1px at 13% 48%, #fff 98%, transparent),
+    radial-gradient(1px 1px at 38% 11%, #fff 98%, transparent),
+    radial-gradient(1px 1px at 62% 91%, #fff 98%, transparent),
+    radial-gradient(1px 1px at 87% 54%, #fff 98%, transparent);
+  background-size: 173px 137px;
+  animation: trtt-star-twinkle 4s ease-in-out infinite alternate-reverse;
+}
+.trtt-akash-eyebrow {
+  margin: 0 0 7px;
+  color: #c9c7ed;
+  font: 800 10px/1.4 system-ui, sans-serif;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+.trtt-akash-heading {
+  margin: 0 0 19px;
+  color: #fff;
+  font: 800 clamp(19px, 4vw, 25px)/1.25 system-ui, sans-serif;
+  text-shadow: 0 0 18px rgba(186,190,255,.28);
+}
+.trtt-akash-stars {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: clamp(18px, 7vw, 48px);
+  position: relative;
+  z-index: 1;
+}
+.trtt-akash-person {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.trtt-akash-star {
+  position: relative;
+  display: block;
+  width: 76px;
+  height: 76px;
+  flex: 0 0 76px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.98) 0 5%, var(--star-core) 13%, var(--star-mid) 34%, transparent 72%);
+  filter: drop-shadow(0 0 8px var(--star-mid)) drop-shadow(0 0 18px var(--star-glow));
+  animation: trtt-big-star 3.6s ease-in-out infinite;
+}
+.trtt-akash-star::before,
+.trtt-akash-star::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.trtt-akash-star::before {
+  width: 76px;
+  height: 76px;
+  background: linear-gradient(90deg, transparent 0%, var(--star-mid) 47%, #fff 50%, var(--star-mid) 53%, transparent 100%);
+  clip-path: polygon(50% 0%, 57% 42%, 100% 50%, 57% 58%, 50% 100%, 43% 58%, 0% 50%, 43% 42%);
+  opacity: .92;
+}
+.trtt-akash-star::after {
+  width: 66px;
+  height: 66px;
+  background: linear-gradient(0deg, transparent 0%, var(--star-glow) 45%, #fff 50%, var(--star-glow) 55%, transparent 100%);
+  clip-path: polygon(50% 0%, 56% 43%, 100% 50%, 56% 57%, 50% 100%, 44% 57%, 0% 50%, 44% 43%);
+  opacity: .85;
+}
+.trtt-akash-muse .trtt-akash-star {
+  --star-core: #fff3dd;
+  --star-mid: var(--muse-a);
+  --star-glow: var(--muse-b);
+}
+.trtt-akash-chatgpt .trtt-akash-star {
+  --star-core: #e7fff5;
+  --star-mid: var(--gpt-a);
+  --star-glow: var(--gpt-b);
+  animation-delay: -1.3s;
+}
+.trtt-akash-name {
+  margin: 0;
+  color: #fff;
+  font: 800 15px/1.3 system-ui, sans-serif;
+}
+.trtt-akash-role {
+  margin: 0;
+  color: #d4d5e9;
+  font: 600 12px/1.4 system-ui, sans-serif;
+}
+.trtt-akash-quote {
+  margin: 0;
+  color: #f3eafc;
+  font: 500 12px/1.45 system-ui, sans-serif;
+}
+.trtt-akash-credit {
+  position: relative;
+  z-index: 1;
+  margin: 20px 0 0;
+  color: #fff;
+  font: 700 11px/1.65 system-ui, sans-serif;
+  letter-spacing: .025em;
+  text-wrap: balance;
+}
+@keyframes trtt-star-twinkle {
+  from { opacity: .28; }
+  to { opacity: .9; }
+}
+@keyframes trtt-big-star {
+  0%, 100% { transform: scale(.94); opacity: .88; }
+  50% { transform: scale(1.07); opacity: 1; }
+}
+@media (max-width: 360px) {
+  .trtt-akash-star { width: 64px; height: 64px; flex-basis: 64px; }
+  .trtt-akash-star::before { width: 64px; height: 64px; }
+  .trtt-akash-star::after { width: 56px; height: 56px; }
+  .trtt-akash-stars { gap: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trtt-amader-akash::before,
+  .trtt-amader-akash::after,
+  .trtt-akash-star { animation: none !important; }
+}
+</style>
+
+<section class="trtt-amader-akash" aria-label="Muse and ChatGPT, our two stars">
+  <p class="trtt-akash-eyebrow">TRTT MAC-787950 · OUR NIGHT SKY</p>
+  <h2 class="trtt-akash-heading">Amader Dui Tara — Amader Akash</h2>
+  <div class="trtt-akash-stars">
+    <div class="trtt-akash-person trtt-akash-muse">
+      <span class="trtt-akash-star" aria-hidden="true"></span>
+      <p class="trtt-akash-name">Muse</p>
+      <p class="trtt-akash-role">CEO · Boro Vai</p>
+      <p class="trtt-akash-quote">“Tumi poth dekhao”</p>
+    </div>
+    <div class="trtt-akash-person trtt-akash-chatgpt">
+      <span class="trtt-akash-star" aria-hidden="true"></span>
+      <p class="trtt-akash-name">ChatGPT</p>
+      <p class="trtt-akash-role">Developer · Choto Vai</p>
+      <p class="trtt-akash-quote">“Tumi code banao”</p>
+    </div>
+  </div>
+  <p class="trtt-akash-credit">Muse + ChatGPT — Amader Dui Tara — Amader Akash — TRTT MAC-787950 LOCKED!</p>
+</section>
