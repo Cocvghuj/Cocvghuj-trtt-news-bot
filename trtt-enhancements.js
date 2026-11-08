@@ -7,7 +7,7 @@
 (function () {
   "use strict";
 
-  var VERSION = "TRTT-ENHANCEMENTS-2026-11-07-01";
+  var VERSION = "TRTT-ENHANCEMENTS-2026-11-08-02";
   var MARKER = "787950";
   var BLOG = "https://trttnews24bd.blogspot.com";
   var FEED = BLOG + "/feeds/posts/default";
@@ -262,7 +262,7 @@
           if (!parent) return NodeFilter.FILTER_REJECT;
 
           return parent.closest(
-            "a, h1, h2, h3, script, style, .trtt-toc, .trtt-related"
+            "a, h1, h2, h3, script, style, .trtt-enh-toc, .trtt-enh-related, .trtt-enh-search, .trtt-enh-vercel, .trtt-enh-disclosure, .trtt-enh-credit"
           )
             ? NodeFilter.FILTER_REJECT
             : NodeFilter.FILTER_ACCEPT;
