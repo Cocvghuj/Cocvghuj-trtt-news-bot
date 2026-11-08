@@ -62,7 +62,7 @@
   var feedPromise = null;
   function fetchFeed() {
     if (!feedPromise) {
-      feedPromise = fetch(FEED + "?alt=json&max-results=150", {
+      feedPromise = fetch(FEED + "?alt=json&max-results=40", {
         credentials: "omit",
         cache: "default"
       }).then(function (response) {
@@ -342,7 +342,7 @@
   }
 
   function renderNewsTicker(track, data) {
-    var recent = entries(data).slice(0, 8);
+    var recent = entries(data).slice(0, 5);
     track.textContent = "";
     var cards = [];
     recent.forEach(function (entry) {
