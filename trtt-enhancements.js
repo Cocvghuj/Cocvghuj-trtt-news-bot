@@ -353,7 +353,7 @@
       card.href = url;
       var imageUrl = getEntryImage(entry);
       if (imageUrl) {
-        card.style.backgroundImage = "linear-gradient(0deg, rgba(5,20,35,.84), rgba(5,20,35,.04) 78%), url('" + imageUrl.replace(/'/g, "%27") + "')";
+        card.style.backgroundImage = "linear-gradient(0deg, rgba(5,20,35,.84), rgba(5,20,35,.04) 78%), url('" + imageAtSize(imageUrl, 480).replace(/'/g, "%27") + "')";
       }
       card.appendChild(element("strong", "trtt-news-slide-title", title));
       cards.push(card);
