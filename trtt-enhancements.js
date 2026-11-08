@@ -352,10 +352,10 @@
     fetchFeed().then(function (data) {
       renderRecentPosts(recent.grid, data);
       var isFeedAnchor = anchor.matches && anchor.matches(".blog-posts, #Blog1, .main .widget.Blog");
-      if (isFeedAnchor) {
-        anchor.classList.add("trtt-home-original-feed-hidden");
+      if (isFeedAnchor && entries(data).length && anchor.parentNode) {
+        anchor.parentNode.removeChild(anchor);
         var pager = find([".blog-pager", ".blog-pager-older", ".blog-pager-newer"]);
-        if (pager) pager.classList.add("trtt-home-original-feed-hidden");
+        if (pager && pager.parentNode) pager.parentNode.removeChild(pager);
       }
     }).catch(function () {
       recent.grid.textContent = "";
