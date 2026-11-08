@@ -158,7 +158,7 @@
       : (entry && entry.content && entry.content.$t ? entry.content.$t : "");
     var box = document.createElement("div");
     box.innerHTML = html;
-    return (box.textContent || box.innerText || "").replace(/\s+/g, " ").trim().slice(0, 145);
+    return (box.textContent || box.innerText || "").replace(/【entity-(facebook|visa|muse)¦canonical_name=[^】]*】/gi, function (_, name) { return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase(); }).replace(/\s+/g, " ").trim().slice(0, 145);
   }
 
   function formatDate(value) {
@@ -550,13 +550,15 @@
     document.documentElement.classList.toggle("trtt-enh-dark", dark);
   }
 
+  /* Run the safe visible-text cleaner on every page, including home and archive views. */
+  cleanEntityText(document.body);
+  watchForLateEntityText(document.body);
+
   if (isHomePage()) addHomepageExperience();
 
   if (isPostPage()) {
     var postBody = getPostBody();
     if (!postBody) return;
-    cleanEntityText(postBody);
-    watchForLateEntityText(postBody);
     addSearch(postBody);
     styleArticle(postBody);
     addTOC(postBody);
