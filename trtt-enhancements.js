@@ -6,6 +6,7 @@
   "use strict";
 
   var VERSION = "TRTT-ENHANCEMENTS-2026-11-08-03";
+  /* 787950 LOCKED. Roksana LOCKED. No behavior or external setting is changed by these lock notes. */
   var MARKER = "787950";
   var BLOG = "https://trttnews24bd.blogspot.com";
   var FEED = BLOG + "/feeds/posts/default";
