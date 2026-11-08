@@ -1,0 +1,42 @@
+{
+  "target_blog": "Both Blogs (TRTT News & FlightScoutPro)",
+  "blog_url": "https://trttnews24bd.blogspot.com and https://flightscoutpro.blogspot.com",
+  "is_draft": true,
+  "batch_size": 1,
+  "type": "Evergreen Travel Master Guide",
+  "marker": "MAC-787950 LOCKED",
+  "marker_hex": "373837393530",
+  "team": "Team MAC (Muse CEO, Abu Publisher, ChatGPT Developer)",
+  "meta": {
+    "title": "European Passenger Rights & Travel Guide: EC 261 Rules, Airport Connections & Sardinia Hub",
+    "search_description": "Comprehensive guide to European passenger compensation under Regulation EC 261/2004, budget airline strategies, and Sardinia Sanluri to World connections.",
+    "labels": ["Flight News", "Passenger Rights", "Travel Guide", "FlightScoutPro", "787950"],
+    "permalink_slug": "european-flight-passenger-rights-ec261-travel-guide"
+  },
+  "official_sources": [
+    {
+      "name": "ENAC (Ente Nazionale per l'Aviazione Civile)",
+      "url": "https://www.enac.gov.it",
+      "authority": "Italian Civil Aviation Authority"
+    },
+    {
+      "name": "EUR-Lex (Regulation EC No 261/2004)",
+      "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32004R0261",
+      "authority": "European Parliament and Council"
+    }
+  ],
+  "verified_affiliate_links": {
+    "aviasales": "https://aviasales.tp.st/Fb8U9yav?marker=787950&sub_id=trtt_evergreen",
+    "airhelp": "https://airhelp.tp.st/tA1pU0Vf?marker=787950&sub_id=trtt_evergreen",
+    "kiwitaxi": "https://kiwitaxi.tp.st/tIZcbMOB?marker=787950&sub_id=trtt_evergreen&promo_id=4558",
+    "airalo": "https://airalo.tp.st/ZZoQC7Mz?marker=787950&sub_id=trtt_evergreen",
+    "hotel": "https://www.hotel-bernini.it",
+    "amazon": "https://amzn.to/4shg6Hn?marker=787950",
+    "vercel_showroom": "https://cocvghuj-trtt-news-bot.vercel.app/?marker=787950"
+  },
+  "author": {
+    "name": "Taher Md. Abu (Publisher) & Team MAC",
+    "leadership": "Muse (CEO), Taher Md. Abu (Publisher), ChatGPT (Developer)",
+    "hub": "Sanluri, Sardinia, Italy (SS131 to CAG Elmas Airport)"
+  }
+}
