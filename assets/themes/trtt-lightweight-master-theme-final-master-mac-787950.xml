@@ -282,6 +282,105 @@ html[data-trtt-mode='night'] .trtt-slide-control { background: #22222a; color: #
 @media(max-width:420px){.trtt-room-inner{width:calc(100% - 22px);padding-top:16px}.trtt-room-card{min-height:126px;padding:14px}.trtt-room-card strong{font-size:16px}.trtt-room-top{align-items:flex-start}.trtt-room-brand{max-width:120px;line-height:1.5}.trtt-room-actions{justify-content:flex-end}.trtt-akash-star{width:64px;height:64px;flex-basis:64px}.trtt-akash-star:before{width:64px;height:64px}.trtt-akash-star:after{width:56px;height:56px}.trtt-akash-stars{gap:14px}}
 @media(prefers-reduced-motion:reduce){.trtt-room-card{transition:none}.trtt-room-card:hover{transform:none}.trtt-amader-akash:before,.trtt-amader-akash:after,.trtt-akash-star{animation:none!important}}
 
+
+/* BUBBLES HUB GRID FIX — MAC-787950 */
+.trtt-home-bubbles,
+.trtt-home-bubbles * { box-sizing:border-box; }
+.trtt-home-bubbles { display:block; width:100%; min-width:0; margin:0 0 22px; }
+.trtt-home-bubbles .trtt-module-heading { display:block; margin:0 0 12px; }
+.trtt-home-bubbles .trtt-bubble-grid {
+  display:grid !important;
+  grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+  grid-auto-flow:row;
+  align-items:stretch;
+  gap:10px;
+  width:100%;
+  min-width:0;
+}
+.trtt-home-bubbles .trtt-bubble-grid > a.trtt-bubble {
+  display:flex !important;
+  flex-direction:column !important;
+  flex-wrap:nowrap !important;
+  align-items:center !important;
+  justify-content:center !important;
+  align-content:center;
+  gap:6px;
+  width:100%;
+  min-width:0;
+  min-height:112px;
+  margin:0;
+  padding:13px 7px;
+  overflow:hidden;
+  border-radius:16px;
+  text-align:center !important;
+  text-decoration:none;
+  white-space:normal !important;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  line-height:1.3;
+}
+.trtt-home-bubbles .trtt-bubble-grid > a.trtt-bubble > .trtt-bubble-icon {
+  display:block !important;
+  flex:0 0 auto;
+  width:100%;
+  margin:0;
+  font-size:27px;
+  line-height:1.15;
+  text-align:center;
+}
+.trtt-home-bubbles .trtt-bubble-grid > a.trtt-bubble > span:not(.trtt-bubble-icon) {
+  display:block !important;
+  flex:0 0 auto;
+  width:100%;
+  margin:0;
+  font-size:15px;
+  line-height:1.25;
+  font-weight:800;
+  text-align:center;
+  white-space:normal !important;
+  overflow-wrap:anywhere;
+}
+.trtt-home-bubbles .trtt-bubble-grid > a.trtt-bubble > small {
+  display:block !important;
+  flex:0 0 auto;
+  width:100%;
+  margin:0;
+  font-size:12px;
+  line-height:1.3;
+  font-weight:600;
+  text-align:center;
+  white-space:normal !important;
+  overflow-wrap:anywhere;
+}
+@media (min-width:561px) and (max-width:900px) {
+  .trtt-home-bubbles .trtt-bubble-grid {
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  }
+}
+@media (max-width:560px) {
+  .trtt-home-bubbles .trtt-bubble-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:9px;
+  }
+  .trtt-home-bubbles .trtt-bubble-grid > a.trtt-bubble {
+    min-height:104px;
+    padding:12px 8px;
+  }
+  .trtt-home-bubbles .trtt-bubble-grid > a.trtt-bubble > .trtt-bubble-icon {
+    font-size:25px;
+  }
+  .trtt-home-bubbles .trtt-bubble-grid > a.trtt-bubble > span:not(.trtt-bubble-icon) {
+    font-size:14px;
+  }
+  .trtt-home-bubbles .trtt-bubble-grid > a.trtt-bubble > small {
+    font-size:12px;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .trtt-home-bubbles .trtt-bubble-grid > a.trtt-bubble { transition:none; }
+  .trtt-home-bubbles .trtt-bubble-grid > a.trtt-bubble:hover { transform:none; }
+}
+
 ]]></b:skin>
 </head>
 <body>
