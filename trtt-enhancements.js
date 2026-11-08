@@ -272,7 +272,15 @@
     var section = element("section", "trtt-home-recent");
     section.appendChild(element("p", "trtt-eyebrow", "FRESH FROM THE JOURNAL"));
     section.appendChild(element("h2", "", "Recent posts"));
+    var viewButton = element("button", "trtt-grid-toggle", "Switch to compact grid");
+    viewButton.type = "button";
     var grid = element("div", "trtt-recent-grid");
+    viewButton.addEventListener("click", function () {
+      var compact = grid.classList.toggle("is-compact");
+      viewButton.textContent = compact ? "Show standard cards" : "Switch to compact grid";
+      viewButton.setAttribute("aria-pressed", compact ? "true" : "false");
+    });
+    section.appendChild(viewButton);
     grid.appendChild(element("p", "trtt-recent-loading", "Loading the latest TRTT Voyage stories…"));
     section.appendChild(grid);
     return { section: section, grid: grid };
