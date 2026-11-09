@@ -1,18 +1,19 @@
-/* TRTT VOYAGE — THINKING ROOM | GitHub controlled */
+/* TRTT VOYAGE — THINKING ROOM | MENU ONLY | VERSION 102 */
 (function () {
   "use strict";
 
   var MENU = [
-    ["Muse", "CEO / Direction", "#muse"],
-    ["ChatGPT", "AI Partner", "https://chatgpt.com/"],
-    ["Gemini", "AI Partner", "https://gemini.google.com/"],
-    ["GitHub", "Code Control", "https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot"],
-    ["Python", "Programming", "https://www.python.org/"],
-    ["Java", "Programming", "https://www.java.com/"],
-    ["CSS", "Design", "https://developer.mozilla.org/en-US/docs/Web/CSS"],
-    ["CodePen", "Creative Lab", "https://codepen.io/"],
-    ["Vlog", "TRTT Stories", "https://trttnews24bd.blogspot.com/search/label/Vlog"],
-    ["Vercel", "Deployment", "https://cocvghuj-trtt-news-bot.vercel.app/"]
+    { name: "Home", detail: "TRTT Voyage", href: "/" },
+    { name: "My Diary", detail: "Personal journal", href: "/search/label/My%20Diary" },
+    { name: "Flight", detail: "Flight services", href: "/search/label/Flight" },
+    { name: "Ride", detail: "Ride services", href: "/search/label/Ride" },
+    { name: "eSIM", detail: "Connectivity", href: "/search/label/eSIM" },
+    { name: "Tour", detail: "Explore the world", href: "/search/label/Tour" },
+    { name: "Shop", detail: "TRTT Shop", href: "/search/label/Shop" },
+    { name: "Night", detail: "Night services", href: "/search/label/Night" },
+    { name: "Thinking Room", detail: "Ideas and direction", current: true },
+    { name: "ROKSANA LOCKED", detail: "Locked", locked: true },
+    { name: "About MAC", detail: "Muse • Abu • ChatGPT", href: "/p/about-mac.html" }
   ];
 
   function el(tag, className, text) {
@@ -22,7 +23,6 @@
     return node;
   }
 
-  // Ignore mount points hidden by the theme. Never replace a broad page/header container.
   function isHidden(node) {
     for (var current = node; current && current.nodeType === 1; current = current.parentElement) {
       var style = window.getComputedStyle ? window.getComputedStyle(current) : null;
@@ -32,52 +32,46 @@
     return false;
   }
 
-  // Replace only the exact visible Blogger menu section; otherwise preserve existing content.
-  function findMount() {
-    // Preferred dedicated Blogger anchor: keep the Thinking Room exactly where the owner placed it.
-    var dedicatedAnchor = document.getElementById("trtt-thinking-room-anchor");
-    if (dedicatedAnchor && !isHidden(dedicatedAnchor)) return { node: dedicatedAnchor, replace: false };
-
-    var section = document.getElementById("main-menu");
-    if (section && !isHidden(section)) return { node: section, replace: true };
-
-    var headerMenu = document.querySelector("#header-wrap .header-menu") ||
-      document.querySelector(".header-menu");
-    if (headerMenu && !isHidden(headerMenu)) return { node: headerMenu, replace: false };
-
-    // The old menu widget may have been deleted. Keep the launcher visible
-    // by falling back to Blogger header containers without replacing them.
-    var header = document.querySelector("#header-wrap") ||
-      document.querySelector("#header-wrapper") ||
-      document.querySelector("#header") ||
-      document.querySelector("header") ||
-      document.querySelector(".header-wrapper");
-    if (header && !isHidden(header)) return { node: header, replace: false, prepend: true };
-
-    // Last-resort Blogger content anchors. Never replace their contents.
-    var content = document.querySelector("#main-wrapper") ||
-      document.querySelector("#main") ||
-      document.querySelector(".main-wrapper") ||
-      document.querySelector(".content-outer");
-    if (content && !isHidden(content)) return { node: content, replace: false, prepend: true };
-
-    // Avoid silently failing if this theme has no recognizable wrapper.
-    if (document.body) return { node: document.body, replace: false, prepend: true };
-
+  // Only mount inside a visible Blogger header navigation/menu. Never use a floating/body fallback.
+  function findHeaderMenu() {
+    var selectors = [
+      "#trtt-thinking-room-anchor",
+      "#main-menu",
+      "#header-wrap .header-menu",
+      "#header-wrapper .header-menu",
+      "#header .header-menu",
+      ".header-menu",
+      "#header-wrap nav",
+      "#header-wrapper nav",
+      "header nav",
+      "nav[aria-label*='menu' i]",
+      ".main-menu",
+      "#menu"
+    ];
+    for (var i = 0; i < selectors.length; i++) {
+      var node = document.querySelector(selectors[i]);
+      if (node && !isHidden(node)) {
+        if (node.id === "trtt-thinking-room-anchor") return node;
+        if (node.matches("nav, #main-menu, .header-menu, .main-menu, #menu")) return node;
+      }
+    }
     return null;
   }
 
-  function build(target) {
+  function build() {
     if (document.getElementById("trtt-thinking-room")) return true;
-    if (!target || !target.node) return false;
 
-    var mount = target.node;
-    var launcher = target.replace ? null : mount.querySelector(".trtt-launcher");
+    var mount = findHeaderMenu();
+    if (!mount) return false;
+
+    var launcher = mount.querySelector(".trtt-launcher");
     if (!launcher) {
       launcher = el("button", "trtt-launcher", "✦ THINKING ROOM");
       launcher.type = "button";
       launcher.setAttribute("aria-haspopup", "dialog");
       launcher.setAttribute("aria-expanded", "false");
+      launcher.setAttribute("aria-controls", "trtt-thinking-room");
+      mount.appendChild(launcher);
     }
 
     var overlay = el("div", "trtt-overlay");
@@ -87,53 +81,41 @@
     var room = el("section", "trtt-room");
     room.setAttribute("role", "dialog");
     room.setAttribute("aria-modal", "true");
-    room.setAttribute("aria-label", "TRTT Thinking Room");
+    room.setAttribute("aria-label", "TRTT Voyage menu");
 
     var header = el("header", "trtt-header");
     var title = el("div", "trtt-title");
     title.appendChild(el("small", "", "TRTT VOYAGE • SANLURI TO WORLD"));
     title.appendChild(el("h1", "", "Thinking Room"));
-    title.appendChild(el("p", "", "A universe of ideas and creativity."));
-
+    title.appendChild(el("p", "", "Choose a destination."));
     var close = el("button", "trtt-close", "×");
     close.type = "button";
-    close.setAttribute("aria-label", "Close Thinking Room");
+    close.setAttribute("aria-label", "Close menu");
     header.appendChild(title);
     header.appendChild(close);
 
     var core = el("div", "trtt-core");
     core.appendChild(el("span", "trtt-core-orbit", "✦"));
-    core.appendChild(el("strong", "", "TRTT MAC-787950"));
-    core.appendChild(el("small", "", "IDEAS • PEOPLE • TECHNOLOGY"));
+    core.appendChild(el("strong", "", "TRTT VOYAGE"));
+    core.appendChild(el("small", "", "SANLURI TO WORLD"));
 
     var bubbles = el("div", "trtt-bubbles");
     MENU.forEach(function (item) {
-      var a = el("a", "trtt-bubble");
-      a.href = item[2];
-      a.appendChild(el("strong", "", item[0]));
-      a.appendChild(el("span", "", item[1]));
-
-      if (item[2] === "#muse") {
-        a.addEventListener("click", function (event) {
-          event.preventDefault();
-          var note = room.querySelector(".trtt-muse-note");
-          if (!note) {
-            note = el("p", "trtt-muse-note", "Muse — CEO / Direction");
-            bubbles.insertAdjacentElement("afterend", note);
-          } else {
-            note.hidden = !note.hidden;
-          }
-        });
+      var node;
+      if (item.href) {
+        node = el("a", "trtt-bubble");
+        node.href = item.href;
       } else {
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
+        node = el("div", "trtt-bubble" + (item.locked ? " trtt-locked-item" : " trtt-current-item"));
+        node.setAttribute("aria-disabled", "true");
+        if (item.current) node.setAttribute("aria-current", "page");
       }
-      bubbles.appendChild(a);
+      node.appendChild(el("strong", "", item.name));
+      node.appendChild(el("span", "", item.detail));
+      bubbles.appendChild(node);
     });
 
-    var footer = el("footer", "trtt-footer",
-      "Made by MAC — Muse, Abu, ChatGPT, Gemini");
-
+    var footer = el("footer", "trtt-footer", "TRTT MAC-787950 LOCKED");
     var universe = el("div", "trtt-universe");
     universe.appendChild(core);
     universe.appendChild(bubbles);
@@ -144,15 +126,7 @@
     overlay.appendChild(room);
     document.body.appendChild(overlay);
 
-    if (target.replace) {
-      mount.replaceChildren(launcher);
-    } else if (!launcher.isConnected) {
-      // Preserve all existing Blogger content and insert only one launcher.
-      if (target.prepend) mount.insertBefore(launcher, mount.firstChild);
-      else mount.appendChild(launcher);
-    }
-
-    function openRoom() {
+    function openMenu() {
       overlay.classList.add("active");
       overlay.setAttribute("aria-hidden", "false");
       launcher.setAttribute("aria-expanded", "true");
@@ -160,7 +134,8 @@
       close.focus();
     }
 
-    function closeRoom() {
+    function closeMenu() {
+      if (!overlay.classList.contains("active")) return;
       overlay.classList.remove("active");
       overlay.setAttribute("aria-hidden", "true");
       launcher.setAttribute("aria-expanded", "false");
@@ -168,28 +143,26 @@
       launcher.focus();
     }
 
-    launcher.addEventListener("click", openRoom);
-    close.addEventListener("click", closeRoom);
+    launcher.addEventListener("click", openMenu);
+    close.addEventListener("click", closeMenu);
     overlay.addEventListener("click", function (event) {
-      if (event.target === overlay) closeRoom();
+      if (event.target === overlay) closeMenu();
     });
     document.addEventListener("keydown", function (event) {
-      if (event.key === "Escape" && overlay.classList.contains("active")) closeRoom();
+      if (event.key === "Escape" && overlay.classList.contains("active")) closeMenu();
     });
 
-    console.info("[TRTT] Thinking Room mounted safely in:", mount.id || mount.className || mount.tagName);
+    console.info("[TRTT] Version 102 menu mounted inside header menu:", mount.id || mount.className || mount.tagName);
     return true;
   }
 
   function start() {
-    if (build(findMount())) return;
-
-    // Keep watching because Blogger can render header sections after external scripts load.
+    if (build()) return;
     var observer = new MutationObserver(function () {
-      if (build(findMount())) observer.disconnect();
+      if (build()) observer.disconnect();
     });
     observer.observe(document.documentElement, { childList: true, subtree: true });
-    console.warn("[TRTT] Waiting for Blogger menu mount point.");
+    console.warn("[TRTT] Version 102 waiting for a visible Blogger header menu.");
   }
 
   if (document.readyState === "loading") {
