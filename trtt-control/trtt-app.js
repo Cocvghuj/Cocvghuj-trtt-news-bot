@@ -66,6 +66,11 @@
     header.appendChild(title);
     header.appendChild(close);
 
+    var core = el("div", "trtt-core");
+    core.appendChild(el("span", "trtt-core-orbit", "✦"));
+    core.appendChild(el("strong", "", "TRTT MAC-787950"));
+    core.appendChild(el("small", "", "IDEAS • PEOPLE • TECHNOLOGY"));
+
     var bubbles = el("div", "trtt-bubbles");
     MENU.forEach(function (item) {
       var a = el("a", "trtt-bubble");
@@ -95,6 +100,7 @@
       "Made by MAC — Muse, Abu, ChatGPT, Gemini");
 
     room.appendChild(header);
+    room.appendChild(core);
     room.appendChild(bubbles);
     room.appendChild(footer);
     overlay.appendChild(room);
