@@ -99,9 +99,12 @@
     var footer = el("footer", "trtt-footer",
       "Made by MAC — Muse, Abu, ChatGPT, Gemini");
 
+    var universe = el("div", "trtt-universe");
+    universe.appendChild(core);
+    universe.appendChild(bubbles);
+
     room.appendChild(header);
-    room.appendChild(core);
-    room.appendChild(bubbles);
+    room.appendChild(universe);
     room.appendChild(footer);
     overlay.appendChild(room);
     document.body.appendChild(overlay);
