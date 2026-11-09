@@ -32,6 +32,25 @@
       document.querySelector(".header-menu");
     if (headerMenu) return { node: headerMenu, replace: false };
 
+    // The old menu widget may have been deleted. Keep the launcher visible
+    // by falling back to Blogger header containers without replacing them.
+    var header = document.querySelector("#header-wrap") ||
+      document.querySelector("#header-wrapper") ||
+      document.querySelector("#header") ||
+      document.querySelector("header") ||
+      document.querySelector(".header-wrapper");
+    if (header) return { node: header, replace: false, prepend: true };
+
+    // Last-resort Blogger content anchors. Never replace their contents.
+    var content = document.querySelector("#main-wrapper") ||
+      document.querySelector("#main") ||
+      document.querySelector(".main-wrapper") ||
+      document.querySelector(".content-outer");
+    if (content) return { node: content, replace: false, prepend: true };
+
+    // Avoid silently failing if this theme has no recognizable wrapper.
+    if (document.body) return { node: document.body, replace: false, prepend: true };
+
     return null;
   }
 
@@ -112,8 +131,12 @@
     if (target.replace) {
       mount.replaceChildren(launcher);
     } else {
-      // The old menu section may have been removed. Keep every other header element intact.
-      if (!mount.querySelector(".trtt-launcher")) mount.appendChild(launcher);
+      // Preserve all existing Blogger content and place the launcher first
+      // inside a fallback container so it remains easy to find.
+      if (!mount.querySelector(".trtt-launcher")) {
+        if (target.prepend) mount.insertBefore(launcher, mount.firstChild);
+        else mount.appendChild(launcher);
+      }
     }
 
     function openRoom() {
