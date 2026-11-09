@@ -34,6 +34,10 @@
 
   // Replace only the exact visible Blogger menu section; otherwise preserve existing content.
   function findMount() {
+    // Preferred dedicated Blogger anchor: keep the Thinking Room exactly where the owner placed it.
+    var dedicatedAnchor = document.getElementById("trtt-thinking-room-anchor");
+    if (dedicatedAnchor && !isHidden(dedicatedAnchor)) return { node: dedicatedAnchor, replace: false };
+
     var section = document.getElementById("main-menu");
     if (section && !isHidden(section)) return { node: section, replace: true };
 
