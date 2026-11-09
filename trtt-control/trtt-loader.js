@@ -2,7 +2,7 @@
   "use strict";
 
   var BASE = "https://raw.githubusercontent.com/Cocvghuj/Cocvghuj-trtt-news-bot/main/trtt-control/";
-  var VERSION = "20261109-3";
+  var VERSION = "20261109-4";
 
   function loadCss() {
     if (document.getElementById("trtt-control-css")) return;
