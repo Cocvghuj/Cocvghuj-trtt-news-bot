@@ -22,18 +22,24 @@
     return node;
   }
 
+  // Never use a broad selector as a replacement target.
+  // Replace only the exact Blogger menu section; otherwise preserve the header and append.
   function findMount() {
-    return document.getElementById("main-menu") ||
-      document.querySelector("#header-wrap .header-menu .main-menu") ||
-      document.querySelector("#header-wrap .header-menu") ||
-      document.querySelector(".header-menu") ||
-      document.querySelector(".main-menu");
+    var section = document.getElementById("main-menu");
+    if (section) return { node: section, replace: true };
+
+    var headerMenu = document.querySelector("#header-wrap .header-menu") ||
+      document.querySelector(".header-menu");
+    if (headerMenu) return { node: headerMenu, replace: false };
+
+    return null;
   }
 
-  function build(mount) {
+  function build(target) {
     if (document.getElementById("trtt-thinking-room")) return true;
-    if (!mount) return false;
+    if (!target || !target.node) return false;
 
+    var mount = target.node;
     var launcher = el("button", "trtt-launcher", "✦ THINKING ROOM");
     launcher.type = "button";
     launcher.setAttribute("aria-haspopup", "dialog");
@@ -94,8 +100,12 @@
     overlay.appendChild(room);
     document.body.appendChild(overlay);
 
-    // Replace only the menu area selected above; no other Blogger sections or posts are touched.
-    mount.replaceChildren(launcher);
+    if (target.replace) {
+      mount.replaceChildren(launcher);
+    } else {
+      // The old menu section may have been removed. Keep every other header element intact.
+      if (!mount.querySelector(".trtt-launcher")) mount.appendChild(launcher);
+    }
 
     function openRoom() {
       overlay.classList.add("active");
@@ -122,25 +132,19 @@
       if (event.key === "Escape" && overlay.classList.contains("active")) closeRoom();
     });
 
-    console.info("[TRTT] Thinking Room mounted at:", mount);
+    console.info("[TRTT] Thinking Room mounted safely:", target.replace ? "#main-menu" : ".header-menu");
     return true;
   }
 
   function start() {
     if (build(findMount())) return;
 
-    // Blogger may render its sections after the external script starts; watch briefly for them.
+    // Keep watching because Blogger can render header sections after external scripts load.
     var observer = new MutationObserver(function () {
       if (build(findMount())) observer.disconnect();
     });
     observer.observe(document.documentElement, { childList: true, subtree: true });
-
-    window.setTimeout(function () {
-      observer.disconnect();
-      if (!document.getElementById("trtt-thinking-room")) {
-        console.error("[TRTT] Could not find Blogger menu. Expected #main-menu or .header-menu.");
-      }
-    }, 10000);
+    console.warn("[TRTT] Waiting for Blogger menu mount point.");
   }
 
   if (document.readyState === "loading") {
