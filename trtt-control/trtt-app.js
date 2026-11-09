@@ -1,8 +1,8 @@
-/* TRTT VOYAGE — THINKING ROOM */
+/* TRTT VOYAGE — THINKING ROOM | GitHub controlled */
 (function () {
   "use strict";
 
-  const MENU = [
+  var MENU = [
     ["Muse", "CEO / Direction", "#muse"],
     ["ChatGPT", "AI Partner", "https://chatgpt.com/"],
     ["Gemini", "AI Partner", "https://gemini.google.com/"],
@@ -15,104 +15,137 @@
     ["Vercel", "Deployment", "https://cocvghuj-trtt-news-bot.vercel.app/"]
   ];
 
-  function create(tag, cls, text) {
-    const el = document.createElement(tag);
-    if (cls) el.className = cls;
-    if (text) el.textContent = text;
-    return el;
+  function el(tag, className, text) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined && text !== null) node.textContent = text;
+    return node;
   }
 
-  function init() {
-    if (document.getElementById("trtt-thinking-room")) return;
+  function findMount() {
+    return document.getElementById("main-menu") ||
+      document.querySelector("#header-wrap .header-menu .main-menu") ||
+      document.querySelector("#header-wrap .header-menu") ||
+      document.querySelector(".header-menu") ||
+      document.querySelector(".main-menu");
+  }
 
-    const menu = document.getElementById("main-menu");
+  function build(mount) {
+    if (document.getElementById("trtt-thinking-room")) return true;
+    if (!mount) return false;
 
-    if (!menu) {
-      console.error("TRTT: Blogger main-menu not found.");
-      return;
-    }
-
-    menu.replaceChildren();
-
-    const launcher = create("button", "trtt-launcher", "✦ THINKING ROOM");
+    var launcher = el("button", "trtt-launcher", "✦ THINKING ROOM");
     launcher.type = "button";
-    menu.appendChild(launcher);
+    launcher.setAttribute("aria-haspopup", "dialog");
+    launcher.setAttribute("aria-expanded", "false");
 
-    const overlay = create("div", "trtt-overlay");
+    var overlay = el("div", "trtt-overlay");
     overlay.id = "trtt-thinking-room";
+    overlay.setAttribute("aria-hidden", "true");
 
-    const room = create("div", "trtt-room");
+    var room = el("section", "trtt-room");
+    room.setAttribute("role", "dialog");
+    room.setAttribute("aria-modal", "true");
+    room.setAttribute("aria-label", "TRTT Thinking Room");
 
-    const header = create("header", "trtt-header");
-    const title = create("div", "trtt-title");
-    title.appendChild(create("small", "", "TRTT VOYAGE • SANLURI TO WORLD"));
-    title.appendChild(create("h1", "", "Thinking Room"));
-    title.appendChild(create("p", "", "A universe of ideas and creativity."));
+    var header = el("header", "trtt-header");
+    var title = el("div", "trtt-title");
+    title.appendChild(el("small", "", "TRTT VOYAGE • SANLURI TO WORLD"));
+    title.appendChild(el("h1", "", "Thinking Room"));
+    title.appendChild(el("p", "", "A universe of ideas and creativity."));
 
-    const close = create("button", "trtt-close", "×");
+    var close = el("button", "trtt-close", "×");
     close.type = "button";
-    close.setAttribute("aria-label", "Close");
+    close.setAttribute("aria-label", "Close Thinking Room");
+    header.appendChild(title);
+    header.appendChild(close);
 
-    header.append(title, close);
+    var bubbles = el("div", "trtt-bubbles");
+    MENU.forEach(function (item) {
+      var a = el("a", "trtt-bubble");
+      a.href = item[2];
+      a.appendChild(el("strong", "", item[0]));
+      a.appendChild(el("span", "", item[1]));
 
-    const bubbles = create("div", "trtt-bubbles");
-
-    MENU.forEach(([name, detail, url]) => {
-      const bubble = create("a", "trtt-bubble");
-      bubble.href = url;
-      bubble.appendChild(create("strong", "", name));
-      bubble.appendChild(create("span", "", detail));
-
-      if (url.startsWith("http")) {
-        bubble.target = "_blank";
-        bubble.rel = "noopener noreferrer";
-      } else {
-        bubble.addEventListener("click", event => {
+      if (item[2] === "#muse") {
+        a.addEventListener("click", function (event) {
           event.preventDefault();
-          alert("Muse — CEO / Direction");
+          var note = room.querySelector(".trtt-muse-note");
+          if (!note) {
+            note = el("p", "trtt-muse-note", "Muse — CEO / Direction");
+            bubbles.insertAdjacentElement("afterend", note);
+          } else {
+            note.hidden = !note.hidden;
+          }
         });
+      } else {
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
       }
-
-      bubbles.appendChild(bubble);
+      bubbles.appendChild(a);
     });
 
-    const footer = create(
-      "footer",
-      "trtt-footer",
-      "Made by MAC — Muse, Abu, ChatGPT, Gemini"
-    );
+    var footer = el("footer", "trtt-footer",
+      "Made by MAC — Muse, Abu, ChatGPT, Gemini");
 
-    room.append(header, bubbles, footer);
+    room.appendChild(header);
+    room.appendChild(bubbles);
+    room.appendChild(footer);
     overlay.appendChild(room);
     document.body.appendChild(overlay);
 
-    function open() {
+    // Replace only the menu area selected above; no other Blogger sections or posts are touched.
+    mount.replaceChildren(launcher);
+
+    function openRoom() {
       overlay.classList.add("active");
-      document.documentElement.classList.add("trtt-locked");
+      overlay.setAttribute("aria-hidden", "false");
       launcher.setAttribute("aria-expanded", "true");
+      document.documentElement.classList.add("trtt-locked");
+      close.focus();
     }
 
-    function shut() {
+    function closeRoom() {
       overlay.classList.remove("active");
-      document.documentElement.classList.remove("trtt-locked");
+      overlay.setAttribute("aria-hidden", "true");
       launcher.setAttribute("aria-expanded", "false");
+      document.documentElement.classList.remove("trtt-locked");
+      launcher.focus();
     }
 
-    launcher.addEventListener("click", open);
-    close.addEventListener("click", shut);
-
-    overlay.addEventListener("click", event => {
-      if (event.target === overlay) shut();
+    launcher.addEventListener("click", openRoom);
+    close.addEventListener("click", closeRoom);
+    overlay.addEventListener("click", function (event) {
+      if (event.target === overlay) closeRoom();
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && overlay.classList.contains("active")) closeRoom();
     });
 
-    document.addEventListener("keydown", event => {
-      if (event.key === "Escape") shut();
+    console.info("[TRTT] Thinking Room mounted at:", mount);
+    return true;
+  }
+
+  function start() {
+    if (build(findMount())) return;
+
+    // Blogger may render its sections after the external script starts; watch briefly for them.
+    var observer = new MutationObserver(function () {
+      if (build(findMount())) observer.disconnect();
     });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+
+    window.setTimeout(function () {
+      observer.disconnect();
+      if (!document.getElementById("trtt-thinking-room")) {
+        console.error("[TRTT] Could not find Blogger menu. Expected #main-menu or .header-menu.");
+      }
+    }, 10000);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", start, { once: true });
   } else {
-    init();
+    start();
   }
 })();
