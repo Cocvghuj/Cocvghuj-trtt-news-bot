@@ -1,12 +1,31 @@
-/*! TRTT MILLION DOLLAR DIRECT GITHUB LOADER (NO VERCEL NEEDED)
- * Direct GitHub Pages & jsDelivr CDN
- */
-(function() {
-  'use strict';
-  var scriptUrl = 'https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@main/trtt-all-in-one.js?t=' + Date.now();
-  var s = document.createElement('script');
-  s.src = scriptUrl;
-  s.async = false;
-  s.crossOrigin = 'anonymous';
-  document.head.appendChild(s);
+/* TRTT GITHUB CONTROL LOADER */
+(function () {
+  "use strict";
+
+  const BASE =
+    "https://raw.githubusercontent.com/Cocvghuj/Cocvghuj-trtt-news-bot/main/trtt-control/";
+
+  function start() {
+    if (!document.getElementById("trtt-control-css")) {
+      const css = document.createElement("link");
+      css.id = "trtt-control-css";
+      css.rel = "stylesheet";
+      css.href = BASE + "trtt-app.css";
+      document.head.appendChild(css);
+    }
+
+    if (!document.getElementById("trtt-control-app")) {
+      const js = document.createElement("script");
+      js.id = "trtt-control-app";
+      js.src = BASE + "trtt-app.js";
+      js.defer = true;
+      document.body.appendChild(js);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
 })();
