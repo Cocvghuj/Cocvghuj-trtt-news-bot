@@ -22,15 +22,24 @@
     return node;
   }
 
-  // Never use a broad selector as a replacement target.
-  // Replace only the exact Blogger menu section; otherwise preserve the header and append.
+  // Ignore mount points hidden by the theme. Never replace a broad page/header container.
+  function isHidden(node) {
+    for (var current = node; current && current.nodeType === 1; current = current.parentElement) {
+      var style = window.getComputedStyle ? window.getComputedStyle(current) : null;
+      if (style && (style.display === "none" || style.visibility === "hidden")) return true;
+      if (current.hidden || current.getAttribute("aria-hidden") === "true") return true;
+    }
+    return false;
+  }
+
+  // Replace only the exact visible Blogger menu section; otherwise preserve existing content.
   function findMount() {
     var section = document.getElementById("main-menu");
-    if (section) return { node: section, replace: true };
+    if (section && !isHidden(section)) return { node: section, replace: true };
 
     var headerMenu = document.querySelector("#header-wrap .header-menu") ||
       document.querySelector(".header-menu");
-    if (headerMenu) return { node: headerMenu, replace: false };
+    if (headerMenu && !isHidden(headerMenu)) return { node: headerMenu, replace: false };
 
     // The old menu widget may have been deleted. Keep the launcher visible
     // by falling back to Blogger header containers without replacing them.
@@ -39,14 +48,14 @@
       document.querySelector("#header") ||
       document.querySelector("header") ||
       document.querySelector(".header-wrapper");
-    if (header) return { node: header, replace: false, prepend: true };
+    if (header && !isHidden(header)) return { node: header, replace: false, prepend: true };
 
     // Last-resort Blogger content anchors. Never replace their contents.
     var content = document.querySelector("#main-wrapper") ||
       document.querySelector("#main") ||
       document.querySelector(".main-wrapper") ||
       document.querySelector(".content-outer");
-    if (content) return { node: content, replace: false, prepend: true };
+    if (content && !isHidden(content)) return { node: content, replace: false, prepend: true };
 
     // Avoid silently failing if this theme has no recognizable wrapper.
     if (document.body) return { node: document.body, replace: false, prepend: true };
@@ -59,10 +68,13 @@
     if (!target || !target.node) return false;
 
     var mount = target.node;
-    var launcher = el("button", "trtt-launcher", "✦ THINKING ROOM");
-    launcher.type = "button";
-    launcher.setAttribute("aria-haspopup", "dialog");
-    launcher.setAttribute("aria-expanded", "false");
+    var launcher = target.replace ? null : mount.querySelector(".trtt-launcher");
+    if (!launcher) {
+      launcher = el("button", "trtt-launcher", "✦ THINKING ROOM");
+      launcher.type = "button";
+      launcher.setAttribute("aria-haspopup", "dialog");
+      launcher.setAttribute("aria-expanded", "false");
+    }
 
     var overlay = el("div", "trtt-overlay");
     overlay.id = "trtt-thinking-room";
@@ -130,13 +142,10 @@
 
     if (target.replace) {
       mount.replaceChildren(launcher);
-    } else {
-      // Preserve all existing Blogger content and place the launcher first
-      // inside a fallback container so it remains easy to find.
-      if (!mount.querySelector(".trtt-launcher")) {
-        if (target.prepend) mount.insertBefore(launcher, mount.firstChild);
-        else mount.appendChild(launcher);
-      }
+    } else if (!launcher.isConnected) {
+      // Preserve all existing Blogger content and insert only one launcher.
+      if (target.prepend) mount.insertBefore(launcher, mount.firstChild);
+      else mount.appendChild(launcher);
     }
 
     function openRoom() {
@@ -164,7 +173,7 @@
       if (event.key === "Escape" && overlay.classList.contains("active")) closeRoom();
     });
 
-    console.info("[TRTT] Thinking Room mounted safely:", target.replace ? "#main-menu" : ".header-menu");
+    console.info("[TRTT] Thinking Room mounted safely in:", mount.id || mount.className || mount.tagName);
     return true;
   }
 
