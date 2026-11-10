@@ -4,7 +4,7 @@
  */
 (function () {
   "use strict";
-  var base = "https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@main/";
+  var base = "https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@trtt-control-v103/";
   var version = "103";
   if (!document.getElementById("trtt-control-css")) {
     var css = document.createElement("link");
