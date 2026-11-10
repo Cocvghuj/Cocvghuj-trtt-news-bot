@@ -1,12 +1,27 @@
-/*! TRTT MILLION DOLLAR DIRECT GITHUB LOADER (NO VERCEL NEEDED)
- * Direct GitHub Pages & jsDelivr CDN
+/*! TRTT CONTROL LOADER — VERSION 103
+ * Single Blogger entry point.
+ * Loads the canonical CSS and application from the reviewed control branch.
  */
-(function() {
-  'use strict';
-  var scriptUrl = 'https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@main/trtt-all-in-one.js?t=' + Date.now();
-  var s = document.createElement('script');
-  s.src = scriptUrl;
-  s.async = false;
-  s.crossOrigin = 'anonymous';
-  document.head.appendChild(s);
+(function () {
+  "use strict";
+
+  var base = "https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@trtt-control-v103/";
+  var version = "103";
+
+  if (!document.getElementById("trtt-control-css")) {
+    var css = document.createElement("link");
+    css.id = "trtt-control-css";
+    css.rel = "stylesheet";
+    css.href = base + "trtt-control/trtt-app.css?v=" + version;
+    document.head.appendChild(css);
+  }
+
+  if (!document.getElementById("trtt-control-app")) {
+    var app = document.createElement("script");
+    app.id = "trtt-control-app";
+    app.src = base + "trtt-control/trtt-app.js?v=" + version;
+    app.defer = true;
+    app.crossOrigin = "anonymous";
+    document.head.appendChild(app);
+  }
 })();
