@@ -45,7 +45,7 @@ def main():
         sys.exit(f"ERROR: Diary file not found: {md_file}")
 
     source = md_file.read_text(encoding="utf-8")
-    match = re.search(r"^#\\s+(.+?)\\s*$", source, flags=re.MULTILINE)
+    match = re.search(r"^#\s+(.+?)\s*$", source, flags=re.MULTILINE)
     if not match:
         sys.exit(f"ERROR: No Markdown H1 title found in {md_file}.")
     title = match.group(1).strip()
