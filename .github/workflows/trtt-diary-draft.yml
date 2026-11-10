@@ -1,17 +1,31 @@
-name: TRTT Diary Draft Post
+name: Blogger Diary Draft (approval required)
 
 on:
   workflow_dispatch:
+    inputs:
+      target_blog:
+        description: "Choose which blog receives the draft"
+        required: true
+        type: choice
+        options:
+          - trtt
+          - flightscoutpro
+      allow_draft:
+        description: "I approve creating this post as a Blogger DRAFT (never publish)"
+        required: true
+        type: boolean
+        default: false
 
 concurrency:
-  group: trtt-diary-draft
+  group: blogger-diary-draft-${{ inputs.target_blog }}
   cancel-in-progress: false
 
 permissions:
   contents: read
 
 jobs:
-  post-diary-draft:
+  create-draft:
+    if: ${{ inputs.allow_draft == true }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -20,16 +34,18 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Create Diary Draft on Blogger
+      - name: Create Blogger draft only
         env:
+          TARGET_BLOG: ${{ inputs.target_blog }}
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.FLIGHTSCOUTPRO_BLOG_ID }}
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
           BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
