@@ -1,5 +1,5 @@
 /*! TRTT VOYAGE — THINKING ROOM DOOR / V106
- * GitHub-controlled door. No Blogger theme edits required.
+ * V106 menu mount correction. Keeps the existing Blogger header structure intact.
  */
 (function () {
   "use strict";
@@ -32,12 +32,10 @@
     return a;
   }
 
-  // Exact insertion point from the saved TRTT Blogger layout:
-  // #header-wrap > .container > .header-menu > #main-menu
+  // Only use the original menu slot. Never fall back to the whole header.
   function findMount() {
     return document.querySelector("#header-wrap .header-menu") ||
-      document.querySelector("#header-wrap #main-menu") ||
-      document.querySelector("#header-wrap");
+      document.querySelector("#header-wrap #main-menu");
   }
 
   function buildDoor() {
@@ -88,25 +86,26 @@
 
   function mount() {
     if (!document.body) return false;
+    if (document.getElementById("trtt-control-nav")) return true;
+
     var target = findMount();
     if (!target) return false;
-
-    var old = document.getElementById("trtt-control-nav");
-    if (old) old.remove();
 
     var nav = buildDoor();
 
     if (target.classList && target.classList.contains("header-menu")) {
-      // The old menu lives in this exact header slot; replace only its contents.
-      while (target.firstChild) target.removeChild(target.firstChild);
-      target.appendChild(nav);
+      // Replace only the old menu element; preserve every other header child.
+      var oldMenu = target.querySelector("#main-menu") ||
+        target.querySelector("#main-menu-nav");
+      if (oldMenu && oldMenu.parentNode) {
+        oldMenu.parentNode.replaceChild(nav, oldMenu);
+      } else {
+        target.appendChild(nav);
+      }
     } else if (target.id === "main-menu") {
-      while (target.firstChild) target.removeChild(target.firstChild);
-      target.appendChild(nav);
-    } else {
-      // Last-resort fallback stays inside the header, never at the bottom of the page.
-      target.appendChild(nav);
+      target.parentNode.replaceChild(nav, target);
     }
+
     return true;
   }
 
