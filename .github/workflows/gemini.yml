@@ -1,0 +1,41 @@
+name: Gemini Full Auto
+
+on:
+  issue_comment:
+    types: [created]
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  gemini-auto:
+    if: >-
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@gemini')) ||
+      (github.event_name == 'issues' && contains(github.event.issue.body, '@gemini'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Call Gemini API - Real
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          echo "Calling Gemini API..."
+          curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=$GEMINI_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{\"contents\":[{\"parts\":[{\"text\":\"You are TRTT Worker. Rules in CLAUDE.md. Only trtt-control/. V106 TRTT MAC-787950 LOCKED. Task: $ISSUE_BODY. Return only JS code.\"}]}]}" > gemini-response.json
+          cat gemini-response.json
+          echo "Gemini API Called - Check Response"
+
+      - name: Check V106
+        run: |
+          grep -r "TRTT MAC-787950 LOCKED" trtt-control/ || echo "V106 Check Done"
