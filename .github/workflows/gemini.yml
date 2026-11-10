@@ -21,21 +21,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Call Gemini API - Real
+      - name: Call Gemini API - Fixed
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
+          TASK_TEXT: ${{ github.event.comment.body || github.event.issue.body }}
         run: |
           echo "Calling Gemini API..."
-          curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=$GEMINI_API_KEY" \
-            -H "Content-Type: application/json" \
-            -d "{\"contents\":[{\"parts\":[{\"text\":\"You are TRTT Worker. Rules in CLAUDE.md. Only trtt-control/. V106 TRTT MAC-787950 LOCKED. Task: $ISSUE_BODY. Return only JS code.\"}]}]}" > gemini-response.json
-          cat gemini-response.json
-          echo "Gemini API Called - Check Response"
-
-      - name: Check V106
-        run: |
-          grep -r "TRTT MAC-787950 LOCKED" trtt-control/ || echo "V106 Check Done"
+          python3 -c "
+          import json, os, urllib.request
+          task = os.environ.get('TASK_TEXT','Hello')
+          # শুধু প্রথম 2000 অক্ষর নাও - JSON ভাঙ্গবো না
+          task = task[:2000].replace(chr(10),' ')
+          body = {'contents': [{'parts': [{'text': 'You are TRTT Worker. Only trtt-control/. V106 TRTT MAC-787950 LOCKED. Task: ' + task}]}]}
+          req = urllib.request.Request(
+            'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + os.environ['GEMINI_API_KEY'],
+            data=json.dumps(body).encode(),
+            headers={'Content-Type': 'application/json'}
+          )
+          try:
+              resp = urllib.request.urlopen(req)
+              print(resp.read().decode()[:3000])
+          except Exception as e:
+              print('Gemini Error:', e)
+              try:
+                  print(e.read().decode()[:2000])
+              except:
+                  pass
+          "
+          echo "Gemini API Called - Done"
