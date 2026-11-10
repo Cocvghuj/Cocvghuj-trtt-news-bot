@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create a reviewed Markdown diary as a Blogger draft (never publish)."""
+"""Create one Blogger draft on each configured blog. Never publish."""
 import os
 import re
 import sys
@@ -9,77 +9,78 @@ import markdown
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
-DIARIES = {
-    "trtt": {
-        "path": Path("diary/2026-11-10-thinking-room-menu-diary-en.md"),
+TARGETS = {
+    "TRTT": {
+        "path": Path("drafts/trtt/essential-travel-planning-tips-en.md"),
         "blog_id_env": "BLOGGER_BLOG_ID",
-        "labels": ["TRTT Voyage", "Diary", "Thinking Room", "MAC-787950"],
+        "labels": ["TRTT Voyage", "Travel Tips", "Travel Planning"],
     },
-    "flightscoutpro": {
-        "path": Path("drafts/flightscoutpro/2026-11-10-thinking-room-traveller-diary-en.md"),
+    "FlightScoutPro": {
+        "path": Path("drafts/flightscoutpro/choosing-the-right-flight-en.md"),
         "blog_id_env": "FLIGHTSCOUTPRO_BLOG_ID",
-        "labels": ["FlightScoutPro", "Travel Diary", "Thinking Room", "MAC-787950"],
+        "labels": ["FlightScoutPro", "Flights", "Travel Tips"],
     },
 }
 
 
 def main():
-    target = os.environ.get("TARGET_BLOG", "").strip().lower()
-    if target not in DIARIES:
-        sys.exit("ERROR: TARGET_BLOG must be 'trtt' or 'flightscoutpro'.")
-
-    config = DIARIES[target]
-    blog_id = os.environ.get(config["blog_id_env"])
     client_id = os.environ.get("BLOGGER_CLIENT_ID")
     client_secret = os.environ.get("BLOGGER_CLIENT_SECRET")
     refresh_token = os.environ.get("BLOGGER_REFRESH_TOKEN")
-    if not all([blog_id, client_id, client_secret, refresh_token]):
-        sys.exit(
-            "ERROR: Missing Blogger credentials. Required: "
-            f"{config['blog_id_env']}, BLOGGER_CLIENT_ID, "
-            "BLOGGER_CLIENT_SECRET, BLOGGER_REFRESH_TOKEN."
+    if not all([client_id, client_secret, refresh_token]):
+        sys.exit("ERROR: Missing BLOGGER_CLIENT_ID, BLOGGER_CLIENT_SECRET or BLOGGER_REFRESH_TOKEN GitHub secret.")
+
+    failures = []
+    for target, config in TARGETS.items():
+        blog_id = os.environ.get(config["blog_id_env"])
+        if not blog_id:
+            print(f"ERROR: {target}: missing {config['blog_id_env']} secret.")
+            failures.append(target)
+            continue
+
+        md_file = config["path"]
+        if not md_file.is_file():
+            print(f"ERROR: {target}: article file not found: {md_file}")
+            failures.append(target)
+            continue
+
+        source = md_file.read_text(encoding="utf-8")
+        match = re.search(r"^#\\s+(.+?)\\s*$", source, flags=re.MULTILINE)
+        if not match:
+            print(f"ERROR: {target}: article has no H1 title.")
+            failures.append(target)
+            continue
+
+        title = match.group(1).strip()
+        html = markdown.markdown(source, extensions=["extra", "sane_lists"])
+        credentials = Credentials(
+            None,
+            refresh_token=refresh_token,
+            token_uri="https://oauth2.googleapis.com/token",
+            client_id=client_id,
+            client_secret=client_secret,
         )
+        try:
+            blogger = build("blogger", "v3", credentials=credentials, cache_discovery=False)
+            body = {
+                "kind": "blogger#post",
+                "title": title,
+                "content": html,
+                "labels": config["labels"],
+            }
+            print(f"Creating DRAFT only: {target} — {title}")
+            post = blogger.posts().insert(blogId=blog_id, body=body, isDraft=True).execute()
+            post_id = post.get("id")
+            if not post_id:
+                raise RuntimeError(f"Blogger returned no post ID: {post}")
+            print(f"CONFIRMED DRAFT: {target}; post ID: {post_id}; status: {post.get('status', 'not supplied')}")
+        except Exception as exc:
+            print(f"ERROR: {target}: {type(exc).__name__}: {exc}")
+            failures.append(target)
 
-    md_file = config["path"]
-    if not md_file.is_file():
-        sys.exit(f"ERROR: Diary file not found: {md_file}")
-
-    source = md_file.read_text(encoding="utf-8")
-    match = re.search(r"^#\s+(.+?)\s*$", source, flags=re.MULTILINE)
-    if not match:
-        sys.exit(f"ERROR: No Markdown H1 title found in {md_file}.")
-    title = match.group(1).strip()
-    html = markdown.markdown(source, extensions=["extra", "sane_lists"])
-
-    credentials = Credentials(
-        None,
-        refresh_token=refresh_token,
-        token_uri="https://oauth2.googleapis.com/token",
-        client_id=client_id,
-        client_secret=client_secret,
-    )
-    blogger = build("blogger", "v3", credentials=credentials, cache_discovery=False)
-
-    body = {
-        "kind": "blogger#post",
-        "title": title,
-        "content": html,
-        "labels": config["labels"],
-    }
-
-    print(f"Creating Blogger DRAFT for {target}: {title}")
-    post = blogger.posts().insert(blogId=blog_id, body=body, isDraft=True).execute()
-    post_id = post.get("id")
-    status = post.get("status")
-    if not post_id:
-        sys.exit(f"ERROR: Blogger returned no post ID: {post}")
-    print("CONFIRMED: Blogger API returned a post ID.")
-    print(f"Post ID: {post_id}")
-    print(f"Status: {status or 'not supplied by API'}")
-    print(f"Target: {target}")
-    print(f"Title: {title}")
-    if status and status.upper() not in ("DRAFT", "SCHEDULED"):
-        sys.exit(f"ERROR: Unexpected Blogger status: {status}")
+    if failures:
+        sys.exit("Draft creation incomplete for: " + ", ".join(failures))
+    print("SUCCESS: Blogger API confirmed draft creation on both blogs. No post was published.")
 
 
 if __name__ == "__main__":
