@@ -1,0 +1,26 @@
+/* TRTT VOYAGE — THINKING ROOM DOOR / V106 */
+.trtt-control-nav,.trtt-control-nav *{box-sizing:border-box}
+#header-wrap{height:auto!important;min-height:70px}
+#header-wrap .header-menu{display:block!important;clear:both!important;float:none!important;width:100%!important;max-width:none!important;max-height:none!important;margin:0!important}
+#header-wrap .header-menu #trtt-control-nav{width:100%}
+.trtt-control-nav{position:relative;z-index:9999;display:flex;align-items:center;gap:14px;width:100%;min-height:84px;padding:13px clamp(12px,2.6vw,28px);background:linear-gradient(112deg,#061226 0%,#10254a 52%,#073b48 100%);border-top:1px solid #9abaff55;border-bottom:1px solid #9abaff66;box-shadow:0 9px 28px #0612262b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.trtt-control-brand{flex:0 0 auto;color:#fff!important;text-decoration:none!important;font-size:12px;font-weight:950;letter-spacing:1.7px;white-space:nowrap}
+.trtt-route-list{display:flex;align-items:center;gap:8px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:thin;scrollbar-color:#8198dc transparent;padding:5px 2px}
+.trtt-route-bubble{flex:0 0 auto;min-width:70px;min-height:52px;padding:8px 11px;border:1px solid #c4d5ff70;border-radius:17px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;text-align:center;text-decoration:none!important;color:#fff!important;background:radial-gradient(circle at 25% 18%,#ffffff48,transparent 43%),linear-gradient(145deg,#425da8,#1c2e60 72%,#0b4050);box-shadow:0 5px 14px #0004,inset 0 1px 5px #ffffff25;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.trtt-route-bubble:hover,.trtt-route-bubble:focus-visible{transform:translateY(-3px);border-color:#fff;box-shadow:0 9px 20px #0005,0 0 0 2px #9cb9ff30;outline:none}
+.trtt-route-bubble strong{font-size:11px;line-height:1.15;white-space:nowrap;color:#fff}
+.trtt-route-bubble span{font-size:8px;line-height:1.1;color:#dce7ff;white-space:nowrap}
+.trtt-thinking-room-trigger{position:relative;isolation:isolate;flex:0 0 auto;min-width:218px;min-height:66px;display:flex;align-items:center;justify-content:center;gap:11px;padding:10px 15px;border:1px solid #ffe2a5;border-radius:19px;color:#fff!important;text-align:left;background:linear-gradient(135deg,#24194c 0%,#4c3185 42%,#087b83 100%);box-shadow:0 7px 20px #0005,inset 0 1px 0 #ffffff55;cursor:pointer;overflow:hidden;transition:transform .22s ease,box-shadow .22s ease,filter .22s ease}
+.trtt-thinking-room-trigger:before{content:"";position:absolute;z-index:-1;inset:3px;border:1px solid #ffffff35;border-radius:15px;background:linear-gradient(110deg,#ffffff12,transparent 42%,#8cfaff12)}
+.trtt-thinking-room-trigger:after{content:"";position:absolute;z-index:-1;width:90px;height:90px;right:-28px;top:-48px;border-radius:50%;background:#8cfaff30;filter:blur(12px)}
+.trtt-thinking-room-trigger:hover,.trtt-thinking-room-trigger:focus-visible{transform:translateY(-3px);filter:brightness(1.13);box-shadow:0 12px 28px #0006,0 0 22px #7a75ff66;outline:2px solid #fff;outline-offset:3px}
+.trtt-door-icon{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border:1px solid #ffe7b8;border-radius:13px;background:linear-gradient(145deg,#f4d78c,#b77a36);color:#241642;font-size:23px;box-shadow:0 0 17px #ffdb8b77,inset 0 1px 3px #fff9}
+.trtt-door-copy{display:flex;flex-direction:column;gap:4px;min-width:0}
+.trtt-door-copy strong{font-size:12px;line-height:1.1;letter-spacing:1.05px;font-weight:950;white-space:nowrap}
+.trtt-door-copy small{font-size:8px;line-height:1.1;letter-spacing:1.15px;color:#d7eaff;white-space:nowrap}
+.trtt-door-arrow{margin-left:auto;color:#ffe7ae;font-size:20px;line-height:1}
+.trtt-door-note{position:fixed;z-index:2147483001;left:50%;bottom:24px;max-width:min(90vw,420px);padding:12px 17px;border:1px solid #d9c5ff88;border-radius:14px;background:#101a38;color:#fff;font:600 13px/1.45 system-ui,sans-serif;box-shadow:0 12px 35px #0008;opacity:0;transform:translate(-50%,12px);pointer-events:none;transition:opacity .2s ease,transform .2s ease}
+.trtt-door-note.is-visible{opacity:1;transform:translate(-50%,0)}
+@media(max-width:900px){.trtt-control-nav{flex-wrap:wrap;gap:10px}.trtt-route-list{order:3;flex-basis:100%;width:100%}.trtt-thinking-room-trigger{margin-left:auto}}
+@media(max-width:600px){.trtt-control-nav{gap:9px;min-height:0;padding:10px}.trtt-control-brand{font-size:11px}.trtt-route-list{gap:7px}.trtt-route-bubble{min-width:66px;min-height:48px;padding:7px 9px;border-radius:15px}.trtt-route-bubble strong{font-size:10px}.trtt-route-bubble span{font-size:7px}.trtt-thinking-room-trigger{width:100%;min-height:66px;justify-content:center;margin:0;padding:9px 14px}.trtt-door-copy strong{font-size:12px}.trtt-door-copy small{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.trtt-route-bubble,.trtt-thinking-room-trigger,.trtt-door-note{transition:none}}
