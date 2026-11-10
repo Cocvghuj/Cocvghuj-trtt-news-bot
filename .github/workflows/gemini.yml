@@ -6,14 +6,11 @@ on:
   issues:
     types: [opened]
 
-# This job only reads the text and prints Gemini's reply to the run log.
-# It does not change the repository, so no write permission is needed.
 permissions:
   contents: read
 
 jobs:
   gemini-auto:
-    # Only the repository owner can trigger it (protects your Gemini key from strangers).
     if: >-
       (github.event_name == 'issue_comment' && github.event.comment.author_association == 'OWNER' && contains(github.event.comment.body, '@gemini')) ||
       (github.event_name == 'issues' && github.event.issue.author_association == 'OWNER' && contains(github.event.issue.body, '@gemini'))
@@ -23,39 +20,34 @@ jobs:
       - name: Call Gemini API
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          # Optional: set a repository variable named GEMINI_MODEL to change the model without editing code.
-          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.0-flash' }}
           TASK_TEXT: ${{ github.event.comment.body || github.event.issue.body }}
         run: |
           python3 - <<'PY'
-          import json, os, sys, urllib.error, urllib.request
+          import json, os, sys, urllib.error, urllib.request, time
 
           task = os.environ.get("TASK_TEXT", "Hello")[:2000].replace("\n", " ")
           model = os.environ["GEMINI_MODEL"]
           url = ("https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent")
-
           body = {"contents": [{"parts": [{"text": "You are TRTT Worker. Task: " + task}]}]}
 
-          req = urllib.request.Request(
-              url,
-              data=json.dumps(body).encode("utf-8"),
-              headers={
-                  "Content-Type": "application/json",
-                  "x-goog-api-key": os.environ["GEMINI_API_KEY"],
-              },
-          )
-
           print("Calling Gemini model:", model)
-          try:
-              with urllib.request.urlopen(req, timeout=60) as resp:
-                  data = json.load(resp)
-          except urllib.error.HTTPError as e:
-              print("Gemini HTTP error:", e.code)
-              print(e.read().decode("utf-8", "replace")[:2000])
-              sys.exit(1)
-          except Exception as e:
-              print("Gemini request failed:", e)
-              sys.exit(1)
+          for attempt in range(3):
+              req = urllib.request.Request(
+                  url,
+                  data=json.dumps(body).encode("utf-8"),
+                  headers={"Content-Type": "application/json", "x-goog-api-key": os.environ["GEMINI_API_KEY"]},
+              )
+              try:
+                  with urllib.request.urlopen(req, timeout=120) as resp:
+                      data = json.load(resp)
+                  break
+              except Exception as e:
+                  print(f"Attempt {attempt+1} failed:", e)
+                  if attempt == 2:
+                      print("Gemini request failed after 3 tries")
+                      sys.exit(1)
+                  time.sleep(5)
 
           try:
               text = data["candidates"][0]["content"]["parts"][0]["text"]
