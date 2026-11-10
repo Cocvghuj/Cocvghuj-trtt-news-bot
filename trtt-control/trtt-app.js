@@ -43,10 +43,12 @@
   }
 
   function findMount() {
-    var main = document.querySelector("#main-wrapper, .main, .blog-posts");
+    var menu = document.querySelector("#main-menu, .header-menu, .main-menu, #header nav, #header-wrapper nav, header nav");
+    if (menu) return { parent: menu, before: null };
     var header = document.querySelector("#header-wrapper, #header, header");
-    if (main && main.parentNode) return { parent: main.parentNode, before: main };
     if (header && header.parentNode) return { parent: header.parentNode, before: header.nextSibling };
+    var main = document.querySelector("#main-wrapper, .main, .blog-posts");
+    if (main && main.parentNode) return { parent: main.parentNode, before: main };
     return { parent: document.body, before: document.body.firstChild };
   }
 
