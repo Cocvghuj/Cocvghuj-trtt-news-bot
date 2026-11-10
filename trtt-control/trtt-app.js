@@ -43,18 +43,8 @@
   }
 
   function findMount() {
-    var menu = document.querySelector("#main-menu, .header-menu, .main-menu, #header nav, #header-wrapper nav, header nav");
-    if (menu) {
-      if (menu.matches("nav, ul, ol")) {
-        return { parent: menu.parentNode, before: menu.nextSibling };
-      }
-      return { parent: menu, before: null };
-    }
-    var header = document.querySelector("#header-wrapper, #header, header");
-    if (header && header.parentNode) return { parent: header.parentNode, before: header.nextSibling };
-    var main = document.querySelector("#main-wrapper, .main, .blog-posts");
-    if (main && main.parentNode) return { parent: main.parentNode, before: main };
-    return { parent: document.body, before: document.body.firstChild };
+    return document.querySelector("#header-wrap .header-menu") ||
+      document.querySelector("#header-wrap #main-menu");
   }
 
   function buildRoom() {
@@ -151,8 +141,11 @@
   }
 
   function mount() {
-    if (document.getElementById("trtt-control-nav")) return true;
     if (!document.body) return false;
+    if (document.getElementById("trtt-control-nav")) return true;
+
+    var target = findMount();
+    if (!target) return false;
 
     var nav = node("nav", "trtt-control-nav");
     nav.id = "trtt-control-nav";
@@ -166,16 +159,32 @@
     ROUTES.forEach(function (item) { routes.appendChild(makeRoute(item)); });
     nav.appendChild(routes);
 
-    var trigger = node("button", "trtt-thinking-room-trigger", "✦ Thinking Room");
+    var trigger = node("button", "trtt-thinking-room-trigger");
     trigger.id = "trtt-thinking-room-trigger";
     trigger.type = "button";
     trigger.setAttribute("aria-haspopup", "dialog");
     trigger.setAttribute("aria-controls", "trtt-thinking-room");
     trigger.setAttribute("aria-expanded", "false");
+    trigger.appendChild(node("span", "trtt-door-icon", "✦"));
+    var copy = node("span", "trtt-door-copy");
+    copy.appendChild(node("strong", "", "THINKING ROOM"));
+    copy.appendChild(node("small", "", "ENTER THE IDEA SPACE"));
+    trigger.appendChild(copy);
+    trigger.appendChild(node("span", "trtt-door-arrow", "↗"));
     nav.appendChild(trigger);
 
-    var target = findMount();
-    target.parent.insertBefore(nav, target.before || null);
+    if (target.classList && target.classList.contains("header-menu")) {
+      var oldMenu = target.querySelector("#main-menu") ||
+        target.querySelector("#main-menu-nav");
+      if (oldMenu && oldMenu.parentNode) {
+        oldMenu.parentNode.replaceChild(nav, oldMenu);
+      } else {
+        target.appendChild(nav);
+      }
+    } else if (target.id === "main-menu") {
+      target.parentNode.replaceChild(nav, target);
+    }
+
     buildRoom();
     return true;
   }
