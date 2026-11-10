@@ -45,7 +45,7 @@ def main():
             continue
 
         source = md_file.read_text(encoding="utf-8")
-        match = re.search(r"^#\\s+(.+?)\\s*$", source, flags=re.MULTILINE)
+        match = re.search(r"^#\s+(.+?)\s*$", source, flags=re.MULTILINE)
         if not match:
             print(f"ERROR: {target}: article has no H1 title.")
             failures.append(target)
