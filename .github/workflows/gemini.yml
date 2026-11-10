@@ -20,7 +20,7 @@ jobs:
       - name: Call Gemini API
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash' }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
           TASK_TEXT: ${{ github.event.comment.body || github.event.issue.body }}
         run: |
           python3 - <<'PY'
