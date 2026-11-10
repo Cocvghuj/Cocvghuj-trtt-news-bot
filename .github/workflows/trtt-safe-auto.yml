@@ -1,0 +1,56 @@
+name: TRTT Safe Auto - V106 Protected
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  safe-check-and-merge:
+    if: contains(github.event.pull_request.labels.*.name, 'auto')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 1. Check Only trtt-control Allowed
+        run: |
+          git fetch origin main
+          FILES=$(git diff --name-only origin/main...HEAD)
+          echo "$FILES"
+          for f in $FILES; do
+            case "$f" in
+              trtt-control/*|README.md)
+                echo "OK: $f"
+                ;;
+              *)
+                echo "BLOCKED: $f"
+                exit 1
+                ;;
+            esac
+          done
+
+      - name: 2. Check V106 Marker
+        run: |
+          grep -r "TRTT MAC-787950 LOCKED" trtt-control/ || { echo "V106 Marker Missing!"; exit 1; }
+          echo "V106 OK"
+
+      - name: 3. Check JS Syntax
+        run: |
+          shopt -s nullglob
+          for f in trtt-control/*.js; do
+            echo "Checking $f"
+            node --check "$f" || exit 1
+          done
+          echo "JS Syntax OK"
+
+      - name: 4. Auto Merge
+        run: gh pr merge ${{ github.event.pull_request.number }} --auto --squash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
