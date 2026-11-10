@@ -6,47 +6,62 @@ on:
   issues:
     types: [opened]
 
+# This job only reads the text and prints Gemini's reply to the run log.
+# It does not change the repository, so no write permission is needed.
 permissions:
-  contents: write
-  pull-requests: write
-  issues: write
+  contents: read
 
 jobs:
   gemini-auto:
+    # Only the repository owner can trigger it (protects your Gemini key from strangers).
     if: >-
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@gemini')) ||
-      (github.event_name == 'issues' && contains(github.event.issue.body, '@gemini'))
+      (github.event_name == 'issue_comment' && github.event.comment.author_association == 'OWNER' && contains(github.event.comment.body, '@gemini')) ||
+      (github.event_name == 'issues' && github.event.issue.author_association == 'OWNER' && contains(github.event.issue.body, '@gemini'))
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 5
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Call Gemini API - Fixed
+      - name: Call Gemini API
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          # Optional: set a repository variable named GEMINI_MODEL to change the model without editing code.
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
           TASK_TEXT: ${{ github.event.comment.body || github.event.issue.body }}
         run: |
-          echo "Calling Gemini API..."
-          python3 -c "
-          import json, os, urllib.request
-          task = os.environ.get('TASK_TEXT','Hello')
-          # শুধু প্রথম 2000 অক্ষর নাও - JSON ভাঙ্গবো না
-          task = task[:2000].replace(chr(10),' ')
-          body = {'contents': [{'parts': [{'text': 'You are TRTT Worker. Only trtt-control/. V106 TRTT MAC-787950 LOCKED. Task: ' + task}]}]}
+          python3 - <<'PY'
+          import json, os, sys, urllib.error, urllib.request
+
+          task = os.environ.get("TASK_TEXT", "Hello")[:2000].replace("\n", " ")
+          model = os.environ["GEMINI_MODEL"]
+          url = ("https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent")
+
+          body = {"contents": [{"parts": [{"text": "You are TRTT Worker. Task: " + task}]}]}
+
           req = urllib.request.Request(
-            'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + os.environ['GEMINI_API_KEY'],
-            data=json.dumps(body).encode(),
-            headers={'Content-Type': 'application/json'}
+              url,
+              data=json.dumps(body).encode("utf-8"),
+              headers={
+                  "Content-Type": "application/json",
+                  "x-goog-api-key": os.environ["GEMINI_API_KEY"],
+              },
           )
+
+          print("Calling Gemini model:", model)
           try:
-              resp = urllib.request.urlopen(req)
-              print(resp.read().decode()[:3000])
+              with urllib.request.urlopen(req, timeout=60) as resp:
+                  data = json.load(resp)
+          except urllib.error.HTTPError as e:
+              print("Gemini HTTP error:", e.code)
+              print(e.read().decode("utf-8", "replace")[:2000])
+              sys.exit(1)
           except Exception as e:
-              print('Gemini Error:', e)
-              try:
-                  print(e.read().decode()[:2000])
-              except:
-                  pass
-          "
-          echo "Gemini API Called - Done"
+              print("Gemini request failed:", e)
+              sys.exit(1)
+
+          try:
+              text = data["candidates"][0]["content"]["parts"][0]["text"]
+          except (KeyError, IndexError, TypeError):
+              print("Unexpected Gemini response:", json.dumps(data)[:2000])
+              sys.exit(1)
+
+          print(text[:3000])
+          PY
