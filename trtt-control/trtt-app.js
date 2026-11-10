@@ -44,7 +44,12 @@
 
   function findMount() {
     var menu = document.querySelector("#main-menu, .header-menu, .main-menu, #header nav, #header-wrapper nav, header nav");
-    if (menu) return { parent: menu, before: null };
+    if (menu) {
+      if (menu.matches("nav, ul, ol")) {
+        return { parent: menu.parentNode, before: menu.nextSibling };
+      }
+      return { parent: menu, before: null };
+    }
     var header = document.querySelector("#header-wrapper, #header, header");
     if (header && header.parentNode) return { parent: header.parentNode, before: header.nextSibling };
     var main = document.querySelector("#main-wrapper, .main, .blog-posts");
