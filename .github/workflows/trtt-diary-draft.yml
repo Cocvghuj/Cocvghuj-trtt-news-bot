@@ -1,30 +1,23 @@
-name: Blogger Diary Draft (approval required)
+name: Create Blogger drafts on both blogs (approval required)
 
 on:
   workflow_dispatch:
     inputs:
-      target_blog:
-        description: "Choose which blog receives the draft"
-        required: true
-        type: choice
-        options:
-          - trtt
-          - flightscoutpro
       allow_draft:
-        description: "I approve creating this post as a Blogger DRAFT (never publish)"
+        description: "I approve creating the prepared posts as DRAFTS on both blogs (never publish)"
         required: true
         type: boolean
         default: false
 
 concurrency:
-  group: blogger-diary-draft-${{ inputs.target_blog }}
+  group: blogger-two-blog-drafts
   cancel-in-progress: false
 
 permissions:
   contents: read
 
 jobs:
-  create-draft:
+  create-both-drafts:
     if: ${{ inputs.allow_draft == true }}
     runs-on: ubuntu-latest
     steps:
@@ -41,9 +34,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Create Blogger draft only
+      - name: Create drafts on TRTT and FlightScoutPro only
         env:
-          TARGET_BLOG: ${{ inputs.target_blog }}
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
           FLIGHTSCOUTPRO_BLOG_ID: ${{ secrets.FLIGHTSCOUTPRO_BLOG_ID }}
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
