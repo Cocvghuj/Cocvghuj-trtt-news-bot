@@ -62,11 +62,11 @@
   transition:transform .22s ease,box-shadow .22s ease,filter .22s ease;
 }
 .trtt-thinking-room-trigger:before{
-  content:"";position:absolute;inset:4px;border:1px solid #ffffff38;
+  display:block!important;content:"";position:absolute;inset:4px;border:1px solid #ffffff38;
   border-radius:15px;pointer-events:none;
 }
 .trtt-thinking-room-trigger:after{
-  content:"";position:absolute;width:100px;height:100px;right:-35px;top:-55px;
+  display:block!important;content:"";position:absolute;width:100px;height:100px;right:-35px;top:-55px;
   border-radius:50%;background:#8cfaff38;filter:blur(13px);pointer-events:none;
 }
 .trtt-thinking-room-trigger:hover,.trtt-thinking-room-trigger:focus-visible{
