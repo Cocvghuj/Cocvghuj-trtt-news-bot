@@ -100,7 +100,10 @@
       if (oldMenu && oldMenu.parentNode) {
         oldMenu.parentNode.replaceChild(nav, oldMenu);
       } else {
-        target.appendChild(nav);
+        // If the legacy menu node is absent, place the new menu at the
+        // beginning of the existing menu slot instead of after its contents.
+        // Appending here can make the whole TRTT row appear below the old menu.
+        target.insertBefore(nav, target.firstChild);
       }
     } else if (target.id === "main-menu") {
       target.parentNode.replaceChild(nav, target);
