@@ -1,12 +1,11 @@
 /*! TRTT CONTROL LOADER — VERSION 106
- * Single Blogger entry point.
- * Cache-busted, uniquely named V106 assets from the reviewed control branch.
+ * Cache-busted V106 assets. The query token changes independently of app version.
  */
 (function () {
   "use strict";
 
   var base = "https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@trtt-control-v106/";
-  var version = "106";
+  var version = "106-door-clean-20261111";
 
   if (!document.getElementById("trtt-control-css")) {
     var css = document.createElement("link");
