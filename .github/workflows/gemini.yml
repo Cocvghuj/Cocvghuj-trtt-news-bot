@@ -22,34 +22,13 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python3 - << 'PY'
-          import os, json, urllib.request, urllib.error, time
-
+          import os, json, urllib.request, urllib.error
           task = os.environ.get("TASK_TEXT", "Hello")
           API_KEY = os.environ["GEMINI_API_KEY"]
           answer = None
-          error_log = ""
-
-          # ১. আগে গুগলরে জিগাও কোন মডেল আছে
-          try:
-              list_url = f"https://generativelanguage.googleapis.com/v1beta/models?key={API_KEY}"
-              with urllib.request.urlopen(list_url, timeout=30) as resp:
-                  data = json.loads(resp.read())
-              # যেগুলা generateContent সাপোর্ট করে
-              models = []
-              for m in data.get("models", []):
-                  name = m.get("name", "").replace("models/", "")
-                  methods = m.get("supportedGenerationMethods", [])
-                  if "generateContent" in methods:
-                      models.append(name)
-              print(f"Found models: {models}")
-              # 2.5 ফ্ল্যাশ আগে, না পাইলে যেকোনোটা
-              models.sort(key=lambda x: (0 if "2.5-flash" in x else 1 if "flash" in x else 2))
-          except Exception as e:
-              print(f"List models failed: {e}")
-              models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
-
-          # ২. এবার একটা একটা কইরা চেষ্টা কর
-          for model in models[:5]:
+          # নতুন ইউজারের জন্য এই ৩টাই চলে
+          models = ["gemini-3.8-flash", "gemini-flash-latest", "gemini-3.5-flash-lite", "gemini-3.0-flash", "gemini-2.5-flash"]
+          for model in models:
               print(f"Trying model: {model}")
               url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
               body = {"contents": [{"parts": [{"text": f"You are TRTT Worker. Reply in Bengali, friendly, short. Task: {task}"}]}]}
@@ -60,23 +39,10 @@ jobs:
                   answer = data["candidates"][0]["content"]["parts"][0]["text"]
                   print(f"SUCCESS with {model}")
                   break
-              except urllib.error.HTTPError as e:
-                  err = e.read().decode()[:1000]
-                  print(f"Failed {model}: {e.code} {err}")
-                  error_log = f"{e.code} {err}"
               except Exception as e:
                   print(f"Failed {model}: {e}")
-                  error_log = str(e)
-
           if not answer:
-              # এইবার আসল এররটাই দেখাইবো, যাতে বুঝতে পারি
-              if "API key not valid" in error_log or "400" in error_log:
-                  answer = "বেটা, তোর চাবি (API KEY) ভুল! Settings > Secrets এ যাইয়া নতুন চাবি লাগা। এরর: " + error_log[:300]
-              else:
-                  answer = f"বেটা, গুগল থেকে এরর আসছে, আমি দেখতেছি: {error_log[:500]}"
-
-          print(answer[:2000])
-
+              answer = "বেটা, একটু পরে আবার ডাক দে!"
           comment_url = f"https://api.github.com/repos/{os.environ['REPO']}/issues/{os.environ['ISSUE_NUMBER']}/comments"
           comment_body = {"body": f"### 🤖 Gemini উত্তর দিছে:\n\n{answer}\n\n---\n*TRTT News Bot | Powered by Gemini*"}
           req2 = urllib.request.Request(comment_url, data=json.dumps(comment_body).encode("utf-8"), headers={"Content-Type": "application/json", "Authorization": f"Bearer {os.environ['GH_TOKEN']}"})
