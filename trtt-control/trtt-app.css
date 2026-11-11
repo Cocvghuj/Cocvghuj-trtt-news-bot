@@ -13,6 +13,10 @@
 .trtt-route-bubble strong{font-size:11px;line-height:1.15;white-space:nowrap;color:#fff}
 .trtt-route-bubble span{font-size:8px;line-height:1.1;color:#dce7ff;white-space:nowrap}
 .trtt-thinking-room-trigger{position:relative;isolation:isolate;flex:0 0 auto;min-width:218px;min-height:66px;display:flex;align-items:center;justify-content:center;gap:11px;padding:10px 15px;border:1px solid #ffe2a5;border-radius:19px;color:#fff!important;text-align:left;font:inherit;background:linear-gradient(135deg,#24194c 0%,#4c3185 42%,#087b83 100%);box-shadow:0 7px 20px #0005,inset 0 1px 0 #ffffff55;cursor:pointer;overflow:hidden;transition:transform .22s ease,box-shadow .22s ease,filter .22s ease}
+
+/* Header alignment fix: keep the Thinking Room control in normal menu flow. */
+.trtt-thinking-room-trigger{position:static!important;isolation:auto!important;align-self:center;margin:0!important;top:auto!important;right:auto!important;bottom:auto!important;left:auto!important}
+.trtt-thinking-room-trigger:before,.trtt-thinking-room-trigger:after{display:none!important}
 .trtt-thinking-room-trigger:before{content:"";position:absolute;z-index:-1;inset:3px;border:1px solid #ffffff35;border-radius:15px;background:linear-gradient(110deg,#ffffff12,transparent 42%,#8cfaff12)}
 .trtt-thinking-room-trigger:after{content:"";position:absolute;z-index:-1;width:90px;height:90px;right:-28px;top:-48px;border-radius:50%;background:#8cfaff30;filter:blur(12px)}
 .trtt-thinking-room-trigger:hover,.trtt-thinking-room-trigger:focus-visible{transform:translateY(-3px);filter:brightness(1.13);box-shadow:0 12px 28px #0006,0 0 22px #7a75ff66;outline:2px solid #fff;outline-offset:3px}
