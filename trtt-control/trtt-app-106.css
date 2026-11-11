@@ -1,41 +1,69 @@
-/* TRTT VOYAGE — V106 MENU + CLEAN THINKING ROOM DOOR */
-.trtt-control-nav,.trtt-control-nav *{box-sizing:border-box}
-#header-wrap .header-menu{display:block!important;clear:both!important;float:none!important;width:100%!important;max-width:100%!important;margin:0!important}
-#header-wrap .header-menu #trtt-control-nav{width:100%}
-.trtt-control-nav{position:relative;z-index:9999;display:flex;flex-wrap:nowrap;align-items:center;gap:12px;width:100%;min-height:84px;padding:13px clamp(12px,2.6vw,28px);overflow:hidden;background:linear-gradient(112deg,#061226 0%,#10254a 52%,#073b48 100%);border-top:1px solid #9abaff55;border-bottom:1px solid #9abaff66;box-shadow:0 9px 28px #0612262b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
-.trtt-control-brand{flex:0 0 auto;color:#fff!important;text-decoration:none!important;font-size:12px;font-weight:950;letter-spacing:1.7px;white-space:nowrap}
-.trtt-route-list{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;scrollbar-color:#8198dc transparent;padding:5px 2px}
-.trtt-route-bubble{flex:0 0 auto;min-width:70px;min-height:52px;padding:8px 11px;border:1px solid #c4d5ff70;border-radius:17px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;text-align:center;text-decoration:none!important;color:#fff!important;background:radial-gradient(circle at 25% 18%,#ffffff48,transparent 43%),linear-gradient(145deg,#425da8,#1c2e60 72%,#0b4050);box-shadow:0 5px 14px #0004,inset 0 1px 5px #ffffff25;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
-.trtt-route-bubble:hover,.trtt-route-bubble:focus-visible{transform:translateY(-3px);border-color:#fff;box-shadow:0 9px 20px #0005,0 0 0 2px #9cb9ff30;outline:none}
-.trtt-route-bubble strong{font-size:11px;line-height:1.15;white-space:nowrap;color:#fff}
-.trtt-route-bubble span{font-size:8px;line-height:1.1;color:#dce7ff;white-space:nowrap}
-
-/* The door is independent of the header and all menu containers. */
-#trtt-thinking-room-trigger{position:fixed!important;right:18px!important;bottom:18px!important;top:auto!important;left:auto!important;z-index:2147483000!important;display:flex!important;align-items:center;gap:12px;min-width:224px;min-height:72px;margin:0!important;padding:12px 16px;border:1px solid #f5d99a;border-radius:18px;background:linear-gradient(135deg,#111a38,#49317d 55%,#087b83);color:#fff!important;box-shadow:0 12px 34px #0008,0 0 22px #8a80ff44;font:inherit;text-align:left;cursor:pointer;box-sizing:border-box}
-#trtt-thinking-room-trigger:hover,#trtt-thinking-room-trigger:focus-visible{transform:translateY(-3px);outline:2px solid #fff;outline-offset:3px;box-shadow:0 16px 40px #000a,0 0 28px #8a80ff77}
-.trtt-door-symbol{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border:1px solid #ffe5ac;border-radius:13px;background:linear-gradient(145deg,#ffe9ad,#bd813d);color:#241642;font-size:25px}
+/* TRTT VOYAGE — THINKING ROOM DOOR ONLY / V106 */
+#trtt-thinking-room-trigger{
+  position:fixed!important;right:18px!important;bottom:18px!important;
+  top:auto!important;left:auto!important;z-index:2147483000!important;
+  display:flex!important;align-items:center;gap:12px;
+  min-width:224px;min-height:72px;margin:0!important;padding:12px 16px;
+  border:1px solid #f5d99a;border-radius:18px;
+  background:linear-gradient(135deg,#111a38,#49317d 55%,#087b83);
+  color:#fff!important;box-shadow:0 12px 34px #0008,0 0 22px #8a80ff44;
+  font:inherit;text-align:left;cursor:pointer;box-sizing:border-box;
+}
+#trtt-thinking-room-trigger:hover,#trtt-thinking-room-trigger:focus-visible{
+  transform:translateY(-3px);outline:2px solid #fff;outline-offset:3px;
+  box-shadow:0 16px 40px #000a,0 0 28px #8a80ff77;
+}
+.trtt-door-symbol{
+  display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;
+  border:1px solid #ffe5ac;border-radius:13px;
+  background:linear-gradient(145deg,#ffe9ad,#bd813d);
+  color:#241642;font-size:25px;
+}
 .trtt-door-label{display:flex;flex-direction:column;gap:5px}
 .trtt-door-label strong{font-size:12px;letter-spacing:1px;font-weight:900;white-space:nowrap}
 .trtt-door-label small{font-size:9px;letter-spacing:1.4px;color:#d9edff;white-space:nowrap}
 .trtt-door-arrow{margin-left:auto;color:#ffe7ae;font-size:22px}
 .trtt-room-open,.trtt-room-open body{overflow:hidden!important}
-.trtt-room-overlay{position:fixed!important;inset:0!important;z-index:2147483001!important;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(2,7,20,.9);backdrop-filter:blur(12px);box-sizing:border-box;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.trtt-room-overlay{
+  position:fixed!important;inset:0!important;z-index:2147483001!important;
+  display:none;align-items:center;justify-content:center;padding:16px;
+  background:rgba(2,7,20,.9);backdrop-filter:blur(12px);
+  box-sizing:border-box;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
 .trtt-room-overlay.is-open{display:flex!important}
-.trtt-room-panel{width:min(900px,100%);max-height:92vh;max-height:92dvh;overflow:auto;border:1px solid #b6caff77;border-radius:24px;background:radial-gradient(circle at 85% 0%,#244b6a 0,transparent 38%),linear-gradient(145deg,#0b1730,#111d3b 62%,#092d38);color:#fff;box-shadow:0 24px 90px #000b}
-.trtt-room-header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:25px clamp(18px,4vw,38px);border-bottom:1px solid #ffffff22}
+.trtt-room-panel{
+  width:min(760px,100%);max-height:92vh;max-height:92dvh;overflow:auto;
+  border:1px solid #b6caff77;border-radius:24px;
+  background:radial-gradient(circle at 85% 0%,#244b6a 0,transparent 38%),linear-gradient(145deg,#0b1730,#111d3b 62%,#092d38);
+  color:#fff;box-shadow:0 24px 90px #000b;
+}
+.trtt-room-header{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:18px;
+  padding:25px clamp(18px,4vw,38px);border-bottom:1px solid #ffffff22;
+}
 .trtt-room-eyebrow{display:block;color:#a9c8ff;font-size:10px;font-weight:850;letter-spacing:2px}
 .trtt-room-identity h2{margin:8px 0 5px;color:#fff;font-size:clamp(24px,4vw,36px);font-weight:950;letter-spacing:1.5px}
 .trtt-room-identity p{margin:0;color:#d7e5ff;font-size:13px}
-.trtt-room-close{width:44px;height:44px;flex:0 0 44px;border:1px solid #ffffff55;border-radius:50%;background:#ffffff12;color:#fff;font-size:29px;line-height:1;cursor:pointer}
-.trtt-room-lock{margin:20px clamp(18px,4vw,38px) 0;padding:12px 14px;border:1px solid #d9b76c88;border-radius:12px;background:#6a4b182e;color:#ffe2a5;font-size:11px;font-weight:900;letter-spacing:1.7px;text-align:center}
-.trtt-room-main{padding:26px clamp(18px,4vw,38px) 32px}
-.trtt-room-main h3{max-width:700px;margin:11px 0;color:#fff;font-size:clamp(24px,4.3vw,40px);line-height:1.15}
-.trtt-room-description{max-width:680px;margin:13px 0 25px;color:#c8d7ef;font-size:14px;line-height:1.75}
-.trtt-room-links{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.trtt-room-link{min-height:72px;padding:13px;border:1px solid #9abaff55;border-radius:14px;background:#ffffff0c;color:#fff!important;text-decoration:none!important;display:flex;flex-direction:column;justify-content:center;gap:5px}
-.trtt-room-link strong{font-size:13px;color:#fff}
-.trtt-room-link span{font-size:10px;color:#bcd0f1}
-.trtt-room-link:hover,.trtt-room-link:focus-visible{background:#ffffff19;border-color:#d8e5ff;outline:2px solid #a9c8ff;outline-offset:1px}
+.trtt-room-close{
+  width:44px;height:44px;flex:0 0 44px;border:1px solid #ffffff55;
+  border-radius:50%;background:#ffffff12;color:#fff;font-size:29px;
+  line-height:1;cursor:pointer;
+}
+.trtt-room-lock{
+  margin:20px clamp(18px,4vw,38px) 0;padding:12px 14px;
+  border:1px solid #d9b76c88;border-radius:12px;background:#6a4b182e;
+  color:#ffe2a5;font-size:11px;font-weight:900;letter-spacing:1.7px;text-align:center;
+}
+.trtt-room-main{padding:30px clamp(18px,4vw,38px) 38px;min-height:170px}
+.trtt-room-main h3{margin:12px 0;color:#fff;font-size:clamp(25px,4.5vw,42px);line-height:1.15}
+.trtt-room-description{max-width:580px;margin:14px 0;color:#c8d7ef;font-size:14px;line-height:1.8}
 .trtt-room-footer{padding:16px 20px;border-top:1px solid #ffffff22;color:#aebfdd;text-align:center;font-size:11px}
-@media(max-width:700px){.trtt-control-nav{gap:8px;min-height:0;padding:9px}.trtt-control-brand{display:none}.trtt-route-list{gap:7px}.trtt-route-bubble{min-width:64px;min-height:48px;padding:7px 8px;border-radius:15px}.trtt-route-bubble strong{font-size:10px}.trtt-route-bubble span{font-size:7px}#trtt-thinking-room-trigger{right:12px!important;bottom:12px!important;min-width:0;min-height:60px;padding:9px 12px;gap:8px}.trtt-door-symbol{width:36px;height:36px;flex-basis:36px;font-size:22px}.trtt-door-label strong{font-size:10px;letter-spacing:.7px}.trtt-door-label small{font-size:8px;letter-spacing:1px}.trtt-room-overlay{padding:8px}.trtt-room-panel{max-height:96vh;max-height:96dvh;border-radius:18px}.trtt-room-links{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(prefers-reduced-motion:reduce){#trtt-thinking-room-trigger,.trtt-route-bubble{transition:none}}
+@media(max-width:700px){
+  #trtt-thinking-room-trigger{right:12px!important;bottom:12px!important;min-width:0;min-height:60px;padding:9px 12px;gap:8px}
+  .trtt-door-symbol{width:36px;height:36px;flex-basis:36px;font-size:22px}
+  .trtt-door-label strong{font-size:10px;letter-spacing:.7px}
+  .trtt-door-label small{font-size:8px;letter-spacing:1px}
+  .trtt-room-overlay{padding:8px}
+  .trtt-room-panel{max-height:96vh;max-height:96dvh;border-radius:18px}
+}
+@media(prefers-reduced-motion:reduce){#trtt-thinking-room-trigger{transition:none}}

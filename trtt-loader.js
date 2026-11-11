@@ -1,12 +1,10 @@
 /*! TRTT CONTROL LOADER — VERSION 106
- * Cache-busted V106 assets. The query token changes independently of app version.
+ * Door-only V106 assets. Cache token changes independently of app version.
  */
 (function () {
   "use strict";
-
   var base = "https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@trtt-control-v106/";
-  var version = "106-door-clean-20261111";
-
+  var version = "106-door-only-20261111";
   if (!document.getElementById("trtt-control-css")) {
     var css = document.createElement("link");
     css.id = "trtt-control-css";
@@ -14,7 +12,6 @@
     css.href = base + "trtt-control/trtt-app-106.css?v=" + version;
     document.head.appendChild(css);
   }
-
   if (!document.getElementById("trtt-control-app")) {
     var app = document.createElement("script");
     app.id = "trtt-control-app";
