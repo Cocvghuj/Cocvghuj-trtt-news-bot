@@ -38,3 +38,8 @@
   .trtt-door-arrow{font-size:17px}
 }
 @media(prefers-reduced-motion:reduce){.trtt-route-bubble,.trtt-thinking-room-trigger,.trtt-door-note{transition:none}}
+
+
+/* Header alignment fix: keep Thinking Room in the same menu row. */
+.trtt-thinking-room-trigger{position:static!important;isolation:auto!important;align-self:center;margin:0!important;top:auto!important;right:auto!important;bottom:auto!important;left:auto!important}
+.trtt-thinking-room-trigger:before,.trtt-thinking-room-trigger:after{display:none!important}
