@@ -71,15 +71,23 @@
     var pane=el("section","trtt-cr-pane");
     pane.dataset.room=id;
     if(id==="brain") {
-      pane.appendChild(sectionIntro("01 / THINK CLEAR","The Brain","A calm place to turn scattered thoughts into one clear next step."));
-      var prompt=el("div","trtt-cr-feature");
-      prompt.appendChild(el("span","trtt-cr-kicker","TODAY'S THINKING PROMPT"));
-      prompt.appendChild(el("h4","","What is the one change that would make TRTT Voyage more useful to a real traveller today?"));
-      prompt.appendChild(el("p","","Think first. Check the facts. Choose one action."));
-      pane.appendChild(prompt);
+      pane.appendChild(sectionIntro("01 / THE CENTRAL SUN","Muse — My Thinking Partner","Think First, Check Facts — With Me!"));
+      var muse=el("div","trtt-cr-feature");
+      muse.appendChild(el("span","trtt-cr-kicker","MUSE • THINKING PARTNER"));
+      muse.appendChild(el("h4","","Think clearly. Question carefully. Check the facts."));
+      muse.appendChild(el("p","","Muse gives direction. Abu takes the decision. Strong ideas need evidence, not pressure."));
+      pane.appendChild(muse);
+      var ask=el("div","trtt-cr-actions");
+      ask.appendChild(link("👀🤫 Ask Mac - Thinking Room এ প্রশ্ন করো","https://chatgpt.com/"));
+      pane.appendChild(ask);
+      var daily=el("div","trtt-cr-feature");
+      daily.appendChild(el("span","trtt-cr-kicker","DAILY THINKING"));
+      daily.appendChild(el("h4","","আজকের চিন্তা: Sanluri থেকে World - আমি আজ কী শিখলাম?"));
+      daily.appendChild(el("p","","একটি চিন্তা। একটি শিক্ষা। আগামী দিনের জন্য একটি পদক্ষেপ।"));
+      pane.appendChild(daily);
       var grid=el("div","trtt-cr-grid");
-      card(grid,"01","Capture the idea","Write the problem in one sentence before choosing a solution.");
-      card(grid,"02","Check the impact","Who benefits, what changes, and what could break?");
+      card(grid,"01","Capture the idea","Write the thought in one sentence before choosing a solution.");
+      card(grid,"02","Check the facts","Separate what is known, what needs checking, and what is only a guess.");
       card(grid,"03","Choose the next move","Keep the work small, testable, and useful.");
       pane.appendChild(grid);
     } else if(id==="team") {
