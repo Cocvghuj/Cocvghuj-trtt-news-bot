@@ -143,7 +143,10 @@
   }
 
   function ensureDoor() {
-    if (document.getElementById("trtt-thinking-room-trigger")) return true;
+    var previousDoor = document.getElementById("trtt-thinking-room-trigger");
+    if (previousDoor) previousDoor.remove();
+    var previousRoom = document.getElementById("trtt-room-overlay");
+    if (previousRoom) previousRoom.remove();
 
     var door = node("button", "trtt-thinking-room-trigger");
     door.type = "button";
