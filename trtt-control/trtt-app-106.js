@@ -180,10 +180,11 @@
   function mount() {
     if (!document.body) return false;
 
+    ensureDoor();
     var nav = document.getElementById("trtt-control-nav");
     if (!nav) {
       var target = findMount();
-      if (!target) return false;
+      if (!target) return true;
       nav = buildNav();
 
       if (target.classList && target.classList.contains("header-menu")) {
@@ -201,7 +202,6 @@
       }
     }
 
-    ensureDoor();
     return true;
   }
 
