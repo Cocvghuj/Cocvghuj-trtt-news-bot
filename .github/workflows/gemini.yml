@@ -3,63 +3,59 @@ name: Gemini Full Auto
 on:
   issue_comment:
     types: [created]
-  issues:
-    types: [opened]
 
 permissions:
+  issues: write
   contents: read
 
 jobs:
   gemini-auto:
-    if: >-
-      (github.event_name == 'issue_comment' && github.event.comment.author_association == 'OWNER' && contains(github.event.comment.body, '@gemini')) ||
-      (github.event_name == 'issues' && github.event.issue.author_association == 'OWNER' && contains(github.event.issue.body, '@gemini'))
+    if: contains(github.event.comment.body, '@gemini')
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     steps:
-      - name: Call Gemini API
+      - name: Call Gemini and Reply
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
-          TASK_TEXT: ${{ github.event.comment.body || github.event.issue.body }}
+          TASK_TEXT: ${{ github.event.comment.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python3 - <<'PY'
-          import json, os, sys, urllib.error, urllib.request, time
+          python3 - << 'PY'
+          import os, json, sys, urllib.request, urllib.error, time
 
-          task = os.environ.get("TASK_TEXT", "Hello")[:2000].replace("\n", " ")
-          model = os.environ["GEMINI_MODEL"]
-          url = ("https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent")
-          body = {"contents": [{"parts": [{"text": "You are TRTT Worker. Task: " + task}]}]}
+          task = os.environ.get("TASK_TEXT", "Hello")
+          # ফাঁকা মডেল আগে চেষ্টা করবো, 503 খাইলে পরেরটা
+          models = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-2.0-flash-lite"]
+          answer = None
 
-          print("Calling Gemini model:", model)
-          for attempt in range(3):
-              req = urllib.request.Request(
-                  url,
-                  data=json.dumps(body).encode("utf-8"),
-                  headers={"Content-Type": "application/json", "x-goog-api-key": os.environ["GEMINI_API_KEY"]},
-              )
-              try:
-                  with urllib.request.urlopen(req, timeout=120) as resp:
-                      data = json.load(resp)
+          for model in models:
+              print(f"Trying model: {model}")
+              url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+              body = {"contents": [{"parts": [{"text": f"You are TRTT Worker. Reply in Bengali, friendly, short. Task: {task}"}]}]}
+              for attempt in range(2):
+                  try:
+                      req = urllib.request.Request(url, data=json.dumps(body).encode("utf-8"), headers={"Content-Type": "application/json", "x-goog-api-key": os.environ["GEMINI_API_KEY"]})
+                      with urllib.request.urlopen(req, timeout=60) as resp:
+                          data = json.loads(resp.read())
+                      answer = data["candidates"][0]["content"]["parts"][0]["text"]
+                      print(f"Success with {model}")
+                      break
+                  except Exception as e:
+                      print(f"Attempt {attempt+1} failed for {model}: {e}")
+                      time.sleep(3)
+              if answer:
                   break
-              except urllib.error.HTTPError as e:
-                  print(f"Attempt {attempt+1} failed: HTTP {e.code} -", e.read().decode("utf-8", "replace")[:1000])
-                  if attempt == 2:
-                      print("Gemini request failed after 3 tries")
-                      sys.exit(1)
-                  time.sleep(5)
-              except Exception as e:
-                  print(f"Attempt {attempt+1} failed:", e)
-                  if attempt == 2:
-                      print("Gemini request failed after 3 tries")
-                      sys.exit(1)
-                  time.sleep(5)
 
-          try:
-              text = data["candidates"][0]["content"]["parts"][0]["text"]
-          except (KeyError, IndexError, TypeError):
-              print("Unexpected Gemini response:", json.dumps(data)[:2000])
-              sys.exit(1)
+          if not answer:
+              answer = "বেটা, গুগলের সার্ভার এখন জ্যাম! একটু পরে আবার @gemini লিখে ডাক দে!"
 
-          print(text[:3000])
+          print(answer[:2000])
+
+          # এখন Issue তেই কমেন্ট করবো
+          comment_url = f"https://api.github.com/repos/{os.environ['REPO']}/issues/{os.environ['ISSUE_NUMBER']}/comments"
+          comment_body = {"body": f"### 🤖 Gemini উত্তর দিছে:\n\n{answer}\n\n---\n*TRTT News Bot | Powered by Gemini*"}
+          req2 = urllib.request.Request(comment_url, data=json.dumps(comment_body).encode("utf-8"), headers={"Content-Type": "application/json", "Authorization": f"Bearer {os.environ['GH_TOKEN']}"})
+          with urllib.request.urlopen(req2) as r:
+              print("Comment posted:", r.status)
           PY
