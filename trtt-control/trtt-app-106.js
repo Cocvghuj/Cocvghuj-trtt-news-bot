@@ -1,6 +1,5 @@
-/*! TRTT VOYAGE — PRIVATE COMMAND ROOM / V106
+/*! TRTT VOYAGE — PUBLIC THINKING ROOM / V106
  * One entrance. Eight rooms. No external route menu.
- * TRTT MAC-787950 LOCKED
  */
 (function () {
   "use strict";
@@ -39,7 +38,7 @@
     {id:"vault", icon:"▣", name:"KNOWLEDGE VAULT", sub:"Rules • Decisions • Project memory"},
     {id:"truth", icon:"◎", name:"TRUTH DESK", sub:"Sources • Evidence • Verification"},
     {id:"mission", icon:"◈", name:"MISSION CONTROL", sub:"One task • One next step"},
-    {id:"private", icon:"☾", name:"PRIVATE CORNER", sub:"Diary • Personal space"}
+    {id:"private", icon:"☾", name:"PERSONAL CORNER", sub:"Diary • Personal space"}
   ];
 
   function el(tag, cls, value) {
@@ -190,10 +189,10 @@
     var heading=el("div","trtt-cr-heading");
     heading.appendChild(el("span","trtt-cr-kicker","TRTT VOYAGE • SANLURI TO WORLD"));
     var h2=el("h2","","THINKING ROOM"); h2.id="trtt-cr-title"; heading.appendChild(h2);
-    heading.appendChild(el("p","","A private command room for ideas, travel, truth, and building."));
+    heading.appendChild(el("p","","An open public space for ideas, travel, truth, and building."));
     var close=el("button","trtt-cr-close","×"); close.type="button"; close.setAttribute("aria-label","Close Thinking Room");
     header.appendChild(heading); header.appendChild(close); shell.appendChild(header);
-    shell.appendChild(el("div","trtt-cr-lock","ROKSANA — LOCKED"));
+    shell.appendChild(el("div","trtt-cr-public","PUBLIC VIEW • ALL 8 ROOMS OPEN • NO PIN / PASSWORD"));
     var layout=el("div","trtt-cr-layout");
     var nav=el("nav","trtt-cr-nav"); nav.setAttribute("aria-label","Thinking Room sections");
     var content=el("div","trtt-cr-content");
@@ -207,7 +206,7 @@
       pane.setAttribute("aria-label",room.name); content.appendChild(pane);
     });
     layout.appendChild(nav); layout.appendChild(content); shell.appendChild(layout);
-    shell.appendChild(el("footer","trtt-cr-footer","TRTT MAC-787950 LOCKED • Made by MAC — Muse, Abu, ChatGPT"));
+    shell.appendChild(el("footer","trtt-cr-footer","TRTT MAC-787950 • Made by MAC — Muse, Abu, ChatGPT"));
     overlay.appendChild(shell);
 
     function activate(id,focusNav){
