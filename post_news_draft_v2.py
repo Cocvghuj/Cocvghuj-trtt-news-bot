@@ -90,7 +90,8 @@ def require_env() -> tuple[dict[str, str], str, str, str]:
     return ids, *(os.environ[name].strip() for name in names)
 
 def verify_draft(service: Any, blog_id: str, post_id: str, article: dict) -> None:
-    post = service.posts().get(blogId=blog_id, postId=post_id).execute()
+    # Drafts are only visible in the authenticated owner/admin view.
+    post = service.posts().get(blogId=blog_id, postId=post_id, view="ADMIN").execute()
     if str(post.get("id", "")) != str(post_id):
         raise RuntimeError(f"Read-back ID mismatch for {article['blog_name']}.")
     if str(post.get("status", "")).upper() != "DRAFT":
@@ -103,7 +104,8 @@ def verify_draft(service: Any, blog_id: str, post_id: str, article: dict) -> Non
 def find_existing(service: Any, blog_id: str, article: dict) -> dict | None:
     token = None
     for _ in range(20):
-        args = {"blogId": blog_id, "maxResults": 100, "status": ["LIVE", "DRAFT"]}
+        # ADMIN view is required to list unpublished drafts and expose status.
+        args = {"blogId": blog_id, "maxResults": 100, "status": ["LIVE", "DRAFT"], "view": "ADMIN"}
         if token:
             args["pageToken"] = token
         response = service.posts().list(**args).execute()
