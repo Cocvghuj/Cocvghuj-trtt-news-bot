@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   gemini-auto:
-    if: contains(github.event.comment.body, '@gemini')
+    if: contains(github.event.comment.body, '@gemini') && github.event.comment.user.type != 'Bot'
     runs-on: ubuntu-latest
     steps:
       - name: Call Gemini and Reply
@@ -22,7 +22,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python3 - << 'PY'
-          import os, json, sys, urllib.request, urllib.error, time
+          import os, json, urllib.request, time
 
           task = os.environ.get("TASK_TEXT", "Hello")
           # ফাঁকা মডেল আগে চেষ্টা করবো, 503 খাইলে পরেরটা
@@ -48,7 +48,7 @@ jobs:
                   break
 
           if not answer:
-              answer = "বেটা, গুগলের সার্ভার এখন জ্যাম! একটু পরে আবার @gemini লিখে ডাক দে!"
+              answer = "বেটা, গুগলের সার্ভার এখন জ্যাম! একটু পরে আবার ডাক দে!"
 
           print(answer[:2000])
 
