@@ -3,20 +3,27 @@ name: TRTT Location-Based Travel News Draft
 on:
   issues:
     types: [opened]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Existing TRTT location-news issue number"
+        required: true
+        type: number
 
 permissions:
   contents: read
   issues: read
 
 concurrency:
-  group: trtt-location-news-${{ github.event.issue.number }}
+  group: trtt-location-news-${{ github.event.issue.number || inputs.issue_number }}
   cancel-in-progress: false
 
 jobs:
   create-trtt-location-news-draft:
     if: >-
-      startsWith(github.event.issue.title, '[TRTT-LOCATION-NEWS]')
-      && github.event.issue.user.login == 'Cocvghuj'
+      (github.event_name == 'workflow_dispatch')
+      || (startsWith(github.event.issue.title, '[TRTT-LOCATION-NEWS]')
+      && github.event.issue.user.login == 'Cocvghuj')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -27,6 +34,44 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - name: Resolve and validate source issue
+        uses: actions/github-script@v7
+        env:
+          INPUT_ISSUE_NUMBER: ${{ inputs.issue_number }}
+        with:
+          script: |
+            const issueNumber = context.eventName === "workflow_dispatch"
+              ? Number(process.env.INPUT_ISSUE_NUMBER)
+              : context.payload.issue.number;
+            if (!Number.isInteger(issueNumber) || issueNumber < 1) {
+              core.setFailed("A valid issue_number is required.");
+              return;
+            }
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber
+            });
+            if (issue.pull_request) {
+              core.setFailed("Pull requests cannot be used as article payloads.");
+              return;
+            }
+            if (!String(issue.title || "").startsWith("[TRTT-LOCATION-NEWS]")) {
+              core.setFailed("Issue title is not a TRTT location-news request.");
+              return;
+            }
+            if (issue.user?.login !== "Cocvghuj") {
+              core.setFailed("Only the repository owner may submit a TRTT draft payload.");
+              return;
+            }
+            const fs = require("fs");
+            fs.writeFileSync(
+              process.env.RUNNER_TEMP + "/trtt-event.json",
+              JSON.stringify({ issue }),
+              "utf8"
+            );
+            core.info(`Validated TRTT source issue #${issueNumber}`);
 
       - name: Install Blogger API dependencies
         run: |
@@ -39,5 +84,5 @@ jobs:
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
           BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
-          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          GITHUB_EVENT_PATH: ${{ runner.temp }}/trtt-event.json
         run: python trtt_location_news_draft.py
