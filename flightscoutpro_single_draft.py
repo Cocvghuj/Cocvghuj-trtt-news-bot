@@ -1,29 +1,40 @@
 #!/usr/bin/env python3
-"""Create or confirm exactly one FlightScoutPro Blogger DRAFT.
+"""Create or confirm exactly one FlightScoutPro Blogger DRAFT from a reviewed JSON payload.
 
 This script intentionally knows only FLIGHTSCOUTPRO_BLOG_ID. It never targets
 the TRTT main blog and never publishes LIVE posts.
 """
 from __future__ import annotations
 
+import json
 import os
 import sys
+from pathlib import Path
 from typing import Any
+
 
 def required(name: str) -> str:
     value = os.environ.get(name, "").strip()
     if not value:
-        raise RuntimeError(f"Missing required GitHub Actions secret/input: {name}")
+        raise RuntimeError(f"Missing required GitHub Actions secret: {name}")
     return value
 
-def main() -> int:
-    title = required("ARTICLE_TITLE")
-    content = required("ARTICLE_HTML")
-    raw_labels = os.environ.get("ARTICLE_LABELS", "FlightScoutPro,Travel News").strip()
-    labels = [item.strip() for item in raw_labels.split(",") if item.strip()]
 
-    if len(title) > 300:
-        raise RuntimeError("Article title is too long (maximum 300 characters).")
+def main() -> int:
+    payload_path = Path(os.environ.get("ARTICLE_PAYLOAD", "news/flightscoutpro-single-draft.json"))
+    if not payload_path.is_file():
+        raise RuntimeError(f"Article payload not found: {payload_path}")
+    payload = json.loads(payload_path.read_text(encoding="utf-8"))
+
+    title = str(payload.get("title", "")).strip()
+    content = str(payload.get("html", "")).strip()
+    labels = payload.get("labels", [])
+    if not isinstance(labels, list):
+        raise RuntimeError("Article labels must be a JSON array.")
+    labels = [str(item).strip() for item in labels if str(item).strip()]
+
+    if not title or len(title) > 300:
+        raise RuntimeError("Article title is missing or too long (maximum 300 characters).")
     if len(content) < 80:
         raise RuntimeError("Article HTML is too short; refusing to create an empty/thin draft.")
     if not labels:
@@ -106,6 +117,7 @@ def main() -> int:
 
     print(f"VERIFIED FlightScoutPro DRAFT | post_id={post_id} | status=DRAFT")
     return 0
+
 
 if __name__ == "__main__":
     try:
