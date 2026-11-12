@@ -92,6 +92,20 @@ def validate(payload: dict[str, Any]) -> tuple[str, str, list[str]]:
         raise RuntimeError("Affiliate disclosure is required.")
     if "rel=\"sponsored\"" not in content.lower():
         raise RuntimeError("Affiliate links must carry rel=sponsored.")
+    amazon_url = str(payload.get("amazon_affiliate_url", "")).strip()
+    if amazon_url:
+        parsed_amazon = urlparse(amazon_url)
+        if parsed_amazon.scheme != "https" or parsed_amazon.netloc.lower() not in {"amzn.to", "www.amazon.it", "amazon.it"}:
+            raise RuntimeError("Amazon affiliate URL must be an HTTPS Amazon.it or amzn.to link.")
+        if amazon_url not in content:
+            raise RuntimeError("The declared Amazon affiliate URL must appear in the article HTML.")
+        sponsored_anchor = re.search(
+            r'<a\b(?=[^>]*\bhref=["\']' + re.escape(amazon_url) + r'["\'])(?=[^>]*\brel=["\']sponsored["\'])[^>]*>',
+            content,
+            flags=re.I,
+        )
+        if not sponsored_anchor:
+            raise RuntimeError("The Amazon affiliate link must use rel=sponsored on its anchor.")
     return title, content, labels
 
 
