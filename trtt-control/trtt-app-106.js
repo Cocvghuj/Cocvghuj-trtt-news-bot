@@ -76,7 +76,7 @@
     frame.loading = "eager";
     frame.referrerPolicy = "strict-origin-when-cross-origin";
     frame.setAttribute("allow", "clipboard-write");
-    frame.src = "https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@trtt-control-v106/trtt-control/trtt-universe-thinking-room-106.html?v=106-universe-room-20261112";
+    frame.src = "https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@029dc213ca60e9e90390aeb7a74a1fb141cfd92f/trtt-control/trtt-universe-thinking-room-106.html";
 
     shell.appendChild(frame);
     shell.appendChild(close);
