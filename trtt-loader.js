@@ -5,8 +5,8 @@
 (function () {
   "use strict";
 
-  var base = "https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@trtt-control-v106/";
-  var version = "106-universe-room-20261112";
+  var base = "https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@029dc213ca60e9e90390aeb7a74a1fb141cfd92f/";
+  var version = "106-universe-room-pinned-20261112";
 
   if (!document.getElementById("trtt-control-css")) {
     var css = document.createElement("link");
