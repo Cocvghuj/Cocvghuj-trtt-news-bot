@@ -74,3 +74,53 @@ html.trtt-cr-open,html.trtt-cr-open body{overflow:hidden!important}
  .trtt-cr-door-label strong{font-size:10px;letter-spacing:.7px}.trtt-cr-door-label small{font-size:8px;letter-spacing:1px}
 }
 @media(prefers-reduced-motion:reduce){.trtt-cr-pane{animation:none}#trtt-thinking-room-trigger,.trtt-cr-tool{transition:none}}
+
+
+/* TRTT UNIVERSE Thinking Room frame */
+.trtt-cr-overlay{padding:0!important}
+.trtt-cr-shell{
+  position:relative;
+  width:100%!important;
+  max-width:100%!important;
+  height:100%!important;
+  max-height:100dvh!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#070914!important;
+  overflow:hidden!important;
+}
+.trtt-universe-frame{
+  display:block;
+  width:100%;
+  height:100%;
+  min-height:100%;
+  border:0;
+  background:#070914;
+}
+.trtt-cr-close{
+  position:absolute;
+  z-index:5;
+  top:9px;
+  right:12px;
+  display:grid;
+  place-items:center;
+  width:42px;
+  height:42px;
+  border:1px solid #ffffff80;
+  border-radius:50%;
+  background:#070914dd;
+  color:#fff;
+  font:700 28px/1 Arial,sans-serif;
+  cursor:pointer;
+  box-shadow:0 2px 15px #0009;
+}
+.trtt-cr-close:hover,.trtt-cr-close:focus-visible{
+  background:#263653;
+  outline:2px solid #fff;
+  outline-offset:2px;
+}
+@media(max-width:760px){
+  .trtt-cr-overlay{padding:0!important}
+  .trtt-cr-shell{height:100dvh!important;border-radius:0!important}
+  .trtt-cr-close{top:7px;right:8px;width:38px;height:38px}
+}
