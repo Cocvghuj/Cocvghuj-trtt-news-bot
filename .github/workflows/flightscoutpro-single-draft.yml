@@ -1,21 +1,14 @@
 name: FlightScoutPro Single News Draft
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "news/flightscoutpro-single-draft.json"
+      - ".github/workflows/flightscoutpro-single-draft.yml"
+      - "flightscoutpro_single_draft.py"
   workflow_dispatch:
-    inputs:
-      article_title:
-        description: "Exact article title"
-        required: true
-        type: string
-      article_html:
-        description: "Complete article HTML (including source links)"
-        required: true
-        type: string
-      article_labels:
-        description: "Comma-separated Blogger labels"
-        required: false
-        default: "FlightScoutPro,Travel News,Aviation"
-        type: string
 
 concurrency:
   group: flightscoutpro-single-draft
@@ -26,6 +19,7 @@ permissions:
 
 jobs:
   create-one-flightscoutpro-draft:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -48,7 +42,5 @@ jobs:
           BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
           BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
-          ARTICLE_TITLE: ${{ inputs.article_title }}
-          ARTICLE_HTML: ${{ inputs.article_html }}
-          ARTICLE_LABELS: ${{ inputs.article_labels }}
+          ARTICLE_PAYLOAD: news/flightscoutpro-single-draft.json
         run: python flightscoutpro_single_draft.py
