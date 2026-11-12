@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#070914">
+<title>TRTT UNIVERSE — TEAM MAGIC</title>
+
+<style>
+:root{
+  --bg:#070914;
+  --panel:#101629;
+  --panel2:#151e35;
+  --text:#f4f7ff;
+  --muted:#b7c2d9;
+  --line:#34415e;
+  --cyan:#00e5ff;
+  --violet:#a78bfa;
+  --gold:#ffd166;
+  --green:#00e6a0;
+  --blue:#60a5fa;
+  --red:#ff6685;
+  --orange:#ffad55;
+  --pink:#ff8fc7;
+  --lime:#c5e86b;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(ellipse at 50% -15%,#24345c 0,transparent 48%),
+    radial-gradient(ellipse at 5% 40%,#102b42 0,transparent 35%),
+    var(--bg);
+  color:var(--text);
+  font-family:Inter,Arial,sans-serif;
+  font-size:17px;
+  line-height:1.65;
+}
+
+a{color:inherit}
+button,select,input{font:inherit}
+
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible{
+  outline:3px solid white;
+  outline-offset:4px;
+}
+
+.wrap{width:min(1180px,92%);margin:auto}
+
+header{padding:25px 0 10px;text-align:center}
+
+.brand{
+  font-size:clamp(2.3rem,7vw,5rem);
+  font-weight:950;
+  letter-spacing:.09em;
+  line-height:1.1;
+  text-shadow:0 0 28px #00d9ff65;
+}
+
+.kicker{
+  color:#d6e4ff;
+  letter-spacing:.25em;
+  font-weight:800;
+}
+
+.subtitle{color:var(--muted);font-size:1.08rem}
+
+.pill{
+  display:inline-block;
+  border:1px solid #52617e;
+  border-radius:99px;
+  padding:6px 14px;
+  color:#e4ebff;
+  font-size:.85rem;
+  letter-spacing:.08em;
+}
+
+nav{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  padding:18px 0 25px;
+}
+
+nav a,.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #425171;
+  background:#121b30;
+  color:white;
+  padding:10px 16px;
+  border-radius:12px;
+  text-decoration:none;
+  font-weight:750;
+  cursor:pointer;
+  transition:.2s;
+}
+
+nav a:hover,.btn:hover{
+  background:#253451;
+  border-color:#9fb7e9;
+  transform:translateY(-2px);
+}
+
+.btn:disabled{
+  opacity:.55;
+  cursor:wait;
+  transform:none;
+}
+
+section{padding:38px 0}
+
+h2{
+  font-size:clamp(1.7rem,4vw,2.5rem);
+  line-height:1.2;
+  margin:0 0 12px;
+}
+
+h3{line-height:1.25}
+
+.lead{color:var(--muted);max-width:780px}
+
+.hero{text-align:center;padding:28px 0 30px}
+
+.sun{
+  width:150px;
+  height:150px;
+  margin:28px auto;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  font-weight:950;
+  color:#101525;
+  background:
+    radial-gradient(circle,#fff8c8 0,#ffd166 42%,#ff8b3d 72%,transparent 73%);
+  box-shadow:0 0 35px #ffd166a8,0 0 100px #ff9d3650;
+}
+
+.stars{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+.star{
+  border:1px solid #4b5875;
+  background:#10182b;
+  border-radius:14px;
+  padding:12px 17px;
+  min-width:135px;
+  text-align:center;
+  box-shadow:0 0 22px #8b9dff15;
+}
+
+.star strong{display:block;font-size:1.05rem}
+.star small{color:var(--muted)}
+
+.orchestrator{
+  border-color:#a78bfa;
+  opacity:.88;
+  transform:scale(.94);
+}
+
+.roksana{
+  margin:24px auto 10px;
+  padding:25px 18px;
+  text-align:center;
+  border-radius:25px;
+  color:#29172b;
+  background:linear-gradient(
+    115deg,#c5e86b,#d9f99d 45%,#ff9ebb 75%,#ff6ec7
+  );
+  box-shadow:0 0 40px #ff9ebb35;
+}
+
+.roksana h2{
+  font-size:clamp(1.7rem,5vw,3rem);
+  letter-spacing:.08em;
+}
+
+.family{
+  font-size:clamp(1.5rem,5vw,2.7rem);
+  font-weight:950;
+  letter-spacing:.08em;
+  line-height:1.35;
+}
+
+.love{font-weight:850;letter-spacing:.09em}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:15px;
+}
+
+.galaxy{
+  --accent:var(--cyan);
+  position:relative;
+  overflow:hidden;
+  border:1px solid color-mix(in srgb,var(--accent) 60%,#27324c);
+  background:linear-gradient(145deg,#151d32,#0d1324);
+  border-radius:18px;
+  padding:20px;
+  min-height:190px;
+  box-shadow:inset 0 0 25px color-mix(in srgb,var(--accent) 8%,transparent);
+}
+
+.galaxy:before{
+  content:"";
+  position:absolute;
+  width:130px;
+  height:130px;
+  right:-55px;
+  top:-55px;
+  border-radius:50%;
+  background:var(--accent);
+  filter:blur(65px);
+  opacity:.23;
+}
+
+.galaxy h3{
+  color:var(--accent);
+  font-size:1.22rem;
+  margin:4px 0 8px;
+}
+
+.galaxy p{
+  color:#d0d9eb;
+  margin:0 0 13px;
+  font-size:.96rem;
+}
+
+.galaxy button{position:relative;z-index:1}
+
+.galaxy .tag{
+  font-size:.75rem;
+  color:#dce6fb;
+  letter-spacing:.12em;
+  font-weight:850;
+}
+
+.galaxy-detail{
+  display:none;
+  margin-top:24px;
+  padding:24px;
+  border:1px solid #465574;
+  border-radius:18px;
+  background:#0e172a;
+}
+
+.galaxy-detail.active{display:block}
+
+.detail-head{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+.search-box{
+  display:block;
+  width:100%;
+  max-width:480px;
+  min-height:56px;
+  padding:15px 18px;
+  margin-top:18px;
+  border-radius:14px;
+  border:1px solid #00e5ff80;
+  background:#101d34;
+  color:#fff;
+  font-size:1.05rem;
+  font-weight:650;
+  box-shadow:0 0 18px #00e5ff18;
+  transition:.25s ease;
+}
+
+.search-box::placeholder{color:#c1cee4}
+
+.search-box:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 8px #00e5ff80,0 0 28px #00e5ff35;
+  background:#14233e;
+}
+
+.links{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-top:16px;
+}
+
+.service{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:12px 14px;
+  background:#18233a;
+  border:1px solid #394966;
+  border-radius:12px;
+  text-decoration:none;
+  font-weight:750;
+  transition:.2s;
+}
+
+.service:hover{
+  border-color:#d6e5ff;
+  background:#22314d;
+}
+
+.service span{color:#b8c8e6;font-size:.85rem}
+
+.router{
+  border:1px solid #354866;
+  border-radius:22px;
+  padding:22px;
+  background:linear-gradient(145deg,#111a2d,#0b1120);
+}
+
+.route-controls{
+  display:grid;
+  grid-template-columns:1fr 1fr auto;
+  gap:12px;
+  align-items:end;
+}
+
+label{
+  display:block;
+  color:#dce5f6;
+  font-weight:750;
+  margin-bottom:6px;
+}
+
+select{
+  width:100%;
+  background:#0a1223;
+  color:white;
+  border:1px solid #536382;
+  border-radius:10px;
+  padding:12px;
+  min-height:48px;
+}
+
+.route-result{
+  margin-top:20px;
+  padding:18px;
+  background:#0a1326;
+  border-radius:15px;
+  border:1px solid #3b4b6b;
+  min-height:90px;
+}
+
+.route-path{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.route-node{
+  padding:9px 13px;
+  border-radius:10px;
+  background:#1c2a45;
+  border:1px solid #60769e;
+  font-weight:800;
+  opacity:0;
+  transform:scale(.75);
+  animation:routePop .25s ease-out forwards;
+}
+
+@keyframes routePop{
+  to{opacity:1;transform:scale(1)}
+}
+
+.arrow{
+  color:#8ca9df;
+  font-size:1.3rem;
+  opacity:0;
+  animation:routeFade .2s ease forwards;
+}
+
+@keyframes routeFade{to{opacity:1}}
+
+.route-status{
+  color:var(--cyan);
+  font-weight:900;
+  letter-spacing:.1em;
+  text-shadow:0 0 12px #00e5ff70;
+}
+
+.route-status.complete{
+  color:var(--green);
+  text-shadow:0 0 12px #00e6a070;
+}
+
+.route-map{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:18px;
+}
+
+.map-node{
+  padding:12px 8px;
+  text-align:center;
+  border:1px solid #465575;
+  background:#121e34;
+  border-radius:12px;
+  font-size:.9rem;
+  transition:all .3s ease;
+}
+
+.map-node.active{
+  border-color:#fff;
+  box-shadow:0 0 20px #72dfff80;
+  background:#1d3159;
+  transform:scale(1.03);
+}
+
+.small{font-size:.88rem;color:var(--muted)}
+
+.partner-note{color:#c2cce0;font-size:.9rem}
+
+.build-links{display:flex;gap:12px;flex-wrap:wrap}
+
+footer{
+  border-top:1px solid #27344c;
+  padding:28px 0 45px;
+  text-align:center;
+  color:#aebbd3;
+}
+
+@media(max-width:850px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .links{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media(max-width:560px){
+  body{font-size:16px}
+  .wrap{width:94%}
+  .grid,.links{grid-template-columns:1fr}
+  .route-controls{grid-template-columns:1fr}
+  .route-map{grid-template-columns:repeat(2,1fr)}
+  .star{min-width:42%;flex:1}
+  nav a{padding:9px 12px}
+  .galaxy{min-height:0}
+  .search-box{max-width:100%;font-size:1rem}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    scroll-behavior:auto!important;
+    transition:none!important;
+    animation-duration:.01ms!important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<header id="home">
+  <div class="kicker">SANLURI TO UNIVERSE</div>
+  <div class="brand">TRTT UNIVERSE</div>
+  <p class="subtitle">One entrance. Eight galaxies. Infinite possibilities.</p>
+  <span class="pill">TEAM MAGIC · TRTT MAGIC — 787950 LOCKED</span>
+
+  <nav aria-label="Main navigation">
+    <a href="#home">Home</a>
+    <a href="#family">For Roksana</a>
+    <a href="#galaxies">Eight Galaxies</a>
+    <a href="#router">Visual Router</a>
+    <a href="#build">Build Room</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h2>The Cosmic Command Center</h2>
+  <p class="lead" style="margin:auto">
+    A connected universe built by people and AI partners —
+    guided by evidence, creativity and teamwork.
+  </p>
+
+  <div class="sun">TRTT<br>MAGIC</div>
+
+  <div class="stars" aria-label="Team Magic partners">
+    <div class="star">
+      <strong>✦ MUSE</strong>
+      <small>Direction & Quality</small>
+    </div>
+    <div class="star">
+      <strong>✦ GEMINI</strong>
+      <small>Intelligence Core</small>
+    </div>
+    <div class="star">
+      <strong>✦ GOOGLE AI STUDIO</strong>
+      <small>Research Lab</small>
+    </div>
+    <div class="star">
+      <strong>✦ META AI</strong>
+      <small>Design & Innovation</small>
+    </div>
+    <div class="star orchestrator">
+      <strong>✦ CHATGPT</strong>
+      <small>Technical Orchestrator</small>
+    </div>
+  </div>
+</section>
+
+<section id="family">
+  <div class="roksana">
+    <h2>TRTT FOR ROKSANA</h2>
+    <div class="family">ROKSANA · TAIFA · TASRIF</div>
+    <p class="love">KATHALI + PIZZA PINK · WITH LOVE, FROM ABU</p>
+  </div>
+</section>
+
+<section id="galaxies">
+  <h2>The Eight Galaxies</h2>
+  <p class="lead">
+    Choose a galaxy to explore its planets.
+    All eight remain part of the universe.
+  </p>
+
+  <div class="grid" id="galaxyGrid"></div>
+
+  <div class="galaxy-detail" id="galaxyDetail" aria-live="polite">
+    <div class="detail-head">
+      <div>
+        <div class="tag" id="detailTag">GALAXY</div>
+        <h2 id="detailTitle"></h2>
+      </div>
+      <button class="btn" id="closeDetail">Close ×</button>
+    </div>
+
+    <p class="lead" id="detailDescription"></p>
+
+    <input
+      type="search"
+      id="planetSearch"
+      class="search-box"
+      placeholder="🔍 Search service planets..."
+      aria-label="Search service planets"
+    >
+
+    <div class="links" id="detailLinks"></div>
+    <p class="small" id="searchCount" aria-live="polite"></p>
+  </div>
+</section>
+
+<section id="router">
+  <h2>VISUAL ROUTER</h2>
+  <p class="lead">
+    Connect planets across the eight galaxies.
+    Select a starting galaxy and a destination.
+    Watch the route build one galaxy at a time.
+  </p>
+
+  <div class="router">
+    <div class="route-controls">
+      <div>
+        <label for="routeFrom">Start Galaxy</label>
+        <select id="routeFrom"></select>
+      </div>
+
+      <div>
+        <label for="routeTo">Destination Galaxy</label>
+        <select id="routeTo"></select>
+      </div>
+
+      <button class="btn" id="buildRoute">Build Route ↗</button>
+    </div>
+
+    <div class="route-result" id="routeResult" aria-live="polite">
+      <p class="small">
+        Your route will appear here.
+        Pick two galaxies and build a route.
+      </p>
+    </div>
+
+    <div class="route-map" id="routeMap"></div>
+
+    <p class="small">
+      Prototype note: route planning is local navigation logic.
+      External partner bookings, live prices and AI services
+      require their own approved integrations.
+    </p>
+  </div>
+</section>
+
+<section id="build">
+  <h2>BUILD ROOM · TECH GALAXY</h2>
+  <p class="lead">
+    The workshop for code, repository work and deployment management.
+  </p>
+
+  <div class="build-links">
+    <a class="btn"
+       href="https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot"
+       target="_blank" rel="noopener noreferrer">
+       Open TRTT GitHub ↗
+    </a>
+
+    <a class="btn"
+       href="https://vercel.com/dashboard"
+       target="_blank" rel="noopener noreferrer">
+       Open Vercel Dashboard ↗
+    </a>
+  </div>
+
+  <p class="partner-note">
+    Vercel opens the dashboard. Select the correct TRTT project there.
+    No deployment is triggered by this page.
+  </p>
+</section>
+
+<footer>
+  <strong>TRTT UNIVERSE · TEAM MAGIC</strong><br>
+  Sanluri to Universe · Built with care, clarity and proof.<br>
+  <span class="small">
+    Integrated Thinking Room view. External partner bookings, live prices and AI services require their own approved integrations.
+  </span>
+</footer>
+
+</div>
+
+<script>
+const galaxies = [
+
+ {
+  id:"voyage",
+  name:"VOYAGE LAB",
+  color:"#00e5ff",
+  tag:"TRAVEL GALAXY",
+  desc:"Travel services and service planets — flights, rides, connectivity, tours, storage, stays & marketplace.",
+  links:[
+   ["Aviasales","https://aviasales.tpo.lv/Fb8U9yav","Flight search"],
+   ["AirHelp","https://airhelp.tpo.lv/3ltXS0E4","Flight compensation"],
+   ["Compensair","https://compensair.tpo.lv/YgVXGrnB","Flight claims"],
+   ["GetTransfer","https://gettransfer.tpo.lv/1u8zRU5s","Private transfers"],
+   ["Kiwitaxi","https://kiwitaxi.tpo.lv/tlZcbMOB","Airport transfers"],
+   ["GetRentACar","https://getrentacar.tpo.lv/VZe2HcGc","Car rental"],
+   ["EconomyBookings","https://economybookings.tpo.lv/pyHqRiOo","Car rental"],
+   ["LocalRent","https://localrent.tpo.lv/4jd1IRQG","Local car rental"],
+   ["QEEQ","https://qeeq.tpo.lv/HKhCeDhY","Car rental"],
+   ["Intui","https://intui.tpo.lv/tiSkz4Yq","Travel services"],
+   ["Airalo","https://airalo.tpo.lv/ZZoQC7Mz","eSIM"],
+   ["Drimsim","https://drimsim.tpo.lv/Ly7ywlY8","SIM & eSIM"],
+   ["Yesim","https://yesim.tpo.lv/krzFKLpg","eSIM"],
+   ["Saily","https://saily.tpo.lv/ssekmS4X","eSIM"],
+   ["Klook","https://klook.tpo.lv/TWKnemhz","Tours & activities"],
+   ["Go City","https://gocity.tpo.lv/QSQw8FwU","City passes"],
+   ["Tiqets","https://tiqets.tpo.lv/bnx8pnF6","Tickets"],
+   ["KKday","https://kkday.tpo.lv/JaAfTgGF","Tours & activities"],
+   ["Radical Storage","https://radicalstorage.tpo.lv/WkGQxlsD","Luggage storage"],
+   ["Amazon","https://amzn.to/4shg6Hn","Shopping"],
+   ["Travelpayouts Stay","https://tpo.lv/h3LrTZcS","Travel partner marketplace"]
+  ]
+ },
+
+ {
+  id:"brain",
+  name:"THE BRAIN",
+  color:"#a78bfa",
+  tag:"THINKING GALAXY",
+  desc:"Think first, check facts. Search, compare sources and make careful decisions.",
+  links:[
+   ["Google Search","https://www.google.com/","Web search"],
+   ["Google AI Studio","https://aistudio.google.com/","AI research lab"],
+   ["Gemini","https://gemini.google.com/","AI assistant"],
+   ["OpenAI","https://openai.com/","AI platform"],
+   ["Travelpayouts Stay","https://tpo.lv/h3LrTZcS","Travel partner marketplace"],
+   ["Amazon","https://amzn.to/4shg6Hn","Shopping"]
+  ]
+ },
+
+ {
+  id:"team",
+  name:"TEAM MAGIC",
+  color:"#ffd166",
+  tag:"TEAM GALAXY",
+  desc:"The people and partners behind the vision: Muse, Abu, Gemini, Google AI Studio, Meta AI and ChatGPT.",
+  links:[
+   ["Muse","https://trttnews24bd.blogspot.com/2026/11/sanluri-my-new-home.html","Direction & quality"],
+   ["TRTT Blog","https://trttnews24bd.blogspot.com/","Project home"],
+   ["Gemini","https://gemini.google.com/","Intelligence partner"],
+   ["Google AI Studio","https://aistudio.google.com/","Research partner"],
+   ["Meta AI","https://www.meta.ai/","Innovation partner"],
+   ["ChatGPT","https://chatgpt.com/","Technical partner"],
+   ["Travelpayouts Stay","https://tpo.lv/h3LrTZcS","Travel partner marketplace"],
+   ["Amazon","https://amzn.to/4shg6Hn","Shopping"]
+  ]
+ },
+
+ {
+  id:"build",
+  name:"BUILD ROOM",
+  color:"#00e6a0",
+  tag:"TECH GALAXY",
+  desc:"Code workshop, Blogger development, repository radar and deployment tools.",
+  links:[
+   ["GitHub Repository","https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot","Source code"],
+   ["Vercel Dashboard","https://vercel.com/dashboard","Deployments"],
+   ["Google AI Studio","https://aistudio.google.com/","AI Lab"],
+   ["Cloudflare","https://dash.cloudflare.com/","Cloud platform"],
+   ["Travelpayouts Stay","https://tpo.lv/h3LrTZcS","Travel partner marketplace"],
+   ["Amazon","https://amzn.to/4shg6Hn","Shopping"]
+  ]
+ },
+
+ {
+  id:"knowledge",
+  name:"KNOWLEDGE VAULT",
+  color:"#60a5fa",
+  tag:"LIBRARY GALAXY",
+  desc:"A home for guides, rules, project history, verified references and learning resources.",
+  links:[
+   ["TRTT Blog Archive","https://trttnews24bd.blogspot.com/","Project archive"],
+   ["GitHub History","https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot/commits","Commit history"],
+   ["Google Search","https://www.google.com/","Research"],
+   ["Travelpayouts Stay","https://tpo.lv/h3LrTZcS","Travel partner marketplace"],
+   ["Amazon","https://amzn.to/4shg6Hn","Shopping"]
+  ]
+ },
+
+ {
+  id:"truth",
+  name:"TRUTH DESK",
+  color:"#ff6685",
+  tag:"EVIDENCE GALAXY",
+  desc:"No fake news. Source first. Separate verified facts, claims and unknown information.",
+  links:[
+   ["Google News","https://news.google.com/","News discovery"],
+   ["Reuters","https://www.reuters.com/","News source"],
+   ["AP News","https://apnews.com/","News source"],
+   ["Travelpayouts Stay","https://tpo.lv/h3LrTZcS","Travel partner marketplace"],
+   ["Amazon","https://amzn.to/4shg6Hn","Shopping"]
+  ]
+ },
+
+ {
+  id:"mission",
+  name:"MISSION CONTROL",
+  color:"#ffad55",
+  tag:"CONTROL GALAXY",
+  desc:"Project status, release checks, restoration plans and careful version control.",
+  links:[
+   ["GitHub Actions","https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot/actions","Workflow status"],
+   ["GitHub Pull Requests","https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot/pulls","Review changes"],
+   ["Vercel Dashboard","https://vercel.com/dashboard","Deployment control"],
+   ["Travelpayouts Stay","https://tpo.lv/h3LrTZcS","Travel partner marketplace"],
+   ["Amazon","https://amzn.to/4shg6Hn","Shopping"]
+  ]
+ },
+
+ {
+  id:"private",
+  name:"PRIVATE CORNER",
+  color:"#ff8fc7",
+  tag:"ROKSANA GALAXY",
+  desc:"A personal space for family memories, diary entries and the Sanluri to Universe journey.",
+  links:[
+   ["My Diary","https://trttnews24bd.blogspot.com/search/label/My%20dairy","Diary posts"],
+   ["For Roksana","https://trttnews24bd.blogspot.com/2026/11/sanluri-my-new-home.html","Family dedication"],
+   ["TRTT Blog Home","https://trttnews24bd.blogspot.com/","Project home"],
+   ["Travelpayouts Stay","https://tpo.lv/h3LrTZcS","Travel partner marketplace"],
+   ["Amazon","https://amzn.to/4shg6Hn","Shopping"]
+  ]
+ }
+
+];
+
+const grid=document.getElementById("galaxyGrid");
+const detail=document.getElementById("galaxyDetail");
+const from=document.getElementById("routeFrom");
+const to=document.getElementById("routeTo");
+const searchInput=document.getElementById("planetSearch");
+const searchCount=document.getElementById("searchCount");
+const routeButton=document.getElementById("buildRoute");
+
+let currentLinks=[];
+
+galaxies.forEach((g,i)=>{
+
+ const card=document.createElement("article");
+ card.className="galaxy";
+ card.style.setProperty("--accent",g.color);
+
+ card.innerHTML=`
+  <div class="tag">
+    GALAXY ${String(i+1).padStart(2,"0")} · ${g.links.length} PLANETS
+  </div>
+  <h3>${g.name}</h3>
+  <p>${g.desc}</p>
+  <button class="btn" type="button">Explore Galaxy →</button>
+ `;
+
+ card.querySelector("button").addEventListener("click",()=>{
+  openGalaxy(g.id);
+ });
+
+ grid.appendChild(card);
+
+ [from,to].forEach(sel=>{
+  const option=document.createElement("option");
+  option.value=g.id;
+  option.textContent=g.name;
+  sel.appendChild(option);
+ });
+
+ const node=document.createElement("div");
+ node.className="map-node";
+ node.dataset.id=g.id;
+ node.textContent=g.name;
+ document.getElementById("routeMap").appendChild(node);
+
+});
+
+function openGalaxy(id){
+
+ const g=galaxies.find(x=>x.id===id);
+ if(!g)return;
+
+ document.getElementById("detailTag").textContent=
+  g.tag+" · "+g.links.length+" PLANETS";
+
+ document.getElementById("detailTitle").textContent=g.name;
+ document.getElementById("detailTitle").style.color=g.color;
+ document.getElementById("detailDescription").textContent=g.desc;
+
+ currentLinks=g.links;
+ searchInput.value="";
+ renderLinks(currentLinks);
+
+ detail.classList.add("active");
+
+ detail.scrollIntoView({
+  behavior:"smooth",
+  block:"start"
+ });
+
+}
+
+function renderLinks(linksToRender){
+
+ const box=document.getElementById("detailLinks");
+ box.replaceChildren();
+
+ linksToRender.forEach(([name,url,desc])=>{
+
+  const a=document.createElement("a");
+  a.className="service";
+  a.href=url;
+  a.target="_blank";
+  a.rel="noopener noreferrer";
+
+  const title=document.createElement("strong");
+  title.textContent=name;
+
+  const label=document.createElement("span");
+  label.textContent=desc+" ↗";
+
+  a.append(title,label);
+  box.appendChild(a);
+
+ });
+
+ searchCount.textContent=
+  linksToRender.length+" service planets found";
+
+}
+
+searchInput.addEventListener("input",e=>{
+
+ const query=e.target.value.trim().toLowerCase();
+
+ const filtered=currentLinks.filter(([name,url,desc])=>
+  name.toLowerCase().includes(query) ||
+  desc.toLowerCase().includes(query)
+ );
+
+ renderLinks(filtered);
+
+});
+
+document.getElementById("closeDetail").addEventListener("click",()=>{
+
+ detail.classList.remove("active");
+
+ document.getElementById("galaxies").scrollIntoView({
+  behavior:"smooth"
+ });
+
+});
+
+const connections={
+
+ voyage:["brain","team","private"],
+
+ brain:["build","knowledge","team"],
+
+ team:["voyage","brain","build","knowledge","truth","mission","private"],
+
+ build:["mission","brain","team"],
+
+ knowledge:["truth","brain","team"],
+
+ truth:["mission","knowledge","team"],
+
+ mission:["build","truth","team"],
+
+ private:["voyage","team"]
+
+};
+
+function findRoute(start,end){
+
+ const queue=[[start]];
+ const seen=new Set([start]);
+
+ while(queue.length){
+
+  const path=queue.shift();
+  const last=path[path.length-1];
+
+  if(last===end)return path;
+
+  (connections[last]||[]).forEach(next=>{
+
+   if(!seen.has(next)){
+    seen.add(next);
+    queue.push([...path,next]);
+   }
+
+  });
+
+ }
+
+ return null;
+
+}
+
+function wait(ms){
+ return new Promise(resolve=>setTimeout(resolve,ms));
+}
+
+routeButton.addEventListener("click",async()=>{
+
+ const start=from.value;
+ const end=to.value;
+
+ if(routeButton.disabled)return;
+
+ document.querySelectorAll(".map-node").forEach(n=>{
+  n.classList.remove("active");
+ });
+
+ const result=document.getElementById("routeResult");
+
+ if(start===end){
+
+  result.textContent=
+   "You are already in this galaxy. Choose a different destination.";
+
+  const targetNode=document.querySelector(`[data-id="${start}"]`);
+  if(targetNode)targetNode.classList.add("active");
+
+  return;
+
+ }
+
+ const path=findRoute(start,end);
+
+ if(!path){
+  result.textContent="No route found.";
+  return;
+ }
+
+ routeButton.disabled=true;
+ routeButton.textContent="Tracing...";
+
+ result.replaceChildren();
+
+ const heading=document.createElement("div");
+ heading.className="route-status";
+ heading.textContent="TRACING ROUTE...";
+ const description=document.createElement("p");
+ description.className="small";
+ description.textContent="Connecting galaxies step by step.";
+
+ const line=document.createElement("div");
+ line.className="route-path";
+
+ result.append(heading,description,line);
+
+ for(let index=0;index<path.length;index++){
+
+  await wait(250);
+
+  const id=path[index];
+  const g=galaxies.find(x=>x.id===id);
+
+  const targetNode=document.querySelector(`[data-id="${id}"]`);
+  if(targetNode)targetNode.classList.add("active");
+
+  const node=document.createElement("span");
+  node.className="route-node";
+  node.style.borderColor=g.color;
+  node.textContent=g.name;
+
+  line.appendChild(node);
+
+  if(index<path.length-1){
+
+   const arrow=document.createElement("span");
+   arrow.className="arrow";
+   arrow.textContent="→";
+
+   line.appendChild(arrow);
+
+  }
+
+ }
+
+ await wait(250);
+
+ heading.textContent="ROUTE CREATED";
+ heading.classList.add("complete");
+ description.textContent=
+  "All route connections have been completed.";
+
+ routeButton.disabled=false;
+ routeButton.textContent="Build Route ↗";
+
+});
+
+from.value="voyage";
+to.value="truth";
+
+</script>
+</body>
+</html>
