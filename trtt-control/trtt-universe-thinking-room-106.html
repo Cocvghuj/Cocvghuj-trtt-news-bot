@@ -997,3 +997,59 @@ routeButton.addEventListener("click",async()=>{
  const heading=document.createElement("div");
  heading.className="route-status";
  heading.textContent="TRACING ROUTE...";
+ const description=document.createElement("p");
+ description.className="small";
+ description.textContent="Connecting galaxies step by step.";
+
+ const line=document.createElement("div");
+ line.className="route-path";
+
+ result.append(heading,description,line);
+
+ for(let index=0;index<path.length;index++){
+
+  await wait(250);
+
+  const id=path[index];
+  const g=galaxies.find(x=>x.id===id);
+
+  const targetNode=document.querySelector(`[data-id="${id}"]`);
+  if(targetNode)targetNode.classList.add("active");
+
+  const node=document.createElement("span");
+  node.className="route-node";
+  node.style.borderColor=g.color;
+  node.textContent=g.name;
+
+  line.appendChild(node);
+
+  if(index<path.length-1){
+
+   const arrow=document.createElement("span");
+   arrow.className="arrow";
+   arrow.textContent="→";
+
+   line.appendChild(arrow);
+
+  }
+
+ }
+
+ await wait(250);
+
+ heading.textContent="ROUTE CREATED";
+ heading.classList.add("complete");
+ description.textContent=
+  "All route connections have been completed.";
+
+ routeButton.disabled=false;
+ routeButton.textContent="Build Route ↗";
+
+});
+
+from.value="voyage";
+to.value="truth";
+
+</script>
+</body>
+</html>
