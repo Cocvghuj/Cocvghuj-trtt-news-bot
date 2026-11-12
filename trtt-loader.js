@@ -6,7 +6,7 @@
   "use strict";
 
   var base = "https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@trtt-control-v106/";
-  var version = "106-public-view-20261111";
+  var version = "106-universe-room-20261112";
 
   if (!document.getElementById("trtt-control-css")) {
     var css = document.createElement("link");
