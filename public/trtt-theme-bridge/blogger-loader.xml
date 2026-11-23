@@ -1,0 +1,6 @@
+<!-- TRTT Voyage — GitHub + JSDelivr Blogger Theme Bridge
+     Preview on a BACKUP/COPY of the Blogger theme first.
+     Branch-scoped test CDN URLs; switch @feature/trtt-voyage-jsdelivr-loader
+     to @main only after an approved merge to main. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@feature/trtt-voyage-jsdelivr-loader/public/trtt-theme-bridge/theme.css"/>
+<script src="https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@feature/trtt-voyage-jsdelivr-loader/public/trtt-theme-bridge/loader.js"></script>
