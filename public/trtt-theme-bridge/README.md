@@ -5,16 +5,16 @@ This is a reversible external visual layer for Blogger. It is not a Blogger API 
 ## Files
 - `theme.css`: scoped visual overrides enabled only when the loader sets `data-trtt-theme="enabled"`.
 - `loader.js`: sets that opt-in attribute; no Blogger data, credentials, or visitor data are collected.
-- `blogger-loader.xml`: Blogger `<head>` snippet using JSDelivr URLs pinned to this feature branch.
+- `blogger-loader.xml`: Blogger `<head>` snippet using JSDelivr URLs pinned to a specific Git commit.
 
 ## Safe installation
 1. Back up the current Blogger theme XML.
 2. Test only on a backup/test blog or copied theme first.
 3. Insert the two tags from `blogger-loader.xml` inside `<head>`.
 4. Preview desktop and mobile; remove both tags to roll back.
-5. Do not use the `@main` CDN URL until this branch is reviewed and explicitly merged to main.
+5. Future CSS/JS updates require updating the pinned commit SHA in the snippet. Never switch to `@main` without an approved merge.
 
-## Test branch CDN base
-`https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@feature/trtt-voyage-jsdelivr-loader/public/trtt-theme-bridge/`
+## Pinned JSDelivr base
+`https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@3b9d2677d3cdac92bdb728c8135d2f719f9c1193/public/trtt-theme-bridge/`
 
 NOT TESTED: live JSDelivr cache delivery and Blogger theme installation. No live Blogger changes were made.
