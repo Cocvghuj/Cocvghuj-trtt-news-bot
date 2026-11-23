@@ -1,6 +1,5 @@
 <!-- TRTT Voyage — GitHub + JSDelivr Blogger Theme Bridge
      Preview on a BACKUP/COPY of the Blogger theme first.
-     Branch-scoped test CDN URLs; switch @feature/trtt-voyage-jsdelivr-loader
-     to @main only after an approved merge to main. -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@feature/trtt-voyage-jsdelivr-loader/public/trtt-theme-bridge/theme.css"/>
-<script src="https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@feature/trtt-voyage-jsdelivr-loader/public/trtt-theme-bridge/loader.js"></script>
+     These URLs are pinned to the verified Git commit 3b9d2677d3cdac92bdb728c8135d2f719f9c1193. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@3b9d2677d3cdac92bdb728c8135d2f719f9c1193/public/trtt-theme-bridge/theme.css"/>
+<script src="https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@3b9d2677d3cdac92bdb728c8135d2f719f9c1193/public/trtt-theme-bridge/loader.js"></script>
