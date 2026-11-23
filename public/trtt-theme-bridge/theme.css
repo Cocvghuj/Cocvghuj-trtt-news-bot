@@ -1,0 +1,29 @@
+/* TRTT Voyage Blogger Theme Bridge — JSDelivr delivery
+   Reversible visual layer only. Scoped selectors; no layout replacement. */
+:root {
+  --trtt-brand: #E98BAF;
+  --trtt-brand-deep: #B77991;
+  --trtt-accent: #D6A542;
+  --trtt-text: #172033;
+  --trtt-muted: #5b6678;
+  --trtt-surface: #ffffff;
+  --trtt-border: #eadde3;
+  --trtt-radius: 16px;
+}
+html[data-trtt-theme="enabled"] body { color: var(--trtt-text); }
+html[data-trtt-theme="enabled"] a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+html[data-trtt-theme="enabled"] .post,
+html[data-trtt-theme="enabled"] .post-outer,
+html[data-trtt-theme="enabled"] .post-outer-container,
+html[data-trtt-theme="enabled"] .widget {
+  border-color: var(--trtt-border);
+  border-radius: var(--trtt-radius);
+}
+html[data-trtt-theme="enabled"] .post-title,
+html[data-trtt-theme="enabled"] h1,
+html[data-trtt-theme="enabled"] h2 {
+  color: var(--trtt-brand-deep);
+}
