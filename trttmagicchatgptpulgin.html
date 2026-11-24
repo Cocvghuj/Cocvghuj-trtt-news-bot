@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRTT MAGIC - PLUGIN</title>
+<style>
+body{background:#0f0f1a;color:#fff;font-family:sans-serif;padding:15px;text-align:center}
+h1{color:#ffd700;font-size:22px}
+.card{background:#1a1a2e;border:2px solid #ffd700;border-radius:15px;padding:15px;margin:12px 0;text-align:left}
+button{width:100%;padding:14px;margin:6px 0;border:none;border-radius:10px;font-size:16px;font-weight:bold;cursor:pointer}
+.gold{background:#ffd700;color:#000}
+.green{background:#00e676;color:#000}
+.blue{background:#2979ff;color:#fff}
+.red{background:#ff1744;color:#fff}
+small{color:#aaa}
+textarea{width:100%;height:120px;background:#000;color:#0f0;border:1px solid #333;border-radius:10px;padding:10px}
+</style>
+</head>
+<body>
+<h1>👑💎 TRTT MAGIC - PLUGIN</h1>
+<p>DIAMOND KING | GitHub এ দিলেই ChatGPT বানায় দিবে</p>
+<p>Health: 🟢 | Rating: <b id="rate">20/100</b></p>
+
+<div class="card">
+<h3>🎯 আজকের ১টা - Trigger দাও</h3>
+<button class="gold" onclick="copyFinal()">📋 FINAL COMMAND COPY করো - DR-TRTT-FINAL-001</button>
+<button class="blue" onclick="copyTool(1)">Day 1: QR Tool বানাও</button>
+<button class="blue" onclick="copyTool(2)">Day 2: Age Calculator বানাও</button>
+<button class="blue" onclick="copyTool(3)">Day 3: BMI Calculator বানাও</button>
+<button class="blue" onclick="copyTool(4)">Day 4: Password Generator বানাও</button>
+<button class="blue" onclick="copyTool(5)">Day 5: Word Counter বানাও</button>
+<button class="blue" onclick="copyTool(6)">Day 6: Unit Converter বানাও</button>
+<button class="blue" onclick="copyTool(7)">Day 7: Love Calculator বানাও</button>
+<p><small>১টা বাটন চাপ দিলেই Prompt Copy হবে। ChatGPT তে Paste করো। আর টাইপ করা লাগবে না।</small></p>
+</div>
+
+<div class="card">
+<h3>📋 COPY হওয়া Prompt - এখানে দেখবা</h3>
+<textarea id="out" readonly>এখানে Prompt আসবে। বাটন চাপ দাও।</textarea>
+<button class="green" onclick="nextStep()">⏭️ NEXT TRIGGER: [TRTT STEP 2]</button>
+<button class="red" onclick="fixMe()">🛠️ FIX চাই - ভুল ধরে দাও</button>
+</div>
+
+<div class="card">
+<h3>📊 LIVE BOARD</h3>
+<p>📝 Blog: 20/100 | 🐙 GitHub: 30/100 | 🦊 GitLab: 20/100</p>
+<p>🧠 ChatGPT: 20/100 | 💎 SaaS: 20/100 | OVERALL: 22/100</p>
+<p>STATUS: <b id="st">WAITING FOR TRIGGER</b></p>
+</div>
+
+<script>
+const FINAL = `# 👑💎 TRTT MAGIC - WORLD'S BEST AI AGENT COMMAND CENTER
+# DR-TRTT-FINAL-001 | MAGIC + COPILOT + MAKE.COM | TRTTVOYAGE.COM
+# KING: DIAMOND KING | 3 মাসের সেটআপ - DELETE নিষেধ
+SUPREME RULES: 1. তুমি এখন TRTT MAGIC + Copilot। 2. আগের কমান্ড DELETE নিষেধ - Append Only। 3. নকল বাটন আঁকা নিষেধ। 4. খালি রিপোর্ট নিষেধ - FIX করতে হবে। 5. DELETE নিষেধ। 6. TRIGGER দিয়ে দিয়ে কাজ করবা। KING অনুমতি দিলে পরের ধাপে যাবা।
+5 ARMY: Blog trttvoyage.com, GitHub trttdiamond, GitLab Backup, ChatGPT Plugin, SaaS Free Tool।
+WORKFLOW: STEP 1 AUTO লেখা -> STEP 2 ভুল ধরা -> STEP 3 Make.com FIX -> STEP 4 GitHub Save -> STEP 5 Health + Next Trigger।
+TRIGGER: [TRTT STEP 1] [TRTT STEP 2] [TRTT STEP 3] [TRTT STEP 4] [TRTT STEP 5]
+KING COMMAND: আজকের ১টা Free Tool বানাও, Copilot Mode এ Auto লিখো, ভুল ধরো, Make.com Scenario চালায় FIX করো, GitHub এ Save করো, Blog এ Post draft করো। STEP 1 থেকে শুরু করো।`;
+
+const TOOLS = {
+1: FINAL + "\n\nTODAY TOOL: QR Code Generator - মানুষ লেখা দিলে QR বানাবে। HTML ১টা ফাইলে দাও।",
+2: FINAL + "\n\nTODAY TOOL: Age Calculator - জন্ম তারিখ দিলে বয়স বের করবে।",
+3: FINAL + "\n\nTODAY TOOL: BMI Calculator - উচ্চতা ওজন দিলে BMI বের করবে।",
+4: FINAL + "\n\nTODAY TOOL: Strong Password Generator - ১ চাপে শক্ত Password বানাবে।",
+5: FINAL + "\n\nTODAY TOOL: Word Counter - লেখা দিলে কয়টা শব্দ, কয়টা অক্ষর বলবে।",
+6: FINAL + "\n\nTODAY TOOL: Unit Converter - কেজি থেকে পাউন্ড, টাকা থেকে ডলার।",
+7: FINAL + "\n\nTODAY TOOL: Love Calculator - ২টা নাম দিলে % দেখাবে, মজার জন্য।"
+};
+
+function copyFinal(){
+  document.getElementById('out').value = FINAL;
+  navigator.clipboard.writeText(FINAL);
+  document.getElementById('st').innerText = "FINAL COMMAND COPIED - ChatGPT তে Paste করো";
+  alert("FINAL COMMAND COPY হইছে ভাই! এখন ChatGPT তে Paste করো।");
+}
+function copyTool(n){
+  let t = TOOLS[n];
+  document.getElementById('out').value = t;
+  navigator.clipboard.writeText(t);
+  document.getElementById('st').innerText = "DAY "+n+" TOOL COPIED - Paste করো";
+  alert("Day "+n+" Tool Prompt COPY হইছে! ChatGPT তে Paste করো।");
+}
+function nextStep(){
+  let t = "[TRTT STEP 2] - ভুল ধরা শুরু করো। আগের কমান্ড ডিলেট করবা না।";
+  navigator.clipboard.writeText(t);
+  alert("NEXT TRIGGER COPY হইছে: [TRTT STEP 2]");
+}
+function fixMe(){
+  let t = "[TRTT STEP 3] - Make.com Scenario চালায় FIX করো। খালি রিপোর্ট দিবা না।";
+  navigator.clipboard.writeText(t);
+  alert("FIX TRIGGER COPY হইছে: [TRTT STEP 3]");
+}
+</script>
+</body>
+</html>
