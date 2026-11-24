@@ -1,15 +1,15 @@
 {
-  "brand": "TRTT NEWS 24 BD",
+  "brand": "TRTT VOYAGE",
   "theme": {
-    "primary": "#14213d",
-    "accent": "#ef476f",
-    "background": "#f5f7fb",
-    "surface": "#ffffff",
-    "text": "#172033",
-    "muted": "#64748b",
-    "menuBackground": "#101b36",
-    "mobileBackground": "#172b52",
-    "menuText": "#ffffff"
+    "primary": "#E98BAF",
+    "accent": "#D6A542",
+    "background": "#FFF9FB",
+    "surface": "#FFFFFF",
+    "text": "#292329",
+    "muted": "#756B72",
+    "menuBackground": "#3A2630",
+    "mobileBackground": "#B77991",
+    "menuText": "#FFFFFF"
   },
   "menu": [
     {
