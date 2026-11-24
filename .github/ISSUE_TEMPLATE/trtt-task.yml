@@ -1,0 +1,63 @@
+name: TRTT Task Queue
+description: Submit a structured task for safe review and queue tracking.
+title: "[TRTT TASK] "
+labels:
+  - trtt-queue
+body:
+  - type: dropdown
+    id: task_type
+    attributes:
+      label: Task type
+      description: Intake category only; this does not authorize production actions.
+      options:
+        - Safe audit
+        - Code change
+        - Blogger draft
+        - SEO/content review
+        - Other (needs review)
+    validations:
+      required: true
+  - type: textarea
+    id: requested_action
+    attributes:
+      label: Requested action
+      description: Describe one task only.
+      placeholder: Inspect the feature branch and report verified issues.
+    validations:
+      required: true
+  - type: input
+    id: target_branch
+    attributes:
+      label: Target branch
+      description: Use the approved feature branch unless the task explicitly requires another approved branch.
+      value: feature/trtt-voyage-blog-refresh-20261124
+    validations:
+      required: true
+  - type: dropdown
+    id: risk_level
+    attributes:
+      label: Risk level
+      options:
+        - Low
+        - Medium
+        - High
+        - Production-sensitive
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      description: State what evidence proves the task is complete.
+    validations:
+      required: true
+  - type: dropdown
+    id: approval_status
+    attributes:
+      label: Approval status
+      description: Queue intake is not approval for protected actions.
+      options:
+        - Not approved
+        - Approval requested
+    validations:
+      required: true
