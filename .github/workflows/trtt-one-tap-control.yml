@@ -1,0 +1,120 @@
+name: TRTT One-Tap Control
+
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Read-only control operation"
+        required: true
+        type: choice
+        options:
+          - status
+          - audit
+  schedule:
+    - cron: "0 7 * * *"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: trtt-one-tap-control
+  cancel-in-progress: false
+
+jobs:
+  queue-intake:
+    if: github.event_name == 'issues' && github.event.label.name == 'trtt-queue'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Validate structured task intake
+        id: validate
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python <<'PY'
+          import os, re
+
+          body = os.environ.get("ISSUE_BODY", "")
+          required = [
+              "Task type",
+              "Requested action",
+              "Target branch",
+              "Risk level",
+              "Acceptance criteria",
+              "Approval status",
+          ]
+
+          def section(name):
+              pattern = rf"(?ms)^### {re.escape(name)}\s*\n(.*?)(?=^### |\Z)"
+              match = re.search(pattern, body)
+              return match.group(1).strip() if match else ""
+
+          missing = [name for name in required if not section(name) or section(name) == "_No response_"]
+          task_type = section("Task type")
+          allowed = {"Safe audit", "Code change", "Blogger draft", "SEO/content review"}
+
+          if missing:
+              print("result=BLOCKED" >> open(os.environ["GITHUB_OUTPUT"], "a"))
+              print("reason=Missing required fields: " + ", ".join(missing))
+              raise SystemExit(0)
+
+          if task_type not in allowed:
+              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                  f.write("result=BLOCKED\n")
+                  f.write("reason=Task type requires manual review\n")
+              print("BLOCKED: task type requires manual review.")
+              raise SystemExit(0)
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write("result=QUEUED\n")
+              f.write("reason=Structured intake passed; execution still requires ChatGPT review and policy checks.\n")
+          print("QUEUED: intake validated. No repository, Blogger, DNS, or security action was executed.")
+          PY
+
+      - name: Record queue status
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RESULT: ${{ steps.validate.outputs.result }}
+          REASON: ${{ steps.validate.outputs.reason }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body "**TRTT Queue Status: $RESULT**
+
+          $REASON
+
+          Intake only. This workflow does not execute code changes, create Blogger drafts, publish posts, merge branches, or modify DNS/security settings."
+
+  status-report:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Build read-only queue report
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+          MODE: ${{ inputs.mode }}
+        run: |
+          set -euo pipefail
+          echo "## TRTT One-Tap Control — Queue Status" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Event: $EVENT_NAME" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Mode: ${MODE:-scheduled-summary}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Protected actions: NOT AUTHORIZED by this report" >> "$GITHUB_STEP_SUMMARY"
+          gh issue list --repo "$REPOSITORY" --state open --label trtt-queue --limit 100 --json number,title,url             > /tmp/trtt-queue.json
+          python - <<'PY'
+          import json
+          data = json.load(open("/tmp/trtt-queue.json", encoding="utf-8"))
+          summary = open(__import__("os").environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8")
+          summary.write(f"\n- Open queued tasks: {len(data)}\n")
+          for item in data:
+              summary.write(f"- #{item['number']}: {item['title']} — {item['url']}\n")
+          if not data:
+              summary.write("- No open tasks in the trtt-queue label.\n")
+          PY
