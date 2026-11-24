@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>বিদ্যুৎ বিল - TRTT MAGIC</title>
+<style>
+body{background:#fffde7;font-family:sans-serif;padding:15px;text-align:center;color:#222}
+.box{background:#fff;border:3px solid #f9a825;border-radius:18px;padding:18px;max-width:520px;margin:auto;box-shadow:0 4px 15px #0002}
+h1{color:#f57f17;font-size:23px}
+input{width:92%;padding:12px;font-size:18px;border:2px solid #f9a825;border-radius:10px;margin:6px 0;text-align:center}
+button{width:95%;padding:13px;background:#f9a825;color:#222;border:none;border-radius:10px;font-size:17px;font-weight:bold;margin:5px 0}
+.result{background:#fffde7;border:1px solid #f9a825;border-radius:12px;padding:14px;margin-top:12px;text-align:left;font-size:16px;line-height:1.8}
+.big{font-size:30px;font-weight:bold;color:#e65100;text-align:center}
+small{color:#666}
+.tag{display:inline-block;background:#fff59d;padding:3px 8px;border-radius:8px;font-size:13px;margin:2px}
+</style>
+</head>
+<body>
+<div class="box">
+<h1>💡 বিদ্যুৎ বিল 🇧🇩</h1>
+<p>TRTT MAGIC - DIAMOND KING | বিলের ভয় শেষ</p>
+
+<label>এই মাসে কত ইউনিট ব্যবহার করছো?</label>
+<input type="number" id="unit" placeholder="যেমন: 120" value="120">
+<label>আগের মাসের মিটার রিডিং (যদি থাকে):</label>
+<input type="number" id="prev" placeholder="আগের রিডিং - যেমন: 500">
+<label>এই মাসের মিটার রিডিং:</label>
+<input type="number" id="curr" placeholder="এই মাসের রিডিং - যেমন: 620">
+<button onclick="calc()">🧮 বিল হিসাব করো</button>
+<button onclick="calcFan()" style="background:#ffe082">🌀 ফ্যান / লাইটের হিসাব</button>
+
+<div class="result" id="res">
+👆 ইউনিট লিখে হিসাব করো।<br>
+বাংলাদেশের বর্তমান স্ল্যাব অনুযায়ী আনুমানিক হিসাব।<br>
+<span class="tag">০-৭৫ ইউনিট: ৪.১৯ টাকা</span>
+<span class="tag">৭৬-২০০: ৫.৭২ টাকা</span>
+<span class="tag">২০১-৩০০: ৬.০০ টাকা</span>
+<span class="tag">৩০১-৪০০: ৬.৩৪ টাকা</span>
+<span class="tag">৪০০+: ৯.৯৪ টাকা</span>
+</div>
+<p><small>💡 বুদ্ধি: দিনে ১ ঘণ্টা ফ্যান কম চালাইলে মাসে ৩০ ঘণ্টা বাঁচে।<br>⚠️ এইটা আনুমানিক হিসাব। আসল বিলে ভ্যাট + ডিমান্ড চার্জ + মিটার ভাড়া যোগ হবে।</small></p>
+</div>
+
+<script>
+function calc(){
+ let unit=parseFloat(document.getElementById('unit').value);
+ let prev=parseFloat(document.getElementById('prev').value);
+ let curr=parseFloat(document.getElementById('curr').value);
+ if(!isNaN(prev) && !isNaN(curr) && curr>prev){
+   unit=curr-prev;
+   document.getElementById('unit').value=unit;
+ }
+ if(!unit || unit<0){ alert("ভাই, ইউনিট লিখুন!"); return; }
+ let bill=0; let remaining=unit; let details="";
+ let slabs=[[75,4.19],[125,5.72],[100,6.00],[100,6.34],[99999,9.94]];
+ let used=0;
+ slabs.forEach(s=>{
+   if(remaining<=0) return;
+   let take=Math.min(remaining,s[0]);
+   let cost=take*s[1];
+   bill+=cost; remaining-=take; used+=take;
+   if(take>0) details+=`• ${take} ইউনিট x ${s[1]} টাকা = ${cost.toFixed(0)} টাকা<br>`;
+ });
+ let vat=bill*0.05;
+ let demand=70; // আনুমানিক
+ let meter=40;
+ let total=bill+vat+demand+meter;
+ let perDay=(total/30).toFixed(0);
+ document.getElementById('res').innerHTML=`
+ <div class="big">${total.toFixed(0)} টাকা</div>
+ <b>📊 তোমার ব্যবহার:</b> ${unit} ইউনিট<br>
+ ${details}
+ <b>ভ্যাট (৫%):</b> ${vat.toFixed(0)} টাকা<br>
+ <b>ডিমান্ড চার্জ:</b> ${demand} টাকা<br>
+ <b>মিটার ভাড়া:</b> ${meter} টাকা<br>
+ <b>প্রতিদিন খরচ:</b> ${perDay} টাকা<br><br>
+ ${unit>200?`<b style="color:#d50000">⚠️ বিল বেশি আসতেছে! ফ্যান / ফ্রিজ একটু কম চালাও ভাই।</b>`:`<b style="color:#2e7d32">✅ বিল ঠিক আছে। এইভাবে চালাও।</b>`}
+ `;
+}
+function calcFan(){
+ alert("💡 হিসাব: ১টা ফ্যান ১০ ঘণ্টা চললে = ০.৮ ইউনিট। ১টা লাইট ১০ ঘণ্টা = ০.২ ইউনিট। ফ্রিজ সারাদিন = ১.৫ ইউনিট। এইভাবে হিসাব করে চালাও, বিল কমবে।");
+}
+</script>
+</body>
+</html>
