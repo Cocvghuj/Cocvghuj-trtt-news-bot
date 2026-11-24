@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>চাকরির বয়স - TRTT MAGIC</title>
+<style>
+body{background:#f3e5f5;font-family:sans-serif;padding:15px;text-align:center;color:#222}
+.box{background:#fff;border:3px solid #7b1fa2;border-radius:18px;padding:18px;max-width:520px;margin:auto;box-shadow:0 4px 15px #0002}
+h1{color:#7b1fa2;font-size:23px}
+input,select{width:92%;padding:12px;font-size:17px;border:2px solid #7b1fa2;border-radius:10px;margin:6px 0}
+button{width:95%;padding:13px;background:#7b1fa2;color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:bold;margin:5px 0}
+.result{background:#f3e5f5;border-radius:12px;padding:14px;margin-top:12px;text-align:left;font-size:17px;line-height:1.8}
+.big{font-size:28px;font-weight:bold;color:#7b1fa2;text-align:center}
+.red{color:#d50000;font-weight:bold}
+.green{color:#2e7d32;font-weight:bold}
+small{color:#666}
+</style>
+</head>
+<body>
+<div class="box">
+<h1>💼 চাকরির বয়স 🇧🇩</h1>
+<p>TRTT MAGIC - DIAMOND KING | তোমার আর কয়দিন আছে?</p>
+
+<label>তোমার জন্ম তারিখ:</label>
+<input type="date" id="dob" value="2000-01-01">
+<label>তুমি কোন কোটায়?</label>
+<select id="quota">
+<option value="30">সাধারণ - ৩০ বছর পর্যন্ত</option>
+<option value="32">মুক্তিযোদ্ধা / প্রতিবন্ধী - ৩২ বছর পর্যন্ত</option>
+<option value="35">ডাক্তার / শিক্ষক (বিশেষ) - ৩৫ বছর পর্যন্ত</option>
+</select>
+<button onclick="calc()">🧮 হিসাব করো - আমার আর কয়দিন আছে?</button>
+
+<div class="result" id="res">
+👆 জন্ম তারিখ দিয়া হিসাব করো বাটনে চাপ দাও।<br>
+যেমন: জন্ম ২০০০ সাল হইলে এখন বয়স কত, চাকরির আর কয়দিন বাকি?
+</div>
+<p><small>💡 বুদ্ধি: প্রতিদিন ১ ঘণ্টা করে পড়লেও ১ বছরে ৩৬৫ ঘণ্টা হয়। এখনো সময় আছে ভাই, হাল ছাইড়ো না।<br>⚠️ সরকারি নিয়ম বদলাইতে পারে, সার্কুলার দেখে নিও।</small></p>
+</div>
+
+<script>
+function calc(){
+ let dobVal=document.getElementById('dob').value;
+ let limit=parseInt(document.getElementById('quota').value);
+ if(!dobVal){ alert("ভাই, জন্ম তারিখ দাও!"); return; }
+ let dob=new Date(dobVal);
+ let today=new Date();
+ let ageMs=today-dob;
+ let ageYears=ageMs/(1000*60*60*24*365.25);
+ let ageY=Math.floor(ageYears);
+ let ageM=Math.floor((ageYears-ageY)*12);
+ let ageD=Math.floor(((ageYears-ageY)*12-ageM)*30);
+ let end=new Date(dob); end.setFullYear(end.getFullYear()+limit);
+ let remainMs=end-today;
+ let remainDays=Math.floor(remainMs/(1000*60*60*24));
+ let remainYears=Math.floor(remainDays/365);
+ let remainMonths=Math.floor((remainDays%365)/30);
+ let remainD=remainDays%30;
+ let status="";
+ let color="";
+ if(remainDays<0){ status=`<span class="red">❌ বয়স শেষ। ${Math.abs(remainDays)} দিন পার হয়ে গেছে। মন খারাপ কইরো না, বেসরকারি / ব্যবসা / ফ্রিল্যান্সিং এখনো খোলা।</span>`; color="red"; }
+ else if(remainDays<365){ status=`<span class="red">⚠️ ভাই, সময় খুব কম! মাত্র ${remainDays} দিন আছে। এখনই জোরে পড়া শুরু করো।</span>`; }
+ else { status=`<span class="green">✅ এখনো সময় আছে ভাই! হাল ছাইড়ো না।</span>`; }
+ document.getElementById('res').innerHTML=`
+ <div class="big">তোমার বয়স: ${ageY} বছর ${ageM} মাস ${ageD} দিন</div>
+ <b>🎯 চাকরির শেষ বয়স:</b> ${limit} বছর - শেষ হবে ${end.toLocaleDateString('bn-BD')}<br>
+ <b>⏳ আর বাকি আছে:</b> ${remainDays>0?`${remainYears} বছর ${remainMonths} মাস ${remainD} দিন = ${remainDays} দিন`:"০ দিন"}<br>
+ ${status}<br><br>
+ <b>📚 আজকের ১টা কাজ:</b> আজকে ১টা অংক / ১টা ইংরেজি শব্দ শিখো। ১টা ১টা করে ৩৬৫ দিনে ৩৬৫টা হবে।
+ `;
+}
+</script>
+</body>
+</html>
