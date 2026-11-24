@@ -48,9 +48,9 @@ jobs:
           ISSUE_BODY: ${{ github.event.issue.body }}
         run: |
           set -euo pipefail
+
           python - <<'PY'
           import os
-          import json
 
           event = os.environ["EVENT_NAME"]
 
@@ -64,9 +64,29 @@ jobs:
           if not title or not content:
               raise SystemExit("ERROR: Title and content are required.")
 
-          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-              f.write("title=" + json.dumps(title) + "\n")
-              f.write("content=" + json.dumps(content) + "\n")
+          if "\n" in title or "\r" in title:
+              raise SystemExit("ERROR: Title must be a single line.")
+
+          outputs = [
+              ("title", title, "TRTT_TITLE_EOF"),
+              ("content", content, "TRTT_CONTENT_EOF"),
+          ]
+
+          output_file = os.environ["GITHUB_OUTPUT"]
+
+          with open(output_file, "a", encoding="utf-8") as f:
+              for name, value, delimiter in outputs:
+                  if delimiter in value.splitlines():
+                      raise SystemExit(
+                          f"ERROR: Reserved delimiter found in {name}."
+                      )
+
+                  f.write(f"{name}<<{delimiter}\n")
+                  f.write(value)
+                  f.write("\n")
+                  f.write(f"{delimiter}\n")
+
+          print("Task title and content extracted successfully.")
           PY
 
       - name: Obtain Google Access Token
@@ -150,6 +170,7 @@ jobs:
                   result = json.loads(response.read().decode("utf-8"))
 
               post_id = result.get("id")
+
               if not post_id:
                   raise SystemExit("ERROR: Blogger returned no post ID.")
 
