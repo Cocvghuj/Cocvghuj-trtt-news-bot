@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>বাজার দর - TRTT MAGIC</title>
+<style>
+body{background:#fff8e1;font-family:sans-serif;padding:15px;text-align:center;color:#222}
+.box{background:#fff;border:3px solid #ff6d00;border-radius:18px;padding:18px;max-width:520px;margin:auto;box-shadow:0 4px 15px #0002}
+h1{color:#e65100;font-size:24px}
+input,select{width:92%;padding:12px;font-size:17px;border:2px solid #ff6d00;border-radius:10px;margin:6px 0}
+button{width:95%;padding:13px;background:#ff6d00;color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:bold;margin:5px 0}
+.item{background:#fff3e0;border:1px solid #ffcc80;border-radius:12px;padding:10px;margin:8px 0;text-align:left;display:flex;justify-content:space-between;align-items:center}
+.price{font-weight:bold;color:#e65100;font-size:18px}
+small{color:#666}
+.total{background:#e8f5e9;padding:12px;border-radius:12px;margin-top:10px;font-size:18px;font-weight:bold}
+</style>
+</head>
+<body>
+<div class="box">
+<h1>🛒 বাজার দর 🇧🇩</h1>
+<p>TRTT MAGIC - DIAMOND KING | আজকের বাজার</p>
+
+<label>বাজার / এলাকার নাম:</label>
+<input id="bazar" placeholder="যেমন: সানলুরী বাজার / ঢাকা" value="আমার এলাকার বাজার">
+<label>জিনিসের নাম + দাম + কেজি:</label>
+<input id="name" placeholder="যেমন: আলু">
+<input id="price" type="number" placeholder="১ কেজির দাম - যেমন: 40">
+<input id="kg" type="number" placeholder="কয় কেজি নিবেন? - যেমন: 2" value="1">
+<button onclick="add()">➕ বাজারের ব্যাগে যোগ করো</button>
+<button onclick="clearAll()" style="background:#78909c">🗑️ ব্যাগ খালি করো</button>
+
+<div id="list">
+<p><small>এখনো কিছু যোগ হয় নাই। উপরে লিখে যোগ করো।</small></p>
+</div>
+<div class="total" id="total">মোট খরচ: ০ টাকা</div>
+<p><small>💡 বুদ্ধি: বাজারে যাওয়ার আগে দাম লিখে নাও, দোকানদার ঠকাতে পারবে না।<br>নিচের দামগুলো নমুনা - তোমার এলাকার দাম বসিয়ে নাও।</small></p>
+</div>
+<script>
+let items=[];
+let demo=[
+ {n:"চাল (মিনিকেট)",p:75},
+ {n:"আলু",p:40},
+ {n:"পেঁয়াজ",p:90},
+ {n:"সয়াবিন তেল (১ লিটার)",p:175},
+ {n:"ডিম (১ হালি)",p:52},
+ {n:"মুরগি (১ কেজি)",p:190},
+];
+let totalEl=document.getElementById('total');
+function render(){
+ let list=document.getElementById('list');
+ if(items.length==0){ list.innerHTML="<p><small>ব্যাগ খালি। উপরে যোগ করো।</small></p>"; totalEl.innerHTML="মোট খরচ: ০ টাকা"; return; }
+ let html="";
+ let total=0;
+ items.forEach((it,i)=>{
+   let cost=it.p*it.kg; total+=cost;
+   html+=`<div class="item"><span>${it.n}<br><small>${it.p} টাকা x ${it.kg} কেজি</small></span><span class="price">${cost} ৳ <button onclick="del(${i})" style="width:auto;padding:4px 8px;background:#ff1744;font-size:12px">X</button></span></div>`;
+ });
+ list.innerHTML=html;
+ totalEl.innerHTML=`মোট খরচ: ${total} টাকা | বাজার: ${document.getElementById('bazar').value}`;
+}
+function add(){
+ let n=document.getElementById('name').value.trim();
+ let p=parseFloat(document.getElementById('price').value);
+ let kg=parseFloat(document.getElementById('kg').value)||1;
+ if(!n||!p){ alert("ভাই, নাম আর দাম লিখুন!"); return; }
+ items.push({n,p,kg});
+ document.getElementById('name').value=""; document.getElementById('price').value="";
+ render();
+}
+function del(i){ items.splice(i,1); render(); }
+function clearAll(){ items=[]; render(); }
+// Demo load
+demo.forEach(d=>{});
+let showDemo = `<p><b>আজকের নমুনা দাম (তোমার এলাকায় বসিয়ে নাও):</b></p>` + demo.map(d=>`<div class="item"><span>${d.n}</span><span class="price">${d.p} ৳ <button onclick="quickAdd('${d.n}',${d.p})" style="width:auto;padding:4px 10px;background:#2e7d32;font-size:13px">+ যোগ</button></span></div>`).join("");
+document.getElementById('list').innerHTML = showDemo;
+function quickAdd(n,p){
+ document.getElementById('name').value=n;
+ document.getElementById('price').value=p;
+ add();
+}
+</script>
+</body>
+</html>
