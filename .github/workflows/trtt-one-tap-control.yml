@@ -49,30 +49,34 @@ jobs:
           ]
 
           def section(name):
-              pattern = rf"(?ms)^### {re.escape(name)}\s*\n(.*?)(?=^### |\Z)"
+              pattern = rf"(?ms)^### {re.escape(name)}\\s*\\n(.*?)(?=^### |\\Z)"
               match = re.search(pattern, body)
               return match.group(1).strip() if match else ""
 
-          missing = [name for name in required if not section(name) or section(name) == "_No response_"]
+          missing = [
+              name for name in required
+              if not section(name) or section(name) == "_No response_"
+          ]
           task_type = section("Task type")
-          allowed = {"Safe audit", "Code change", "Blogger draft", "SEO/content review"}
+          allowed = {
+              "Safe audit",
+              "Code change",
+              "Blogger draft",
+              "SEO/content review",
+          }
 
-          if missing:
-              print("result=BLOCKED" >> open(os.environ["GITHUB_OUTPUT"], "a"))
-              print("reason=Missing required fields: " + ", ".join(missing))
-              raise SystemExit(0)
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              if missing:
+                  output.write("result=BLOCKED\\n")
+                  output.write("reason=Missing required fields: " + ", ".join(missing) + "\\n")
+              elif task_type not in allowed:
+                  output.write("result=BLOCKED\\n")
+                  output.write("reason=Task type requires manual review\\n")
+              else:
+                  output.write("result=QUEUED\\n")
+                  output.write("reason=Structured intake passed; execution still requires ChatGPT review and policy checks.\\n")
 
-          if task_type not in allowed:
-              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-                  f.write("result=BLOCKED\n")
-                  f.write("reason=Task type requires manual review\n")
-              print("BLOCKED: task type requires manual review.")
-              raise SystemExit(0)
-
-          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-              f.write("result=QUEUED\n")
-              f.write("reason=Structured intake passed; execution still requires ChatGPT review and policy checks.\n")
-          print("QUEUED: intake validated. No repository, Blogger, DNS, or security action was executed.")
+          print("Intake checked. No repository, Blogger, DNS, or security action was executed.")
           PY
 
       - name: Record queue status
@@ -109,12 +113,12 @@ jobs:
           echo "- Protected actions: NOT AUTHORIZED by this report" >> "$GITHUB_STEP_SUMMARY"
           gh issue list --repo "$REPOSITORY" --state open --label trtt-queue --limit 100 --json number,title,url             > /tmp/trtt-queue.json
           python - <<'PY'
-          import json
+          import json, os
           data = json.load(open("/tmp/trtt-queue.json", encoding="utf-8"))
-          summary = open(__import__("os").environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8")
-          summary.write(f"\n- Open queued tasks: {len(data)}\n")
-          for item in data:
-              summary.write(f"- #{item['number']}: {item['title']} — {item['url']}\n")
-          if not data:
-              summary.write("- No open tasks in the trtt-queue label.\n")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              summary.write(f"\\n- Open queued tasks: {len(data)}\\n")
+              for item in data:
+                  summary.write(f"- #{item['number']}: {item['title']} — {item['url']}\\n")
+              if not data:
+                  summary.write("- No open tasks in the trtt-queue label.\\n")
           PY
