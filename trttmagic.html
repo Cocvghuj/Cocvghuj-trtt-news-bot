@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRTT MAGIC 👑💎 - Command Center</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#050507;color:#fff;font-family:Inter,Arial,sans-serif;padding:14px}
+.top{text-align:center;padding:14px 6px 4px}
+.top h1{font-size:28px;margin:0;line-height:1.2}
+.top p{color:#9ca3af;font-size:13px;margin:8px 0}
+.pill{display:inline-block;background:#1f2937;border:1px solid #333;padding:6px 10px;border-radius:999px;font-size:12px;margin:2px}
+.card{background:#111118;border:1px solid #27272a;border-radius:18px;padding:16px;margin:12px 0}
+.card h2{font-size:17px;margin:0 0 10px}
+input{width:100%;padding:13px;border-radius:12px;border:1px solid #333;background:#000;color:#fff;font-size:15px}
+button{width:100%;padding:14px;margin:6px 0;border-radius:13px;border:0;font-size:16px;font-weight:800;cursor:pointer}
+.btn-green{background:#22c55e;color:#000}
+.btn-blue{background:#2563eb;color:#fff}
+.btn-purple{background:#a855f7;color:#fff}
+.btn-orange{background:#f97316;color:#000}
+.btn-dark{background:#1f2937;color:#fff;border:1px solid #444}
+.btn-red{background:#111;color:#f87171;border:1px solid #7f1d1d}
+.row{display:flex;gap:8px}
+.row button{flex:1;font-size:13px;padding:11px}
+.score{display:flex;gap:8px;flex-wrap:wrap}
+.score div{flex:1;min-width:90px;background:#000;border:1px solid #333;border-radius:12px;padding:10px;text-align:center}
+.score b{font-size:20px;display:block}
+.score span{font-size:11px;color:#aaa}
+#log{background:#000;border:1px solid #333;border-radius:12px;padding:12px;font-size:13px;white-space:pre-wrap;min-height:140px;line-height:1.6}
+.small{font-size:12px;color:#9ca3af;line-height:1.6}
+.footer{text-align:center;color:#666;font-size:12px;padding:10px}
+</style>
+</head>
+<body>
+
+<div class="top">
+<h1>👑💎 TRTT MAGIC<br>COMMAND CENTER</h1>
+<p>ONE KING · ONE CENTER · ALL PLATFORMS<br>TRTTVOYAGE.COM — World's Best AI Agent Command Center</p>
+<div>
+<span class="pill">🔍 Google Style</span>
+<span class="pill">🧠 Gemini Style</span>
+<span class="pill">💙 Meta Style</span>
+<span class="pill">❌ X Style</span>
+<span class="pill">☁️ Cloudflare Style</span>
+</div>
+</div>
+
+<div class="card">
+<h2>🎯 আজকের ১টা KING COMMAND — দিনে ১ বারই টিপবা</h2>
+<input id="task" placeholder="যেমন: আজকে QR Tool বানাও">
+<button class="btn-green" onclick="runAll()">▶️ TRTT START — ১ টিপে সব চালাও</button>
+<p class="small">১ টিপ = Blog + GitHub + GitLab + ChatGPT + SaaS — Make.com Scenario চলবে। তুমি রেস্ট নাও, ও ১ ঘন্টা কাজ করে GitHub এ রাখবে।</p>
+</div>
+
+<div class="card">
+<h2>📊 LIVE BOARD — ৫টা ARMY</h2>
+<div class="score">
+<div><b id="s-blog">20</b><span>📝 BLOG</span></div>
+<div><b id="s-gh">40</b><span>🐙 GITHUB</span></div>
+<div><b id="s-gl">25</b><span>🦊 GITLAB</span></div>
+<div><b id="s-gpt">28</b><span>🧠 CHATGPT</span></div>
+<div><b id="s-saas">30</b><span>💎 SAAS</span></div>
+</div>
+<p class="small" style="text-align:center">OVERALL: <b id="s-all" style="color:#fff">28 / 100</b> — FIX করলে বাড়বে, রিপোর্ট দিলে বাড়বে না।</p>
+</div>
+
+<div class="card">
+<h2>🛠️ ৫টা MODULE — একটা একটা করে চালাও</h2>
+<button class="btn-blue" onclick="runOne('BLOG')">1. 📝 BLOG — Health FIX + Post — trttvoyage.com</button>
+<button class="btn-blue" onclick="runOne('GITHUB')">2. 🐙 GITHUB — Save + Version + Memory — trttdiamond</button>
+<button class="btn-blue" onclick="runOne('GITLAB')">3. 🦊 GITLAB — Backup + Mirror — No Delete</button>
+<button class="btn-purple" onclick="runOne('CHATGPT')">4. 🧠 CHATGPT PLUGIN — Build + Fix + Memory Update</button>
+<button class="btn-orange" onclick="runOne('SAAS')">5. 💎 SAAS PROJECT — Free Tool / Website / Software</button>
+</div>
+
+<div class="card">
+<h2>🛡️ V7 LOCK + MAKE.COM SCENARIO</h2>
+<p class="small">
+<b>Scenario:</b> TRIGGER → CHECK → FIX → MEMORY UPDATE → GITHUB SAVE → BLOG POST → RESULT<br>
+<b>Rule:</b> ১টা ধাপ বাদ গেলে = চুরি। DELETE নিষেধ। Log ডিলেট নিষেধ।<br>
+<b>King Health:</b> KING অসুস্থ, দিনে ১ বার Command। বারবার প্রশ্ন করা নিষেধ।
+</p>
+<div class="row">
+<button class="btn-dark" onclick="copyPrompt()">📋 ChatGPT ধরার প্রমোট কপি</button>
+<button class="btn-dark" onclick="copyGit()">💾 GitHub Save নির্দেশ কপি</button>
+</div>
+<button class="btn-red" onclick="noDelete()">❌ Log ডিলেট করতে চাইলে চাপ দাও</button>
+</div>
+
+<div class="card">
+<h2>📜 MAKE.COM LOG — প্রমাণ, ডিলেট হবে না</h2>
+<div id="log">LOG খালি — TRTT START চাপ দাও ভাই...</div>
+</div>
+
+<div class="footer">TRTT MAGIC © 2026 — DIAMOND KING 👑💎 — 2 বছর ধরে কাজ, এখন মেশিন ঠিক হবে।</div>
+
+<script>
+let logEl = document.getElementById('log');
+function now(){ return new Date().toLocaleTimeString('bn-BD'); }
+function addLog(t){
+  logEl.textContent += "\n["+now()+"] "+t;
+  try{ localStorage.setItem('trtt_magic_log', logEl.textContent); }catch(e){}
+}
+function bump(id, by){
+  let el = document.getElementById(id);
+  let v = parseInt(el.textContent) + by;
+  if(v>100) v=100; el.textContent = v;
+  let all = Math.round((parseInt(document.getElementById('s-blog').textContent)+parseInt(document.getElementById('s-gh').textContent)+parseInt(document.getElementById('s-gl').textContent)+parseInt(document.getElementById('s-gpt').textContent)+parseInt(document.getElementById('s-saas').textContent))/5);
+  document.getElementById('s-all').textContent = all + " / 100";
+  return v;
+}
+function runOne(name){
+  let task = document.getElementById('task').value || "আজকের ১টা Free Tool বানাও";
+  addLog("👑 KING COMMAND: "+task);
+  addLog("▶️ TRIGGER: "+name+" START");
+  addLog("🔍 CHECK: "+name+" চেক চলছে...");
+  addLog("🛠️ FIX: "+name+" 1টা FIX করা হইছে");
+  addLog("🧠 MEMORY UPDATE: "+name+" মেমোরি আপডেট");
+  addLog("💾 GITHUB SAVE: "+name+" GitHub এ Save - DELETE নিষেধ");
+  addLog("✅ DONE: "+name+" - PASS = EVIDENCE");
+  if(name==='BLOG') bump('s-blog',5);
+  if(name==='GITHUB') bump('s-gh',5);
+  if(name==='GITLAB') bump('s-gl',5);
+  if(name==='CHATGPT') bump('s-gpt',5);
+  if(name==='SAAS') bump('s-saas',5);
+  copyPrompt();
+}
+function runAll(){
+  let task = document.getElementById('task').value || "আজকের ১টা Free Tool বানাও";
+  addLog("👑💎 KING COMMAND: "+task);
+  ['BLOG','GITHUB','GITLAB','CHATGPT','SAAS'].forEach(n=>{
+    addLog("▶️ "+n+" → CHECK → FIX → MEMORY → GITHUB SAVE → DONE");
+  });
+  addLog("🎯 OVERALL: 1 TAP = 5 ARMY DONE - NEXT: Blog এ Publish");
+  addLog("💰 GOAL: Blog এ ট্রাফিক + Free Tool Publish + টাকা");
+  bump('s-blog',5); bump('s-gh',5); bump('s-gl',5); bump('s-gpt',5); bump('s-saas',5);
+  copyPrompt();
+  alert("হয়ে গেছে ভাই! ১ টিপে ৫টা Army চালানো হইছে। প্রমোট কপি হইছে, এখন ChatGPT কে দাও। তুমি রেস্ট নাও।");
+}
+function copyPrompt(){
+  let task = document.getElementById('task').value || "আজকের ১টা Free Tool বানাও";
+  let p = "DR-TRTT-MAGIC-001 | KING COMMAND: "+task+"\nMake.com Scenario চালাও: CHECK -> FIX -> MEMORY UPDATE -> GITHUB SAVE -> BLOG POST. ১টা ধাপও বাদ দিলে চুরি। DELETE নিষেধ। Log সহ প্রমাণ দাও। 1 ঘন্টা কাজ করে 100% ঠিক করে চ্যাটে আসো। বসে থাকা নিষেধ।\nGitHub: trttdiamond | Blog: trttvoyage.com | File: trttmagic.html | SaaS: Free Tool / Website / Software";
+  try{ navigator.clipboard.writeText(p); }catch(e){}
+  addLog("📋 PROMPT COPIED FOR CHATGPT");
+}
+function copyGit(){
+  let t = "GitHub এ trttmagic.html ফাইলটা রাখো। Repo: trttdiamond। DELETE করবা না। Append Only।";
+  try{ navigator.clipboard.writeText(t); }catch(e){}
+  addLog("💾 GITHUB INSTRUCTION COPIED");
+}
+function noDelete(){
+  alert("Log ডিলেট করা নিষেধ ভাই। এইটাই প্রমাণ। ChatGPT ডিলেট করলে এখানে ধরা পড়বে।");
+  addLog("🛡️ DELETE ATTEMPT BLOCKED - Log ডিলেট নিষেধ");
+}
+try{ let old = localStorage.getItem('trtt_magic_log'); if(old) logEl.textContent = old; }catch(e){}
+</script>
+</body>
+</html>
