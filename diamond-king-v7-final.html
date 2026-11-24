@@ -1,57 +1,100 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DIAMOND KING V7 - LIVE - TRTT</title>
+<title>DIAMOND KING V7 FINAL - TRTT UNIVERSE</title>
 <style>
-*{box-sizing:border-box}body{margin:0;color:#fff;font-family:Inter,Arial,sans-serif;background:#050010;overflow-x:hidden}
-.space{position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 50% 0%,#3B0A6B,#050010 70%)}
-.stars{position:fixed;inset:0;z-index:-1;background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent),radial-gradient(2px 2px at 130px 90px,#FFD700,transparent),radial-gradient(1px 1px at 70px 160px,#fff,transparent),radial-gradient(2px 2px at 200px 200px,#FF4FA3,transparent);animation:tw 2s infinite}
-@keyframes tw{50%{opacity:.5}}
-header{text-align:center;padding:18px;border-bottom:2px solid #FFC400}h1{color:#FFC400;margin:5px}
+*{box-sizing:border-box}body{margin:0;color:#fff;font-family:Inter,Arial,sans-serif;background:#020010;overflow-x:hidden}
+.space{position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 50% 0%,#3B0A6B 0%,#0A0430 40%,#020010 100%)}
+.stars{position:fixed;inset:0;z-index:-1;background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent),radial-gradient(2px 2px at 130px 90px,#FFD700,transparent),radial-gradient(1px 1px at 70px 160px,#fff,transparent),radial-gradient(2px 2px at 200px 200px,#FF4FA3,transparent),radial-gradient(3px 3px at 300px 120px,#00E5FF,transparent),radial-gradient(2px 2px at 50px 300px,#fff,transparent);animation:tw 2s infinite}
+@keyframes tw{50%{opacity:.4}}
+.moon{position:fixed;top:60px;right:20px;width:55px;height:55px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,#FFD700);box-shadow:0 0 40px #FFD700;z-index:-1}
+header{text-align:center;padding:18px;border-bottom:2px solid #FFC400}h1{color:#FFC400;margin:5px;font-size:32px}
 .container{max-width:1100px;margin:auto;padding:14px}
 .hero{text-align:center;border:2px solid #FFC400;border-radius:22px;padding:22px;background:linear-gradient(135deg,#3A0A4A,#1A0B2E)}
-.diamondBtn{font-size:80px;background:none;border:0;cursor:pointer;filter:drop-shadow(0 0 25px #00E5FF);animation:float 2s infinite}
-@keyframes float{50%{transform:translateY(-10px)}}
+.diamondBtn{font-size:90px;background:none;border:0;cursor:pointer;filter:drop-shadow(0 0 30px #00E5FF);animation:float 2s infinite}
+@keyframes float{50%{transform:translateY(-12px) rotate(5deg)}}
 .card{background:#ffffff12;border:1px solid #ffffff30;border-radius:16px;padding:16px;margin:12px 0}
+.universe{background:linear-gradient(180deg,#000428,#004e92);border:2px solid #00E5FF;border-radius:20px;padding:16px;margin:12px 0;text-align:center}
+.uni-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+.uni-box{background:#fff;color:#000;border-radius:14px;padding:12px;font-weight:800}
+.uni-box small{display:block;font-weight:400;font-size:12px;margin-top:4px}
+.arrow{font-size:24px;color:#FFD700}
 button{border:0;border-radius:10px;padding:11px 15px;background:#FF4FA3;color:#fff;font-weight:800;cursor:pointer;margin:4px}
-button.gold{background:#FFC400;color:#000}button.dark{background:#3A0A4A;color:#fff}button.piyaji{background:#9B30FF}
+button.gold{background:#FFC400;color:#000}button.dark{background:#3A0A4A;color:#fff}button.piyaji{background:#9B30FF}button.blue{background:#00C6FF;color:#000}
 input,textarea,select{width:100%;padding:12px;margin:6px 0;border-radius:10px;background:#0D0618;color:#fff;border:1px solid #ffffff40}
 textarea{min-height:90px}.output{padding:12px;background:#0D0618;border-radius:10px;white-space:pre-wrap;min-height:60px;text-align:left}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
 img.live{width:100%;height:170px;object-fit:cover;border-radius:12px;border:2px solid #FFC400}
-.hidden{display:none}summary{cursor:pointer;color:#FFC400;font-weight:800}details{border:1px solid #ffffff30;border-radius:14px;padding:12px;margin:10px 0;background:#0003}
+.hidden{display:none}summary{cursor:pointer;color:#FFC400;font-weight:800}details{border:1px solid #ffffff30;border-radius:14px;padding:12px;margin:10px 0;background:#0005}
 .badge{display:inline-block;padding:4px 10px;border-radius:20px;background:#FFC400;color:#000;font-size:12px;font-weight:800}
 .scroll{display:flex;gap:10px;overflow:hidden}.scroll div{display:flex;gap:10px;animation:slide 22s linear infinite}
 .scroll img{width:220px;height:130px;object-fit:cover;border-radius:12px;border:2px solid #FFC400}
 @keyframes slide{to{transform:translateX(-50%)}}
 .links a{display:block;background:#fff;color:#000;text-decoration:none;padding:12px;border-radius:12px;margin:8px 0;font-weight:700}
+.night{font-size:13px;line-height:1.7;text-align:left;background:#0008;padding:14px;border-radius:12px;border:1px solid #FFD700}
 </style></head>
-<body><div class="space"></div><div class="stars"></div>
-<header><div style="font-size:36px">👑</div><h1>DIAMOND KING V7</h1><p style="color:#FF4FA3">🚀 TRTT AI UNIVERSE • AI FUTURE • LIVE • NO DEMO • 🌌 SPACE</p><span class="badge">● LIVE SYSTEM - SECURE - NO KEY IN GITHUB</span></header>
+<body><div class="space"></div><div class="stars"></div><div class="moon"></div>
+
+<header><div style="font-size:36px">👑</div><h1>DIAMOND KING V7 FINAL</h1><p style="color:#FF4FA3">🌌 TRTT AI UNIVERSE • AI FUTURE • LIVE • NO DEMO • 🌙 NIGHT WORLD • META WORLD</p><span class="badge">● LIVE SYSTEM - SECURE - NO KEY IN GITHUB</span><p style="font-size:12px;margin-top:8px">From Vision To Global Brand • Roksana • Taifa • Tasrif • Royal Family</p></header>
+
 <main class="container">
-<section class="hero">
+
+<!-- UNIVERSE - META + AI HOW RULES WORLD -->
+<section class="universe">
+<h2 style="color:#FFD700;margin:0">🌌 PUR MAHABISHWA - RAT ER JAGAT 🌙</h2>
+<p>Manush Kivabe Bujhbe META + AI Kivabe Prithibi Shashon Kore? Ei Map Ta Dekho 👇</p>
+<div class="uni-grid">
+<div class="uni-box">🌌 MAHABISHWA<small>Universe - Sobar Upor<br>Allah Er Srishti</small></div>
+<div class="uni-box" style="background:#FFD700">🤖 AI - META AI<small>Brain - Sob Data Pore<br>Manush Ki Chai Bujhe</small></div>
+<div class="uni-box" style="background:#00E5FF">💙 META<small>Facebook • Instagram<br>WhatsApp • Threads<br>3 Billion Manush</small></div>
+<div class="uni-box" style="background:#FF4FA3;color:#fff">👑 TRTT - DIAMOND KING<small>Tomar Brand<br>AI Diye Duniya Banabe</small></div>
+<div class="uni-box">🌍 PRITHIBI<small>Manush • Travel<br>Family • Business</small></div>
+<div class="uni-box" style="background:#FFC400">🌙 RAT ER JAGAT<small>Raat 12 Tay O AI Ghumay Na<br>Tomar Hoye Kaj Kore</small></div>
+</div>
+<div class="arrow">🌌 MAHABISHWA ⬇️ META AI ⬇️ META ⬇️ TRTT ⬇️ PRITHIBI ⬇️ RAT ER JAGAT</div>
+<div class="night">
+<b>🌙 RAT ER JAGAT - KIVABE KAJ KORE?</b><br>
+🌙 <b>Raat 12 Ta:</b> Tumi Ghumao, AI Jege Thake. Tomar Diary, News, Backup Sob Save Kore.<br>
+💙 <b>META:</b> Facebook / Instagram Diye Manush Ki Dekhe, Ki Khay, Koi Jay - Sob AI Ke Dey.<br>
+🤖 <b>AI:</b> Oi Data Diye Bujhe - Kal Manush Ki Kinbe, Koi Ghurte Jabe. Tarpor TRTT Ke Bole Dey.<br>
+👑 <b>TRTT:</b> TRTT Oi Buddhi Diye Travel, News, Business Banay - Tai TRTT 1 Trillion Dollar Company Hobe.<br>
+✨ <b>Soja Kotha:</b> META = Chokh, AI = Brain, TRTT = Haat. Chokh Dekhe, Brain Bujhe, Haat Kaj Kore. Eivabei Prithibi Chole.
+</div>
+<button class="gold" onclick="document.getElementById('mainDiamond').scrollIntoView({behavior:'smooth'})">💎 DIAMOND KHULO - SOB DEKHO ↓</button>
+</section>
+
+<!-- DIAMOND -->
+<section class="hero" id="mainDiamond">
 <button class="diamondBtn" onclick="toggleDiamond()">💎</button>
 <h2 style="color:#FF4FA3">CLICK DIAMOND - OPEN EVERYTHING INSIDE</h2>
-<p>From Vision To Global Brand • Roksana • Taifa • Tasrif • Royal Family</p>
 <p id="diamondStatus">🔒 DIAMOND CLOSED - CLICK TO OPEN ↓</p>
 <div id="diamondInside" class="hidden">
-<div style="background:#fff;color:#111;padding:10px;border-radius:12px;font-weight:800">💎 DIAMOND CORE → 📔 DIARY → 👑 FAMILY → ✨ AI → 📰 NEWS → 🌍 TRAVEL → 💾 BACKUP</div>
+<div style="background:#fff;color:#111;padding:10px;border-radius:12px;font-weight:800">💎 DIAMOND CORE → 📔 DIARY → 👑 FAMILY → ✨ AI → 📰 NEWS → 🌍 TRAVEL → 💾 BACKUP → 🌌 UNIVERSE</div>
 
 <details open><summary>🎨 THEME - KATHALI / GOLAPI / PIYAJI - LIVE</summary>
 <div class="grid"><button class="gold" onclick="setTheme('kathali')">🟡 KATHALI</button><button onclick="setTheme('golapi')">🌸 GOLAPI</button><button class="piyaji" onclick="setTheme('piyaji')">🧅 PIYAJI</button></div>
 <div id="themePreview" class="output">Theme: PIYAJI</div></details>
 
 <details open><summary>🔑 CONNECT BRIDGE - ONE TIME ONLY - SECURE</summary>
-<p>শুধু Worker URL দিবা একবার। টোকেন / Key এখানে দিবা না। টোকেন থাকবে শুধু Cloudflare Secret এ।</p>
+<p>Shudhu Worker URL Diba Ekbar. Token / Key Ekhane Diba Na. Token Thakbe Shudhu Cloudflare Secret E.</p>
 <input id="bridgeUrl" placeholder="https://trtt-ai-bridge.yourname.workers.dev">
 <button class="dark" onclick="saveBridge()">🔑 CONNECT BRIDGE - SAVE</button>
 <button onclick="testBridge()">🧪 TEST BRIDGE</button>
 <div id="bridgeStatus" class="output">Bridge: NOT CONNECTED</div></details>
 
+<details open><summary>🔐 GITHUB TOKEN - PHONE ONLY - KEU DEKHBENA</summary>
+<p>Token Ekhane Dile Shudhu Tomar Phone E Thakbe. GitHub File E Jabe Na. Amake Dio Na.</p>
+<input id="ghToken" type="password" placeholder="Paste ghp_... Token Here - Phone Only">
+<button class="dark" onclick="saveGhToken()">🔐 SAVE TOKEN IN PHONE ONLY</button>
+<button onclick="testGhToken()">🧪 TEST TOKEN</button>
+<div id="ghStatus" class="output">GitHub Token: NOT SAVED</div>
+<p style="font-size:11px;opacity:.8">Token Banate: GitHub > Settings > Developer settings > Personal access tokens > Fine-grained > Generate new token > Repo: Cocvghuj-trtt-news-bot > Contents: Read and write</p></details>
+
 <details open><summary>✨ LIVE AI - GEMINI + GROQ - VIA BRIDGE - AI FUTURE</summary>
 <div class="grid"><button onclick="askAI('gemini')">✨ ASK GEMINI LIVE</button><button style="background:#FF6B00" onclick="askAI('groq')">⚡ ASK GROQ LIVE</button></div>
-<input id="aiAsk" placeholder="Ask anything... e.g. Write a poem for Roksana">
-<div id="aiOutput" class="output">AI answer will appear here - LIVE, not demo.</div></details>
+<input id="aiAsk" placeholder="Ask anything... e.g. META AI kivabe prithibi shashon kore?">
+<div id="aiOutput" class="output">AI answer will appear here - LIVE, not demo.</div>
+<button class="blue" onclick="askMeta()">🌌 ASK: META + AI KIVABE PRITHIBI SHASHON KORE?</button></details>
 
 <details open><summary>📰 NEWS WRITER - CHOOSE HOW TO WRITE</summary>
 <input id="newsTopic" placeholder="News Topic - e.g. TRTT Opens Branch in Italy">
@@ -76,38 +119,40 @@ img.live{width:100%;height:170px;object-fit:cover;border-radius:12px;border:2px 
 <img id="liveImg" class="live" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80"></details>
 
 <details><summary>🔗 ALL LINKS - ONE PLACE - FIXED</summary><div class="links">
-<a href="./diamond.html">💎 DIAMOND KING V7 - THIS PAGE</a>
+<a href="./diamond-king-v7-final.html">💎 DIAMOND KING V7 FINAL - THIS PAGE</a>
 <a href="./index.html">✈️ TRTT VOYAGE - TRAVEL HOME</a>
-<a href="./diamond.html">📔 DIARY - INSIDE DIAMOND</a>
-<a href="./diamond.html">👑 FAMILY - INSIDE DIAMOND</a>
-<a href="./diamond.html">💾 BACKUP - INSIDE DIAMOND</a>
+<a href="./diamond-king-v7-final.html">📔 DIARY - INSIDE DIAMOND</a>
+<a href="./diamond-king-v7-final.html">👑 FAMILY - INSIDE DIAMOND</a>
+<a href="./diamond-king-v7-final.html">🌌 UNIVERSE - META + AI</a>
+<a href="./diamond-king-v7-final.html">💾 BACKUP - INSIDE DIAMOND</a>
 </div></details>
 
 <details><summary>💾 BACKUP</summary><button onclick="saveBackup()">EXPORT BACKUP</button><button class="dark" onclick="document.getElementById('restoreFile').click()">RESTORE</button><input id="restoreFile" type="file" accept=".json" class="hidden"><div class="output">Backup Ready - Only in your phone, not in GitHub.</div></details>
 </div>
 </section>
 
-<section class="card"><h3>🌌 LIVE VOYAGE - AUTO SCROLLING - SPACE TO EARTH</h3>
+<section class="card"><h3>🌌 LIVE VOYAGE - AUTO SCROLLING - SPACE TO EARTH - RAT ER JAGAT</h3>
 <div class="scroll"><div>
-<img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600"><img src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=600"><img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600"><img src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=600">
+<img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600"><img src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=600"><img src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=600"><img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600"><img src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=600"><img src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=600">
 </div></div></section>
 
-<section class="card"><h3>👑 ROYAL FAMILY</h3><p>👑 Queen Roksana • 👸 Princess Taifa • 🤴 Prince Tasrif • 👑 King Diamond Raja - TRTT MAGIC 787950</p></section>
+<section class="card"><h3>👑 ROYAL FAMILY</h3><p>👑 Queen Roksana • 👸 Princess Taifa • 🤴 Prince Tasrif • 👑 King Diamond Raja - TRTT MAGIC 787950</p><p style="font-size:12px;opacity:.8">🌙 Raat Er Jagat Eo TRTT Jege Thake - AI Kokhono Ghumay Na</p></section>
 </main>
-<footer style="text-align:center;padding:14px;opacity:.7"><p>TRTT Voyage - From Vision To Global Brand</p></footer>
+<footer style="text-align:center;padding:14px;opacity:.7"><p>TRTT Voyage - From Vision To Global Brand • META Sees • AI Thinks • TRTT Builds</p></footer>
+
 <script>
 function toggleDiamond(){let d=document.getElementById('diamondInside');let s=document.getElementById('diamondStatus');let c=d.classList.toggle('hidden');s.textContent=c?'🔒 DIAMOND CLOSED - CLICK TO OPEN ↓':'💎 DIAMOND OPEN - ALL LIVE INSIDE ↓';if(!c)d.scrollIntoView({behavior:"smooth"})}
-function setTheme(t){localStorage.setItem('trtt_theme',t);document.body.style.background=t==='kathali'?'linear-gradient(135deg,#FFC400,#FFF3B0)':t==='golapi'?'linear-gradient(135deg,#FF4FA3,#3A0A4A)':'#050010';document.body.style.color=t==='kathali'?'#000':'#fff';document.getElementById('themePreview').textContent='Theme: '+t.toUpperCase()+' - LIVE';}
+function setTheme(t){localStorage.setItem('trtt_theme',t);document.body.style.background=t==='kathali'?'linear-gradient(135deg,#FFC400,#FFF3B0)':t==='golapi'?'linear-gradient(135deg,#FF4FA3,#3A0A4A)':'#020010';document.body.style.color=t==='kathali'?'#000':'#fff';document.getElementById('themePreview').textContent='Theme: '+t.toUpperCase()+' - LIVE';}
 let _t=localStorage.getItem('trtt_theme');if(_t)setTheme(_t);
 function saveBridge(){let u=document.getElementById('bridgeUrl').value.trim();if(!u.startsWith('http'))return alert('Paste Worker URL!');localStorage.setItem('trtt_bridge',u);document.getElementById('bridgeStatus').textContent='Bridge CONNECTED: '+u;testBridge();}
 async function testBridge(){let b=localStorage.getItem('trtt_bridge');if(!b)return alert('Paste Bridge URL first!');try{let r=await fetch(b);let d=await r.json();document.getElementById('bridgeStatus').textContent='✅ BRIDGE LIVE! '+JSON.stringify(d);}catch(e){document.getElementById('bridgeStatus').textContent='❌ Bridge Error: '+e.message;}}
 let _b=localStorage.getItem('trtt_bridge');if(_b){document.getElementById('bridgeUrl').value=_b;document.getElementById('bridgeStatus').textContent='Bridge SAVED: '+_b;}
-async function callAI(prompt,provider){
- let bridge=localStorage.getItem('trtt_bridge'); if(!bridge) throw new Error('First Connect Bridge! Bridge URL দাও। Key এখানে দিতে হবে না।');
- let r=await fetch(bridge,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,provider})});
- let d=await r.json(); if(d.error) throw new Error(d.error); return d.text;
-}
+function saveGhToken(){let t=document.getElementById('ghToken').value.trim();if(!t.startsWith('ghp_')&&!t.startsWith('github_pat_'))return alert('Thik Token Dao! ghp_ diye shuru hobe');localStorage.setItem('trtt_gh_token',t);document.getElementById('ghStatus').textContent='✅ Token Saved in PHONE ONLY - GitHub E Jay Nai';document.getElementById('ghToken').value='';alert('Token Phone E Save Hoise! Keu Dekhte Parbe Na.');}
+async function testGhToken(){let t=localStorage.getItem('trtt_gh_token');if(!t)return alert('Age Token Save Koro!');try{let r=await fetch('https://api.github.com/user',{headers:{'Authorization':'Bearer '+t}});let d=await r.json();document.getElementById('ghStatus').textContent='✅ TOKEN LIVE! User: '+(d.login||'Error - '+d.message);}catch(e){document.getElementById('ghStatus').textContent='❌ Error: '+e.message;}}
+let _gh=localStorage.getItem('trtt_gh_token');if(_gh)document.getElementById('ghStatus').textContent='✅ Token Saved in PHONE ONLY - Ready to Work';
+async function callAI(prompt,provider){let bridge=localStorage.getItem('trtt_bridge');if(!bridge)throw new Error('First Connect Bridge! Bridge URL Dao. Key Ekhane Dite Hobe Na.');let r=await fetch(bridge,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,provider})});let d=await r.json();if(d.error)throw new Error(d.error);return d.text;}
 async function askAI(p){let q=document.getElementById('aiAsk').value.trim();if(!q)return alert('Write something!');let out=document.getElementById('aiOutput');out.textContent='⏳ '+p.toUpperCase()+' writing via Secure Bridge...';try{let ans=await callAI(q,p);out.textContent='✅ '+p.toUpperCase()+' LIVE:\n\n'+ans;}catch(e){out.textContent='❌ Error: '+e.message+'\n\nFix: Check Bridge URL + Cloudflare Secrets (GEMINI_KEY, GROQ_KEY).';}}
+async function askMeta(){document.getElementById('aiAsk').value='Explain in simple Bengali + English how META and AI rule the world, and how TRTT can use it to become 1 trillion dollar company';askAI('gemini');}
 async function writeNews(){let topic=document.getElementById('newsTopic').value||'TRTT Voyage New Journey';let tone=document.getElementById('newsTone').value,len=document.getElementById('newsLength').value,lang=document.getElementById('newsLang').value;let prompt='Write '+len+' '+tone+' News in '+lang+' about: '+topic+'. Include Title, Story, Quote from Diamond King, Mention Royal Family Roksana, Taifa, Tasrif. Make it like 1 Trillion Dollar Company.';let out=document.getElementById('newsOutput');out.textContent='⏳ Writing News LIVE...';try{let ans=await callAI(prompt,'gemini');out.textContent=ans;}catch(e){out.textContent='--- OFFLINE SAMPLE (Bridge Not Connected Yet) ---\n\nHEADLINE: '+topic+' - TRTT Shocks The World!\n\nTRTT Voyage today announced a new milestone. Led by Diamond King, with Queen Roksana, Princess Taifa, Prince Tasrif, TRTT is building a global brand.\n\nError was: '+e.message;}}
 function copyNews(){navigator.clipboard.writeText(document.getElementById('newsOutput').textContent).then(()=>alert('News Copied!'))}
 function loadImg(){let q=document.getElementById('imgSearch').value||'Travel';let m={Paris:'photo-1502602898657-3e91760cbb34',Beach:'photo-1507525428034-b723cf961d3e',Mountain:'photo-1506905925346-21bda4d32df4',Italy:'photo-1516483638261-f4dbaf036963',Japan:'photo-1528164344705-47542687000d',Dhaka:'photo-1576675466969-38eeae4b41f6'};let id=m[q]||'photo-1469474968028-56623f02e42e';document.getElementById('liveImg').src='https://images.unsplash.com/'+id+'?w=800&q=80';document.getElementById('newsImg').src='https://images.unsplash.com/'+id+'?w=800&q=80';}
