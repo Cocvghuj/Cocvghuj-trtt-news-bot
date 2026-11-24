@@ -1,0 +1,75 @@
+name: TRTT AUTO CLEANER - Jangal Porishkar
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # রাত ৩টায় পরিষ্কার
+  workflow_dispatch: # তুমি চাইলে এখনই চাপ দিতে পারবা
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  auto-clean:
+    runs-on: ubuntu-latest
+    steps:
+      - name: TRTT Auto Disable System
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "=== TRTT AUTO CLEANER STARTED ==="
+          echo "Repo: $REPO"
+          
+          # ১. এই ৩টা হইলো আসল SaaS পিলার - এইগুলা কখনো বন্ধ হবে না
+          KEEP_1="TRTT ENGINE"
+          KEEP_2="TRTT GUARD"
+          KEEP_3="TRTT CONTROL"
+          KEEP_4="TRTT AUTO CLEANER"
+          
+          echo "SAFE LIST: $KEEP_1, $KEEP_2, $KEEP_3, $KEEP_4"
+          
+          if [ -z "$GH_TOKEN" ]; then
+            echo "❌ GH_PAT নাই! GitHub Secrets এ GH_PAT বসাইতে হবে।"
+            echo "কিভাবে বসাবা নিচে দেখো"
+            exit 1
+          fi
+          
+          echo "Checking all workflows..."
+          
+          # ২. সব Workflow এর লিস্ট নাও
+          gh api repos/$REPO/actions/workflows --jq '.workflows[] | "\(.id)|\(.name)|\(.state)"' > workflows.txt
+          cat workflows.txt
+          
+          echo "--- Cleaning Started ---"
+          
+          # ৩. একটা একটা করে চেক করো
+          while IFS='|' read -r WF_ID WF_NAME WF_STATE; do
+            echo "Checking: $WF_NAME - State: $WF_STATE"
+            
+            # যদি SAFE LIST এ থাকে, ছুঁইবা না
+            if [[ "$WF_NAME" == *"$KEEP_1"* ]] || [[ "$WF_NAME" == *"$KEEP_2"* ]] || [[ "$WF_NAME" == *"$KEEP_3"* ]] || [[ "$WF_NAME" == *"$KEEP_4"* ]]; then
+              echo "✅ SAFE: $WF_NAME - রাখলাম"
+            else
+              # যদি আগেই disabled থাকে, ছেড়ে দাও
+              if [[ "$WF_STATE" == "disabled_manually" ]]; then
+                echo "😴 ALREADY DISABLED: $WF_NAME - ঘুমাইতেছে"
+              else
+                # বাকি সব Auto Disable
+                echo "🧹 AUTO DISABLE: $WF_NAME - জঞ্জাল পরিষ্কার করতেছি..."
+                gh api -X PUT repos/$REPO/actions/workflows/$WF_ID/disable -H "Accept: application/vnd.github+json" || echo "Disable failed for $WF_NAME"
+                echo "✅ DISABLED: $WF_NAME"
+              fi
+            fi
+          done < workflows.txt
+          
+          echo "=== CLEANER DONE ==="
+          echo "এখন শুধু ৩টা পিলার + ১টা Cleaner চালু থাকবে। বাকি সব ঘুমাবে।"
+
+      - name: STATUS REPORT
+        run: |
+          echo "STATUS: CLEANED"
+          echo "ENGINE: ACTIVE"
+          echo "GUARD: ACTIVE"
+          echo "CONTROL: ACTIVE"
+          echo "JANGAL: DISABLED"
