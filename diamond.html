@@ -1,0 +1,49 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>DIAMOND KING V7</title><style>
+*{box-sizing:border-box}body{margin:0;background:#050010;color:#fff;font-family:system-ui;text-align:center;overflow-x:hidden}
+.space{position:fixed;inset:0;background:radial-gradient(circle at 50% 0%,#3b0a6b,#050010 70%);z-index:-1}
+.stars{position:fixed;inset:0;background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent),radial-gradient(2px 2px at 130px 90px,#ffd700,transparent),radial-gradient(1px 1px at 70px 160px,#fff,transparent);animation:twinkle 2s infinite}
+@keyframes twinkle{50%{opacity:.5}}
+h1{color:#FFD700;margin:10px 0 0}.sub{color:#ff9ecb;font-size:13px}
+.diamond{font-size:90px;cursor:pointer;filter:drop-shadow(0 0 20px #00e5ff);animation:float 2s infinite}@keyframes float{50%{transform:translateY(-10px)}}
+.box{background:rgba(255,255,255,.08);margin:12px;border-radius:16px;padding:14px;border:1px solid #ffd70055}
+button{border:0;padding:12px 18px;border-radius:999px;font-weight:800;cursor:pointer;margin:5px} .gold{background:#FFD700}.pink{background:#ff5fa2;color:#fff}.blue{background:#00c6ff;color:#fff}
+input,textarea,select{width:100%;padding:12px;border-radius:10px;border:0;margin:6px 0;background:#0008;color:#fff}
+.scroll{display:flex;gap:10px;overflow:hidden;white-space:nowrap}.scroll div{display:flex;gap:10px;animation:slide 20s linear infinite}.scroll img{width:220px;height:130px;object-fit:cover;border-radius:12px}
+@keyframes slide{to{transform:translateX(-50%)}}
+.links a{display:block;background:#fff;color:#000;text-decoration:none;padding:12px;border-radius:12px;margin:8px 0;font-weight:700}
+#aiBox{white-space:pre-wrap;text-align:left;background:#000a;padding:12px;border-radius:10px;min-height:60px}
+</style></head><body><div class="space"></div><div class="stars"></div>
+<h1>👑 DIAMOND KING V7</h1><div class="sub">✨ TRTT AI UNIVERSE • AI FUTURE • LIVE • NO DEMO ✨</div>
+<div class="diamond" onclick="document.getElementById('main').scrollIntoView({behavior:'smooth'})">💎</div>
+<div>CLICK DIAMOND - OPEN EVERYTHING INSIDE</div><div style="font-size:12px;margin:6px">From Vision To Global Brand • Roksana • Taifa • Tasrif • Royal Family</div>
+
+<div id="main">
+<div class="box"><h3>🚀 AI FUTURE - ASK LIVE</h3>
+<input id="prompt" placeholder="যেকোনো কিছু লিখো... e.g. Roksana এর জন্য কবিতা লিখো">
+<div><button class="pink" onclick="ask('gemini')">✨ ASK GEMINI LIVE</button><button class="gold" onclick="ask('groq')">⚡ ASK GROQ LIVE</button></div>
+<div id="aiBox">AI উত্তর এখানে আসবে... LIVE, Demo না।</div></div>
+
+<div class="box"><h3>🌌 LIVE VOYAGE - SCROLLING</h3><div class="scroll"><div>
+<img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"><img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600">
+</div></div></div>
+
+<div class="box"><h3>🔗 ALL LINKS - ONE PLACE</h3><div class="links">
+<a href="https://cocvghuj.github.io/Cocvghuj-t" target="_blank">💎 DIAMOND CORE</a>
+<a href="https://cocvghuj.github.io/Cocvghuj-t" target="_blank">📓 DIARY</a>
+<a href="https://cocvghuj.github.io/Cocvghuj-t" target="_blank">👨‍👩‍👧 FAMILY</a>
+<a href="https://cocvghuj.github.io/Cocvghuj-t" target="_blank">✈️ TRAVEL - TRTT VOYAGE</a>
+<a href="https://cocvghuj.github.io/Cocvghuj-t" target="_blank">💾 BACKUP</a>
+</div><p style="font-size:11px;opacity:.7">লিংকগুলো এখন সব একটাই ঠিকানা - ভুল লিংক নাই। তুমি চাইলে পরে আমি আলাদা আলাদা করে দিবো।</p></div>
+</div>
+
+<script>
+const WORKER = "https://trtt-ai-bridge.YOURNAME.workers.dev"; // <-- এখানে তোমার Worker এর লিংক বসাও
+async function ask(p){
+ const q=document.getElementById('prompt').value; if(!q) return alert('প্রথমে কিছু লিখো ভাই');
+ document.getElementById('aiBox').innerText='Thinking... Live AI...';
+ try{
+  const r=await fetch(WORKER+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:q,provider:p})});
+  const d=await r.json(); document.getElementById('aiBox').innerText=d.text;
+ }catch(e){ document.getElementById('aiBox').innerText='Bridge Connected না। Worker URL চেক করো।'; }
+}
+</script></body></html>
