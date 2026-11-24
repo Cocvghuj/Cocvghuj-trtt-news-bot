@@ -1,0 +1,180 @@
+
+name: TRTT Master Control
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: "Blogger draft title"
+        required: true
+        type: string
+      content:
+        description: "Blogger draft HTML content"
+        required: true
+        type: string
+
+  issues:
+    types:
+      - labeled
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: trtt-master-control
+  cancel-in-progress: false
+
+jobs:
+  create-blogger-draft:
+    name: Create Blogger Draft
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event_name == 'issues' &&
+        github.event.label.name == 'trtt-task'
+      )
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Extract task details
+        id: task
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_TITLE: ${{ inputs.title }}
+          INPUT_CONTENT: ${{ inputs.content }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          import json
+
+          event = os.environ["EVENT_NAME"]
+
+          if event == "workflow_dispatch":
+              title = os.environ.get("INPUT_TITLE", "").strip()
+              content = os.environ.get("INPUT_CONTENT", "").strip()
+          else:
+              title = os.environ.get("ISSUE_TITLE", "").strip()
+              content = os.environ.get("ISSUE_BODY", "").strip()
+
+          if not title or not content:
+              raise SystemExit("ERROR: Title and content are required.")
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write("title=" + json.dumps(title) + "\n")
+              f.write("content=" + json.dumps(content) + "\n")
+          PY
+
+      - name: Obtain Google Access Token
+        id: google
+        env:
+          CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$CLIENT_ID" ] || \
+             [ -z "$CLIENT_SECRET" ] || \
+             [ -z "$REFRESH_TOKEN" ]; then
+            echo "::error::Missing Blogger OAuth secrets."
+            exit 1
+          fi
+
+          RESPONSE=$(curl --fail-with-body --silent --show-error \
+            --request POST \
+            --url "https://oauth2.googleapis.com/token" \
+            --header "Content-Type: application/x-www-form-urlencoded" \
+            --data-urlencode "client_id=$CLIENT_ID" \
+            --data-urlencode "client_secret=$CLIENT_SECRET" \
+            --data-urlencode "refresh_token=$REFRESH_TOKEN" \
+            --data-urlencode "grant_type=refresh_token")
+
+          ACCESS_TOKEN=$(echo "$RESPONSE" | jq -er '.access_token')
+
+          echo "::add-mask::$ACCESS_TOKEN"
+          echo "access_token=$ACCESS_TOKEN" >> "$GITHUB_OUTPUT"
+
+      - name: Create Blogger Draft
+        id: blogger
+        env:
+          ACCESS_TOKEN: ${{ steps.google.outputs.access_token }}
+          BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          POST_TITLE: ${{ steps.task.outputs.title }}
+          POST_CONTENT: ${{ steps.task.outputs.content }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$BLOG_ID" ]; then
+            echo "::error::BLOGGER_BLOG_ID is missing."
+            exit 1
+          fi
+
+          python - <<'PY'
+          import os
+          import json
+          import urllib.request
+          import urllib.error
+
+          blog_id = os.environ["BLOG_ID"]
+          token = os.environ["ACCESS_TOKEN"]
+
+          payload = {
+              "kind": "blogger#post",
+              "title": os.environ["POST_TITLE"],
+              "content": os.environ["POST_CONTENT"],
+          }
+
+          url = (
+              "https://www.googleapis.com/blogger/v3/blogs/"
+              + blog_id
+              + "/posts/?isDraft=true"
+          )
+
+          request = urllib.request.Request(
+              url,
+              data=json.dumps(payload).encode("utf-8"),
+              headers={
+                  "Authorization": "Bearer " + token,
+                  "Content-Type": "application/json",
+              },
+              method="POST",
+          )
+
+          try:
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  result = json.loads(response.read().decode("utf-8"))
+
+              post_id = result.get("id")
+              if not post_id:
+                  raise SystemExit("ERROR: Blogger returned no post ID.")
+
+              print("Blogger draft created successfully.")
+              print("Post ID:", post_id)
+
+              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                  f.write("post_id=" + str(post_id) + "\n")
+
+          except urllib.error.HTTPError as error:
+              print("Blogger API HTTP error:", error.code)
+              print(error.read().decode("utf-8", errors="replace"))
+              raise SystemExit(1)
+          PY
+
+      - name: Report issue completion
+        if: success() && github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          POST_ID: ${{ steps.blogger.outputs.post_id }}
+        run: |
+          set -euo pipefail
+
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$REPOSITORY" \
+            --body "Blogger draft created successfully. Post ID: $POST_ID"
