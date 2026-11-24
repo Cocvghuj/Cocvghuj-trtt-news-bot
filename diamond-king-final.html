@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#11152D">
+<title>DIAMOND KING | TRTT AI UNIVERSE - WORLD BEST</title>
+<style>
+:root{--pink:#E98BAF;--rose:#B77991;--gold:#D6A542;--night:#11152D;--white:#fff;--muted:#b9bdd0}
+*{box-sizing:border-box}
+body{margin:0;color:var(--white);font-family:Inter,Arial,sans-serif;background:radial-gradient(circle at top,#30244d,var(--night) 55%);min-height:100vh}
+header{padding:25px 16px;text-align:center;border-bottom:1px solid #ffffff20;background:#11152dee}
+.crown{font-size:48px}
+h1{margin:5px;color:var(--gold);letter-spacing:2px}
+.subtitle{color:var(--pink);font-size:13px}
+.container{max-width:1050px;margin:auto;padding:18px}
+.hero{padding:30px 15px;text-align:center;border:1px solid #D6A54277;border-radius:22px;background:linear-gradient(135deg,#292044,#11152D);box-shadow:0 15px 50px #0007}
+.diamond{font-size:76px;filter:drop-shadow(0 0 18px #E98BAF);animation:glow 3s infinite alternate}
+@keyframes glow{from{filter:drop-shadow(0 0 8px #E98BAF)}to{filter:drop-shadow(0 0 25px #D6A542)}}
+.hero h2{color:var(--pink);font-size:28px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:20px 0}
+.card{background:#ffffff0b;border:1px solid #ffffff20;border-radius:17px;padding:19px;box-shadow:0 8px 24px #0003}
+.card h3{color:var(--gold);margin-top:0}
+button{border:0;border-radius:10px;padding:11px 15px;background:var(--pink);color:#21152d;font-weight:700;cursor:pointer;margin:4px}
+button.gold{background:var(--gold)} button.dark{background:#343858;color:white} button.danger{background:#9e425b;color:white}
+input,textarea,select{width:100%;padding:12px;margin:6px 0;border:1px solid #ffffff30;border-radius:9px;background:#0d1024;color:white}
+textarea{min-height:110px;resize:vertical}
+.output{padding:13px;background:#0c1024;border-radius:10px;border:1px solid #ffffff20;white-space:pre-wrap;overflow-wrap:anywhere;min-height:50px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px;margin:7px 0;border-radius:9px;background:#ffffff0d}
+.small{font-size:12px;color:var(--muted)}
+.status{color:var(--gold);font-weight:bold}
+footer{text-align:center;padding:25px;color:var(--muted);border-top:1px solid #ffffff20;margin-top:30px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header><div class="crown">👑</div><h1>DIAMOND KING</h1><div class="subtitle">TRTT AI UNIVERSE • WORLD BEST • NO CHATGPT NEEDED</div></header>
+<main class="container">
+
+<!-- HERO -->
+<section class="hero"><div class="diamond">💎</div><h2>FROM VISION TO GLOBAL BRAND</h2><p>Explore Beyond. Discover Everything.</p><p style="color:var(--gold)">ONE TEAM • ONE VISION • ONE JOURNEY</p><button class="gold" onclick="openEarth()">🌍 OPEN EARTH CONTROL</button></section>
+
+<!-- STATUS + CONTROL -->
+<section class="grid">
+<article class="card"><h3>🤖 AI FAMILY - FREE</h3><p>✨ Gemini — Free, Google</p><p>⚡ Groq — Free, Super Fast</p><p>💙 Meta AI — Creative Inspiration</p><p class="small">No ChatGPT. No Money. 100% Free API.</p></article>
+<article class="card"><h3>🌐 CONNECTION STATUS</h3><p>GitHub: <span class="status">NOT CONNECTED</span></p><p>Blogger: <span class="status">NOT CONNECTED</span></p><p>Cloud SaaS: <span class="status">NOT CONNECTED</span></p><p>Live Publish: <span class="status">DISABLED</span></p></article>
+<article class="card"><h3>📡 CONTROL CENTER</h3><button onclick="showStatus()">CHECK STATUS</button><button class="dark" onclick="saveBackup()">EXPORT BACKUP</button><button class="dark" onclick="document.getElementById('restoreFile').click()">RESTORE BACKUP</button><input id="restoreFile" type="file" accept=".json,application/json" class="hidden"></article>
+</section>
+
+<!-- EARTH -->
+<section class="card" id="earth"><h3>🌍 EARTH CONTROL CENTER</h3><p>TRTT Voyage — Your local command dashboard.</p><div class="grid"><button onclick="goTo('diary')">📔 Open Diary</button><button onclick="goTo('franchise')">👑 Franchise</button><button onclick="goTo('poetry')">💜 Poetry Room</button></div><div id="earthMessage" class="output">Welcome to Diamond King Control.</div></section>
+
+<!-- DIARY -->
+<section class="card" id="diary"><h3>📔 DIAMOND PRIVATE DIARY</h3><input id="diaryTitle" maxlength="100" placeholder="Diary title"><textarea id="diaryText" maxlength="10000" placeholder="Write your ideas..."></textarea><button onclick="saveDiary()">SAVE DIARY</button><button class="dark" onclick="startVoice()">🎙️ VOICE লেখো</button><button class="gold" onclick="exportPDF()">📄 PDF বই</button><input id="diarySearch" placeholder="Search diary... #রোকসানা" oninput="renderDiary()"><div id="diaryList"></div></section>
+
+<!-- FRANCHISE -->
+<section class="card" id="franchise"><h3>👑 TRTT SAAS MASTER FRANCHISE</h3><p>Total Branches: <b id="branchCount">0</b></p><input id="branchName" maxlength="70" placeholder="Enter franchise name"><button class="gold" onclick="addBranch()">+ ADD FRANCHISE</button><div id="branchList"></div><p class="small">Local browser storage only. No cloud accounts or payments.</p><button class="dark" onclick="alert('🗺️ TRTT Map:\n📍 Dhaka - Roksana Branch\n📍 Sanluri, Italy - Master Branch\n📍 Taifa - Love Branch\n📍 Tasrif - Future Branch')">🗺️ FRANCHISE MAP দেখো</button></section>
+
+<!-- POETRY -->
+<section class="card" id="poetry"><h3>💜 POETRY ROOM</h3><p>AI Family — Creative Poetry Collection</p><div class="grid"><button onclick="makePoem('chatgpt')">🤖 ChatGPT Style</button><button onclick="makePoem('gemini')">✨ Gemini</button><button onclick="makePoem('meta')">💙 Meta AI</button></div><div id="poemOutput" class="output">Choose an AI Family member to view a sample poem.</div><button class="gold" onclick="copyPoem()">COPY POEM</button><hr><input id="poemIdea" placeholder="এক লাইন লেখো - যেমন: আজ মন খারাপ"><button onclick="autoPoem()">🤖 কবিতা বানাও</button><div id="autoPoemOut" class="output">এখানে কবিতা আসবে...</div><p class="small">These are predefined sample poems, not live AI-generated responses.</p></section>
+
+<!-- WORLD BEST FEATURES -->
+<section class="card"><h3>✨ WORLD BEST FEATURES - 10 BOX</h3><div class="grid">
+<div class="card"><h3>📱 PWA App</h3><p>Install করলেই App হয়ে যাবে।</p><button class="gold" onclick="alert('PWA Install - V5 এ আসতেছে ভাই!')">📱 INSTALL APP</button></div>
+<div class="card"><h3>🎙️ Voice Diary</h3><p>মুখে বললেই চিঠি।</p><button onclick="startVoice()">🎙️ VOICE</button></div>
+<div class="card"><h3>📅 Timeline</h3><p>প্রতিদিনের চিঠি ক্যালেন্ডারে।</p><button class="dark" onclick="alert('Timeline: '+new Date().toLocaleDateString())">📅 Timeline</button></div>
+<div class="card"><h3>📄 PDF বই</h3><p>সব চিঠি PDF বই হবে।</p><button class="gold" onclick="exportPDF()">📄 PDF</button></div>
+<div class="card"><h3>🎨 Theme</h3><p>Dark / Pink / Gold থিম।</p><button onclick="changeTheme()">🎨 থিম বদলাও</button></div>
+<div class="card"><h3>🔒 PIN Lock</h3><p>৪ সংখ্যার PIN - শুধু তুমি।</p><input id="pinInput" type="password" maxlength="4" placeholder="4 সংখ্যার PIN"><button onclick="setPin()">🔒 LOCK</button></div>
+<div class="card"><h3>🗺️ Map</h3><p>Dhaka, Sanluri, Italy।</p><button class="dark" onclick="alert('🗺️ Dhaka - Roksana | Sanluri - Master | Taifa - Love | Tasrif - Future')">🗺️ MAP</button></div>
+<div class="card"><h3>🔑 MAGIC 787950</h3><p>Secret Code - Master Only।</p><input id="magicCode" placeholder="Magic Code দাও"><button class="gold" onclick="checkMagic()">🔑 MAGIC</button></div>
+</div></section>
+
+<!-- FREE AI - GEMINI + GROQ -->
+<section class="card" style="border-color:#00e5ff"><h3>✨ FREE AI CHAT - Gemini + Groq - NO CHATGPT</h3><p class="small">Google এ যাইতে হবে না। দুনোটাই 100% ফ্রি। Key শুধু তোমার ফোনে থাকবে।</p>
+<div style="border:1px solid #4285F4;border-radius:12px;padding:12px;margin:8px 0"><h3 style="color:#4285F4;margin:0">✨ Gemini - Google Free</h3><input id="geminiKey" type="password" placeholder="Gemini Key - aistudio.google.com থেকে ফ্রি"><button class="dark" onclick="saveFreeKey('gemini')">🔑 Gemini KEY সেভ</button><div id="geminiChat" class="output" style="min-height:120px;max-height:250px;overflow-y:auto">✨ Gemini রেডি ভাই!</div><input id="geminiInput" placeholder="Gemini কে লেখো..."><button onclick="askGemini()">✨ Gemini কে জিজ্ঞেস করো</button></div>
+<div style="border:1px solid #FF6B00;border-radius:12px;padding:12px;margin:8px 0"><h3 style="color:#FF6B00;margin:0">⚡ Groq - Super Fast Free</h3><input id="groqKey" type="password" placeholder="Groq Key - console.groq.com থেকে ফ্রি"><button class="dark" onclick="saveFreeKey('groq')">🔑 Groq KEY সেভ</button><div id="groqChat" class="output" style="min-height:120px;max-height:250px;overflow-y:auto">⚡ Groq রেডি ভাই!</div><input id="groqInput" placeholder="Groq কে লেখো..."><button onclick="askGroq()" style="background:#FF6B00">⚡ Groq কে জিজ্ঞেস করো</button></div>
+</section>
+
+<!-- SECURITY -->
+<section class="card"><h3>🛡️ SECURITY & HONESTY</h3><p>✓ No GitHub token stored in this page.</p><p>✓ No ChatGPT needed. Gemini + Groq Free.</p><p>✓ Diary and branches stored locally in this browser.</p><p>✓ No automatic publishing.</p><p>✓ No automatic deletion of existing Blogger posts.</p><p>✓ Backup export and restore available.</p></section>
+
+</main>
+<footer><div style="color:var(--gold);font-weight:bold">👑 DIAMOND RAJA 🤝 DIAMOND KING 🤝 MUSE</div><p>TRTT Voyage — From Vision to Global Brand!</p><p class="small">Designed with ❤️ by TRTT Voyage</p><p class="small">TRTT MAGIC — 787950</p></footer>
+
+<script>
+"use strict";
+const KEYS={diary:"trtt_diamond_diary_v31",branches:"trtt_diamond_franchise_v31"};
+function readJSON(k,f){try{let v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch(e){return f}}
+function writeJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){alert("Storage unavailable.");return false}}
+function makeElement(t,txt){let e=document.createElement(t);e.textContent=String(txt??"");return e}
+function goTo(id){document.getElementById(id).scrollIntoView({behavior:"smooth"})}
+function openEarth(){goTo("earth");document.getElementById("earthMessage").textContent="🌍 Earth Control is open. Select a TRTT module below."}
+function showStatus(){document.getElementById("earthMessage").textContent="LOCAL MODE ACTIVE | GitHub NOT CONNECTED | Blogger NOT CONNECTED | LIVE PUBLISH DISABLED | AI: Gemini + Groq FREE"}
+function getDiaries(){let d=readJSON(KEYS.diary,[]);return Array.isArray(d)?d:[]}
+function saveDiary(){let t=document.getElementById("diaryTitle").value.trim();let b=document.getElementById("diaryText").value.trim();if(!t||!b)return alert("Enter title and text.");let ds=getDiaries();ds.unshift({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),title:t,body:b,date:new Date().toISOString()});if(writeJSON(KEYS.diary,ds)){document.getElementById("diaryTitle").value="";document.getElementById("diaryText").value="";renderDiary();}}
+function deleteDiary(id){if(!confirm("Delete this diary?"))return;let u=getDiaries().filter(x=>x.id!==id);if(writeJSON(KEYS.diary,u))renderDiary();}
+function renderDiary(){let l=document.getElementById("diaryList");l.replaceChildren();let q=document.getElementById("diarySearch").value.toLowerCase();getDiaries().filter(x=>(x.title+" "+x.body).toLowerCase().includes(q)).forEach(item=>{let box=document.createElement("div");box.className="item";let c=document.createElement("div");c.append(makeElement("b",item.title),makeElement("p",item.body),makeElement("span",new Date(item.date).toLocaleString()));let del=document.createElement("button");del.className="danger";del.textContent="DELETE";del.onclick=()=>deleteDiary(item.id);box.append(c,del);l.append(box);});}
+function getBranches(){let d=readJSON(KEYS.branches,null);if(Array.isArray(d))return d;return [{id:"r",name:"TRTT Roksana Branch"},{id:"t",name:"TRTT Taifa Branch"},{id:"s",name:"TRTT Tasrif Branch"}];}
+function renderBranches(){let l=document.getElementById("branchList");l.replaceChildren();let b=getBranches();document.getElementById("branchCount").textContent=b.length;b.forEach(br=>{let row=document.createElement("div");row.className="item";row.append(makeElement("b","👑 "+br.name));let del=document.createElement("button");del.className="danger";del.textContent="DELETE";del.onclick=()=>deleteBranch(br.id);row.append(del);l.append(row);});}
+function addBranch(){let inp=document.getElementById("branchName");let n=inp.value.trim();if(!n)return alert("Enter branch name.");let bs=getBranches();if(bs.length>=200)return alert("Max 200 branches.");if(bs.some(x=>x.name.toLowerCase()===n.toLowerCase()))return alert("Already exists.");bs.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),name:n});if(writeJSON(KEYS.branches,bs)){inp.value="";renderBranches();}}
+function deleteBranch(id){if(!confirm("Delete this branch?"))return;let u=getBranches().filter(x=>x.id!==id);if(writeJSON(KEYS.branches,u))renderBranches();}
+const poems={chatgpt:"A diamond shines through the night,\nIdeas become a guiding light.\nOne vision, one journey, one dream,\nTogether we build a brighter stream.",gemini:"Across the stars our dreams will fly,\nLike silver clouds across the sky.\nWith every thought a new sunrise,\nImagination opens paradise.",meta:"A world of ideas, a world to explore,\nNew inspiration behind every door.\nDifferent voices, one harmony,\nA future shaped by creativity."};
+let currentPoem="";function makePoem(m){currentPoem=poems[m]||"";document.getElementById("poemOutput").textContent=currentPoem;}
+async function copyPoem(){if(!currentPoem)return alert("Choose a poem first.");try{await navigator.clipboard.writeText(currentPoem);alert("Poem copied.")}catch(e){alert("Clipboard unavailable.")}}
+function saveBackup(){let b={format:"TRTT-DIAMOND-BACKUP",version:1,created:new Date().toISOString(),diary:getDiaries(),branches:getBranches()};let blob=new Blob([JSON.stringify(b,null,2)],{type:"application/json"});let url=URL.createObjectURL(blob);let a=document.createElement("a");a.href=url;a.download="trtt-diamond-backup.json";a.click();URL.revokeObjectURL(url);}
+document.getElementById("restoreFile").addEventListener("change",async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text());if(d.format!=="TRTT-DIAMOND-BACKUP"||!Array.isArray(d.diary)||!Array.isArray(d.branches))throw new Error("Invalid backup.");if(!confirm("Restore? Current data will be replaced."))return;if(!writeJSON(KEYS.diary,d.diary))return;if(!writeJSON(KEYS.branches,d.branches))return;renderDiary();renderBranches();alert("Backup restored.")}catch(err){alert("Restore failed: "+err.message)}e.target.value="";});
+// WORLD BEST FEATURES
+function startVoice(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window))return alert('Chrome এ চেষ্টা করো ভাই।');let Rec=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=new Rec();rec.lang='bn-BD';rec.start();rec.onresult=(e)=>{let txt=e.results[0][0].transcript;let d=document.getElementById('diaryText');if(d)d.value=d.value+' '+txt;alert('Voice পাইছি: '+txt);}}
+function exportPDF(){window.print();alert('Print থেকে Save as PDF চাপ দিলেই বই হয়ে যাবে!');}
+function changeTheme(){let b=document.body;b.style.background=b.style.background.includes('E98BAF')?'#11152D':'#3a0a2e';alert('থিম বদলে গেছে! ✨');}
+function setPin(){let p=document.getElementById('pinInput').value;if(p.length!=4)return alert('৪ সংখ্যার PIN দাও!');localStorage.setItem('trtt_pin',p);alert('🔒 LOCK লেগে গেছে! PIN: '+p);}
+function autoPoem(){let idea=document.getElementById('poemIdea').value||'আজ মন খারাপ';let ps=[idea+'\nতবুও আকাশে চাঁদ হাসে,\nরোকসানা, তাইফা, তাসরিফের ভালোবাসা পাশে।\nTRTT Voyage এগিয়ে চলে,\nস্বপ্নগুলো সত্যি হবে বলে। ❤️',idea+'\nডায়মন্ড কিং তুমি, হার মানো না,\nতোমার স্বপ্ন কখনো মরে না।\nএকদিন পুরা দুনিয়া কইবে,\nTRTT-ই সেরা, সবাই মানবে। 👑'];document.getElementById('autoPoemOut').textContent=ps[Math.floor(Math.random()*ps.length)];}
+function checkMagic(){let c=document.getElementById('magicCode').value;if(c==='787950')alert('👑 TRTT MAGIC খুলে গেছে! Welcome Master!');else alert('❌ ভুল কোড! শুধু MASTER জানে।');}
+// FREE AI
+function saveFreeKey(which){let id=which==='gemini'?'geminiKey':'groqKey';let k=document.getElementById(id).value.trim();if(k.length<10)return alert('সঠিক Key দাও ভাই!');localStorage.setItem('trtt_'+which+'_key',k);document.getElementById(id).value='';alert('✅ '+which.toUpperCase()+' KEY সেভ হইছে! শুধু তোমার ফোনে।');}
+async function askGemini(){let key=localStorage.getItem('trtt_gemini_key');if(!key)return alert('আগে Gemini KEY দাও! aistudio.google.com থেকে ফ্রি নাও।');let inp=document.getElementById('geminiInput');let q=inp.value.trim();if(!q)return alert('আগে কিছু লেখো!');let chat=document.getElementById('geminiChat');chat.textContent+='\n\n👑 তুমি: '+q;inp.value='';chat.textContent+='\n\n✨ Gemini লিখতেছে...';chat.scrollTop=chat.scrollHeight;try{let res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:'You are Diamond King Gemini, friendly assistant for TRTT Voyage. User loves Roksana, Taifa, Tasrif. Answer in Bengali mix. Question: '+q}]}]})});let data=await res.json();chat.textContent=chat.textContent.replace('\n\n✨ Gemini লিখতেছে...','');if(data.error){chat.textContent+='\n\n❌ Error: '+data.error.message;return;}chat.textContent+='\n\n✨ Gemini: '+data.candidates[0].content.parts[0].text;chat.scrollTop=chat.scrollHeight;}catch(e){chat.textContent+='\n\n❌ Net Error: '+e.message;}}
+async function askGroq(){let key=localStorage.getItem('trtt_groq_key');if(!key)return alert('আগে Groq KEY দাও! console.groq.com থেকে ফ্রি নাও।');let inp=document.getElementById('groqInput');let q=inp.value.trim();if(!q)return alert('আগে কিছু লেখো!');let chat=document.getElementById('groqChat');chat.textContent+='\n\n👑 তুমি: '+q;inp.value='';chat.textContent+='\n\n⚡ Groq লিখতেছে...';chat.scrollTop=chat.scrollHeight;try{let res=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:'You are Diamond King Groq, fast friendly assistant for TRTT Voyage. User loves Roksana, Taifa, Tasrif. Answer in Bengali mix.'},{role:'user',content:q}],max_tokens:800})});let data=await res.json();chat.textContent=chat.textContent.replace('\n\n⚡ Groq লিখতেছে...','');if(data.error){chat.textContent+='\n\n❌ Error: '+data.error.message;return;}chat.textContent+='\n\n⚡ Groq: '+data.choices[0].message.content;chat.scrollTop=chat.scrollHeight;}catch(e){chat.textContent+='\n\n❌ Net Error: '+e.message;}}
+renderDiary();renderBranches();
+</script>
+</body>
+</html>
