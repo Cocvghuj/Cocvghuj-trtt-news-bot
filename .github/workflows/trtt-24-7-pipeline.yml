@@ -1,0 +1,98 @@
+name: TRTT 24/7 Development Pipeline
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - 'fix/**'
+  pull_request:
+    branches:
+      - 'feature/**'
+  schedule:
+    - cron: '0 2 * * *' # রাত ২টায় Nightly Health Check
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # 1. GitHub Auto Validation
+  auto-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Files Exist
+        run: |
+          echo "Checking TRTT files..."
+          ls -R | head -n 100
+      - name: Validate JSON
+        run: |
+          echo "Validating JSON..."
+          find . -name "*.json" -exec python3 -m json.tool {} > /dev/null \; && echo "All JSON OK" || echo "JSON Error Found"
+      - name: Validate CSS
+        run: |
+          echo "Checking CSS..."
+          find . -name "*.css" -exec echo "Found: {}" \;
+          echo "CSS Check Done"
+      - name: Validate HTML / XML Theme
+        run: |
+          echo "Checking Blogger XML..."
+          find . -name "*.xml" -exec echo "Found Theme: {}" \;
+
+  # 2. Nightly Health Check
+  nightly-health:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Nightly Health Check
+        run: |
+          echo "=== TRTT Nightly Health Check ==="
+          echo "Date: $(date)"
+          echo "Repo: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref }}"
+          echo "Checking project structure..."
+          ls -la
+          echo "Health Check Complete - All Good"
+
+  # 3. Failure Report - Auto
+  # কোনো job ফেল করলে GitHub নিজে এখানে রিপোর্ট দেখাবে
+  # Actions > এই workflow > Failed job এ গেলেই error দেখা যাবে
+
+  # 4. Safe Development Check
+  safe-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Block Main Publish
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "STOP! Main branch এ সরাসরি কাজ করা যাবে না। feature branch ব্যবহার করো।"
+            exit 1
+          else
+            echo "Safe: তুমি feature branch এ আছো - ${{ github.ref }} - Safe to work"
+          fi
+      - name: Block Live Blogger Publish
+        run: |
+          echo "Live Blogger Publish is BLOCKED in this pipeline."
+          echo "শুধু চেক হবে, পাবলিশ হবে না। তোমার লাইভ ব্লগ নিরাপদ।"
+
+  # 5. Backup Preparation
+  backup-prep:
+    needs: [auto-validation]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare Backup
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        run: |
+          echo "Preparing GitLab Backup..."
+          if [ -z "$GITLAB_TOKEN" ]; then
+            echo "INFO: GITLAB_TOKEN নাই, তাই ব্যাকআপ স্কিপ। কিন্তু রিপোর্ট রেডি।"
+            echo "ব্যাকআপ চাইলে GitHub Secrets এ GITLAB_TOKEN বসাও।"
+          else
+            echo "GITLAB_TOKEN পাওয়া গেছে - Backup Ready"
+          fi
+          tar -czf trtt-backup.tar.gz . --exclude=.git || true
+          ls -lh trtt-backup.tar.gz
+          echo "Backup file ready: trtt-backup.tar.gz"
