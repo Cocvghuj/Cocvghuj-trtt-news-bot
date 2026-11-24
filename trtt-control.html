@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TRTT ONE-TAP CONTROL - REAL</title>
+<style>
+body{font-family:sans-serif;background:#0f0f0f;color:#fff;padding:20px;text-align:center}
+.card{background:#1a1a1a;border-radius:16px;padding:20px;max-width:400px;margin:auto}
+button{width:100%;padding:16px;margin:8px 0;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer}
+.start{background:#fff;color:#000}
+.status{background:#fff;color:#333;border:1px solid #ccc}
+.stop{background:transparent;color:#ff5a5a;border:1px solid #ff5a5a}
+input{width:100%;padding:12px;border-radius:10px;border:1px solid #333;background:#222;color:#fff;box-sizing:border-box}
+#log{background:#000;text-align:left;padding:12px;border-radius:10px;margin-top:12px;font-size:13px;white-space:pre-wrap;min-height:80px}
+</style>
+</head>
+<body>
+<div class="card">
+<h2>👑 TRTT ONE-TAP CONTROL</h2>
+<p style="color:#aaa;font-size:13px">আসল বাটন - ChatGPT এর নকল বাটন না</p>
+
+<input id="pat" type="password" placeholder="GH_PAT এখানে দাও (একবারই)">
+<p style="font-size:12px;color:#888">PAT শুধু তোমার ফোনে থাকবে, কোথাও যাবে না</p>
+
+<button class="start" onclick="runTRTT('check')">▶ START — কাজ চালাও</button>
+<button class="status" onclick="runTRTT('check')">📊 STATUS — পরীক্ষা করো</button>
+<button class="stop" onclick="stopTRTT()">⏸ STOP — নতুন কাজ বন্ধ</button>
+
+<div id="log">STATUS: READY - বাটন চাপ দিলেই GitHub এ যাবে...</div>
+</div>
+
+<script>
+const OWNER = "Cocvghuj";
+const REPO = "Cocvghuj-trtt-news-bot";
+// তোমার আসল Control Workflow এর ফাইল নাম
+const WORKFLOW = "trtt-control.yml";
+
+async function runTRTT(task){
+  const pat = document.getElementById('pat').value.trim();
+  if(!pat){ document.getElementById('log').textContent = "❌ আগে GH_PAT দাও!"; return; }
+  document.getElementById('log').textContent = "⏳ GitHub কে বলতেছি... " + task;
+  try{
+    const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/actions/workflows/${WORKFLOW}/dispatches`, {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + pat, "Accept": "application/vnd.github+json", "Content-Type": "application/json" },
+      body: JSON.stringify({ ref: "main", inputs: { task: task, approve_live: "NO" } })
+    });
+    if(res.status === 204){
+      document.getElementById('log').textContent = "✅ SUCCESS! GitHub কাজ শুরু করছে।\n👉 GitHub > Actions > TRTT CONTROL এ গিয়ে দেখো।\nLive Publish: BLOCKED - SAFE MODE";
+    } else {
+      const t = await res.text();
+      document.getElementById('log').textContent = "❌ Error " + res.status + "\n" + t + "\n\nসমাধান: GH_PAT এ repo + workflow টিক আছে কিনা দেখো।";
+    }
+  }catch(e){
+    document.getElementById('log').textContent = "❌ Net Error: " + e.message;
+  }
+}
+function stopTRTT(){
+  document.getElementById('log').textContent = "⏸ STOP: নতুন কাজ পাঠানো বন্ধ।\nচলমান কাজ থামাইতে GitHub > Actions এ গিয়ে Cancel Run চাপ দাও।\n⚠️ STOP বাটন দিয়ে চলমান Workflow থামে না, নতুন কাজ বন্ধ হয়।";
+}
+</script>
+</body>
+</html>
