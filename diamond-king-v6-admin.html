@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DIAMOND KING V6 ADMIN - FULL CONTROL</title>
+<style>
+:root{--kathali:#FFC400;--golapi:#FF4FA3;--piyaji:#9B30FF}
+*{box-sizing:border-box}body{margin:0;color:#fff;font-family:Inter,Arial,sans-serif;background:#12081F}
+header{text-align:center;padding:20px;border-bottom:2px solid var(--kathali)}h1{color:var(--kathali)}
+.container{max-width:1100px;margin:auto;padding:14px}
+.hero{text-align:center;border:2px solid var(--kathali);border-radius:22px;padding:22px;background:linear-gradient(135deg,#3A0A4A,#1A0B2E)}
+.diamondBtn{font-size:80px;background:none;border:0;cursor:pointer;filter:drop-shadow(0 0 25px var(--golapi))}
+.card{background:#ffffff12;border:1px solid #ffffff30;border-radius:16px;padding:16px;margin:12px 0}
+button{border:0;border-radius:10px;padding:11px 15px;background:var(--golapi);color:#fff;font-weight:800;cursor:pointer;margin:4px}
+button.gold{background:var(--kathali);color:#000}button.dark{background:#3A0A4A;color:#fff}button.piyaji{background:var(--piyaji)}
+input,textarea,select{width:100%;padding:12px;margin:6px 0;border-radius:10px;background:#0D0618;color:#fff;border:1px solid #ffffff40}
+textarea{min-height:90px}.output{padding:12px;background:#0D0618;border-radius:10px;white-space:pre-wrap;min-height:60px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+img.live{width:100%;height:160px;object-fit:cover;border-radius:12px;border:2px solid var(--kathali)}
+.hidden{display:none}summary{cursor:pointer;color:var(--kathali);font-weight:800;font-size:16px}details{border:1px solid #ffffff30;border-radius:14px;padding:12px;margin:10px 0}
+.theme-Kathali{--bg1:#FFC400;--bg2:#FFF3B0}.theme-Golapi{--bg1:#FF4FA3;--bg2:#3A0A4A}.theme-Piyaji{--bg1:#9B30FF;--bg2:#12081F}
+</style></head>
+<body>
+<header><div style="font-size:36px">👑</div><h1>DIAMOND KING V6 ADMIN</h1><p style="color:var(--golapi)">FULL GITHUB CONTROL FROM HERE • ROKSANA • TAIFA • TASRIF • ROYAL FAMILY</p></header>
+<main class="container">
+
+<!-- DIAMOND CORE -->
+<section class="hero">
+<button class="diamondBtn" onclick="toggleDiamond()">💎</button>
+<h2 style="color:var(--golapi)">CLICK DIAMOND TO OPEN FULL CONTROL</h2>
+<p id="diamondStatus">🔒 DIAMOND CLOSED - CLICK TO OPEN</p>
+<div id="diamondInside" class="hidden">
+
+<!-- 1. THEME CONTROL -->
+<details open><summary>🎨 1. THEME CONTROL - KATHALI / GOLAPI / PIYAJI</summary>
+<p>Choose Theme - Live Change:</p>
+<div class="grid">
+<button class="gold" onclick="setTheme('kathali')">🟡 KATHALI - Jackfruit Yellow</button>
+<button onclick="setTheme('golapi')">🌸 GOLAPI - Pink</button>
+<button class="piyaji" onclick="setTheme('piyaji')">🧅 PIYAJI - Onion Purple</button>
+</div>
+<p class="small">Theme is saved in your browser. Refresh even after, theme stays.</p>
+<div id="themePreview" class="output">Current Theme: PIYAJI - Royal Purple</div>
+</details>
+
+<!-- 2. NEWS WRITER - WITH OPTIONS -->
+<details open><summary>📰 2. NEWS WRITER - HOW DO YOU WANT TO WRITE?</summary>
+<p><b>Step 1: What is the News About?</b></p>
+<input id="newsTopic" placeholder="News Topic - e.g. TRTT Voyage Opens New Branch in Italy">
+<p><b>Step 2: Choose Options - How Should AI Write?</b></p>
+<select id="newsTone"><option value="Professional">Tone: Professional - For Company Owners</option><option value="Emotional">Tone: Emotional - For Family / Roksana, Taifa</option><option value="Travel">Tone: Travel - For Travellers</option><option value="Breaking">Tone: Breaking News - Urgent</option></select>
+<select id="newsLength"><option value="Short">Length: Short - 100 Words</option><option value="Medium">Length: Medium - 300 Words</option><option value="Long">Length: Long - 800 Words</option></select>
+<select id="newsLang"><option value="English">Language: English - For World</option><option value="Bengali">Language: Bengali - For Family</option><option value="Both">Language: English + Bengali</option></select>
+<select id="newsCategory"><option>Category: TRTT News</option><option>Category: Travel</option><option>Category: Family - Roksana, Taifa, Tasrif</option><option>Category: Business - Franchise</option><option>Category: Technology - AI</option></select>
+<label><input type="checkbox" id="newsImage" checked style="width:auto"> Add LIVE Image from Unsplash?</label>
+<label><input type="checkbox" id="newsBlogger" style="width:auto"> Publish to Blogger? (Uses GitHub Secrets via Workflow)</label>
+<button class="gold" onclick="writeNews()">✍️ WRITE NEWS WITH AI</button>
+<div id="newsOutput" class="output">Your news will appear here... Choose options above, then click WRITE.</div>
+<button onclick="copyNews()">📋 COPY NEWS</button>
+<button class="dark" onclick="saveNewsDiary()">💾 SAVE TO DIARY</button>
+<img id="newsImg" class="live hidden" src="" alt="News Live Image">
+</details>
+
+<!-- 3. LIVE IMAGE - UNSPLASH WITHOUT KEY -->
+<details open><summary>🖼️ 3. LIVE IMAGES - UNSPLASH - NO KEY NEEDED IN BROWSER</summary>
+<p>Unsplash Direct Images work WITHOUT Secret in browser. Secret is only for Actions.</p>
+<input id="imgSearch" placeholder="Search Image - e.g. Paris, Beach, Mountain, Dhaka" value="Travel">
+<button onclick="loadLiveImage()">🔍 LOAD LIVE IMAGE</button>
+<img id="liveImg" class="live" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="Live">
+<p class="small">Tip: Unsplash Access Key is in GitHub Secrets for Workflow use. Browser uses direct Unsplash CDN - 100% FREE, no key.</p>
+</details>
+
+<!-- 4. AI CONNECT - VIA BRIDGE -->
+<details><summary>✨ 4. AI CONNECT - GEMINI + GROQ - VIA SECURE BRIDGE</summary>
+<p class="small">Your GEMINI_API_KEY + GROQ_API_KEY are in GitHub Secrets. Browser cannot read them directly. You need ONE FREE Bridge:</p>
+<p><b>Bridge Setup - 2 Minutes:</b><br>1. Go to workers.cloudflare.com - Create FREE Worker<br>2. Paste Bridge Code (I will give you)<br>3. In Worker Settings > Secrets > Add GEMINI_API_KEY + GROQ_API_KEY (copy from GitHub Secrets)<br>4. Copy Worker URL and paste below:</p>
+<input id="bridgeUrl" placeholder="Paste Your Cloudflare Worker URL - e.g. https://trtt-ai.yourname.workers.dev">
+<button class="dark" onclick="saveBridge()">🔑 SAVE BRIDGE URL</button>
+<div id="bridgeStatus" class="output">Bridge: NOT CONNECTED - Add Worker URL above.</div>
+<input id="aiAsk" placeholder="Ask AI via Bridge - e.g. Write news about TRTT">
+<button onclick="askViaBridge()">✨ ASK AI VIA BRIDGE</button>
+<div id="aiOutput" class="output">AI answer via Bridge will appear here...</div>
+<p class="small">OR - For Now, Use Direct Key in YOUR Phone Only (Not GitHub):</p>
+<input id="directGemini" type="password" placeholder="Direct Gemini Key - Only in Your Phone, Not GitHub">
+<button onclick="saveDirect()">SAVE DIRECT KEY IN PHONE ONLY</button>
+</details>
+
+<!-- 5. GITHUB CONTROL -->
+<details><summary>⚙️ 5. GITHUB CONTROL FROM HERE</summary>
+<p>To STOP Auto Bots: GitHub > Actions > Disable all except <b>pages build and deployment</b></p>
+<p>To Publish News to Blogger: Use Workflow <b>TRTT Blogger Publish</b> - It reads BLOGGER_ACCESS_TOKEN from Secrets automatically.</p>
+<button onclick="alert('Go to GitHub > Actions > TRTT Blogger Publish > Run Workflow > Paste your news. It will use Secrets automatically.')">🚀 HOW TO PUBLISH TO BLOGGER</button>
+<button onclick="alert('GitHub Secrets are SAFE. Never put them in HTML. Only Actions can read them. This is how Google, Meta do it.')">🛡️ WHY SECRETS NOT IN HTML?</button>
+</details>
+
+</div>
+</section>
+
+<section class="card"><h3>👑 ROYAL FAMILY - KINGS OF TRTT</h3><p>👑 Queen Roksana • 👸 Princess Taifa • 🤴 Prince Tasrif • 👑 King Diamond Raja - All LIVE, All Royal</p></section>
+</main>
+<footer><p>TRTT Voyage - From Vision To Global Brand • TRTT MAGIC 787950</p></footer>
+<script>
+function toggleDiamond(){let d=document.getElementById('diamondInside');let s=document.getElementById('diamondStatus');let closed=d.classList.toggle('hidden');s.textContent=closed?'🔒 DIAMOND CLOSED - CLICK TO OPEN':'💎 DIAMOND OPEN - FULL CONTROL LIVE';if(!closed)d.scrollIntoView({behavior:"smooth"})}
+function setTheme(t){localStorage.setItem('trtt_theme',t);document.body.style.background=t==='kathali'?'linear-gradient(135deg,#FFC400,#FFF3B0)':t==='golapi'?'linear-gradient(135deg,#FF4FA3,#3A0A4A)':'#12081F';document.body.style.color=t==='kathali'?'#000':'#fff';document.getElementById('themePreview').textContent='Current Theme: '+t.toUpperCase()+' - LIVE Applied!';}
+let _t=localStorage.getItem('trtt_theme');if(_t)setTheme(_t);
+function loadLiveImage(){let q=document.getElementById('imgSearch').value||'Travel';let imgs={Paris:'photo-1502602898657-3e91760cbb34',Beach:'photo-1507525428034-b723cf961d3e',Mountain:'photo-1506905925346-21bda4d32df4',Dhaka:'photo-1576675466969-38eeae4b41f6',Italy:'photo-1516483638261-f4dbaf036963',Japan:'photo-1528164344705-47542687000d'};let id=imgs[q]||'photo-1469474968028-56623f02e42e';document.getElementById('liveImg').src='https://images.unsplash.com/'+id+'?w=800&q=80';document.getElementById('newsImg').src='https://images.unsplash.com/'+id+'?w=800&q=80';}
+function writeNews(){
+let topic=document.getElementById('newsTopic').value||'TRTT Voyage - New Global Journey';
+let tone=document.getElementById('newsTone').value, len=document.getElementById('newsLength').value, lang=document.getElementById('newsLang').value, cat=document.getElementById('newsCategory').value;
+let prompt='Write '+len+' '+tone+' News in '+lang+' | Category: '+cat+' | Topic: '+topic+' | Include: Title, Introduction, Main Story, Quote from Diamond King, Future Vision, Family Mention Roksana, Taifa, Tasrif as Royal Family. Make it like 1 Trillion Dollar Company News.';
+document.getElementById('newsOutput').textContent='YOUR NEWS PROMPT READY (For AI Bridge / Gemini):\n\n'+prompt+'\n\n---\nSAMPLE HEADLINE: '+topic+' - TRTT Voyage Shocks The World!\n\nTRTT Voyage today announced a new milestone. Under the leadership of Diamond King, with Queen Roksana, Princess Taifa and Prince Tasrif, TRTT is building a global brand from vision to reality. Travellers and company owners are calling it a 1 Trillion Dollar Software. This is not a demo - this is LIVE.';
+if(document.getElementById('newsImage').checked){document.getElementById('newsImg').classList.remove('hidden');loadLiveImage();}
+if(document.getElementById('newsBlogger').checked){alert('Blogger Publish: Copy this news > GitHub > Actions > TRTT Blogger Publish > Run Workflow. It will use BLOGGER_ACCESS_TOKEN from Secrets automatically.')}
+}
+function copyNews(){let t=document.getElementById('newsOutput').textContent;navigator.clipboard.writeText(t).then(()=>alert('News Copied!'))}
+function saveNewsDiary(){let t=document.getElementById('newsOutput').textContent;let ds=JSON.parse(localStorage.getItem('trtt_v5_diary')||'[]');ds.unshift({id:String(Date.now()),title:'NEWS: '+document.getElementById('newsTopic').value,body:t,date:new Date().toISOString()});localStorage.setItem('trtt_v5_diary',JSON.stringify(ds));alert('News Saved to Diary LIVE!')}
+function saveBridge(){let u=document.getElementById('bridgeUrl').value.trim();if(!u.startsWith('http'))return alert('Enter Worker URL!');localStorage.setItem('trtt_bridge',u);document.getElementById('bridgeStatus').textContent='Bridge CONNECTED: '+u+' - Now AI will work via Secrets!';}
+function saveDirect(){let k=document.getElementById('directGemini').value.trim();if(k.length<10)return alert('Enter Key!');localStorage.setItem('trtt_gemini_key',k);alert('Direct Key Saved ONLY in your phone. NOT in GitHub.')}
+async function askViaBridge(){
+let bridge=localStorage.getItem('trtt_bridge');let q=document.getElementById('aiAsk').value||document.getElementById('newsTopic').value||'Write about TRTT';
+if(!bridge){let key=localStorage.getItem('trtt_gemini_key');if(!key)return alert('First Save Bridge URL or Direct Key!');let res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:q}]}]})});let d=await res.json();document.getElementById('aiOutput').textContent=d.candidates?d.candidates[0].content.parts[0].text:'Error: '+JSON.stringify(d);return;}
+try{let res=await fetch(bridge,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:q,provider:'gemini'})});let d=await res.json();document.getElementById('aiOutput').textContent=d.text||JSON.stringify(d);}catch(e){document.getElementById('aiOutput').textContent='Bridge Error: '+e.message+' - Check Worker URL.';}
+}
+</script></body></html>
