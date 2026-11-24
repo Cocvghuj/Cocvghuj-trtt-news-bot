@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>জমির হিসাব - TRTT MAGIC</title>
+<style>
+body{background:#f0f7e6;font-family:sans-serif;padding:15px;text-align:center;color:#222}
+.box{background:#fff;border:3px solid #2e7d32;border-radius:18px;padding:18px;max-width:480px;margin:auto;box-shadow:0 4px 15px #0002}
+h1{color:#2e7d32;font-size:24px;margin:5px}
+input{width:90%;padding:14px;font-size:20px;border:2px solid #2e7d32;border-radius:10px;text-align:center;margin:8px 0}
+button{width:95%;padding:14px;background:#2e7d32;color:#fff;border:none;border-radius:10px;font-size:18px;font-weight:bold;margin:6px 0}
+select{width:95%;padding:12px;font-size:17px;border-radius:10px;border:2px solid #2e7d32}
+.result{background:#e8f5e9;border-radius:12px;padding:14px;margin-top:12px;text-align:left;font-size:17px;line-height:1.8}
+b{color:#1b5e20}
+small{color:#666}
+</style>
+</head>
+<body>
+<div class="box">
+<h1>🌾 জমির হিসাব 🇧🇩</h1>
+<p>TRTT MAGIC - DIAMOND KING | বাংলাদেশের জন্য</p>
+
+<label>জমির পরিমাণ লিখুন:</label><br>
+<input type="number" id="val" placeholder="যেমন: 10" value="10">
+<br>
+<select id="unit">
+<option value="sotangsho">শতাংশে</option>
+<option value="katha">কাঠায়</option>
+<option value="bigha">বিঘায়</option>
+<option value="acre">একরে</option>
+<option value="decimal">ডেসিমেলে</option>
+</select>
+<br>
+<button onclick="calc()">🧮 হিসাব করো</button>
+<button onclick="reset()" style="background:#ff6d00">🔄 আবার লিখো</button>
+
+<div class="result" id="res">
+👆 উপরে সংখ্যা লিখে হিসাব করো বাটনে চাপ দাও।<br>
+যেমন: 10 শতাংশ = কত কাঠা?
+</div>
+<p><small>১ বিঘা = ৩৩ শতাংশ = ২০ কাঠা | ১ কাঠা = ১.৬৫ শতাংশ | ১ একর = ১০০ শতাংশ</small></p>
+<p><small>⚠️ আনুমানিক হিসাব। দলিলের জন্য আমিন দিয়ে মাপাবেন।</small></p>
+</div>
+
+<script>
+function calc(){
+  let v = parseFloat(document.getElementById('val').value);
+  let u = document.getElementById('unit').value;
+  if(!v){ document.getElementById('res').innerHTML="ভাই, আগে সংখ্যা লিখুন!"; return; }
+  let sotangsho = v;
+  if(u=="katha") sotangsho = v*1.65;
+  if(u=="bigha") sotangsho = v*33;
+  if(u=="acre") sotangsho = v*100;
+  if(u=="decimal") sotangsho = v*1; // 1 decimal = 1 sotangsho in BD
+  let katha = sotangsho/1.65;
+  let bigha = sotangsho/33;
+  let acre = sotangsho/100;
+  let sqft = sotangsho*435.6;
+  document.getElementById('res').innerHTML =
+  `✅ <b>${v} ${u}</b> এর হিসাব:<br>
+  🌾 <b>শতাংশ / ডেসিমেল:</b> ${sotangsho.toFixed(2)}<br>
+  📐 <b>কাঠা:</b> ${katha.toFixed(2)} কাঠা<br>
+  🏡 <b>বিঘা:</b> ${bigha.toFixed(3)} বিঘা<br>
+  🌍 <b>একর:</b> ${acre.toFixed(4)} একর<br>
+  📏 <b>বর্গফুট:</b> ${sqft.toFixed(0)} বর্গফুট<br><br>
+  💡 <b>মনে রাখুন:</b> ২০ কাঠায় ১ বিঘা`;
+}
+function reset(){
+  document.getElementById('val').value="";
+  document.getElementById('res').innerHTML="আবার লিখুন ভাই।";
+}
+</script>
+</body>
+</html>
