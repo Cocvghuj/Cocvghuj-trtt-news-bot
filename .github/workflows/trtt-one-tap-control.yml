@@ -2,7 +2,7 @@ name: TRTT One-Tap Control
 
 on:
   issues:
-    types: [labeled]
+    types: [opened]
   workflow_dispatch:
     inputs:
       mode:
@@ -25,7 +25,7 @@ concurrency:
 
 jobs:
   queue-intake:
-    if: github.event_name == 'issues' && github.event.label.name == 'trtt-queue'
+    if: github.event_name == 'issues' && startsWith(github.event.issue.title, '[TRTT TASK]')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -111,7 +111,7 @@ jobs:
           echo "- Event: $EVENT_NAME" >> "$GITHUB_STEP_SUMMARY"
           echo "- Mode: ${MODE:-scheduled-summary}" >> "$GITHUB_STEP_SUMMARY"
           echo "- Protected actions: NOT AUTHORIZED by this report" >> "$GITHUB_STEP_SUMMARY"
-          gh issue list --repo "$REPOSITORY" --state open --label trtt-queue --limit 100 --json number,title,url > /tmp/trtt-queue.json
+          gh issue list --repo "$REPOSITORY" --state open --search "is:open in:title [TRTT TASK]" --limit 100 --json number,title,url > /tmp/trtt-queue.json
           python <<'PY'
           import json, os
           data = json.load(open("/tmp/trtt-queue.json", encoding="utf-8"))
