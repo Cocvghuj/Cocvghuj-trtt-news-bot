@@ -1,8 +1,6 @@
 name: TRTT Task Queue
 description: Submit a structured task for safe review and queue tracking.
 title: "[TRTT TASK] "
-labels:
-  - trtt-queue
 body:
   - type: dropdown
     id: task_type
