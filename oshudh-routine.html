@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ওষুধের রুটিন - TRTT MAGIC</title>
+<style>
+body{background:#e3f2fd;font-family:sans-serif;padding:15px;text-align:center;color:#222}
+.box{background:#fff;border:3px solid #1565c0;border-radius:18px;padding:18px;max-width:520px;margin:auto;box-shadow:0 4px 15px #0002}
+h1{color:#1565c0;font-size:23px}
+input,select{width:92%;padding:12px;font-size:17px;border:2px solid #1565c0;border-radius:10px;margin:6px 0}
+button{width:95%;padding:13px;background:#1565c0;color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:bold;margin:5px 0}
+.card{background:#e3f2fd;border-radius:12px;padding:12px;margin:8px 0;text-align:left;font-size:16px;line-height:1.7}
+b{color:#0d47a1}
+.warn{background:#fff3e0;padding:12px;border-radius:12px;font-size:14px;margin-top:10px}
+small{color:#666}
+.time{font-size:22px}
+</style>
+</head>
+<body>
+<div class="box">
+<h1>💊 ওষুধের রুটিন 🇧🇩</h1>
+<p>TRTT MAGIC - DIAMOND KING | মনে রাখার মেশিন</p>
+
+<label>রোগীর নাম:</label>
+<input id="pname" placeholder="যেমন: আব্বু / আম্মু / আমি" value="">
+<label>ওষুধের নাম:</label>
+<input id="med" placeholder="যেমন: Napa / Omeprazole">
+<label>কয় বেলা খাবেন?</label>
+<select id="bela">
+<option value="1">১ বেলা - দিনে ১ বার</option>
+<option value="2">২ বেলা - সকাল + রাত</option>
+<option value="3" selected>৩ বেলা - সকাল + দুপুর + রাত</option>
+<option value="4">৪ বেলা</option>
+</select>
+<label>কয় দিন খাবেন?</label>
+<input id="days" type="number" placeholder="যেমন: 7" value="7">
+<label>খাওয়ার নিয়ম:</label>
+<select id="rule">
+<option>ভরা পেটে - খাওয়ার পরে</option>
+<option>খালি পেটে - খাওয়ার আগে</option>
+<option>খাওয়ার সাথে সাথে</option>
+</select>
+<button onclick="make()">📋 রুটিন বানাও</button>
+<button onclick="clearAll()" style="background:#78909c">🗑️ সব মুছে দাও</button>
+
+<div id="out">
+<p><small>উপরে ওষুধের নাম লিখে রুটিন বানাও বাটনে চাপ দাও।</small></p>
+</div>
+
+<div class="warn">
+⚠️ <b>সতর্কতা:</b> এইটা শুধু মনে রাখার Tool। ডাক্তারের কথা ছাড়া ওষুধ খাবেন না, ওষুধ বদলাবেন না। বেশি খারাপ লাগলে ডাক্তারের কাছে যান / হাসপাতালে যান।<br>
+💡 <b>বুদ্ধি:</b> রুটিনটা স্ক্রিনশট নিয়ে রাখুন, ফোনে সেভ করে রাখুন।
+</div>
+</div>
+
+<script>
+let list=[];
+function make(){
+ let med=document.getElementById('med').value.trim();
+ let pname=document.getElementById('pname').value.trim()||"রোগী";
+ let bela=document.getElementById('bela').value;
+ let days=document.getElementById('days').value||7;
+ let rule=document.getElementById('rule').value;
+ if(!med){ alert("ভাই, ওষুধের নাম লিখুন!"); return; }
+ let times = bela=="1" ? ["☀️ সকাল ৯টা"] : bela=="2" ? ["☀️ সকাল ৯টা","🌙 রাত ৯টা"] : bela=="3" ? ["☀️ সকাল ৯টা","🌤️ দুপুর ২টা","🌙 রাত ৯টা"] : ["☀️ সকাল ৯টা","🌤️ দুপুর ২টা","🌆 বিকাল ৫টা","🌙 রাত ৯টা"];
+ list.push({med,pname,bela,days,rule,times});
+ document.getElementById('med').value="";
+ render();
+}
+function render(){
+ let out=document.getElementById('out');
+ if(list.length==0){ out.innerHTML="<p><small>এখনো রুটিন নাই।</small></p>"; return; }
+ let html="";
+ list.forEach((it,i)=>{
+   html+=`<div class="card">
+   <b>💊 ${it.med}</b> - ${it.pname} এর জন্য<br>
+   <span class="time">${it.times.join(" | ")}</span><br>
+   📅 <b>${it.days} দিন</b> খাবেন | 🍽️ ${it.rule}<br>
+   ✅ প্রতিবার <b>১টা</b> করে | 💧 পানি দিয়ে খাবেন<br>
+   <button onclick="del(${i})" style="width:auto;padding:6px 12px;background:#ff1744;font-size:13px">মুছে দাও</button>
+   </div>`;
+ });
+ html+=`<div class="card" style="background:#e8f5e9"><b>📋 আজকের মোট রুটিন:</b><br>${list.map(l=>`• ${l.med} - ${l.bela} বেলা - ${l.rule}`).join("<br>")}<br><br>🙏 আল্লাহ শেফা দান করুন।</div>`;
+ out.innerHTML=html;
+}
+function del(i){ list.splice(i,1); render(); }
+function clearAll(){ list=[]; render(); }
+</script>
+</body>
+</html>
