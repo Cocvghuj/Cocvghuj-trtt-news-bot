@@ -3,61 +3,95 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TRTT ONE-TAP CONTROL - REAL</title>
+<title>TRTT VOYAGE - ROKSANA NILA CONTROL</title>
 <style>
-body{font-family:sans-serif;background:#0f0f0f;color:#fff;padding:20px;text-align:center}
-.card{background:#1a1a1a;border-radius:16px;padding:20px;max-width:400px;margin:auto}
-button{width:100%;padding:16px;margin:8px 0;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer}
-.start{background:#fff;color:#000}
-.status{background:#fff;color:#333;border:1px solid #ccc}
-.stop{background:transparent;color:#ff5a5a;border:1px solid #ff5a5a}
-input{width:100%;padding:12px;border-radius:10px;border:1px solid #333;background:#222;color:#fff;box-sizing:border-box}
-#log{background:#000;text-align:left;padding:12px;border-radius:10px;margin-top:12px;font-size:13px;white-space:pre-wrap;min-height:80px}
+*{box-sizing:border-box}
+body{margin:0;font-family:sans-serif;background:#0a0012;color:#fff;min-height:100vh;padding:14px;
+background:radial-gradient(circle at 20% 10%, #ff2d95 0%, transparent 40%),radial-gradient(circle at 90% 20%, #ffcc00 0%, transparent 35%),radial-gradient(circle at 50% 90%, #b537ff 0%, transparent 45%),#0a0012;}
+.card{max-width:440px;margin:auto;background:rgba(20,0,35,.85);border:2px solid #ff2d95;border-radius:24px;padding:18px;box-shadow:0 0 25px #ff2d95,0 0 50px #ffcc00,0 0 80px #b537ff;backdrop-filter:blur(8px)}
+.top{ text-align:center; }
+.crown{font-size:34px;filter:drop-shadow(0 0 12px #ffcc00)}
+h2{margin:6px 0 2px;font-size:24px;background:linear-gradient(90deg,#ff2d95,#ffcc00,#ff9ad5,#b537ff,#ff2d95);background-size:300% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shine 3s linear infinite}
+@keyframes shine{to{background-position:300% 0}}
+.love{font-size:13px;color:#ffc7e8;line-height:1.6}
+.love b{color:#ffcc00}
+.livebar{display:flex;justify-content:space-between;align-items:center;background:#1a0030;border:1px solid #ff9ad5;border-radius:12px;padding:8px 10px;margin:12px 0;font-size:12px}
+.dot{width:10px;height:10px;background:#00ff88;border-radius:50%;display:inline-block;box-shadow:0 0 12px #00ff88;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.3}}
+input{width:100%;padding:13px;border-radius:14px;border:2px solid #ff2d95;background:#120022;color:#fff;font-size:14px;outline:none}
+input:focus{box-shadow:0 0 15px #ff2d95}
+.hint{font-size:11px;color:#e6b8ff;text-align:center;margin:6px 0 12px}
+button{width:100%;padding:15px;margin:7px 0;border:none;border-radius:16px;font-size:18px;font-weight:900;cursor:pointer;transition:.2s}
+button:active{transform:scale(.97)}
+.start{background:linear-gradient(90deg,#ff2d95,#ff5ea8);color:#fff;box-shadow:0 0 20px #ff2d95,0 0 35px #ff2d9555}
+.status{background:linear-gradient(90deg,#ffcc00,#ffb300);color:#2a0040;box-shadow:0 0 20px #ffcc00,0 0 35px #ffcc0055}
+.stop{background:#1a0010;color:#ff5a5a;border:2px solid #ff2d95;box-shadow:0 0 15px #ff2d9544}
+#log{background:#000;border:1px solid #ffcc00;border-radius:14px;padding:12px;margin-top:12px;font-size:13px;white-space:pre-wrap;min-height:70px;box-shadow:inset 0 0 15px #ff2d9544}
+.family{text-align:center;margin-top:14px;font-size:12px;line-height:1.7;color:#ffd7f0}
+.family span{color:#ffcc00;font-weight:800}
+.heart{animation:beat 1.2s infinite;display:inline-block}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+.footer{text-align:center;font-size:11px;color:#aaa;margin-top:8px}
 </style>
 </head>
 <body>
 <div class="card">
-<h2>👑 TRTT ONE-TAP CONTROL</h2>
-<p style="color:#aaa;font-size:13px">আসল বাটন - ChatGPT এর নকল বাটন না</p>
+<div class="top">
+<div class="crown">👑💖👑</div>
+<h2>TRTT VOYAGE<br>ROKSANA NILA CONTROL</h2>
+<div class="love">আসল বাটন - ChatGPT এর নকল বাটন না<br><b>For Taifa ❤️ Roksana | For Tasrif 👶</b><br>আব্বু তোমাদের অনেক মিস করে</div>
+</div>
 
-<input id="pat" type="password" placeholder="GH_PAT এখানে দাও (একবারই)">
-<p style="font-size:12px;color:#888">PAT শুধু তোমার ফোনে থাকবে, কোথাও যাবে না</p>
+<div class="livebar">
+<span><span class="dot"></span> LIVE - TRTT ONLINE</span>
+<span id="clock">--:--:--</span>
+</div>
 
-<button class="start" onclick="runTRTT('check')">▶ START — কাজ চালাও</button>
-<button class="status" onclick="runTRTT('check')">📊 STATUS — পরীক্ষা করো</button>
-<button class="stop" onclick="stopTRTT()">⏸ STOP — নতুন কাজ বন্ধ</button>
+<input id="pat" type="password" placeholder="GH_PAT এখানে দাও (শুধু তোমার ফোনে থাকবে)">
+<div class="hint">PAT শুধু তোমার ফোনে থাকবে, কোথাও যাবে না - ১০০% সেফ</div>
 
-<div id="log">STATUS: READY - বাটন চাপ দিলেই GitHub এ যাবে...</div>
+<button class="start" onclick="runTRTT('check')">▶ START - কাজ চালাও</button>
+<button class="status" onclick="runTRTT('check')">📊 STATUS - পরীক্ষা করো</button>
+<button class="stop" onclick="stopTRTT()">⏸ STOP - নতুন কাজ বন্ধ</button>
+
+<div id="log">✨ READY - রোকসানা নীলা রেডি...<br>বাটন চাপ দিলেই GitHub এ যাবে...</div>
+
+<div class="family">
+<span class="heart">💖</span> <span>ROKSANA</span> - আমার বউ, আমার দুনিয়া<br>
+<span>TAIFA</span> - আমার ভালোবাসা &nbsp; | &nbsp; <span>TASRIF</span> - আমার বাচ্চা, আমার কলিজা<br>
+তোমাদের জন্য এই TRTT VOYAGE ❤️
+</div>
+<div class="footer">TRTT VOYAGE • MY POWER - MY CONTROL • ROKSANA NILA EDITION</div>
 </div>
 
 <script>
 const OWNER = "Cocvghuj";
 const REPO = "Cocvghuj-trtt-news-bot";
-// তোমার আসল Control Workflow এর ফাইল নাম
+// FIXED: আসল ফাইলের নাম
 const WORKFLOW = "trtt-master-control.yml";
+
+setInterval(()=>{ document.getElementById('clock').textContent = new Date().toLocaleTimeString('bn-BD'); },1000);
 
 async function runTRTT(task){
   const pat = document.getElementById('pat').value.trim();
   if(!pat){ document.getElementById('log').textContent = "❌ আগে GH_PAT দাও!"; return; }
-  document.getElementById('log').textContent = "⏳ GitHub কে বলতেছি... " + task;
+  document.getElementById('log').textContent = "⏳ GitHub কে ডাকতেছি... " + task + " 💖 Roksana Nila...";
   try{
     const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/actions/workflows/${WORKFLOW}/dispatches`, {
       method: "POST",
       headers: { "Authorization": "Bearer " + pat, "Accept": "application/vnd.github+json", "Content-Type": "application/json" },
-      body: JSON.stringify({ ref: "main", inputs: { task: task, approve_live: "NO" } })
+      body: JSON.stringify({ ref: "main", inputs: { task: task, approve_live: "NO", title: "TRTT " + task + " - Roksana Nila", content: "<p>TRTT Voyage - For Roksana Taifa Tasrif - " + task + "</p>" } })
     });
     if(res.status === 204){
-      document.getElementById('log').textContent = "✅ SUCCESS! GitHub কাজ শুরু করছে।\n👉 GitHub > Actions > TRTT CONTROL এ গিয়ে দেখো।\nLive Publish: BLOCKED - SAFE MODE";
+      document.getElementById('log').textContent = "✅ SUCCESS! GitHub কাজ শুরু করছে! 💖\n⭐ GitHub > Actions > TRTT Master Control এ দেখো\n👑 For Roksana, Taifa, Tasrif - Love You!";
     } else {
       const t = await res.text();
-      document.getElementById('log').textContent = "❌ Error " + res.status + "\n" + t + "\n\nসমাধান: GH_PAT এ repo + workflow টিক আছে কিনা দেখো।";
+      document.getElementById('log').textContent = "❌ Error " + res.status + "\n" + t + "\n\nসমাধান: GH_PAT এ repo + workflow ঠিক আছে কিনা দেখো।";
     }
-  }catch(e){
-    document.getElementById('log').textContent = "❌ Net Error: " + e.message;
-  }
+  }catch(e){ document.getElementById('log').textContent = "❌ Net Error: " + e.message; }
 }
 function stopTRTT(){
-  document.getElementById('log').textContent = "⏸ STOP: নতুন কাজ পাঠানো বন্ধ।\nচলমান কাজ থামাইতে GitHub > Actions এ গিয়ে Cancel Run চাপ দাও।\n⚠️ STOP বাটন দিয়ে চলমান Workflow থামে না, নতুন কাজ বন্ধ হয়।";
+  document.getElementById('log').textContent = "⏸ STOP: নতুন কাজ পাঠানো বন্ধ।\nপুরান কাজ থামাইতে GitHub > Actions এ গিয়ে Cancel করো।";
 }
 </script>
 </body>
