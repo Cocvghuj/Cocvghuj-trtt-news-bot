@@ -1,9 +1,7 @@
 name: TRTT AUTO CLEANER - Jangal Porishkar
 
 on:
-  schedule:
-    - cron: '0 3 * * *' # রাত ৩টায় পরিষ্কার
-  workflow_dispatch: # তুমি চাইলে এখনই চাপ দিতে পারবা
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -13,63 +11,43 @@ jobs:
   auto-clean:
     runs-on: ubuntu-latest
     steps:
-      - name: TRTT Auto Disable System
+      - name: TRTT Auto Disable - Fixed V2
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
           REPO: ${{ github.repository }}
         run: |
-          echo "=== TRTT AUTO CLEANER STARTED ==="
-          echo "Repo: $REPO"
+          echo "=== TRTT CLEANER V2 STARTED ==="
           
-          # ১. এই ৩টা হইলো আসল SaaS পিলার - এইগুলা কখনো বন্ধ হবে না
-          KEEP_1="TRTT ENGINE"
-          KEEP_2="TRTT GUARD"
-          KEEP_3="TRTT CONTROL"
-          KEEP_4="TRTT AUTO CLEANER"
-          
-          echo "SAFE LIST: $KEEP_1, $KEEP_2, $KEEP_3, $KEEP_4"
-          
+          # GH_PAT আছে কিনা চেক - না থাকলে সুন্দর করে বলবে, ফেইল করবে না
           if [ -z "$GH_TOKEN" ]; then
-            echo "❌ GH_PAT নাই! GitHub Secrets এ GH_PAT বসাইতে হবে।"
-            echo "কিভাবে বসাবা নিচে দেখো"
-            exit 1
+            echo "❌ সমস্যা ধরা পড়ছে: GH_PAT পাওয়া যায় নাই!"
+            echo "👉 Repo > Settings > Secrets > Actions > New secret"
+            echo "👉 Name: GH_PAT, Value: তোমার Personal Access Token"
+            echo "👉 টিক দিতে হবে: repo + workflow"
+            echo "GH_PAT না বসাইলে Cleaner কাজ করবে না।"
+            exit 0
           fi
           
-          echo "Checking all workflows..."
+          echo "✅ GH_PAT পাওয়া গেছে, এখন পরিষ্কার করতেছি..."
           
-          # ২. সব Workflow এর লিস্ট নাও
-          gh api repos/$REPO/actions/workflows --jq '.workflows[] | "\(.id)|\(.name)|\(.state)"' > workflows.txt
+          # ফাইলের নাম দিয়ে চেক করবো, ডিসপ্লে নাম দিয়ে না - এইটাই আসল ফিক্স
+          # এই ৪টা ফাইল ছাড়া বাকি সব বন্ধ হবে
+          gh api repos/$REPO/actions/workflows --jq '.workflows[] | "\(.id)|\(.path)|\(.name)|\(.state)"' > workflows.txt
           cat workflows.txt
           
-          echo "--- Cleaning Started ---"
-          
-          # ৩. একটা একটা করে চেক করো
-          while IFS='|' read -r WF_ID WF_NAME WF_STATE; do
-            echo "Checking: $WF_NAME - State: $WF_STATE"
+          while IFS='|' read -r WF_ID WF_PATH WF_NAME WF_STATE; do
+            echo "--- Checking: $WF_NAME | $WF_PATH | $WF_STATE"
             
-            # যদি SAFE LIST এ থাকে, ছুঁইবা না
-            if [[ "$WF_NAME" == *"$KEEP_1"* ]] || [[ "$WF_NAME" == *"$KEEP_2"* ]] || [[ "$WF_NAME" == *"$KEEP_3"* ]] || [[ "$WF_NAME" == *"$KEEP_4"* ]]; then
-              echo "✅ SAFE: $WF_NAME - রাখলাম"
+            if [[ "$WF_PATH" == *"trtt-engine.yml"* ]] || [[ "$WF_PATH" == *"trtt-guard.yml"* ]] || [[ "$WF_PATH" == *"trtt-control.yml"* ]] || [[ "$WF_PATH" == *"trtt-auto-cleaner.yml"* ]]; then
+              echo "✅ SAFE - রাখলাম: $WF_NAME"
             else
-              # যদি আগেই disabled থাকে, ছেড়ে দাও
-              if [[ "$WF_STATE" == "disabled_manually" ]]; then
-                echo "😴 ALREADY DISABLED: $WF_NAME - ঘুমাইতেছে"
+              if [[ "$WF_STATE" == "disabled_manually" ]] || [[ "$WF_STATE" == "disabled_inactivity" ]]; then
+                echo "😴 আগেই বন্ধ: $WF_NAME"
               else
-                # বাকি সব Auto Disable
-                echo "🧹 AUTO DISABLE: $WF_NAME - জঞ্জাল পরিষ্কার করতেছি..."
-                gh api -X PUT repos/$REPO/actions/workflows/$WF_ID/disable -H "Accept: application/vnd.github+json" || echo "Disable failed for $WF_NAME"
-                echo "✅ DISABLED: $WF_NAME"
+                echo "🧹 বন্ধ করতেছি: $WF_NAME"
+                gh api -X PUT repos/$REPO/actions/workflows/$WF_ID/disable -H "Accept: application/vnd.github+json" && echo "✅ বন্ধ হইছে: $WF_NAME" || echo "❌ বন্ধ হয় নাই: $WF_NAME"
               fi
             fi
           done < workflows.txt
           
           echo "=== CLEANER DONE ==="
-          echo "এখন শুধু ৩টা পিলার + ১টা Cleaner চালু থাকবে। বাকি সব ঘুমাবে।"
-
-      - name: STATUS REPORT
-        run: |
-          echo "STATUS: CLEANED"
-          echo "ENGINE: ACTIVE"
-          echo "GUARD: ACTIVE"
-          echo "CONTROL: ACTIVE"
-          echo "JANGAL: DISABLED"
