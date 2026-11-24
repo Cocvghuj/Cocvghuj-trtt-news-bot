@@ -1,0 +1,23 @@
+name: TRTT AUTO DAILY TOOL
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Make 1 Tool Daily
+        run: |
+          echo "TRTT MAGIC AUTO - Today Tool Build"
+          ls -la
+          # এইখানে ৭টা Tool থেকে ১টা নিয়ে Blog এ যাবে
+          # Day 1 QR, Day 2 Age, Day 3 BMI...
+      - name: Save to GitHub
+        run: |
+          git config user.name "TRTT KING"
+          git config user.email "king@trttvoyage.com"
+          git add .
+          git commit -m "AUTO: Daily Tool - TRTT MAGIC" || echo "No Change"
+          git push
