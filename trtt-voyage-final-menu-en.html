@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRTT VOYAGE - Final Menu</title>
+<style>
+  :root{--pink:#E98BAF;--piyaji:#B77991;--kathali:#D6A542;--midnight:#11152D;--white:#FFFFFF}
+  *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,Arial,sans-serif}
+  body{background:var(--midnight);color:var(--white)}
+  /* TOP BAR */
+  header{background:var(--midnight);position:sticky;top:0;z-index:1000;border-bottom:2px solid var(--pink)}
+  .top-row{display:flex;align-items:center;gap:16px;padding:12px 20px}
+  .logo{font-size:22px;font-weight:900;white-space:nowrap;letter-spacing:1px}
+  .logo span{color:var(--pink)}
+  .search{flex:1;display:flex;background:#1A1E3A;border:1px solid var(--piyaji);border-radius:50px;overflow:hidden;max-width:620px;margin-left:auto}
+  .search input{flex:1;background:transparent;border:none;outline:none;color:var(--white);padding:12px 18px;font-size:14px}
+  .search button{background:var(--kathali);color:var(--midnight);border:none;padding:0 20px;font-weight:800;cursor:pointer}
+  .live{font-size:12px;font-weight:800;color:var(--pink);white-space:nowrap}
+  /* NAV */
+  nav{background:#0D1026;display:flex;gap:8px;overflow-x:auto;padding:12px 20px;white-space:nowrap;scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav a,nav button{color:var(--white);text-decoration:none;background:#1A1E3A;padding:9px 16px;border-radius:50px;font-size:14px;font-weight:600;border:1px solid #2A2F52;cursor:pointer}
+  nav a:hover,nav button:hover{border-color:var(--pink);color:var(--pink)}
+  nav a.active{background:var(--pink);color:var(--midnight);border-color:var(--pink)}
+  nav a.thinking-room{background:linear-gradient(90deg,var(--pink),var(--kathali));color:var(--midnight);border:none;font-weight:800;box-shadow:0 0 16px rgba(233,139,175,.5)}
+  /* MEGA MENU - CLICK - top 100% */
+  .mega-box{position:relative;display:inline-block}
+  .mega{display:none;position:absolute;top:100%;left:0;margin-top:12px;width:920px;max-width:92vw;background:#1A1E3A;border:1px solid var(--piyaji);border-radius:16px;padding:22px;z-index:999;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+  .mega.open{display:block}
+  .mega-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .mega-grid h4{color:var(--pink);font-size:12px;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px}
+  .mega-grid a{display:block;color:#D6D8E8;text-decoration:none;padding:6px 0;font-size:14px;font-weight:400;border:none;background:transparent}
+  .mega-grid a:hover{color:var(--kathali)}
+  .khobor{margin-top:18px;background:#2A1420;border-left:4px solid var(--pink);padding:12px 14px;border-radius:10px}
+  .khobor b{color:var(--pink);font-size:12px}
+  .khobor p{font-size:13px;margin-top:5px;color:#E8DDE2}
+  /* FILTERS */
+  .filters{display:flex;gap:8px;overflow-x:auto;padding:10px 20px;background:#0D1026;border-top:1px solid #2A2F52}
+  .filters span{font-size:12px;color:#8A8FA8;padding:6px 2px;white-space:nowrap}
+  .filters a{color:#C9CDDD;text-decoration:none;font-size:12px;padding:7px 13px;border-radius:50px;background:#1A1E3A;border:1px solid #2A2F52;white-space:nowrap}
+  .filters a:hover{border-color:var(--kathali);color:var(--kathali)}
+  main{text-align:center;padding:60px 20px}
+  main h1{font-size:36px;line-height:1.3}
+  main h1 span{color:var(--pink)}
+  main p{color:#A9ADC7;margin-top:12px}
+  @media(max-width:700px){.top-row{flex-wrap:wrap}.search{order:3;max-width:100%;margin-left:0;flex-basis:100%}.mega-grid{grid-template-columns:1fr 1fr}.mega{left:-10px;width:94vw}main h1{font-size:28px}.live{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- TRTT VOYAGE - FINAL MENU - APPROVED        -->
+<!-- Status: LOCKED - DO NOT CHANGE             -->
+<!-- Thinking Room: OPEN FOR ALL                -->
+<!-- ============================================ -->
+
+<header>
+  <!-- TOP BAR -->
+  <div class="top-row">
+    <div class="logo">TRTT <span>VOYAGE</span></div>
+    <form class="search" action="/search" method="get">
+      <input type="search" name="q" placeholder="Search Travel, AI, Diary, Thinking Room..." aria-label="Search">
+      <button type="submit">Search</button>
+    </form>
+    <div class="live">LIVE</div>
+  </div>
+
+  <!-- NAV - FULL MENU -->
+  <nav>
+    <a href="/" class="active">Home</a>
+
+    <div class="mega-box">
+      <button type="button" onclick="toggleMega(event)">Travel</button>
+      <section class="mega" id="travelMega">
+        <div class="mega-grid">
+          <div>
+            <h4>Travel Guide</h4>
+            <a href="/travel/italy-guide">Italy Guide</a>
+            <a href="/travel/helsinki-guide">Helsinki Guide</a>
+            <a href="/travel/budget-travel">Budget Travel</a>
+            <a href="/travel/solo-travel">Solo Travel</a>
+          </div>
+          <div>
+            <h4>Voyage Stories</h4>
+            <a href="/travel/my-journeys">My Journeys</a>
+            <a href="/travel/photo-diaries">Photo Diaries</a>
+            <a href="/travel/travel-vlogs">Travel Vlogs</a>
+          </div>
+          <div>
+            <h4>Italy Life - Sanluri</h4>
+            <a href="/travel/sanluri-diaries">Sanluri Diaries</a>
+            <a href="/travel/sardinia-life">Sardinia Life</a>
+            <a href="/travel/italian-food">Italian Food</a>
+          </div>
+          <div>
+            <h4>Bangladesh to World</h4>
+            <a href="/travel/my-origin">My Origin</a>
+            <a href="/travel/bangladesh-to-italy">Bangladesh to Italy</a>
+            <a href="/travel/dream-to-reality">Dream to Reality</a>
+          </div>
+        </div>
+        <div class="khobor">
+          <b>LATEST TRAVEL NEWS</b>
+          <p>New train route from Rome to the Dolomites | Bangladesh–Europe visa updates | Top 5 winter experiences in Helsinki</p>
+        </div>
+      </section>
+    </div>
+
+    <a href="/news">News</a>
+    <a href="/ai-tools">AI and Tools</a>
+    <a href="/my-diary">My Diary</a>
+    <a href="/thinking-room" class="thinking-room">Thinking Room - Open For All</a>
+    <a href="/holy-mariola">Holy Mariola</a>
+    <a href="/trtt-magic">TRTT Magic</a>
+  </nav>
+
+  <!-- FILTERS / TRENDING -->
+  <div class="filters">
+    <span>Trending:</span>
+    <a href="/tag/sanluri">Sanluri</a>
+    <a href="/tag/italy">Italy</a>
+    <a href="/tag/helsinki">Helsinki</a>
+    <a href="/tag/ai-tools">AI Tools</a>
+    <a href="/tag/travel-guide">Travel Guide</a>
+    <a href="/tag/my-diary">My Diary</a>
+    <a href="/tag/thinking-room">Thinking Room</a>
+    <a href="/tag/bangladesh">Bangladesh</a>
+    <a href="/tag/learn-ai">Learn AI</a>
+  </div>
+</header>
+
+<main>
+  <h1>Find what you are looking for in <span>one click.</span><br>Thinking Room is open to everyone. Let everyone learn AI.</h1>
+  <p>The TRTT Universe — Travel, Diary, AI, and Thinking Room. Nothing hidden; everything in the open.</p>
+</main>
+
+<script>
+function toggleMega(e){e.stopPropagation();document.getElementById('travelMega').classList.toggle('open');}
+document.addEventListener('click',function(e){const m=document.getElementById('travelMega');if(m&&!m.contains(e.target)){m.classList.remove('open');}});
+</script>
+
+</body>
+</html>
