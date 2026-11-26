@@ -2,10 +2,10 @@
   --trtt-brand-pink: #E98BAF;
   --trtt-brand-piyaji: #B77991;
   --trtt-brand-kathali: #D6A542;
-  --trtt-page-bg: #FFF9FB;
+  --trtt-page-bg: #FFFFFF;
   --trtt-surface: #FFFFFF;
-  --trtt-text: #292329;
-  --trtt-muted: #756B72;
+  --trtt-text: #202238;
+  --trtt-muted: #686B7D;
   --trtt-border: #F0E3E9;
   --trtt-shadow: 0 10px 28px rgba(77, 43, 58, .08);
 }
@@ -24,12 +24,12 @@ body {
 }
 
 a {
-  color: #98566F;
+  color: #B77991;
   text-underline-offset: 3px;
 }
 
 a:hover {
-  color: #754055;
+  color: #11152D;
 }
 
 .main-container,
@@ -44,7 +44,7 @@ a:hover {
 
 .header-widget,
 header#header {
-  background: linear-gradient(125deg, #B77991 0%, #965D75 58%, #75465C 100%) !important;
+  background: linear-gradient(125deg, #11152D 0%, #29233F 58%, #B77991 100%) !important;
   border: 0 !important;
   border-bottom: 5px solid var(--trtt-brand-kathali) !important;
   border-radius: 0 0 20px 20px !important;
@@ -85,7 +85,7 @@ article.post {
 
 h1.post-title,
 .post-title a {
-  color: #75465C !important;
+  color: #11152D !important;
   font-size: clamp(23px, 2.5vw, 30px) !important;
   font-weight: 850 !important;
   line-height: 1.25 !important;
@@ -94,11 +94,11 @@ h1.post-title,
 }
 
 .post-title a:hover {
-  color: #A95F7D !important;
+  color: #B77991 !important;
 }
 
 .post-body {
-  color: #393238 !important;
+  color: #202238 !important;
   font-size: 16.5px !important;
   line-height: 1.85 !important;
 }
