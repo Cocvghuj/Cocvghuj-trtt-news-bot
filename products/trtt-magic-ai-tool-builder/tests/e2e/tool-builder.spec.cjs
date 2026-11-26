@@ -75,6 +75,9 @@ test("editing a generated configuration invalidates stale preview and export", a
   const updatedPrompt = await page.locator("#promptPreview").innerText();
   assert.match(updatedPrompt, /A revised task that must replace the previous prompt/);
   assert.doesNotMatch(updatedPrompt, /Explain a supplied topic using verified information/);
+  // Restore the original configuration so the following copy/export tests stay independent.
+  await page.locator("#task").fill("Explain a supplied topic using verified information.");
+  await page.getByRole("button", { name: /Generate tool prompt/i }).click();
 });
 
 test("copy prompt writes the generated prompt to the clipboard", async () => {
