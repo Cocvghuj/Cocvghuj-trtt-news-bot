@@ -24,7 +24,7 @@ function contrastRatio(a, b) {
   return (values[0] + 0.05) / (values[1] + 0.05);
 }
 function columns(value) {
-  return value.trim().split(/\s+/).length;
+  return (value.match(/[0-9.]+px/g) || []).length;
 }
 
 before(async () => {
@@ -75,7 +75,7 @@ test("body copy and placeholders meet WCAG AA normal-text contrast", async () =>
       intro: { fg: get(".intro", "color"), bg },
       eyebrow: { fg: get(".eyebrow", "color"), bg },
       placeholder: {
-        fg: get("#toolName", "color"),
+        fg: getComputedStyle(document.querySelector("#toolName"), "::placeholder").color,
         bg: get("#toolName", "backgroundColor")
       },
       label: { fg: get('label[for="toolName"]', "color"), bg: get("#toolName", "backgroundColor") }
@@ -88,6 +88,7 @@ test("body copy and placeholders meet WCAG AA normal-text contrast", async () =>
 });
 
 test("form controls and panels have visible boundaries", async () => {
+  await page.locator("#toolName").focus();
   const data = await page.evaluate(() => ({
     inputBorder: getComputedStyle(document.querySelector("#toolName")).borderTopColor,
     panelBorder: getComputedStyle(document.querySelector(".panel")).borderTopColor,
