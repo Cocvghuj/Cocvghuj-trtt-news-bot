@@ -172,3 +172,16 @@ h1.post-title,
     transition-duration: .01ms !important;
   }
 }
+
+
+/* Diamond Horizon mobile readability hardening — DR-TRTT-OPS-001 */
+@media (max-width: 768px) {
+  html, body { max-width: 100%; overflow-x: clip; }
+  .post-body, .post-title, .widget { overflow-wrap: anywhere; }
+  .post-body table { display: block; max-width: 100%; overflow-x: auto; }
+  .post-body pre, .post-body code { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .post-body iframe, .post-body video { max-width: 100% !important; }
+  .post-body img { width: auto; max-width: 100% !important; height: auto !important; }
+  .post-body a, .post-body button { overflow-wrap: anywhere; }
+  .blog-pager a, .post-footer a, .comment-link { min-height: 44px; }
+}
