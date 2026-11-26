@@ -40,6 +40,12 @@ def has_opt_in_marker(content: str) -> bool:
     return bool(MARKER_RE.search(content))
 
 
+def is_approved_legacy_source(repo: str, path: str, blob_sha: str, approvals: dict) -> bool:
+    """Allow only centrally pinned, previously owner-approved source files."""
+    approved = approvals.get(repo, {}).get(path)
+    return bool(approved and approved == blob_sha)
+
+
 def github_json(url: str):
     request = urllib.request.Request(
         url,
@@ -67,7 +73,7 @@ def fetch_raw(repo: str, branch: str, path: str) -> str:
     return raw.decode("utf-8")
 
 
-def source_articles(repo: str, allowed_directories: list[str]):
+def source_articles(repo: str, allowed_directories: list[str], approved_legacy_sources: dict):
     metadata = github_json("https://api.github.com/repos/" + repo)
     if metadata.get("private") is not False:
         raise RuntimeError(f"Source repository is not confirmed public: {repo}")
@@ -84,9 +90,16 @@ def source_articles(repo: str, allowed_directories: list[str]):
         path = item.get("path", "")
         if item.get("type") != "blob" or not is_allowed_path(path, allowed_directories):
             continue
-        content = fetch_raw(repo, branch, path)
-        if has_opt_in_marker(content):
-            yield path, content
+        explicitly_pinned = is_approved_legacy_source(
+            repo, path, str(item.get("sha", "")), approved_legacy_sources
+        )
+        if not explicitly_pinned:
+            content = fetch_raw(repo, branch, path)
+            if not has_opt_in_marker(content):
+                continue
+        else:
+            content = fetch_raw(repo, branch, path)
+        yield path, content
 
 
 def local_draft_path(repo: str, source_path: str) -> Path:
@@ -99,6 +112,7 @@ def ingest(dry_run: bool = False) -> int:
     config = json.loads(REGISTRY.read_text(encoding="utf-8"))
     repositories = config["repositories"]
     allowed = config["allowed_directories"]
+    approved_legacy_sources = config.get("approved_legacy_sources", {})
     max_articles = int(config.get("max_articles_per_run", 20))
     if not repositories or len(repositories) != len(set(repositories)):
         raise RuntimeError("Repository allowlist is empty or contains duplicates.")
@@ -109,7 +123,7 @@ def ingest(dry_run: bool = False) -> int:
     for repo in repositories:
         print(f"Scanning public source: {repo}")
         try:
-            for source_path, content in source_articles(repo, allowed):
+            for source_path, content in source_articles(repo, allowed, approved_legacy_sources):
                 processed += 1
                 if processed > max_articles:
                     raise RuntimeError("Maximum articles per run exceeded; refusing an unbounded import.")
