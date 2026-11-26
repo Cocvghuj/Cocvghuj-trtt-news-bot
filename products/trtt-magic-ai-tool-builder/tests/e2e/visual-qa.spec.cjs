@@ -92,14 +92,18 @@ test("form controls and panels have visible boundaries", async () => {
   const data = await page.evaluate(() => ({
     inputBorder: getComputedStyle(document.querySelector("#toolName")).borderTopColor,
     panelBorder: getComputedStyle(document.querySelector(".panel")).borderTopColor,
-    focusOutline: getComputedStyle(document.querySelector("#toolName")).outlineColor
+    focusOutline: getComputedStyle(document.querySelector("#toolName")).outlineColor,
+    focusBoxShadow: getComputedStyle(document.querySelector("#toolName")).boxShadow
   }));
   assert.ok(contrastRatio(data.inputBorder, "rgb(255, 255, 255)") >= 3,
     "Input boundary must reach 3:1 against white");
   assert.ok(contrastRatio(data.panelBorder, "rgb(255, 255, 255)") >= 3,
     "Panel boundary must reach 3:1 against white");
-  assert.ok(contrastRatio(data.focusOutline, "rgb(255, 255, 255)") >= 3,
-    "Keyboard focus indicator must reach 3:1 against white");
+  assert.notEqual(data.focusBoxShadow, "none", "Focused form control must render a visible box-shadow ring");
+  const ringColor = data.focusBoxShadow.match(/rgba?\\([^)]+\\)/)?.[0];
+  assert.ok(ringColor, `Could not read the focus ring color from: ${data.focusBoxShadow}`);
+  assert.ok(contrastRatio(ringColor, "rgb(255, 255, 255)") >= 3,
+    "Keyboard focus ring must reach 3:1 against white");
 });
 
 test("page remains readable and primary controls stay within viewport", async () => {
