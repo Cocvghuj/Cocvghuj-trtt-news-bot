@@ -1,18 +1,18 @@
-name: TRTT Auto Blog - Rise From Ashes
+# DISABLED - Legacy placeholder only; it did not create a verified Blogger post.
+name: TRTT Auto Blog - Legacy Placeholder [DISABLED]
+
 on:
-  schedule:
-    - cron: '0 10 */3 * *' # প্রতি ৩ দিন পর পর সকাল ১০টায়
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
-  build:
+  disabled_notice:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Create New Blog Post
+      - name: Disabled notice
         run: |
-          echo "🔥 TRTT Voyage - New Post Created!"
-          echo "Rise From Ashes - $(date)" > post-$(date +%Y-%m-%d).md
-      - name: Send to Telegram
-        run: |
-          curl -s -X POST https://api.telegram.org/botYOUR_BOT_TOKEN/sendMessage -d chat_id=YOUR_CHANNEL_ID -d text="🔥 New TRTT Blog Published! Rise From Ashes!"
+          echo "This legacy placeholder workflow is disabled."
+          echo "It must not create fake post files or send unverified Telegram announcements."
+          echo "Use the reviewed Blogger DRAFT workflow for source-verified articles."
