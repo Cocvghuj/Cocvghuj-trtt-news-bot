@@ -76,7 +76,8 @@ class TestDraftNewsValidation(unittest.TestCase):
 
     def test_add_vercel_reference_injection(self):
         content = "Original article body about European flight logistics."
-        result = add_vercel_reference(content, "https://cocvghuj-trtt-news-bot.vercel.app")
+        url = "https://cocvghuj-trtt-news-bot.vercel.app"
+        result = add_vercel_reference(content, url)
         self.assertIn("TRTT Voyage Tools and Resources", result)
         self.assertIn(url, result)
         self.assertIn("Check current prices, availability", result)
