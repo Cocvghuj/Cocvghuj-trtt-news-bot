@@ -14,6 +14,8 @@ A source article is ignored unless it contains this exact opt-in comment:
 <!-- TRTT_BLOGGER_DRAFT: true -->
 ```
 
+One previously owner-approved Rise From Ashes article is grandfathered by an exact repository, path, and Git blob SHA pin in the central registry. If that source file changes, the pin no longer matches and the intake rejects it until the central approval is reviewed and updated.
+
 The central workflow downloads eligible files read-only, stages them temporarily under `blog/drafts/`, and calls the central Blogger safety bridge. Temporary copies are removed after processing. Source repositories are never modified.
 
 ## Credentials and boundaries
