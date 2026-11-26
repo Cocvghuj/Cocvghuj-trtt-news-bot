@@ -33,6 +33,15 @@ This is a **partial evidence-based audit**, not a 100% completion certificate. T
 
 These changes are proposed in a feature branch and are **not live until the owner reviews and merges the PR**.
 
+### Feature-branch verification
+- GitHub Actions PR validation run `45894683585`: PASS. Both `npm test` and `npm run build` completed successfully.
+- Vercel preview deployment `dpl_6QS3PQ2fg72ipi6TbLGYwgJd7Xoz`: READY, target preview (no production alias).
+- Preview `/trtt-blog-menu.js`: HTTP 200.
+- Preview `/blog-control.json`: HTTP 200; `Access-Control-Allow-Origin: *` confirmed.
+- Preview `/trtt-theme.css`: HTTP 200.
+- Preview homepage: HTTP 200.
+- Preview URL is temporary and must not be installed as a permanent Blogger asset. Production main still remains unchanged until owner merge.
+
 ## News integrity rules
 
 - No fabricated breaking news, route availability, fares, airline claims, quotes, statistics, official announcements or source attributions.
