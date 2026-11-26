@@ -1,0 +1,56 @@
+name: TRTT OpenRouter Free Daily Blog Draft
+
+on:
+  schedule:
+    - cron: "20 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: trtt-openrouter-daily-drafts
+  cancel-in-progress: false
+
+jobs:
+  generate-editorial-draft:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate one free-model draft
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_MODEL: openrouter/free
+        run: python scripts/openrouter_trtt_draft.py
+
+      - name: Open or update draft-only pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automation/trtt-openrouter-daily-drafts
+          delete-branch: false
+          add-paths: blog/drafts/*.html
+          commit-message: "TRTT: add OpenRouter editorial draft"
+          title: "TRTT Voyage — OpenRouter daily blog draft"
+          body: |
+            ## Editorial draft generated with OpenRouter free routing
+
+            - One new Blogger-ready HTML draft is added under `blog/drafts/`.
+            - This is an editorial draft only. It is not published to Blogger.
+            - No Telegram message is sent by this workflow.
+            - Review every factual statement and add a verified image URL before publication.
+            - The workflow requests `openrouter/free`; model availability and free-tier limits are controlled by OpenRouter.
+          draft: true
+          signoff: false
