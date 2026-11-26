@@ -4,6 +4,7 @@ from scripts.draft_news import (
     validate_metadata,
     validate_source_url,
     add_vercel_reference,
+    main as legacy_news_main,
     MARKER,
     FIXED,
     DEFAULT_PWA_URL
@@ -85,6 +86,10 @@ class TestDraftNewsValidation(unittest.TestCase):
         self.assertNotIn("Roksana Nilla", result)
         self.assertNotIn("hotel-bernini.it", result)
         self.assertNotIn("kiwitaxi.tp.st", result)
+
+    def test_legacy_generator_fails_closed(self):
+        with self.assertRaisesRegex(RuntimeError, "Legacy news generator is disabled"):
+            legacy_news_main()
 
     def test_add_vercel_reference_idempotent(self):
         url = "https://cocvghuj-trtt-news-bot.vercel.app"
