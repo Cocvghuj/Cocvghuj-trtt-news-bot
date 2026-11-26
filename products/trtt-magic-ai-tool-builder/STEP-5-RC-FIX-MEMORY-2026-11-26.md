@@ -25,3 +25,9 @@
 - সব pass হলে README ও এই memory-তে run URL/সংখ্যা append/update করে final RC status নির্ধারণ।
 - Android physical browser test আলাদা করে করা; না হলে NOT TESTED রাখা।
 - পরবর্তী merge/deploy/blog action-এর আগে আলাদা অনুমতি নিতে হবে।
+
+## Validation update — 2026-11-26
+- GitHub Actions source-contract tests for the release branch passed: **11/11**.
+- Run: https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot/actions/runs/45758872204
+- Chromium E2E/visual QA against `trttmagic.html` is still in progress at run 45758872131; do not mark browser validation PASS until it completes.
+- Earlier E2E attempt found one regression-test failure and one source-test expectation mismatch; both were corrected in later commits. Historical failed runs remain visible and were not deleted.
