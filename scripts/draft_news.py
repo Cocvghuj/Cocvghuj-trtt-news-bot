@@ -50,21 +50,16 @@ def validate_source_url(v: str):
     return p.geturl()
 
 def add_vercel_reference(content: str, url: str):
+    """Append a neutral TRTT link; never invent personal experience or partner claims."""
     if url in content:
         return content
-    subid = "trtt_lock_it"
-    block = f'''<aside class="trtt-voyagehub-reference glassmorphism" style="background:rgba(255,255,255,0.1);backdrop-filter:blur(20px);border-radius:20px;padding:15px;border:1px solid rgba(255,255,255,0.2);margin:20px 0;">
-<h2>Plan Your Trip From Sanluri - Real Italian Experience</h2>
-<p><strong>Google E-E-A-T:</strong> I live in Sanluri, Sardinia. I travel from Cagliari Airport CAG. This is real experience.</p>
-<script type="application/ld+json">{{"@context":"https://schema.org","@type":"Article","author":{{"@type":"Person","name":"Roksana Nilla"}}}}</script>
-<ul>
-<li>✈️ <a href="https://aviasales.tp.st/Fb8U9yav?marker={MARKER}&subid={subid}">Cheap Flights Aviasales - Marker {MARKER} LOCKED</a></li>
-<li>🚕 <a href="https://kiwitaxi.tp.st/{FIXED}?marker={MARKER}&subid={subid}">Kiwitaxi {FIXED} FIXED - CAG to Sanluri - No tl bug</a></li>
-<li>📱 <a href="https://airalo.tp.st/ZZoQC7Mz?marker={MARKER}&subid={subid}">Airalo eSIM Italy</a> | <a href="https://saily.tp.st/ssekmS4X?marker={MARKER}&subid={subid}">Saily Backup</a></li>
-<li>🏨 Real Hotel: <a href="https://www.hotel-bernini.it" target="_blank">hotel-bernini.it</a> - Real .it - 3-5% vs Booking 20% - TRTTVoyageHub ONE Vision</li>
-<li>🎫 <a href="https://klook.tp.st/TWKnemhz?marker={MARKER}&subid={subid}">Klook</a> | <a href="https://tiqets.tp.st/bnx8pnF6?marker={MARKER}&subid={subid}">Tiqets</a> | <a href="https://airhelp.tp.st/ZZoQC7Mz?marker={MARKER}&subid={subid}">AirHelp</a></li>
-</ul>
-<p><small>Live Reference: {url}/?marker={MARKER} | GitHub: github.com/Cocvghuj/Cocvghuj-trtt-news-bot | GDPR: trtt_cookie_consent_esim | Open Source | #webdesign #uidesign #glassmorphism #TRTT #travel</small></p>
+    parsed = urlparse(url)
+    if parsed.scheme != "https" or not parsed.netloc:
+        raise ValueError("PWA reference must be a valid HTTPS URL.")
+    block = f'''<aside class="trtt-voyagehub-reference">
+<h2>TRTT Voyage Tools and Resources</h2>
+<p>Explore the <a href="{url}" rel="noopener noreferrer">TRTT Voyage tools and travel resources</a>.</p>
+<p><small>Check current prices, availability, eligibility and provider terms directly with the relevant service before making a decision.</small></p>
 </aside>
 <!-- Vercel Ref: {url} -->'''
     return content.rstrip() + "\n\n" + block
