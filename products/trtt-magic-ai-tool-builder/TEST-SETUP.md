@@ -50,3 +50,21 @@ These are automated **source-level** tests. They do not launch Chromium, click t
 ## Preservation and deployment
 
 The test suite is additive. It does not replace or edit `index.html`, `index-v2-fixed.html`, or `trttmagic.html`. It does not create a GitHub Actions workflow, merge a branch, publish to Blogger, or deploy the product.
+
+
+## Real browser end-to-end tests (GitHub Actions)
+
+A separate Chromium/Playwright workflow is defined in
+`.github/workflows/trtt-ai-tool-builder-e2e.yml`. It runs only on the MVP feature
+branch or when manually dispatched. It starts a temporary local HTTP server in the
+GitHub-hosted runner and checks page load, all starter templates, required-field
+validation, prompt generation, clipboard writing, JSON download/parsing, reset,
+and mobile layout overflow/panel stacking.
+
+The browser test dependency is installed temporarily on the runner with npm; no
+package manifest, lockfile, API key, repository secret, or paid browser service is
+required. GitHub-hosted runner usage may still be subject to the account's Actions
+minutes/usage limits.
+
+These tests exercise Chromium in a hosted Linux runner. They are not a physical
+Android device test and do not certify every mobile browser.
