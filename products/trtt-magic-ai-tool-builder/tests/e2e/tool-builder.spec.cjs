@@ -67,6 +67,16 @@ test("custom tool configuration generates the expected prompt", async () => {
   assert.equal(await page.locator("#emptyState").isVisible(), false);
 });
 
+test("editing a generated configuration invalidates stale preview and export", async () => {
+  await page.locator("#task").fill("A revised task that must replace the previous prompt.");
+  assert.equal(await page.locator("#previewContent").isVisible(), false);
+  assert.equal(await page.locator("#emptyState").isVisible(), true);
+  await page.getByRole("button", { name: /Generate tool prompt/i }).click();
+  const updatedPrompt = await page.locator("#promptPreview").innerText();
+  assert.match(updatedPrompt, /A revised task that must replace the previous prompt/);
+  assert.doesNotMatch(updatedPrompt, /Explain a supplied topic using verified information/);
+});
+
 test("copy prompt writes the generated prompt to the clipboard", async () => {
   await page.getByRole("button", { name: "Copy prompt" }).click();
   await page.getByText("Prompt copied.", { exact: true }).waitFor();
