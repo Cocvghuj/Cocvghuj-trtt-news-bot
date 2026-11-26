@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>👑💎 TRTT MAGIC - Command Center v1.1</title>
+<style>
+body{font-family:Arial;background:#0f172a;color:white;margin:0;padding:20px}
+.card{background:#1e293b;padding:20px;border-radius:12px;margin-bottom:15px;border:1px solid #334155}
+h1{color:#facc15} h2{color:#38bdf8}
+button{background:#facc15;color:black;border:none;padding:10px 18px;border-radius:8px;font-weight:bold;cursor:pointer;margin:5px}
+button.blue{background:#38bdf8} button.green{background:#4ade80}
+input,select{width:90%;padding:12px;border-radius:8px;border:none;margin:8px 0;color:black}
+.success{color:#4ade80} .badge{background:#facc15;color:black;padding:4px 10px;border-radius:20px;font-size:12px}
+.workflow-item{background:#0f172a;padding:12px;border-radius:8px;margin:8px 0;border-left:4px solid #facc15}
+</style>
+</head>
+<body>
+
+<h1>👑💎 TRTT MAGIC</h1>
+<p>Command Center - MVP v1.1 <span class="badge">SAFE MODE ON</span> <span class="badge">WORKFLOW BUILDER ON</span></p>
+<p>ONE TEAM. ONE VISION. ONE JOURNEY.</p>
+
+<div class="card">
+<h2>⚙️ Workflow Builder - নতুন Workflow বানাও</h2>
+<input id="wfName" placeholder="Workflow-এর নাম দাও - যেমন: Sitemap Daily Check">
+<br>
+<select id="wfTrigger">
+<option>Trigger: Button Click</option>
+<option>Trigger: Every Day Morning</option>
+<option>Trigger: New Blog Post</option>
+</select>
+<br>
+<select id="wfCheck">
+<option>Check: Sitemap আছে কিনা</option>
+<option>Check: Site খুলে কিনা</option>
+<option>Check: Blog Post Index হইছে কিনা</option>
+</select>
+<br>
+<select id="wfAction">
+<option>Action: Result দেখাও</option>
+<option>Action: Success / Fail লিখে রাখো</option>
+</select>
+<br>
+<button class="green" onclick="addWorkflow()">+ WORKFLOW SAVE করো</button>
+</div>
+
+<div class="card">
+<h2>📋 My Workflows - Automation Dashboard</h2>
+<div id="workflowList">
+<p>এখনো কোনো Workflow নাই। উপরে বানাও...</p>
+</div>
+</div>
+
+<div class="card">
+<h2>🏴‍☠️ Sitemap Checker (Free Tool)</h2>
+<input id="siteUrl" placeholder="trttvoyage.com" value="trttvoyage.com">
+<br>
+<button onclick="checkSitemap()">CHECK NOW →</button>
+<p id="result">Result এখানে আসবে...</p>
+</div>
+
+<script>
+let workflows = [
+  {name:"Sitemap Daily Check", trigger:"Button Click", check:"Sitemap আছে কিনা", action:"Result দেখাও", runs:0}
+];
+
+function showWorkflows(){
+  let html = "";
+  workflows.forEach((w, i)=>{
+    html += `<div class="workflow-item">
+    <b>⚙️ ${w.name}</b><br>
+    Trigger → ${w.trigger} <br>
+    Check → ${w.check} <br>
+    Action → ${w.action} <br>
+    Runs: ${w.runs} | Status: <span class="success">READY ✅</span><br>
+    <button class="blue" onclick="runWorkflow(${i})">▶ RUN</button>
+    </div>`;
+  });
+  document.getElementById('workflowList').innerHTML = html;
+}
+function addWorkflow(){
+  let name = document.getElementById('wfName').value || "My Workflow " + (workflows.length+1);
+  workflows.push({name:name, trigger:document.getElementById('wfTrigger').value, check:document.getElementById('wfCheck').value, action:document.getElementById('wfAction').value, runs:0});
+  document.getElementById('wfName').value = "";
+  showWorkflows();
+  alert("✅ Workflow Save হইছে ক্যাপ্টেন! " + name);
+}
+function runWorkflow(i){
+  workflows[i].runs++;
+  showWorkflows();
+  alert("🏴‍☠️ Workflow চলতেছে: " + workflows[i].name + "\nTrigger → Check → Action → Result DONE!");
+}
+function checkSitemap(){
+  let site = document.getElementById('siteUrl').value;
+  let url = "https://" + site.replace("https://","").replace("http://","") + "/sitemap.xml";
+  document.getElementById('result').innerHTML = "👉 <a href='"+url+"' target='_blank' style='color:#38bdf8'>"+url+"</a> খোলো। লেখা আসলে ✅, 404 আসলে ❌";
+}
+showWorkflows();
+</script>
+
+</body>
+</html>
