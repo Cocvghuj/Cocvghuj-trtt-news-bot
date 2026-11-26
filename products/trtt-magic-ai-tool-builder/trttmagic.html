@@ -171,7 +171,7 @@
     const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
     const url=URL.createObjectURL(blob),anchor=document.createElement("a");
     anchor.href=url;anchor.download=(currentConfig.name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"trtt-ai-tool")+".json";
-    document.body.appendChild(anchor);anchor.click();anchor.remove();URL.revokeObjectURL(url);notify("Tool definition exported.");
+    document.body.appendChild(anchor);anchor.click();anchor.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);notify("Tool definition exported.");
   });
 })();
 </script>
