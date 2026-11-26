@@ -5,6 +5,7 @@ This script never publishes a post and never sends Telegram messages.
 """
 from __future__ import annotations
 
+import argparse
 import os
 import re
 import sys
@@ -141,6 +142,11 @@ def create_or_verify_draft(path: str) -> str:
     title, content = validate_article(path)
     blog_id = os.environ["BLOGGER_BLOG_ID"].strip()
     service = blogger_service()
+    blog = service.blogs().get(blogId=blog_id).execute(num_retries=5)
+    blog_host = urlparse(str(blog.get("url", ""))).hostname
+    allowed_hosts = {"trttvoyage.blogspot.com", "trttvoyage.com", "www.trttvoyage.com"}
+    if blog_host not in allowed_hosts:
+        raise RuntimeError("Configured Blogger blog is not an approved TRTT Voyage destination; no write performed.")
     existing = find_same_title(service, blog_id, title)
     if existing:
         status = str(existing.get("status", "")).upper()
@@ -171,11 +177,16 @@ def create_or_verify_draft(path: str) -> str:
 
 
 def main() -> int:
-    if len(sys.argv) != 2:
-        raise RuntimeError("Usage: python scripts/create_blogger_html_draft.py blog/drafts/ARTICLE.html")
-    path = sys.argv[1]
-    post_id = create_or_verify_draft(path)
-    print(f"PASS: Blogger DRAFT verified; post_id={post_id}; source={path}; publish=NO; telegram=NO")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--validate-only", action="store_true", help="Validate HTML without calling Blogger.")
+    parser.add_argument("path", help="HTML article directly under blog/drafts/")
+    args = parser.parse_args()
+    if args.validate_only:
+        title, _ = validate_article(args.path)
+        print(f"PASS: Blogger HTML validated; title={title}; blogger_write=NO")
+        return 0
+    post_id = create_or_verify_draft(args.path)
+    print(f"PASS: Blogger DRAFT verified; post_id={post_id}; source={args.path}; publish=NO; telegram=NO")
     return 0
 
 

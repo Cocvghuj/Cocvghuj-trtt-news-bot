@@ -1,0 +1,49 @@
+name: TRTT Central Hub - Public Repo Draft Intake
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Validate eligible source articles only; do not call Blogger"
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: trtt-central-public-draft-intake
+  cancel-in-progress: false
+
+jobs:
+  ingest-explicit-drafts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout central hub
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Blogger API client
+        if: github.event_name == 'schedule' || inputs.dry_run != true
+        run: python -m pip install google-api-python-client google-auth
+
+      - name: Scan public TRTT repositories and validate opted-in drafts
+        if: github.event_name == 'workflow_dispatch' && inputs.dry_run == true
+        run: python scripts/ingest_trtt_public_repo_drafts.py --dry-run
+
+      - name: Scan public TRTT repositories and create verified Blogger drafts
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.dry_run != true)
+        env:
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          BLOGGER_CLIENT_ID: ${{ secrets.BLOGGER_CLIENT_ID }}
+          BLOGGER_CLIENT_SECRET: ${{ secrets.BLOGGER_CLIENT_SECRET }}
+          BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
+        run: python scripts/ingest_trtt_public_repo_drafts.py

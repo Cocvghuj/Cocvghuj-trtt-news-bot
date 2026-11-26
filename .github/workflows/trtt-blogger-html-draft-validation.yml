@@ -6,7 +6,12 @@ on:
     paths:
       - "scripts/create_blogger_html_draft.py"
       - "tests/test_blogger_html_draft.py"
+      - "scripts/ingest_trtt_public_repo_drafts.py"
+      - "tests/test_central_repo_ingest.py"
+      - "config/trtt-source-repositories.json"
+      - "docs/TRTT-CENTRAL-HUB-ARCHITECTURE.md"
       - ".github/workflows/trtt-html-to-blogger-draft.yml"
+      - ".github/workflows/trtt-central-draft-ingest.yml"
 
 permissions:
   contents: read
@@ -26,5 +31,11 @@ jobs:
       - name: Compile Blogger draft bridge
         run: python -m py_compile scripts/create_blogger_html_draft.py
 
-      - name: Run focused HTML safety tests
+      - name: Compile central intake script
+        run: python -m py_compile scripts/ingest_trtt_public_repo_drafts.py
+
+      - name: Run focused Blogger HTML safety tests
         run: python -m unittest discover -s tests -p "test_blogger_html_draft.py" -v
+
+      - name: Run central repository intake tests
+        run: python -m unittest discover -s tests -p "test_central_repo_ingest.py" -v
