@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11152D">
+  <meta name="description" content="Build reusable AI tool instructions with TRTT Magic. Create, preview, and export tool specifications in your browser.">
+  <title>TRTT Magic — AI Tool Builder (Visual QA Fix)</title>
+  <style>
+    :root{--midnight:#11152D;--pink:#E98BAF;--piyaji:#B77991;--gold:#D6A542;--white:#FFFFFF;--ink:#11152D;--muted:#11152D;--line:#B77991;--soft:#FFFFFF;--green:#11152D;--shadow:0 18px 50px rgba(17,21,45,.08)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#FFFFFF;color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    button,input,textarea,select{font:inherit}button{cursor:pointer}a{color:inherit}
+    a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--midnight);outline-offset:3px}
+    .shell{min-height:100vh}.topbar{height:72px;background:var(--midnight);color:var(--white);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,5vw,64px);gap:20px}
+    .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.02em}.brand-mark{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:var(--pink);color:var(--midnight);font-weight:900}
+    .brand small{display:block;color:#E98BAF;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase}.top-actions{display:flex;align-items:center;gap:10px}.status{border:1px solid #B77991;color:#FFFFFF;border-radius:99px;padding:6px 11px;font-size:11px}
+    .layout{display:grid;grid-template-columns:220px minmax(0,1fr);max-width:1440px;margin:auto;min-height:calc(100vh - 72px)}
+    aside{padding:28px 16px 24px 24px;border-right:1px solid var(--line);background:#FFFFFF}.nav-label{font-size:10px;color:#11152D;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:10px 12px}.nav-link{display:flex;gap:11px;align-items:center;padding:11px 12px;margin:3px 0;border-radius:11px;color:#11152D;text-decoration:none;font-weight:600;font-size:13px}.nav-link.active{background:#FFFFFF;color:var(--midnight)}.nav-icon{width:20px;text-align:center;font-size:16px}.aside-note{margin:34px 8px 0;padding:14px;border-radius:14px;background:#FFFFFF;color:#11152D;font-size:11px}.aside-note strong{display:block;color:var(--midnight);font-size:12px;margin-bottom:5px}
+    main{padding:clamp(22px,4vw,54px);max-width:1160px;width:100%;margin:0 auto}.eyebrow{display:flex;align-items:center;gap:8px;color:#11152D;text-transform:uppercase;letter-spacing:.14em;font-size:10px;font-weight:800}.eyebrow:before{content:"";width:22px;height:2px;background:var(--gold)}
+    h1{font-size:clamp(30px,4vw,44px);line-height:1.08;letter-spacing:-.045em;color:var(--midnight);margin:12px 0}.intro{max-width:660px;color:#11152D;margin:0 0 28px;font-size:15px}
+    .hero-row{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:24px}.hero-tag{background:#FFFFFF;border:1px solid var(--line);border-radius:12px;padding:10px 13px;color:#11152D;font-size:11px;white-space:nowrap}.hero-tag b{color:var(--midnight)}
+    .workspace{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:18px;align-items:start}.panel{background:#FFFFFF;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}.panel-head{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}.panel-head h2{font-size:15px;margin:0;color:var(--midnight)}.step{font-size:10px;font-weight:800;letter-spacing:.08em;color:#11152D;background:#FFFFFF;border:1px solid #B77991;padding:5px 8px;border-radius:99px}
+    .form-body{padding:20px}.field{margin-bottom:16px}.field label{display:block;font-size:12px;font-weight:750;color:#11152D;margin-bottom:7px}.field input,.field textarea,.field select{width:100%;border:1px solid #B77991;border-radius:10px;padding:11px 12px;background:#FFFFFF;color:var(--ink);outline:none;transition:border .15s,box-shadow .15s}.field textarea{resize:vertical;min-height:88px}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--piyaji);box-shadow:0 0 0 3px #B77991}.field input::placeholder,.field textarea::placeholder{color:#11152D}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .templates{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 18px}.template{border:1px solid #B77991;background:#FFFFFF;color:#11152D;padding:7px 10px;border-radius:99px;font-size:11px;font-weight:700}.template:hover{border-color:var(--piyaji);background:#FFFFFF}
+    .primary{border:0;background:var(--midnight);color:#FFFFFF;border-radius:10px;padding:11px 16px;font-size:12px;font-weight:800;box-shadow:0 6px 16px #11152D}.primary:hover{background:#11152D}.secondary{border:1px solid #B77991;background:#FFFFFF;color:var(--midnight);border-radius:10px;padding:10px 13px;font-size:11px;font-weight:800}.secondary:hover{border-color:var(--piyaji);background:#FFFFFF}.button-row{display:flex;gap:9px;flex-wrap:wrap}
+    .preview-body{padding:20px}.preview-empty{min-height:240px;display:grid;place-items:center;text-align:center;color:#11152D;padding:22px}.preview-empty .spark{font-size:30px;margin-bottom:10px}.preview-empty strong{display:block;color:#11152D;margin-bottom:4px}.preview-content{display:none}.preview-content pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#FFFFFF;border:1px solid #B77991;border-radius:12px;padding:14px;max-height:410px;overflow:auto;font:12px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;color:#11152D;margin:0 0 14px}
+    .privacy{margin-top:18px;padding:13px 15px;border:1px solid #B77991;background:#FFFFFF;border-radius:13px;display:flex;gap:10px;align-items:flex-start;color:#11152D;font-size:11px}.privacy strong{color:var(--midnight)}.privacy-icon{font-size:17px}
+    .bottomline{margin:26px 0 0;color:#11152D;font-size:10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--midnight);color:#FFFFFF;border-radius:10px;padding:10px 15px;font-size:12px;box-shadow:var(--shadow);transition:.2s;z-index:5}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:900px){.layout{grid-template-columns:1fr}aside{display:none}.workspace{grid-template-columns:1fr}.hero-row{align-items:flex-start;flex-direction:column}.hero-tag{white-space:normal}}
+    @media(max-width:540px){.topbar{height:62px;padding:0 16px}.status{font-size:9px;padding:5px 8px}.brand{font-size:13px}.brand small{font-size:8px}.layout{min-height:calc(100vh - 62px)}main{padding:24px 15px}.grid-2{grid-template-columns:1fr}.panel-head,.form-body,.preview-body{padding:16px}.button-row>*{flex:1}.bottomline{display:block}.bottomline span{display:block;margin:5px 0}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  /* Visual QA v3: stronger text contrast and visible control boundaries. */
+.field input,.field textarea,.field select{border-color:#B77991}
+.template,.secondary,.panel,.hero-tag,.privacy,.aside-note,.step{border-color:#B77991}
+.intro,.eyebrow,.nav-label,.nav-link,.aside-note,.hero-tag,.step,.preview-empty,.privacy,.bottomline{color:#11152D}
+.field input::placeholder,.field textarea::placeholder{color:#11152D;opacity:1}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">T</span><span>TRTT MAGIC<small>AI TOOL BUILDER</small></span></div>
+    <div class="top-actions"><span class="status">● MVP PREVIEW · LOCAL ONLY</span></div>
+  </header>
+  <div class="layout">
+    <aside aria-label="Workspace navigation">
+      <div class="nav-label">Workspace</div>
+      <a class="nav-link active" href="#builder"><span class="nav-icon">✦</span>Tool Builder</a>
+      <a class="nav-link" href="#templates"><span class="nav-icon">▦</span>Starter templates</a>
+      <a class="nav-link" href="#privacy"><span class="nav-icon">◇</span>Privacy & safety</a>
+      <div class="aside-note"><strong>Build with clarity.</strong>Design the instructions first. Connect an AI provider only after the server-side integration and access controls are ready.</div>
+    </aside>
+    <main id="builder">
+      <div class="hero-row">
+        <div><div class="eyebrow">Your AI workspace</div><h1>Build a useful AI tool.</h1><p class="intro">Turn one clear task into a reusable AI tool specification. Start with a template, shape the instructions, then export your tool definition.</p></div>
+        <div class="hero-tag"><b>01 / 03</b> &nbsp; Design → Connect → Publish</div>
+      </div>
+      <section class="workspace" aria-label="AI tool builder">
+        <article class="panel">
+          <div class="panel-head"><h2>Tool configuration</h2><span class="step">STEP 01 · DESIGN</span></div>
+          <form class="form-body" id="toolForm">
+            <div class="field"><label for="toolName">Tool name</label><input id="toolName" name="toolName" maxlength="70" placeholder="e.g. TRTT SEO Brief Assistant" required></div>
+            <div class="grid-2">
+              <div class="field"><label for="category">Category</label><select id="category" name="category"><option>Writing & content</option><option>Research & learning</option><option>Business & productivity</option><option>Travel planning</option><option>Developer tools</option><option>Custom</option></select></div>
+              <div class="field"><label for="audience">Who is it for?</label><input id="audience" name="audience" maxlength="100" placeholder="e.g. small business owners"></div>
+            </div>
+            <div class="field"><label for="task">What should this tool do?</label><textarea id="task" name="task" maxlength="1200" placeholder="Describe one specific job the tool should complete..." required></textarea></div>
+            <div class="field"><label for="instructions">Special instructions & boundaries</label><textarea id="instructions" name="instructions" maxlength="1600" placeholder="Add tone, source rules, safety boundaries, or things it must never assume."></textarea></div>
+            <div class="grid-2">
+              <div class="field"><label for="tone">Tone</label><select id="tone" name="tone"><option>Clear and helpful</option><option>Professional</option><option>Friendly and simple</option><option>Concise and direct</option><option>Educational</option></select></div>
+              <div class="field"><label for="format">Output format</label><select id="format" name="format"><option>Structured sections</option><option>Bullet list</option><option>Step-by-step guide</option><option>Table</option><option>JSON object</option><option>Plain text</option></select></div>
+            </div>
+            <div id="templates" class="field"><label>Start from a template</label><div class="templates">
+              <button class="template" type="button" data-template="seo">SEO brief</button>
+              <button class="template" type="button" data-template="blog">Blog outline</button>
+              <button class="template" type="button" data-template="faq">FAQ maker</button>
+            </div></div>
+            <div class="button-row"><button class="primary" type="submit">✦ Generate tool prompt</button><button class="secondary" id="resetBtn" type="button">Reset form</button></div>
+          </form>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><h2>Tool preview</h2><span class="step">STEP 02 · REVIEW</span></div>
+          <div class="preview-body">
+            <div class="preview-empty" id="emptyState"><div><div class="spark">✧</div><strong>Your tool prompt will appear here.</strong>Complete the configuration and select Generate tool prompt.</div></div>
+            <div class="preview-content" id="previewContent"><pre id="promptPreview" aria-live="polite"></pre><div class="button-row"><button class="primary" id="copyBtn" type="button">Copy prompt</button><button class="secondary" id="exportBtn" type="button">Export tool JSON</button></div></div>
+            <div class="privacy" id="privacy"><span class="privacy-icon">♢</span><div><strong>Privacy-first by default.</strong><br>Your entries stay in this browser tab. This prototype does not send prompts to a server, store them, or request API keys.</div></div>
+          </div>
+        </article>
+      </section>
+      <div class="bottomline"><span>TRTT Voyage · From Vision to Global Brand</span><span>STEP 01 MVP · AI execution and publishing are not connected</span></div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+  "use strict";
+  const form=document.getElementById("toolForm");
+  const byId=id=>document.getElementById(id);
+  const empty=byId("emptyState"),preview=byId("previewContent"),promptPreview=byId("promptPreview"),toast=byId("toast");
+  let currentConfig=null;
+  let toastTimer=null;
+  function notify(message){toast.textContent=message;toast.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove("show"),2200);}
+  function value(id){return byId(id).value.trim();}
+  function buildConfig(){
+    return {schemaVersion:1,product:"TRTT MAGIC AI Tool Builder",name:value("toolName"),category:value("category"),audience:value("audience")||"General users",task:value("task"),instructions:value("instructions")||"Do not invent facts. State uncertainty clearly and ask for missing essential information.",tone:value("tone"),outputFormat:value("format"),createdAt:new Date().toISOString()};
+  }
+  function buildPrompt(c){
+    return [
+      "You are the assistant inside the tool: "+c.name+".",
+      "CATEGORY: "+c.category,
+      "INTENDED AUDIENCE: "+c.audience,
+      "",
+      "PRIMARY TASK",
+      c.task,
+      "",
+      "BEHAVIOUR AND BOUNDARIES",
+      c.instructions,
+      "",
+      "TONE: "+c.tone,
+      "OUTPUT FORMAT: "+c.outputFormat,
+      "",
+      "QUALITY RULES",
+      "- Be accurate, useful, and specific.",
+      "- Do not fabricate facts, sources, links, prices, or test results.",
+      "- If essential information is missing, ask a concise clarification.",
+      "- Clearly label assumptions and uncertainty.",
+      "- Follow applicable safety, privacy, and copyright requirements."
+    ].join("\n");
+  }
+  form.addEventListener("submit",function(event){
+    event.preventDefault();
+    if(!form.reportValidity())return;
+    currentConfig=buildConfig();
+    promptPreview.textContent=buildPrompt(currentConfig);
+    empty.style.display="none";preview.style.display="block";
+    notify("Tool prompt generated locally.");
+  });
+  document.querySelectorAll("[data-template]").forEach(button=>button.addEventListener("click",function(){
+    const presets={
+      seo:{name:"TRTT SEO Brief Assistant",category:"Writing & content",audience:"Bloggers and small publishers",task:"Create an evidence-led SEO content brief for a supplied topic. Identify search intent, a clear working title, a useful outline, relevant questions, and a concise meta description.",instructions:"Never promise rankings or traffic. Do not invent keyword volumes or search data. Mark any research that still needs verification.",tone:"Professional",format:"Structured sections"},
+      blog:{name:"TRTT Blog Outline Builder",category:"Writing & content",audience:"Writers and publishers",task:"Turn a topic and target reader into a practical article outline with an introduction, logical H2 sections, examples to research, and a helpful conclusion.",instructions:"Use original wording. Separate verified facts from suggestions. Flag claims that need credible sources.",tone:"Clear and helpful",format:"Step-by-step guide"},
+      faq:{name:"TRTT FAQ Maker",category:"Research & learning",audience:"Website owners and readers",task:"Create clear, concise frequently asked questions and answers based on the supplied source text or topic.",instructions:"Do not add unsupported claims. If no source text is provided, label answers as general guidance and note what needs checking.",tone:"Friendly and simple",format:"Bullet list"}
+    };
+    const p=presets[button.dataset.template];
+    byId("toolName").value=p.name;byId("category").value=p.category;byId("audience").value=p.audience;byId("task").value=p.task;byId("instructions").value=p.instructions;byId("tone").value=p.tone;byId("format").value=p.format;
+    byId("toolName").focus();notify("Template loaded. Review and generate the prompt.");
+  }));
+  byId("resetBtn").addEventListener("click",function(){form.reset();currentConfig=null;preview.style.display="none";empty.style.display="grid";notify("Form reset.");});
+  byId("copyBtn").addEventListener("click",async function(){
+    if(!currentConfig)return;
+    try{await navigator.clipboard.writeText(promptPreview.textContent);notify("Prompt copied.");}
+    catch(e){notify("Clipboard unavailable. Select and copy the prompt manually.");}
+  });
+  byId("exportBtn").addEventListener("click",function(){
+    if(!currentConfig)return;
+    const payload={...currentConfig,prompt:promptPreview.textContent};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+    const url=URL.createObjectURL(blob),anchor=document.createElement("a");
+    anchor.href=url;anchor.download=(currentConfig.name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"trtt-ai-tool")+".json";
+    document.body.appendChild(anchor);anchor.click();anchor.remove();URL.revokeObjectURL(url);notify("Tool definition exported.");
+  });
+})();
+</script>
+</body>
+</html>
