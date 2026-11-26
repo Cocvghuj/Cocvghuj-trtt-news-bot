@@ -91,8 +91,6 @@ def validate_article(path: str) -> tuple[str, str]:
     has_affiliate_material = bool(re.search(r"affiliate|amzn\.to|travelpayouts|airalo|aviasales|booking\.com|(?:[?&](?:ref|tag)=)", lowered))
     if has_affiliate_material and not re.search(r"affiliate disclosure|affiliate links", lowered):
         raise RuntimeError("Affiliate material requires a transparent affiliate disclosure.")
-    if not re.search(r"\bfaq\b|frequently asked questions", lowered):
-        raise RuntimeError("An FAQ section is required.")
     inspector = ArticleInspector()
     inspector.feed(content)
     inspector.close()
