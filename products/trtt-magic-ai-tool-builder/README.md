@@ -29,8 +29,8 @@ This is a **front-end prompt-builder prototype**, not a connected AI service. â€
 ## Validation status
 
 - Previous V3 visual QA baseline: 12/12 Chromium checks passed on GitHub Actions.
-- Release-candidate source tests now target `trttmagic.html` (V3-based); **this revision's workflow result is pending**.
-- Release-candidate Chromium E2E now includes stale-preview regression coverage; **this revision's workflow result is pending**.
+- PASS â€” release-candidate source tests target `trttmagic.html`; GitHub Actions run 45758872204 passed 11/11 tests.
+- Chromium E2E/visual QA now targets `trttmagic.html` and includes stale-preview regression coverage; latest run 45758872131 is still in progress, so RC browser validation remains PENDING.
 - Physical Android Chrome test: NOT TESTED.
 - AI provider integration, authentication, database, and production hosting: NOT IMPLEMENTED.
 - Main merge, production deployment, and Blogger publication: NOT AUTHORIZED / NOT ATTEMPTED.
