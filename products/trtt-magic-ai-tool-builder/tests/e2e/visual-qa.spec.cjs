@@ -4,7 +4,7 @@ const { chromium } = require("playwright");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const BASE_URL = process.env.TRtt_BASE_URL || "http://127.0.0.1:4173/index-v3-visual-fixed.html";
+const BASE_URL = process.env.TRtt_BASE_URL || "http://127.0.0.1:4173/trttmagic.html";
 let browser;
 let page;
 
@@ -100,7 +100,7 @@ test("form controls and panels have visible boundaries", async () => {
   assert.ok(contrastRatio(data.panelBorder, "rgb(255, 255, 255)") >= 3,
     "Panel boundary must reach 3:1 against white");
   assert.notEqual(data.focusBoxShadow, "none", "Focused form control must render a visible box-shadow ring");
-  const ringColor = data.focusBoxShadow.match(/rgba?\\([^)]+\\)/)?.[0];
+  const ringColor = data.focusBoxShadow.match(/rgba?\([^)]+\)/)?.[0];
   assert.ok(ringColor, `Could not read the focus ring color from: ${data.focusBoxShadow}`);
   assert.ok(contrastRatio(ringColor, "rgb(255, 255, 255)") >= 3,
     "Keyboard focus ring must reach 3:1 against white");
