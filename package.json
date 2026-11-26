@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "scripts": {
     "build": "node build.js",
-    "test": "node scripts/validate-answer-engine.js && node scripts/validate-control-assets.js"
+    "test": "node --check trtt-blog-menu.js && node tests/test-trtt-blog-menu.js && node scripts/validate-answer-engine.js && node scripts/validate-control-assets.js"
   }
 }
