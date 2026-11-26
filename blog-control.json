@@ -3,11 +3,11 @@
   "theme": {
     "primary": "#E98BAF",
     "accent": "#D6A542",
-    "background": "#FFF9FB",
+    "background": "#FFFFFF",
     "surface": "#FFFFFF",
-    "text": "#292329",
-    "muted": "#756B72",
-    "menuBackground": "#3A2630",
+    "text": "#202238",
+    "muted": "#686B7D",
+    "menuBackground": "#11152D",
     "mobileBackground": "#B77991",
     "menuText": "#FFFFFF"
   },
