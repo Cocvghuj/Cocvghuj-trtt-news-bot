@@ -1,6 +1,9 @@
+import os
+import tempfile
 import unittest
+from pathlib import Path
 
-from scripts.create_blogger_html_draft import validate_article
+from scripts.create_blogger_html_draft import ArticleInspector, validate_article
 
 
 VALID = """<!-- TRTT MAGIC - 787950 LOCKED -->
@@ -20,21 +23,42 @@ VALID = """<!-- TRTT MAGIC - 787950 LOCKED -->
 
 class BloggerHtmlDraftValidationTests(unittest.TestCase):
     def test_accepts_valid_trtt_html_article(self):
-        import tempfile
-        from pathlib import Path
         with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            target = root / "blog" / "drafts" / "article.html"
-            target.parent.mkdir(parents=True)
-            target.write_text(VALID, encoding="utf-8")
-            # The production validator intentionally enforces the repository-relative path.
-            self.assertIn("787950", target.read_text(encoding="utf-8"))
+            previous = os.getcwd()
+            try:
+                os.chdir(directory)
+                target = Path("blog/drafts/article.html")
+                target.parent.mkdir(parents=True)
+                target.write_text(VALID, encoding="utf-8")
+                title, content = validate_article("blog/drafts/article.html")
+                self.assertEqual(title, "Planning a Calm International Trip")
+                self.assertEqual(content, VALID)
+            finally:
+                os.chdir(previous)
 
     def test_inspector_rejects_script_tag(self):
-        from scripts.create_blogger_html_draft import ArticleInspector
         parser = ArticleInspector()
         parser.feed("<article><script>alert(1)</script></article>")
         self.assertTrue(any("Disallowed HTML tag: script" in error for error in parser.errors))
+
+    def test_inspector_rejects_event_handler_and_non_https_image(self):
+        parser = ArticleInspector()
+        parser.feed('<article><img src="http://example.com/a.jpg" alt="Travel"><p onclick="x()">Text</p></article>')
+        self.assertTrue(any("Only absolute HTTPS src URLs" in error for error in parser.errors))
+        self.assertTrue(any("Disallowed HTML attribute: onclick" in error for error in parser.errors))
+
+    def test_validation_rejects_article_without_trtt_marker(self):
+        with tempfile.TemporaryDirectory() as directory:
+            previous = os.getcwd()
+            try:
+                os.chdir(directory)
+                target = Path("blog/drafts/article.html")
+                target.parent.mkdir(parents=True)
+                target.write_text(VALID.replace("787950", "000000"), encoding="utf-8")
+                with self.assertRaisesRegex(RuntimeError, "marker 787950"):
+                    validate_article("blog/drafts/article.html")
+            finally:
+                os.chdir(previous)
 
 
 if __name__ == "__main__":
