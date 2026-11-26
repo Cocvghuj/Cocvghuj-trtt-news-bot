@@ -31,3 +31,11 @@
 - Run: https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot/actions/runs/45758872204
 - Chromium E2E/visual QA against `trttmagic.html` is still in progress at run 45758872131; do not mark browser validation PASS until it completes.
 - Earlier E2E attempt found one regression-test failure and one source-test expectation mismatch; both were corrected in later commits. Historical failed runs remain visible and were not deleted.
+
+## Final RC validation — 2026-11-26
+- PASS — source-contract suite: **11/11**, run https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot/actions/runs/45758872204
+- PASS — Chromium E2E + visual QA: **13/13**, run https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot/actions/runs/45758872131
+- The 13 checks include stale-preview invalidation, copy, JSON export, required-field validation, template behavior, mobile stacking/no overflow, 9 responsive viewport widths (320–1440px), WCAG AA normal-text contrast, visible input/panel boundaries, and focus-ring box-shadow contrast.
+- Screenshot artifact: https://github.com/Cocvghuj/Cocvghuj-trtt-news-bot/actions/runs/45758872131/artifacts/15088931243
+- Physical Android Chrome remains NOT TESTED. API/backend/auth/database/production hosting remain NOT IMPLEMENTED.
+- No merge, deployment, Blogger publish, or Main write was performed.
