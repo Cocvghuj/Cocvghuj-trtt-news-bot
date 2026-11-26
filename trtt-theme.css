@@ -185,3 +185,57 @@ h1.post-title,
   .post-body a, .post-body button { overflow-wrap: anywhere; }
   .blog-pager a, .post-footer a, .comment-link { min-height: 44px; }
 }
+
+
+/* TRTT Voyage six-link navigation — desktop and mobile */
+#main-menu-nav {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+#main-menu-nav > li {
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+#main-menu-nav > li > a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 44px !important;
+  padding: 9px 15px !important;
+  border: 1px solid rgba(214, 166, 66, .35) !important;
+  border-radius: 999px !important;
+  background: #11152D !important;
+  color: #FFFFFF !important;
+  font-weight: 750 !important;
+  text-decoration: none !important;
+  transition: background-color .18s ease, border-color .18s ease !important;
+}
+
+#main-menu-nav > li > a:hover,
+#main-menu-nav > li > a:focus-visible {
+  background: #B77991 !important;
+  border-color: #D6A542 !important;
+  color: #FFFFFF !important;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu #main-menu-nav {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 6px !important;
+  }
+
+  .mobile-menu #main-menu-nav > li > a {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    justify-content: flex-start !important;
+  }
+}
