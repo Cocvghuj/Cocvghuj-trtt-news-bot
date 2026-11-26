@@ -119,8 +119,9 @@ class ToolBuilderSourceTests(unittest.TestCase):
         self.assertRegex(self.html, r"@media\s*\(max-width:\s*540px\)")
         self.assertIn("prefers-reduced-motion:reduce", self.html)
         self.assertIn("function invalidatePreview()", self.script)
-        self.assertIn('form.addEventListener("input",invalidatePreview)', self.script)
-        self.assertIn('form.addEventListener("change",invalidatePreview)', self.script)
+        self.assertIn('form.querySelectorAll("input,textarea,select")', self.script)
+        self.assertIn('control.addEventListener("input",invalidatePreview)', self.script)
+        self.assertIn('control.addEventListener("change",invalidatePreview)', self.script)
 
     def test_no_external_assets_or_network_calls(self):
         self.assertEqual(self.parser.external_scripts, [])
