@@ -1,0 +1,60 @@
+name: TRTT AI Tool Builder Chromium E2E
+
+on:
+  push:
+    branches:
+      - feature/trtt-magic-ai-tool-builder-mvp-v1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  chromium-e2e:
+    name: Chromium browser end-to-end tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Playwright (temporary runner dependency)
+        run: npm install --no-save --package-lock=false playwright
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Start local static server
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 --directory products/trtt-magic-ai-tool-builder > /tmp/trtt-tool-builder-http.log 2>&1 &
+          echo $! > /tmp/trtt-tool-builder-http.pid
+          for attempt in $(seq 1 20); do
+            if curl --fail --silent http://127.0.0.1:4173/index-v2-fixed.html > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/trtt-tool-builder-http.log
+          exit 1
+
+      - name: Run real Chromium UI tests
+        env:
+          TRtt_BASE_URL: http://127.0.0.1:4173/index-v2-fixed.html
+        run: node --test products/trtt-magic-ai-tool-builder/tests/e2e/tool-builder.spec.cjs
+
+      - name: Stop local static server
+        if: always()
+        run: |
+          if [ -f /tmp/trtt-tool-builder-http.pid ]; then
+            kill "$(cat /tmp/trtt-tool-builder-http.pid)" || true
+          fi
