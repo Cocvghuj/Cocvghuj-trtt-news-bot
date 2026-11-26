@@ -29,7 +29,7 @@ This is a **partial evidence-based audit**, not a 100% completion certificate. T
 2. `.github/workflows/trtt-blogger-telegram.yml` previously ran every 15 minutes and forwarded new Blogger feed items without an explicit per-run owner confirmation. The schedule is removed; manual dispatch now requires `live_done_confirmed=true`.
 3. `scripts/telegram_blogger_feed.py` now independently blocks sending unless `TRTT_LIVE_DONE_CONFIRMED=true`, protecting against accidental invocation from another workflow.
 4. `.github/workflows/auto-blog.yml` was a scheduled placeholder that wrote a dated Markdown file and attempted to send a hard-coded placeholder Telegram request; it did not create a verified Blogger article. It is now disabled.
-5. `.github/workflows/daily-tool.yml` was a scheduled placeholder with no real tool build and an attempted direct push to the default branch. It is now disabled; future tools must use a feature branch and reviewed PR.
+5. `.github/workflows/daily-tool.yml` was a scheduled placeholder with no real tool build and an attempted direct push to the default branch. It is now disabled; future tools must use a feature branch and reviewed PR.\n6. `.github/workflows/claude.yml` invoked a paid external Claude API with broad repository write permissions, conflicting with the free-only policy. It is now disabled.\n7. `.github/workflows/trtt-auto-cleaner.yml` could use a personal token to disable other repository workflows. It is now disabled to prevent broad unintended automation changes.
 
 These changes are proposed in a feature branch and are **not live until the owner reviews and merges the PR**.
 
@@ -55,7 +55,7 @@ These changes are proposed in a feature branch and are **not live until the owne
 
 1. Restore and verify the missing Blogger menu loader; confirm it renders from the actual Blogger Layout without removing existing widgets or links.
 2. Reconcile the live 8-item menu with the approved 10-item configuration and the current MASTER-004 navigation.
-3. Complete automated checks for all 32 workflows, including scheduled jobs, direct write paths, secret references, and duplicated/obsolete automations.
+3. Static review of all 32 workflow YAML files is complete. Runtime behavior, actual secret presence (not accessed), external action behavior, and scheduled-job outcomes remain NOT TESTED.
 4. Add a meaningful editorial source-verification gate to news generation and Blogger draft ingestion; structural HTML validation is not fact-checking.
 5. Replace stale route queue entries only with current, independently verified route/fare evidence.
 6. Run the repository's `npm test` and `npm run build` on the proposed branch and inspect all GitHub Actions results.
