@@ -130,14 +130,16 @@
     ].join("\n");
   }
   function invalidatePreview(){
-    if(!currentConfig)return;
+    if(!currentConfig && preview.style.display!=="block")return;
     currentConfig=null;
     promptPreview.textContent="";
     preview.style.display="none";
     empty.style.display="grid";
   }
-  form.addEventListener("input",invalidatePreview);
-  form.addEventListener("change",invalidatePreview);
+  form.querySelectorAll("input,textarea,select").forEach(control=>{
+    control.addEventListener("input",invalidatePreview);
+    control.addEventListener("change",invalidatePreview);
+  });
   form.addEventListener("submit",function(event){
     event.preventDefault();
     if(!form.reportValidity())return;
