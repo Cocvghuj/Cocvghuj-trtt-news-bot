@@ -1,15 +1,15 @@
-name: TRTT Safe Auto - V106 Protected
+name: TRTT Safe Validation - V106 Protected (Owner Merge Only)
 
 on:
   pull_request:
     types: [opened, synchronize, reopened, labeled]
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+  pull-requests: read
 
 jobs:
-  safe-check-and-merge:
+  validate-protected-assets:
     if: contains(github.event.pull_request.labels.*.name, 'auto')
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -19,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 1. Check Only trtt-control Allowed
+      - name: Check only approved V106 files
         run: |
           git fetch origin main
           FILES=$(git diff --name-only origin/main...HEAD)
@@ -36,12 +36,12 @@ jobs:
             esac
           done
 
-      - name: 2. Check V106 Marker
+      - name: Check V106 marker
         run: |
           grep -r "TRTT MAC-787950 LOCKED" trtt-control/ || { echo "V106 Marker Missing!"; exit 1; }
           echo "V106 OK"
 
-      - name: 3. Check JS Syntax
+      - name: Check JavaScript syntax
         run: |
           shopt -s nullglob
           for f in trtt-control/*.js; do
@@ -50,7 +50,7 @@ jobs:
           done
           echo "JS Syntax OK"
 
-      - name: 4. Auto Merge
-        run: gh pr merge ${{ github.event.pull_request.number }} --auto --squash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Preserve owner merge gate
+        run: |
+          echo "Validation complete. This workflow never merges pull requests."
+          echo "Only the repository owner may review and merge."
