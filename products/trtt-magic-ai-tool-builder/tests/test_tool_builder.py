@@ -114,10 +114,7 @@ class ToolBuilderSourceTests(unittest.TestCase):
         self.assertIn("anchor.download=", self.script)
 
     def test_json_export_defers_object_url_revocation(self):
-        self.assertRegex(
-            self.script,
-            r"setTimeout\\(\\(\\)=>URL\\.revokeObjectURL\\(url\\),\\s*1000\\)",
-        )
+        self.assertIn("setTimeout(()=>URL.revokeObjectURL(url),1000)", self.script)
 
     def test_responsive_and_keyboard_accessibility_rules_exist(self):
         self.assertIn(":focus-visible", self.html)
