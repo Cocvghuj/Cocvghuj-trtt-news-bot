@@ -9,7 +9,7 @@ let browser;
 let page;
 
 function rgbChannels(cssColor) {
-  const values = cssColor.match(/[\\d.]+/g).map(Number);
+  const values = cssColor.match(/[\d.]+/g).map(Number);
   return values.slice(0, 3);
 }
 function luminance(cssColor) {
@@ -24,7 +24,7 @@ function contrastRatio(a, b) {
   return (values[0] + 0.05) / (values[1] + 0.05);
 }
 function columns(value) {
-  return value.trim().split(/\\s+/).length;
+  return value.trim().split(/\s+/).length;
 }
 
 before(async () => {
