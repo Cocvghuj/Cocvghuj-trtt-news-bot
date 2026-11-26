@@ -77,10 +77,13 @@ class TestDraftNewsValidation(unittest.TestCase):
     def test_add_vercel_reference_injection(self):
         content = "Original article body about European flight logistics."
         result = add_vercel_reference(content, "https://cocvghuj-trtt-news-bot.vercel.app")
-        self.assertIn("Plan Your Trip From Sanluri", result)
-        self.assertIn(f"marker={MARKER}", result)
-        self.assertIn(f"kiwitaxi.tp.st/{FIXED}", result)
-        self.assertIn("hotel-bernini.it", result)
+        self.assertIn("TRTT Voyage Tools and Resources", result)
+        self.assertIn(url, result)
+        self.assertIn("Check current prices, availability", result)
+        self.assertNotIn("I live in Sanluri", result)
+        self.assertNotIn("Roksana Nilla", result)
+        self.assertNotIn("hotel-bernini.it", result)
+        self.assertNotIn("kiwitaxi.tp.st", result)
 
     def test_add_vercel_reference_idempotent(self):
         url = "https://cocvghuj-trtt-news-bot.vercel.app"
