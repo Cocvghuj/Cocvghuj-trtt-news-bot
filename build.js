@@ -70,6 +70,13 @@ for (const asset of requiredPublicAssets) {
   }
 }
 
+const menuConfig = JSON.parse(fs.readFileSync(path.join(dist, 'blog-control.json'), 'utf8'));
+const expectedMenu = ['Home', 'News', 'Travel', 'AI', 'Tools', 'About'];
+const actualMenu = Array.isArray(menuConfig.menu) ? menuConfig.menu.map(item => item.label) : [];
+if (JSON.stringify(actualMenu) !== JSON.stringify(expectedMenu)) {
+  throw new Error('Build failed: Blogger menu must contain exactly Home, News, Travel, AI, Tools and About in order.');
+}
+
 const builtIndex = path.join(dist, 'index.html');
 if (!fs.existsSync(builtIndex)) throw new Error('Build failed: dist/index.html was not created.');
 const builtHtml = fs.readFileSync(builtIndex, 'utf8');
