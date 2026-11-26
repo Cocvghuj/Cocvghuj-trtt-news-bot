@@ -1,0 +1,24 @@
+name: TRTT AI Tool Builder source tests
+
+on:
+  push:
+    branches:
+      - feature/trtt-magic-ai-tool-builder-mvp-v1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-contract-tests:
+    name: Python source-contract tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run dependency-free tests
+        run: python -m unittest discover -s products/trtt-magic-ai-tool-builder/tests -v
