@@ -1,21 +1,22 @@
 # TRTT MAGIC — AI Tool Builder MVP
 
 **Branch:** `feature/trtt-magic-ai-tool-builder-mvp-v1`  
-**Stage:** Step 1 — first static MVP draft  
+**Stage:** Release candidate hardening  
+**Release file:** `products/trtt-magic-ai-tool-builder/trttmagic.html`  
 **Product direction:** Free-first AI tool builder for TRTT Voyage.
 
-## What this first slice does
+## What this prototype does
 
-- Provides a responsive, mobile-first tool configuration screen.
-- Lets a user define a tool name, category, audience, task, boundaries, tone, and output format.
-- Includes three starter templates: SEO brief, blog outline, and FAQ maker.
-- Generates a reusable instruction prompt locally in the browser.
+- Responsive, mobile-first tool configuration for name, category, audience, task, boundaries, tone, and output format.
+- Three starter templates: SEO brief, blog outline, and FAQ maker.
+- Builds a reusable instruction prompt locally in the browser.
 - Copies the prompt or exports a JSON tool definition.
+- Invalidates the previous preview whenever the user edits or changes configuration, preventing stale copy/export data.
 - Uses no external libraries, API keys, remote requests, or browser storage.
 
 ## Important boundary
 
-This is a **front-end prototype**, not a connected AI service. “Generate tool prompt” assembles instructions; it does not call Gemini, OpenRouter, or another model and does not generate an AI answer. The existing TRTT AI Command Center has a separate authenticated server-side AI route, but integration is intentionally deferred until a dedicated API contract, authentication flow, audit requirements, and owner-approved provider configuration are reviewed.
+This is a **front-end prompt-builder prototype**, not a connected AI service. “Generate tool prompt” assembles instructions; it does not call Gemini, OpenRouter, or another model and does not generate an AI answer. Backend AI execution, authentication, database, saved tools, billing, hosting, and production deployment are not implemented.
 
 ## Security and privacy
 
@@ -27,18 +28,17 @@ This is a **front-end prototype**, not a connected AI service. “Generate tool 
 
 ## Validation status
 
-- Static source review: pending Step 2.
-- Browser/device runtime test: not run.
-- AI provider integration: not connected.
-- Authentication and database: not implemented.
-- Production deployment: not authorized or attempted.
+- Previous V3 visual QA baseline: 12/12 Chromium checks passed on GitHub Actions.
+- Release-candidate source tests now target `trttmagic.html` (V3-based); **this revision's workflow result is pending**.
+- Release-candidate Chromium E2E now includes stale-preview regression coverage; **this revision's workflow result is pending**.
+- Physical Android Chrome test: NOT TESTED.
+- AI provider integration, authentication, database, and production hosting: NOT IMPLEMENTED.
+- Main merge, production deployment, and Blogger publication: NOT AUTHORIZED / NOT ATTEMPTED.
 
 ## Next development stages
 
-1. Review the diff and run static checks.
-2. Fix any issues found.
-3. Define the server-side AI request contract and fail-closed audit behaviour.
-4. Integrate only an approved free-tier provider configuration.
-5. Add secure Google OAuth only if required for user accounts; never ask users to paste passwords or OTPs.
-6. Add storage only after data retention, deletion/export rights, and privacy notices are designed.
-7. Deploy only after explicit owner approval and successful validation.
+1. Complete the release-candidate GitHub Actions run and inspect results.
+2. Run a physical Android browser check when practical.
+3. Define a server-side AI request contract and fail-closed audit behaviour before any provider integration.
+4. Review privacy, authentication, storage, and retention requirements before adding accounts or persistence.
+5. Merge, deploy, or publish only after separate explicit owner approval.
