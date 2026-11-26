@@ -36,6 +36,33 @@ class BloggerHtmlDraftValidationTests(unittest.TestCase):
             finally:
                 os.chdir(previous)
 
+    def test_accepts_personal_reflection_without_affiliate_links_or_faq(self):
+        reflection = """<!-- TRTT MAGIC - 787950 LOCKED -->
+        <article style="max-width:780px;margin:0 auto;color:#11152D">
+        <h1>Rise From Ashes</h1><p><a href="https://trttvoyage.com">TRTT Voyage</a></p>
+        <h2>Acknowledge the chapter</h2><p>Reflection.</p>
+        <h2>Choose one next step</h2><p>Reflection.</p>
+        <h2>Keep moving with care</h2><p>Reflection.</p>
+        <p>Disclosure: This is a personal reflection, not professional advice.</p>
+        </article>
+        """ + ("Personal reflection and practical next steps. " * 45)
+        with tempfile.TemporaryDirectory() as directory:
+            previous = os.getcwd()
+            try:
+                os.chdir(directory)
+                target = Path("blog/drafts/reflection.html")
+                target.parent.mkdir(parents=True)
+                target.write_text(reflection, encoding="utf-8")
+                title, _ = validate_article("blog/drafts/reflection.html")
+                self.assertEqual(title, "Rise From Ashes")
+            finally:
+                os.chdir(previous)
+
+    def test_inspector_rejects_unsafe_css_url(self):
+        parser = ArticleInspector()
+        parser.feed('<article><p style="background-image:url(https://evil.example/x)">Text</p></article>')
+        self.assertTrue(any("Unsafe CSS" in error for error in parser.errors))
+
     def test_inspector_rejects_script_tag(self):
         parser = ArticleInspector()
         parser.feed("<article><script>alert(1)</script></article>")
