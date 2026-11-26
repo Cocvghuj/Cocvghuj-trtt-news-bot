@@ -1,0 +1,41 @@
+name: TRTT Sitemap Daily Check - ONE ONLY
+
+# দিনে ১ বার, সকাল ৭টায় - বেশি না!
+on:
+  schedule:
+    - cron: '0 7 * * *'
+  workflow_dispatch: # তুমি চাইলে হাত দিয়া চালাইতে পারবা
+
+jobs:
+  check-sitemap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 👑💎 TRTT Sitemap Check Start
+        run: |
+          echo "ONE TEAM. ONE VISION. ONE JOURNEY."
+          echo "Checking Sitemap - SAFE MODE ON - No Delete!"
+
+      - name: Check trttvoyage.com Sitemap
+        run: |
+          echo "=== Checking Sitemap ==="
+          # ১ নম্বর লিংক
+          if curl -s -o /dev/null -w "%{http_code}" https://trttvoyage.com/sitemap.xml | grep -q "200"; then
+            echo "✅ sitemap.xml FOUND - 200 OK"
+          else
+            echo "❌ sitemap.xml NOT FOUND - Need Fix"
+          fi
+          
+          # ২ নম্বর লিংক
+          if curl -s -o /dev/null -w "%{http_code}" https://trttvoyage.com/sitemap_index.xml | grep -q "200"; then
+            echo "✅ sitemap_index.xml FOUND"
+          else
+            echo "❌ sitemap_index.xml NOT FOUND"
+          fi
+          
+          echo "=== Check Done - No File Deleted ==="
+
+      - name: Result Summary
+        run: |
+          echo "TRTT LOG - Sitemap Daily Check DONE"
+          echo "Status: Checked 1 time only"
+          echo "Next Check: Tomorrow 7 AM"
