@@ -1,9 +1,13 @@
-name: TRTT Blogger to Telegram Auto-Forward
+name: TRTT Blogger to Telegram Forward (Owner LIVE DONE Gate)
 
 on:
-  schedule:
-    - cron: "*/15 * * * *"
   workflow_dispatch:
+    inputs:
+      live_done_confirmed:
+        description: "Owner confirms the Blogger post is LIVE and approves Telegram forwarding"
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -14,6 +18,7 @@ concurrency:
 
 jobs:
   forward-published-posts:
+    if: github.event_name == 'workflow_dispatch' && inputs.live_done_confirmed == true
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
@@ -23,21 +28,22 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: .telegram-state
-          key: trtt-telegram-state-\${{ github.run_id }}-\${{ github.run_attempt }}
+          key: trtt-telegram-state-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             trtt-telegram-state-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Forward newly published Blogger posts
+      - name: Forward newly published Blogger posts after owner approval
         env:
-          TELEGRAM_BOT_TOKEN: \${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: \${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TRTT_LIVE_DONE_CONFIRMED: ${{ inputs.live_done_confirmed }}
         run: python scripts/telegram_blogger_feed.py
       - name: Save Telegram delivery state
         uses: actions/cache/save@v4
         if: success()
         with:
           path: .telegram-state
-          key: trtt-telegram-state-\${{ github.run_id }}-\${{ github.run_attempt }}
+          key: trtt-telegram-state-${{ github.run_id }}-${{ github.run_attempt }}

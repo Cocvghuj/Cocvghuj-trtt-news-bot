@@ -50,72 +50,25 @@ def validate_source_url(v: str):
     return p.geturl()
 
 def add_vercel_reference(content: str, url: str):
+    """Append a neutral TRTT link; never invent personal experience or partner claims."""
     if url in content:
         return content
-    subid = "trtt_lock_it"
-    block = f'''<aside class="trtt-voyagehub-reference glassmorphism" style="background:rgba(255,255,255,0.1);backdrop-filter:blur(20px);border-radius:20px;padding:15px;border:1px solid rgba(255,255,255,0.2);margin:20px 0;">
-<h2>Plan Your Trip From Sanluri - Real Italian Experience</h2>
-<p><strong>Google E-E-A-T:</strong> I live in Sanluri, Sardinia. I travel from Cagliari Airport CAG. This is real experience.</p>
-<script type="application/ld+json">{{"@context":"https://schema.org","@type":"Article","author":{{"@type":"Person","name":"Roksana Nilla"}}}}</script>
-<ul>
-<li>✈️ <a href="https://aviasales.tp.st/Fb8U9yav?marker={MARKER}&subid={subid}">Cheap Flights Aviasales - Marker {MARKER} LOCKED</a></li>
-<li>🚕 <a href="https://kiwitaxi.tp.st/{FIXED}?marker={MARKER}&subid={subid}">Kiwitaxi {FIXED} FIXED - CAG to Sanluri - No tl bug</a></li>
-<li>📱 <a href="https://airalo.tp.st/ZZoQC7Mz?marker={MARKER}&subid={subid}">Airalo eSIM Italy</a> | <a href="https://saily.tp.st/ssekmS4X?marker={MARKER}&subid={subid}">Saily Backup</a></li>
-<li>🏨 Real Hotel: <a href="https://www.hotel-bernini.it" target="_blank">hotel-bernini.it</a> - Real .it - 3-5% vs Booking 20% - TRTTVoyageHub ONE Vision</li>
-<li>🎫 <a href="https://klook.tp.st/TWKnemhz?marker={MARKER}&subid={subid}">Klook</a> | <a href="https://tiqets.tp.st/bnx8pnF6?marker={MARKER}&subid={subid}">Tiqets</a> | <a href="https://airhelp.tp.st/ZZoQC7Mz?marker={MARKER}&subid={subid}">AirHelp</a></li>
-</ul>
-<p><small>Live Reference: {url}/?marker={MARKER} | GitHub: github.com/Cocvghuj/Cocvghuj-trtt-news-bot | GDPR: trtt_cookie_consent_esim | Open Source | #webdesign #uidesign #glassmorphism #TRTT #travel</small></p>
+    parsed = urlparse(url)
+    if parsed.scheme != "https" or not parsed.netloc:
+        raise ValueError("PWA reference must be a valid HTTPS URL.")
+    block = f'''<aside class="trtt-voyagehub-reference">
+<h2>TRTT Voyage Tools and Resources</h2>
+<p>Explore the <a href="{url}" rel="noopener noreferrer">TRTT Voyage tools and travel resources</a>.</p>
+<p><small>Check current prices, availability, eligibility and provider terms directly with the relevant service before making a decision.</small></p>
 </aside>
 <!-- Vercel Ref: {url} -->'''
     return content.rstrip() + "\n\n" + block
 
 def main():
-    import os, sys, json
-    topic = os.environ.get("TRTT_NEWS_TOPIC", "").strip()
-    source_raw = os.environ.get("TRTT_OFFICIAL_SOURCE_URL", "").strip()
-    pwa_url = os.environ.get("PWA_REFERENCE_URL", DEFAULT_PWA_URL).strip()
-    if not topic:
-        topic = "Cagliari to Rome Cheap Flights Today - Sanluri Travel News"
-    if not source_raw:
-        source_raw = "https://www.enac.gov.it"
-    source_url = validate_source_url(source_raw)
-    parsed = urlparse(pwa_url)
-    if "vercel.app" not in pwa_url and "github.io" not in pwa_url:
-        pwa_url = DEFAULT_PWA_URL
-    require_latin_english(topic, "News topic")
-    category = "Current Travel News"
-    selected = {
-        "topic": f"{topic}. Official source: {source_url}. Include PRO LOCKED Marker {MARKER} tp.st ONLY {FIXED} FIXED trtt_lock_it Real hotel-bernini.com Glassmorphism Vercel {pwa_url}",
-        "category": category,
-        "default_labels": ["Travel News", "Europe Travel", "FlightScoutPro", "Sanluri", "TRTT"]
-    }
-    try:
-        from pathlib import Path
-        sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-        import main as engine
-        engine.TOPIC_POOL = [selected]
-        engine.select_next_topic = lambda _pool, _history: selected
-        orig_gen = getattr(engine, "generate_article_with_metadata", None)
-        if orig_gen:
-            def guarded(topic_info):
-                result = orig_gen(topic_info)
-                if not isinstance(result, dict): return result
-                result = dict(result)
-                if "meta" in result and isinstance(result["meta"], dict):
-                    result["meta"] = validate_metadata(result.get("meta"))
-                content = str(result.get("content", ""))
-                result["content"] = add_vercel_reference(content, pwa_url)
-                return result
-            engine.generate_article_with_metadata = guarded
-        try:
-            engine.main()
-        finally:
-            if orig_gen:
-                engine.generate_article_with_metadata = orig_gen
-    except Exception as exc:
-        print(f"News draft workflow failed: {exc}", file=sys.stderr)
-        raise
-    return 0
+    raise RuntimeError(
+        "Legacy news generator is disabled. It has no claim-to-source verification gate. "
+        "Use a reviewed, source-verified English-only draft workflow instead."
+    )
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -1,28 +1,37 @@
-# TRTT News 24 BD — GitHub-controlled Blogger setup
+# TRTT Voyage — GitHub-controlled Blogger styling and menu
 
-GitHub is the source of truth for the managed blog content, menu configuration, and delivered CSS.
+GitHub is the source of truth for the managed public CSS, menu configuration and menu loader. Blogger remains the authority for Theme XML, Layout gadget placement and account settings.
 
-## One-time Blogger setup
+## Existing Blogger gadget
 
-In Blogger Dashboard → Layout, add one HTML/JavaScript gadget containing:
+The public TRTT Voyage homepage already has a Blogger menu. **Do not add a duplicate HTML/JavaScript gadget.** Preserve the existing Header, LinkList, Blog, page, post and other widgets.
+
+After the owner-reviewed menu-loader PR is merged and the production assets are verified, the existing HTML/JavaScript gadget should reference these production assets:
 
 ```html
-<link rel="stylesheet" href="https://cocvghuj-trtt-news-bot.vercel.app/trtt-theme.css">
-<script defer src="https://cocvghuj-trtt-news-bot.vercel.app/trtt-blog-menu.js"></script>
+<link rel="stylesheet" href="https://cocvghuj-trtt-news-bot-git-main-trtt6.vercel.app/trtt-theme.css">
+<script defer src="https://cocvghuj-trtt-news-bot-git-main-trtt6.vercel.app/trtt-blog-menu.js"></script>
 ```
 
-Save the gadget. This one-time installation must be done in Blogger; the public Blogger API does not let GitHub place Layout gadgets.
+Do not install a feature-branch Preview URL as a permanent Blogger asset. If the existing gadget already contains the verified URLs, do not duplicate or re-add it.
 
-## Control from GitHub
+## Menu behavior
 
-- Edit `blog-control.json` for the site brand, colors, and menu links.
-- Edit `trtt-theme.css` for Blogger page styling.
-- Edit `posts/*.md` for managed posts.
-- Edit `pages/trttnews24bd/*.html` for managed pages.
-- Push to `main`; Vercel serves the updated assets and GitHub Actions syncs supported posts/pages to Blogger.
+- The loader reads the public `blog-control.json` file from the same Vercel production deployment.
+- It updates the existing desktop and mobile `#main-menu-nav` lists only after the configuration is fetched and validated.
+- If the configuration cannot be fetched or validated, the existing Blogger menu is left unchanged.
+- It does not delete Blogger widgets, posts, pages, comments, Theme XML or settings.
+- The menu configuration is limited to Home, News, Travel, AI, Tools and About.
 
-The menu loader reads `blog-control.json` directly. The build allowlist publishes this public configuration file; credentials and private files are excluded.
+## GitHub-controlled assets
+
+- `blog-control.json`: public brand palette and menu links.
+- `trtt-theme.css`: Blogger page styling and responsive rules.
+- `trtt-blog-menu.js`: safe menu loader.
+- `build.js`: verifies that all three public assets are present in the Vercel output.
+
+The public config endpoint permits anonymous GET access only. No Blogger credentials or private data are exposed.
 
 ## Control boundaries
 
-GitHub manages supported posts, pages, menu data, CSS, and supported comment operations. Blogger Theme XML, Layout gadget placement, all Blogger settings, and Google account settings remain controlled in Blogger. The gadget above is the only required one-time Blogger-side installation.
+GitHub manages the public menu data and delivered assets. Blogger Theme XML, Layout gadget placement, all Blogger settings, posts and Google account settings remain controlled in Blogger. This repository does not claim that a GitHub commit can directly change the Blogger Layout.

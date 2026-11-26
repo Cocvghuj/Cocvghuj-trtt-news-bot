@@ -4,6 +4,7 @@ from scripts.draft_news import (
     validate_metadata,
     validate_source_url,
     add_vercel_reference,
+    main as legacy_news_main,
     MARKER,
     FIXED,
     DEFAULT_PWA_URL
@@ -76,11 +77,19 @@ class TestDraftNewsValidation(unittest.TestCase):
 
     def test_add_vercel_reference_injection(self):
         content = "Original article body about European flight logistics."
-        result = add_vercel_reference(content, "https://cocvghuj-trtt-news-bot.vercel.app")
-        self.assertIn("Plan Your Trip From Sanluri", result)
-        self.assertIn(f"marker={MARKER}", result)
-        self.assertIn(f"kiwitaxi.tp.st/{FIXED}", result)
-        self.assertIn("hotel-bernini.it", result)
+        url = "https://cocvghuj-trtt-news-bot.vercel.app"
+        result = add_vercel_reference(content, url)
+        self.assertIn("TRTT Voyage Tools and Resources", result)
+        self.assertIn(url, result)
+        self.assertIn("Check current prices, availability", result)
+        self.assertNotIn("I live in Sanluri", result)
+        self.assertNotIn("Roksana Nilla", result)
+        self.assertNotIn("hotel-bernini.it", result)
+        self.assertNotIn("kiwitaxi.tp.st", result)
+
+    def test_legacy_generator_fails_closed(self):
+        with self.assertRaisesRegex(RuntimeError, "Legacy news generator is disabled"):
+            legacy_news_main()
 
     def test_add_vercel_reference_idempotent(self):
         url = "https://cocvghuj-trtt-news-bot.vercel.app"

@@ -82,6 +82,8 @@ def send_post(post):
         "parse_mode":"HTML","disable_web_page_preview":"false"})
 
 def main():
+    if os.environ.get("TRTT_LIVE_DONE_CONFIRMED", "").strip().lower() != "true":
+        raise RuntimeError("Blocked: explicit owner LIVE DONE confirmation is required before Telegram delivery.")
     state=load_state()
     posts,errors=[],[]
     for name,url in FEEDS:

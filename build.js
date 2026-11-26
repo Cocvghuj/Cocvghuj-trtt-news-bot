@@ -63,6 +63,20 @@ fs.readdirSync(root).forEach(file => {
   copyRecursive(path.join(root, file), path.join(dist, file));
 });
 
+const requiredPublicAssets = ['trtt-theme.css', 'trtt-blog-menu.js', 'blog-control.json'];
+for (const asset of requiredPublicAssets) {
+  if (!fs.existsSync(path.join(dist, asset))) {
+    throw new Error('Build failed: required public Blogger asset is missing from dist: ' + asset);
+  }
+}
+
+const menuConfig = JSON.parse(fs.readFileSync(path.join(dist, 'blog-control.json'), 'utf8'));
+const expectedMenu = ['Home', 'News', 'Travel', 'AI', 'Tools', 'About'];
+const actualMenu = Array.isArray(menuConfig.menu) ? menuConfig.menu.map(item => item.label) : [];
+if (JSON.stringify(actualMenu) !== JSON.stringify(expectedMenu)) {
+  throw new Error('Build failed: Blogger menu must contain exactly Home, News, Travel, AI, Tools and About in order.');
+}
+
 const builtIndex = path.join(dist, 'index.html');
 if (!fs.existsSync(builtIndex)) throw new Error('Build failed: dist/index.html was not created.');
 const builtHtml = fs.readFileSync(builtIndex, 'utf8');
@@ -70,4 +84,4 @@ if (!builtHtml.includes('TRTT') || !builtHtml.includes('VOYAGEHUB')) throw new E
 if (!builtHtml.includes('787950 LOCKED')) throw new Error('Build failed: marker 787950 LOCKED missing from dist/index.html.');
 if (!builtHtml.includes('https://cocvghuj-trtt-news-bot.vercel.app')) throw new Error('Build failed: TRTT Live App link missing from dist/index.html.');
 if (!builtHtml.includes('roksana-vault.js')) throw new Error('Build failed: 787950 bottom menu source missing from dist/index.html.');
-console.log('Build verified: dist/index.html contains TRTT VOYAGEHUB and marker 787950 LOCKED.');
+console.log('Build verified: index, Blogger CSS, menu loader, public config and marker are present in dist.');

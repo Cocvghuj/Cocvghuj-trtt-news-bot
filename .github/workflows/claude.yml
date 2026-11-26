@@ -1,35 +1,17 @@
-name: Claude Code (TRTT)
+# DISABLED - This integration used a paid external AI API and broad repository write permissions.
+name: Claude Code (TRTT) [DISABLED]
 
 on:
-  issue_comment:
-    types: [created]
-  issues:
-    types: [opened]
+  workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
-  issues: write
-  id-token: write
-  actions: read
+  contents: read
 
 jobs:
-  claude:
-    if: >-
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'issues' && contains(github.event.issue.body, '@claude'))
+  disabled_notice:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Run Claude
-        uses: anthropics/claude-code-action@v1
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          claude_args: |
-            --allowedTools "Read,Glob,Grep,Edit,Write,Bash(node --check *)"
-            --max-turns 20
+      - name: Disabled notice
+        run: |
+          echo "This paid external AI integration is disabled under the TRTT free-only policy."
+          echo "Do not re-enable without owner review of cost, permissions and security."
