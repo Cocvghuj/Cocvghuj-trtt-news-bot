@@ -1,0 +1,30 @@
+name: TRTT Blogger HTML Draft Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "scripts/create_blogger_html_draft.py"
+      - "tests/test_blogger_html_draft.py"
+      - ".github/workflows/trtt-html-to-blogger-draft.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-draft-bridge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pull request
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile Blogger draft bridge
+        run: python -m py_compile scripts/create_blogger_html_draft.py
+
+      - name: Run focused HTML safety tests
+        run: python -m unittest discover -s tests -p "test_blogger_html_draft.py" -v
