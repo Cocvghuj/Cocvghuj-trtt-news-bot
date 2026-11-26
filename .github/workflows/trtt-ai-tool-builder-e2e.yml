@@ -39,7 +39,7 @@ jobs:
           python -m http.server 4173 --bind 127.0.0.1 --directory products/trtt-magic-ai-tool-builder > /tmp/trtt-tool-builder-http.log 2>&1 &
           echo $! > /tmp/trtt-tool-builder-http.pid
           for attempt in $(seq 1 20); do
-            if curl --fail --silent http://127.0.0.1:4173/index-v2-fixed.html > /dev/null; then
+            if curl --fail --silent http://127.0.0.1:4173/index-v3-visual-fixed.html > /dev/null; then
               exit 0
             fi
             sleep 1
@@ -50,9 +50,9 @@ jobs:
       - name: Run real Chromium UI tests
         env:
           TRtt_BASE_URL: http://127.0.0.1:4173/index-v2-fixed.html
-        run: node --test products/trtt-magic-ai-tool-builder/tests/e2e/tool-builder.spec.cjs
+        run: node --test products/trtt-magic-ai-tool-builder/tests/e2e/tool-builder.spec.cjs products/trtt-magic-ai-tool-builder/tests/e2e/visual-qa.spec.cjs
 
-      - name: Stop local static server
+      - name: Upload visual QA screenshots\n        if: always()\n        uses: actions/upload-artifact@v4\n        with:\n          name: trtt-visual-qa-screenshots\n          path: test-results/*.png\n          if-no-files-found: ignore\n\n      - name: Stop local static server
         if: always()
         run: |
           if [ -f /tmp/trtt-tool-builder-http.pid ]; then
