@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "description": "Public TRTT repositories eligible for explicit Blogger-draft opt-in. Private repositories and profile repositories are excluded.",
+  "repositories": [
+    "Cocvghuj/Cocvghuj-trtt-news-bot-fix",
+    "Cocvghuj/trttvoyage-diamond-king-chatgpt-6",
+    "Cocvghuj/trtt-muse-gift",
+    "Cocvghuj/trttvoyage--muse-diary",
+    "Cocvghuj/trtt-rise-from-ashes-studio"
+  ],
+  "allowed_directories": [
+    "blogger-drafts",
+    "blog/drafts"
+  ],
+  "opt_in_marker": "<!-- TRTT_BLOGGER_DRAFT: true -->",
+  "max_articles_per_run": 20,
+  "approved_legacy_sources": {
+    "Cocvghuj/trtt-rise-from-ashes-studio": {
+      "blogger-drafts/rise-from-ashes.html": "db641a51d2feb0ad2fb212522fd8aa07b18a3e4f"
+    }
+  }
+}
