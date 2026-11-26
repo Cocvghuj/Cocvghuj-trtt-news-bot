@@ -19,48 +19,28 @@
     },
     {
       "id": "news",
-      "label": "Latest News",
-      "href": "/search/label/TRTT%20News"
+      "label": "News",
+      "href": "/search/label/News"
     },
     {
-      "id": "europe",
-      "label": "Europe Travel",
-      "href": "/search/label/Europe%20Travel"
+      "id": "travel",
+      "label": "Travel",
+      "href": "/search/label/Travel"
     },
     {
-      "id": "flights",
-      "label": "Flights",
-      "href": "/search/label/Flights"
-    },
-    {
-      "id": "esim",
-      "label": "eSIM",
-      "href": "/search/label/eSIM"
-    },
-    {
-      "id": "hotels",
-      "label": "Hotels",
-      "href": "/search/label/Hotels"
-    },
-    {
-      "id": "roksana",
-      "label": "Roksana Vault",
-      "href": "/p/roksana-vault.html"
+      "id": "ai",
+      "label": "AI",
+      "href": "/search/label/AI"
     },
     {
       "id": "tools",
-      "label": "Travel Tools",
-      "href": "https://cocvghuj-trtt-news-bot.vercel.app/"
+      "label": "Tools",
+      "href": "https://cocvghuj-trtt-news-bot-git-main-trtt6.vercel.app/"
     },
     {
       "id": "about",
       "label": "About",
       "href": "/p/about-us.html"
-    },
-    {
-      "id": "contact",
-      "label": "Contact",
-      "href": "/p/contact.html"
     }
   ]
 }
