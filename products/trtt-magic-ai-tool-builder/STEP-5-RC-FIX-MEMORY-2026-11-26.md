@@ -1,0 +1,27 @@
+# TRTT MAGIC — Release Candidate Fix Memory
+
+**Date:** 2026-11-26  
+**Repository:** `Cocvghuj/Cocvghuj-trtt-news-bot`  
+**Branch:** `feature/trtt-magic-ai-tool-builder-mvp-v1`
+
+## আজকে কি করলাম
+- পূর্বের V3 visual-QA HTML-কে additive release file `trttmagic.html` হিসেবে promote করা হয়েছে; পুরোনো V2 এবং V3 source file অক্ষত।
+- Source-contract test এখন `trttmagic.html` পরীক্ষা করে, পুরোনো V2 target নয়।
+- Form input/change হলে generated preview invalidates হয়; template বদলালেও পুরোনো preview আর copy/export করা যায় না।
+- Stale-preview regression test যোগ করা হয়েছে।
+- Visual QA focus test এখন computed `outlineColor` নয়, বাস্তবে render হওয়া `box-shadow` focus ring ও তার contrast পরীক্ষা করে।
+- README-তে prototype সীমাবদ্ধতা ও release-candidate validation status হালনাগাদ করা হয়েছে।
+- এই addendum পুরোনো Step-4 memory-কে replace করে না; এটি append-only ইতিহাস।
+
+## Release validation status
+- এই commit-এর পর GitHub Actions workflow ফলাফল যাচাই করতে হবে; ফলাফল না আসা পর্যন্ত নতুন RC validation = NOT TESTED.
+- পূর্বের V3 baseline visual QA: 12/12 Chromium checks PASS (আগের commit/run)।
+- Physical Android Chrome: NOT TESTED.
+- AI API/backend/auth/database: NOT IMPLEMENTED.
+- Main merge, production deployment, Blogger publish: NOT ATTEMPTED.
+
+## কালকে কি করবো
+- নতুন GitHub Actions run-এর source tests ও Chromium E2E/visual QA ফলাফল পরীক্ষা।
+- সব pass হলে README ও এই memory-তে run URL/সংখ্যা append/update করে final RC status নির্ধারণ।
+- Android physical browser test আলাদা করে করা; না হলে NOT TESTED রাখা।
+- পরবর্তী merge/deploy/blog action-এর আগে আলাদা অনুমতি নিতে হবে।
