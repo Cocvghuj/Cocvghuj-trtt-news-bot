@@ -78,3 +78,13 @@ These changes are proposed in a feature branch and are **not live until the owne
 `feature/trtt-owner-approval-and-workflow-safety-20261126`
 
 Owner review PR: to be linked after creation.
+
+## Additional editorial / account-isolation risks identified (not yet repaired)
+
+1. `.github/workflows/trtt-news-draft.yml` is manual-only but invokes `post_news_draft_v2.py`, which creates drafts on both TRTT and FlightScoutPro in the same workflow. This conflicts with the explicit project isolation rule. No run was triggered during this audit. Keep this workflow NOT APPROVED until replaced by isolated single-blog workflows.
+2. `post_news_draft_v2.py` contains fixed articles dated 2026-11-09 and 2026-11-10. These may be used only as dated historical explainers after source re-verification; they are not a current-news feed. No Blogger draft was created.
+3. Legacy `scripts/draft_news.py` is not referenced by the current active workflow inventory, but its entry point supplies a default news topic and default official-source URL when inputs are absent. It also injects first-person Sanluri/Cagliari experience, a named author, affiliate offers and comparative commercial claims without evidence in the script. This is incompatible with the no-fabrication policy. The script remains unchanged in this PR; it must not be executed until retired or repaired and independently tested.
+4. The daily route queue has no `source_url`, source publication timestamp, retrieval timestamp, fare verification timestamp or source attribution fields. The daily engine refuses to draft when today's queue item is pending, which is the current safe outcome. Do not mark a route ready until primary-source evidence and a current fare check are attached.
+5. The existing HTML validator checks structure, URLs and disclosure wording; it does not confirm that source pages support individual claims. A claim-to-source editorial manifest and review gate remain outstanding.
+
+These items are additional blockers. They are intentionally not represented as completed fixes.
