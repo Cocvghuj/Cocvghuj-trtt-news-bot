@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>👑💎 TRTT MAGIC COMMAND CENTER — DR-TRTT-OPS-001 | DIAMOND KING</title>
+  <style>
+    :root {
+      --pink: #E98BAF;
+      --piyaji: #B77991;
+      --kathali: #D6A542;
+      --midnight: #11152D;
+      --white: #FFFFFF;
+      --diamond-gold: #FFD700;
+      --diamond-cyan: #67E8F9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(circle at top, #1b224a 0%, var(--midnight) 65%, #090c1a 100%);
+      color: var(--white);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .diamond-shell {
+      max-width: 980px;
+      margin: 0 auto;
+      border: 2px solid var(--diamond-gold);
+      border-radius: 16px;
+      padding: 24px;
+      background: rgba(17, 21, 45, 0.92);
+      box-shadow: 0 0 28px rgba(255, 215, 0, 0.16), 0 0 12px rgba(103, 232, 249, 0.12);
+    }
+    .diamond-header {
+      border-bottom: 2px solid var(--kathali);
+      padding-bottom: 16px;
+      margin-bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .diamond-title {
+      font-size: 1.65rem;
+      font-weight: 900;
+      color: var(--diamond-gold);
+      letter-spacing: 0.04em;
+    }
+    .diamond-sub {
+      font-size: 0.92rem;
+      color: var(--pink);
+      font-weight: 600;
+    }
+    .diamond-badge {
+      background: linear-gradient(135deg, var(--kathali), var(--piyaji));
+      color: var(--midnight);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 900;
+      border: 1px solid var(--diamond-gold);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--piyaji);
+      border-top: 3px solid var(--diamond-gold);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .card h2 {
+      font-size: 1.05rem;
+      color: var(--diamond-cyan);
+      margin-bottom: 10px;
+    }
+    .card p, .card li {
+      font-size: 0.9rem;
+      color: var(--white);
+    }
+    .card ul {
+      padding-left: 18px;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 12px;
+      background: var(--diamond-gold);
+      color: var(--midnight);
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 8px 14px;
+      border-radius: 8px;
+    }
+    .memory-box {
+      border-top: 1px solid var(--piyaji);
+      padding-top: 16px;
+      font-size: 0.86rem;
+    }
+    .memory-entry {
+      padding: 10px 14px;
+      border-left: 4px solid var(--diamond-gold);
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 0 8px 8px 0;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="diamond-shell">
+    <header class="diamond-header">
+      <div>
+        <div class="diamond-title">👑💎 TRTT MAGIC COMMAND CENTER — DIAMOND VERSION</div>
+        <div class="diamond-sub">From Vision to Global Brand! Explore Beyond. Discover Everything.</div>
+      </div>
+      <span class="diamond-badge">PROJECT: DR-TRTT-OPS-001 · 👑💎</span>
+    </header>
+
+    <section class="grid">
+      <article class="card">
+        <h2>👑💎 Command Identity</h2>
+        <ul>
+          <li>Project Code: DR-TRTT-OPS-001</li>
+          <li>King: Diamond Raja | Agent: Diamond King</li>
+          <li>Repo: <a href="https://github.com/Cocvghuj/trttvoyage-diamond-king-chatgpt-6" style="color:#FFD700;">trttvoyage-diamond-king-chatgpt-6</a></li>
+          <li>Channel: <a href="https://t.me/trttnews24bd" style="color:#E98BAF;">@trttnews24bd</a></li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>🧠 Every-Prompt GitHub Memory</h2>
+        <ul>
+          <li>Every prompt logs an append-only entry to GitHub</li>
+          <li>Feature branch isolation (<code>feature/*</code>)</li>
+          <li>GitLab history mirror after PR creation</li>
+          <li>Owner PR merge required before Blogger draft</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>⚙️ GitOps &amp; Headless Pipeline Mode</h2>
+        <p>Human-in-the-loop GitOps + Headless content architecture: GitHub/GitLab source of truth with manual PR merge &amp; live publish gates until CI/API runners are attached.</p>
+        <a class="btn" href="https://trttvoyage.com" target="_blank" rel="noopener noreferrer">Visit TRTT Voyage</a>
+      </article>
+    </section>
+
+    <section class="memory-box">
+      <strong style="color: var(--diamond-gold);">APPEND-ONLY GITHUB MEMORY LOG</strong>
+      <div class="memory-entry">
+        <strong>[2026-11-26 | Prompt Memory #01]:</strong> Upgraded Master Operating Prompt &amp; <code>Diamond King/trttmagic.html</code> to Diamond Version (👑💎) with mandatory every-prompt GitHub memory protocol.
+      </div>
+      <div class="memory-entry">
+        <strong>[2026-11-26 | Prompt Memory #02]:</strong> Appended every-prompt GitHub memory rule and 10/10 Diamond rating alignment on feature branch <code>feature/trttmagic-diamond</code>.
+      </div>
+      <div class="memory-entry">
+        <strong>[2026-11-26 | Prompt Memory #03 | DR-TRTT-OPS-001]:</strong> Bound project code <code>DR-TRTT-OPS-001</code> to GitHub repository <code>https://github.com/Cocvghuj/trttvoyage-diamond-king-chatgpt-6</code> under append-only workflow.
+      </div>
+      <div class="memory-entry">
+        <strong>[2026-11-26 | Prompt Memory #04 | DR-TRTT-OPS-001]:</strong> Embedded <code>DR-TRTT-OPS-001</code> and <code>https://github.com/Cocvghuj/trttvoyage-diamond-king-chatgpt-6</code> directly inside the Master Operating Prompt header and protocol.
+      </div>
+      <div class="memory-entry">
+        <strong>[2026-11-26 | Prompt Memory #05 | DR-TRTT-OPS-001]:</strong> Evaluated workflow against Automated GitOps &amp; Headless AI-Powered Content Pipeline; documented human-in-the-loop gates and CI/API automation requirements.
+      </div>
+      <div class="memory-entry">
+        <strong>[2026-11-26 | Prompt Memory #06 | DR-TRTT-OPS-001]:</strong> Answered uniqueness query: exact combined setup is custom to TRTT Voyage while individual GitOps/logging/publishing patterns exist broadly.
+      </div>
+    </section>
+  </div>
+</body>
+</html>
