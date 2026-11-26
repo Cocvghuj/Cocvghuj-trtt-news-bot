@@ -52,7 +52,15 @@ jobs:
           TRtt_BASE_URL: http://127.0.0.1:4173/index-v3-visual-fixed.html
         run: node --test products/trtt-magic-ai-tool-builder/tests/e2e/tool-builder.spec.cjs products/trtt-magic-ai-tool-builder/tests/e2e/visual-qa.spec.cjs
 
-      - name: Upload visual QA screenshots\n        if: always()\n        uses: actions/upload-artifact@v4\n        with:\n          name: trtt-visual-qa-screenshots\n          path: test-results/*.png\n          if-no-files-found: ignore\n\n      - name: Stop local static server
+      - name: Upload visual QA screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trtt-visual-qa-screenshots
+          path: test-results/*.png
+          if-no-files-found: ignore
+
+      - name: Stop local static server
         if: always()
         run: |
           if [ -f /tmp/trtt-tool-builder-http.pid ]; then
