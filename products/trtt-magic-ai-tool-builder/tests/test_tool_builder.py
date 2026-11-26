@@ -66,8 +66,8 @@ class ToolBuilderSourceTests(unittest.TestCase):
         cls.script = "\n".join(cls.parser.script_parts)
 
     def test_document_and_mobile_viewport_exist(self):
-        self.assertRegex(self.html.lower(), r"<!doctype\\s+html>")
-        self.assertRegex(self.html, r'<html\\s+lang=["\']en["\']')
+        self.assertRegex(self.html.lower(), r"<!doctype\s+html>")
+        self.assertRegex(self.html, r'<html\s+lang=["\']en["\']')
         viewport = [
             item for item in self.parser.meta
             if item.get("name", "").lower() == "viewport"
@@ -115,20 +115,20 @@ class ToolBuilderSourceTests(unittest.TestCase):
 
     def test_responsive_and_keyboard_accessibility_rules_exist(self):
         self.assertIn(":focus-visible", self.html)
-        self.assertRegex(self.html, r"@media\\s*\\(max-width:\\s*900px\\)")
-        self.assertRegex(self.html, r"@media\\s*\\(max-width:\\s*540px\\)")
+        self.assertRegex(self.html, r"@media\s*\(max-width:\s*900px\)")
+        self.assertRegex(self.html, r"@media\s*\(max-width:\s*540px\)")
         self.assertIn("prefers-reduced-motion:reduce", self.html)
 
     def test_no_external_assets_or_network_calls(self):
         self.assertEqual(self.parser.external_scripts, [])
         self.assertEqual(self.parser.external_stylesheets, [])
-        for pattern in (r"\\bfetch\\s*\\(", r"\\bXMLHttpRequest\\b",
-                        r"\\bWebSocket\\b"):
+        for pattern in (r"\bfetch\s*\(", r"\bXMLHttpRequest\b",
+                        r"\bWebSocket\b"):
             self.assertIsNone(re.search(pattern, self.html, re.I), pattern)
 
     def test_no_dynamic_code_or_browser_storage(self):
-        for pattern in (r"\\beval\\s*\\(", r"\\bnew\\s+Function\\b",
-                        r"\\blocalStorage\\b", r"\\bsessionStorage\\b"):
+        for pattern in (r"\beval\s*\(", r"\bnew\s+Function\b",
+                        r"\blocalStorage\b", r"\bsessionStorage\b"):
             self.assertIsNone(re.search(pattern, self.html, re.I), pattern)
 
     def test_brand_palette_uses_only_approved_hex_colours(self):
