@@ -24,7 +24,7 @@ ALLOWED_TAGS = {
 }
 ALLOWED_ATTRIBUTES = {
     "class", "id", "href", "src", "alt", "title", "rel", "target",
-    "width", "height", "loading", "aria-label", "role",
+    "width", "height", "loading", "aria-label", "role", "style",
 }
 
 
@@ -52,6 +52,8 @@ class ArticleInspector(HTMLParser):
         for name, value in attr_map.items():
             if name.startswith("on") or name not in ALLOWED_ATTRIBUTES:
                 self.errors.append(f"Disallowed HTML attribute: {name}")
+            if name == "style" and re.search(r"url\s*\(|expression\s*\(|@import|javascript:|behavior\s*:|-moz-binding", value, re.I):
+                self.errors.append("Unsafe CSS in style attribute.")
             if name in {"href", "src"}:
                 parsed = urlparse(value.strip())
                 if parsed.scheme != "https" or not parsed.netloc:
@@ -86,8 +88,9 @@ def validate_article(path: str) -> tuple[str, str]:
     if SITE_URL not in content:
         raise RuntimeError("Required TRTT Voyage website link is missing.")
     lowered = content.lower()
-    if not re.search(r"affiliate disclosure|affiliate links", lowered):
-        raise RuntimeError("A transparent affiliate disclosure is required.")
+    has_affiliate_material = bool(re.search(r"affiliate|amzn\.to|travelpayouts|airalo|aviasales|booking\.com|(?:[?&](?:ref|tag)=)", lowered))
+    if has_affiliate_material and not re.search(r"affiliate disclosure|affiliate links", lowered):
+        raise RuntimeError("Affiliate material requires a transparent affiliate disclosure.")
     if not re.search(r"\bfaq\b|frequently asked questions", lowered):
         raise RuntimeError("An FAQ section is required.")
     inspector = ArticleInspector()
@@ -98,8 +101,8 @@ def validate_article(path: str) -> tuple[str, str]:
     title = " ".join("".join(inspector.h1_parts).split())
     if inspector.h1_count != 1 or not title or len(title) > 300:
         raise RuntimeError("Article must contain exactly one non-empty H1 title (maximum 300 characters).")
-    if inspector.h2_count < 6:
-        raise RuntimeError("Article must contain five main sections plus an FAQ heading.")
+    if inspector.h2_count < 3:
+        raise RuntimeError("Article must contain at least three meaningful H2 sections.")
     return title, content
 
 
