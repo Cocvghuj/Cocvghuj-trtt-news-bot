@@ -24,6 +24,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Validate Blogger theme XML
+        run: python scripts/validate_blogger_theme.py
+
       - name: Run TRTT tests
         run: |
           npm install
