@@ -1,75 +1,110 @@
-# TRTT News 24 BD — GitHub-managed Blogger publishing and site assets
+# TRTT Voyage — Website, Publishing & Digital Tools
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![Security Policy](https://img.shields.io/badge/Security-Policy-blue)](./SECURITY.md)
-[![Vercel App](https://img.shields.io/badge/Vercel-Live%20App-000000?logo=vercel)](https://cocvghuj-trtt-news-bot.vercel.app/)
+<div align="center">
 
-This repository is the source of truth for the GitHub-managed parts of TRTT News 24 BD. GitHub Actions synchronizes supported content to Blogger; Vercel serves the public menu and theme assets.
+**[TRTT Voyage — From Vision to Global Brand!](https://trttvoyage.com)**  
+**Explore Beyond. Discover Everything.**
 
-## Live projects
+[![Official Website](https://img.shields.io/badge/Official%20Website-TRTT%20Voyage-E98BAF?style=for-the-badge)](https://trttvoyage.com)
+[![GitHub](https://img.shields.io/badge/GitHub-Cocvghuj-11152D?style=for-the-badge&logo=github)](https://github.com/Cocvghuj)
+[![Organization](https://img.shields.io/badge/Organization-Trttvoyage-B77991?style=for-the-badge)](https://github.com/Trttvoyage)
 
-- [TRTT News 24 BD on Blogger](https://trttnews24bd.blogspot.com/)
-- [TRTT web app](https://cocvghuj-trtt-news-bot.vercel.app/)
-- [FlightScoutPro itinerary planner](https://cocvghuj-trtt-news-bot.vercel.app/flightscoutpro-itinerary.html)
-- [Flight search tool](https://cocvghuj-trtt-news-bot.vercel.app/tools/flight-search.html)
-- [Delay calculator](https://cocvghuj-trtt-news-bot.vercel.app/tools/delay-calculator.html)
+**ONE TEAM. ONE VISION. ONE JOURNEY.**
 
-## What GitHub controls
+</div>
 
-| Blog area | Source of truth / control | Current boundary |
-| --- | --- | --- |
-| Posts | `posts/*.md` → Blogger Posts via GitHub Actions | Supported files are published live; edits sync; deleting a managed source file deletes its managed Blogger post |
-| Pages | `pages/trttnews24bd/*.html` → Blogger Pages via GitHub Actions | Same managed-source behavior as posts |
-| Menu | `blog-control.json` → Vercel → Blogger HTML/JavaScript gadget | The gadget must be installed once in Blogger Layout |
-| Theme styling | `trtt-theme.css` → Vercel → Blogger gadget stylesheet | CSS styling is controlled; Blogger Theme XML is not |
-| Comments | GitHub Actions workflow **Blogger Admin and Comments** | Read/list/approve/mark-spam/delete selected comments; moderation is manual |
-| Blog audit | GitHub Actions workflow **Blogger Admin and Comments** | Read-only blog, post, page, comment and page-view report |
+## About TRTT Voyage
 
-## Publish and edit content
+TRTT Voyage is an independent digital publishing and product-building project founded by **Engr. Abu Taher**. Its focus is practical travel information, verified news, AI-assisted workflows, free web tools, and useful software experiments.
 
-- Add or edit a Markdown article in `posts/*.md`.
-- Add or edit an HTML page in `pages/trttnews24bd/*.html`.
-- Push to `main`; the content-sync workflow updates the matching GitHub-managed Blogger items.
-- `posts/news_guideline.md` is intentionally excluded.
-- Removing a managed source file is destructive: the next sync deletes the corresponding GitHub-managed Blogger item. Review deletions before pushing.
+The project is built around four public areas:
 
-The sync uses stable source markers and does not intentionally modify Blogger posts/pages that do not carry a TRTT GitHub source marker.
+- **News** — sourced, dated, transparent editorial content.
+- **Travel** — guides, trip-planning resources, and clearly disclosed partner links.
+- **AI** — explainers and human-reviewed AI-assisted workflows.
+- **Tools** — practical utilities and software experiments with honest feature and privacy notes.
 
-## Menu and styling
+Not every idea or prototype is a finished or publicly deployed product. Each feature must be tested and described according to its actual status.
 
-Edit `blog-control.json` for the brand, ordered links, and colors. Edit `trtt-theme.css` for presentation. The Vercel build copies public browser assets from the repository into `dist/`.
+## Official TRTT Voyage links
 
-One-time Blogger setup is required: keep a single HTML/JavaScript gadget in Blogger Layout containing the assets shown in [BLOGGER_MENU_INSTALL.md](./BLOGGER_MENU_INSTALL.md). Do not place OAuth credentials or deployment tokens in that gadget.
+- [Official website](https://trttvoyage.com)
+- [GitHub profile — Engr. Abu Taher](https://github.com/Cocvghuj)
+- [GitHub organization — Trttvoyage](https://github.com/Trttvoyage)
+- [WhatsApp Channel](https://whatsapp.com/channel/0029Vb8co9VDeONEz0B5e51M)
+- [Telegram Channel](https://t.me/trttnews24bd)
+- [Facebook](https://www.facebook.com/profile.php?id=61595319351601)
+- [CodePen](https://codepen.io/Abu-Taher-the-styleful)
+- [Buy Me a Coffee](https://buymeacoffee.com/engrtaher20)
 
-## Comments and audit
+## Application and repository links
 
-Open GitHub → Actions → **Blogger Admin and Comments**. The default audit is read-only. Comment moderation requires an explicit manual workflow run and the target post/comment IDs. Permanent deletion additionally requires the exact confirmation string described in [BLOGGER_COMMENTS_ADMIN.md](./BLOGGER_COMMENTS_ADMIN.md).
+- **GitHub source:** this repository.
+- **Vercel project domain:** [cocvghuj-trtt-news-bot.vercel.app](https://cocvghuj-trtt-news-bot.vercel.app/) — a READY production deployment exists in the connected Vercel project, but the project live-alias flag and public access have not been independently confirmed.
+- **FlightScoutPro:** a separate project with separate ownership and workflows. It is not part of TRTT Voyage publishing or credential scope.
 
-## What cannot be fully controlled by GitHub
+The canonical TRTT Voyage website link is shown first. The older GitHub repository name, Blogger source folder identifiers, and Vercel project slug are technical identifiers; they are not the public brand name.
 
-The public Blogger API does not expose general write operations for Blogger Theme XML, Layout gadget placement, all Blogger Settings, or Google account-level settings. Therefore this repository does not claim complete control of the Blogger account. The Blogger-side loader installation and unsupported settings remain manual Blogger-dashboard actions. Do not assume a GitHub push changed those areas.
+## What this repository contains
 
-## Validation
+This repository contains multiple components. Read [AGENTS.md](./AGENTS.md) before making code changes.
+
+| Area | Main files | Purpose |
+|---|---|---|
+| Static web/PWA | `index.html`, `app.html`, `manifest.json`, `sw.js` | Public site and supporting browser experience |
+| Blogger menu and styling | `blog-control.json`, `trtt-theme.css`, menu assets | Blogger-facing navigation and presentation |
+| Content and pages | `posts/`, `pages/`, `blog/` | Source material and page templates |
+| Blogger draft workflows | `post_news_draft.py`, `post_diary_draft.py`, related scripts | Controlled draft creation and validation |
+| Answer Engine | `api/answer.js`, `trtt-all-in-one.js`, `public/trtt-all-in-one.js` | Server-side answer service and browser UI |
+| Tests and build | `tests/`, `scripts/`, `build.js` | Offline validation and static build |
+
+## Blogger and publishing boundaries
+
+- GitHub source files do not automatically prove that a Blogger page, theme, menu, or setting has changed.
+- The Blogger content-sync workflow is currently disabled.
+- The repository may contain draft-generation workflows. A draft is not a live post.
+- Live Blogger publishing, theme replacement, and Blogger Layout changes require separate owner approval.
+- Existing Blogger posts, pages, widgets, and historical content must be preserved.
+- The directory `pages/trttnews24bd/` is retained as a legacy integration/source identifier for compatibility. Its presence does not define the public brand. Do not rename it without auditing every workflow and Blogger mapping.
+
+## Vercel and deployment
+
+The repository is linked to the TRTT Vercel team. The latest production deployment reported by Vercel is READY, but the project-level live flag is false and the custom domain `trttvoyage.com` is not attached to this Vercel team. Do not infer that a production alias, Blogger custom domain, or public route works from a successful build alone.
+
+No deployment is performed by this documentation change. Production deployment, domain attachment, DNS, and security settings remain owner-approved operations.
+
+## Development and validation
+
+Run only the checks appropriate to the component being changed. The repository includes:
 
 ```bash
-python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
+npm test
 npm run build
 ```
 
+Do not run content-generation or publishing scripts as a substitute for tests. Follow [AGENTS.md](./AGENTS.md) and the workflow-specific documentation.
 
-## Roksana Nila Answer Engine
+## Security and privacy
 
-The Answer Engine uses the Blogger-facing UI in `trtt-all-in-one.js` and the server-only Vercel function in `api/answer.js`. The browser asset mirror at `public/trtt-all-in-one.js` must remain identical. Provider secrets are server-side Vercel environment variables only: `GEMINI_API_KEY` and `OPENROUTER_API_KEY`.
+- Never commit OAuth refresh tokens, API keys, passwords, Telegram bot tokens, or deployment credentials.
+- Keep TRTT Voyage and FlightScoutPro workflows, blog IDs, and secrets isolated.
+- Store credentials only in the exact approved GitHub Actions or Vercel secret store required by the relevant workflow.
+- Do not publish private email addresses, personal phone numbers, or account recovery details in public pages.
+- Public contact is through the official social/community links above.
 
-- Architecture and owner-side deployment steps: [ANSWER-ENGINE-DEPLOYMENT.md](./ANSWER-ENGINE-DEPLOYMENT.md)
-- One-shot Copilot task prompt: [COPILOT_ONE_SHOT_PROMPT.md](./COPILOT_ONE_SHOT_PROMPT.md)
-- Repository Copilot rules: [.github/copilot-instructions.md](./.github/copilot-instructions.md)
+## Disclaimer and transparency
 
-Run `npm test` and `npm run build` before deployment. These checks are offline and do not consume AI API quota. The Answer Engine source is prepared in GitHub only; a Vercel deployment and one-time Blogger Layout gadget installation are separate owner-side steps. No GitHub push alone proves the live Blogger page changed.
+TRTT Voyage is an independent information and software project. It is not an airline, travel agency, law firm, or government authority. Travel information, fares, schedules, availability, regulations, and partner terms can change; verify important details with official providers before acting.
 
-## Security
+Some content may contain affiliate links. Where applicable, the relationship must be disclosed clearly near the link. Affiliate links do not guarantee a booking, saving, or result.
 
-Blogger OAuth credentials belong only in GitHub Actions secrets. Never commit refresh tokens, client secrets, access tokens, or deployment credentials. Public Vercel assets must contain presentation code only.
+AI tools may assist with research, writing, translation, coding, and review. Human review remains necessary. AI assistance is not a substitute for professional legal, financial, medical, travel, or security advice.
 
-See [Security Policy](./SECURITY.md), [Compliance notes](./COMPLIANCE.md), and [MIT License](./LICENSE).
+Third-party projects and services retain their own ownership, licenses, trademarks, terms, and privacy policies. A fork or integration does not imply endorsement or ownership.
+
+---
+
+**Owner:** Engr. Abu Taher  
+**Brand:** [TRTT Voyage](https://trttvoyage.com)  
+**Project motto:** ONE TEAM. ONE VISION. ONE JOURNEY.
