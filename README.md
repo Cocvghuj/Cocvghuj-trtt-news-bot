@@ -69,7 +69,7 @@ This repository contains multiple components. Read [AGENTS.md](./AGENTS.md) befo
 
 ## Vercel and deployment
 
-The repository is linked to the TRTT Vercel team. The latest production deployment reported by Vercel is READY, but the project-level live flag is false and the custom domain `trttvoyage.com` is not attached to this Vercel team. Do not infer that a production alias, Blogger custom domain, or public route works from a successful build alone.
+The official site `https://trttvoyage.com/` was checked on 27 November 2026 and resolves to `https://www.trttvoyage.com/`, serving the TRTT Voyage Blogger website. The main website domain is Blogger-managed; it is not expected to be attached to the Vercel team. The separate Vercel route `https://cocvghuj-trtt-news-bot.vercel.app/super-app` was also checked and returned the TRTT VoyageHub Super App page. Vercel reports the latest production deployment as READY while the project-level live flag is false; treat deployment metadata and public route resolution as separate signals.
 
 No deployment is performed by this documentation change. Production deployment, domain attachment, DNS, and security settings remain owner-approved operations.
 
