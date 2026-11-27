@@ -42,6 +42,14 @@
       "destination": "/api/:path*"
     },
     {
+      "source": "/blog",
+      "destination": "/blog/trtt-voyage-news-hub.html"
+    },
+    {
+      "source": "/blog/",
+      "destination": "/blog/trtt-voyage-news-hub.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
