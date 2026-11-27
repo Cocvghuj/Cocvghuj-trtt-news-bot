@@ -1,51 +1,37 @@
-# TRTT Voyage — Diamond Horizon Blogger Theme Review
+# TRTT Voyage — Original Diamond Horizon Blogger Theme Review
 
-**Candidate:** `TRTT-Voyage-Generation-2-ULTIMATE.xml`  
-**Project:** DR-TRTT-OPS-001  
-**Brand:** TRTT Voyage — From Vision to Global Brand! Explore Beyond. Discover Everything.  
-**Status:** Candidate only; not installed on Blogger.
+Date: 2026-11-27  
+Project: DR-TRTT-OPS-001  
+Branch: `feature/trtt-original-diamond-horizon-theme-20261127`
 
-## Design direction
+## Scope
+This candidate replaces the previously merged third-party-derived Mitti customization with a new minimal layout authored for TRTT Voyage. It retains the existing widget IDs observed in the prior candidate and adds the previously requested IDs: PopularPosts1, PopularPosts2, PageList1, Profile1, and ReportAbuse1.
 
-- Diamond Horizon identity using Pink `#E98BAF`, Piyaji `#B77991`, Kathali `#D6A542`, Royal Midnight `#11152D`, White `#FFFFFF`, and restrained Cyan `#67E8F9` / Diamond Gold `#FFD700` accents.
-- Mobile-first editorial layout with a dark brand header, simple navigation, a TRTT Voyage hero, clean article cards, and a dark footer.
-- Homepage navigation is limited to Home, News, Travel, AI, Tools, and About. News, Travel, AI, and Tools destinations were checked against live Blogger routes; the menu uses existing non-empty routes.
-- Footer includes About, Privacy, Disclaimer, and known public TRTT channels. The Contact page route currently returns 404, so it is not linked until the Owner creates the live Blogger page.
-- Existing Blog1, Header1, LinkList74, Label1, ContactForm1, and other source widgets are retained; Blog1 share buttons remain disabled. The legacy PageList1 and Profile1 widgets are hidden from public rendering to avoid an old Blogger home URL and personal location/profile panel.
+## Design
+- Palette: #E98BAF, #B77991, #D6A542, #11152D, #FFFFFF, #67E8F9, #FFD700.
+- Mobile-first responsive layout, system fonts, no external CSS/JS libraries.
+- Homepage hero, News/Travel/AI/Tools menu, post stream, sidebar widgets, and public brand footer.
+- Thinking Room and personal diary content are intentionally not included.
+- Footer includes only Owner-supplied public links.
 
-## Safety changes
-
-- Started from the current repository theme source and created a separate new candidate file. The old theme file remains untouched.
-- Removed the obfuscated `eval()` theme function block and the malformed legacy auto-link mutation script.
-- Removed the `deleted='true'` section attribute while keeping the hidden contact widget container hidden.
-- Removed the old `trttnews24bd.blogspot.com` navigation destination. The legacy Blogger PageList/Profile widgets are hidden; personal diary cards are filtered from public feeds and old TRTT News24BD label chips are hidden. Diary content remains available on its own label route. The old Telegram channel handle remains only in the actual Telegram URL because the public channel handle has not been changed.
-- The legacy Thinking Room overlay loader is not included on the public homepage; the Thinking Room remains a separate module.
-- Removed the generic Lorem Ipsum footer caption.
-- No posts, Blogger settings, existing live theme, or production deployment were changed.
-
-## Navigation destinations
-
-- Home and category paths are relative to the active Blogger host, so the menu follows whichever Blogger host is actually configured.
-- Tools points to the current Vercel project domain at `/super-app`. The route was checked and returned the TRTT VoyageHub Super App page. Vercel reports a READY production deployment while the project-level live flag is false; public route resolution is independently verified.
-- The brand/header link points to `https://trttvoyage.com/`. The domain resolves to `https://www.trttvoyage.com/` and serves the TRTT Voyage Blogger website. It is Blogger-managed, not a Vercel custom domain.
+## Safety and preservation
+- No auto-publish, redirect, delete behavior, eval(), or location.href.
+- No FlightScoutPro content or credentials.
+- Existing widget IDs are represented in the candidate, but this does not guarantee their saved Blogger configuration/content will migrate. Export the current Blogger theme and preserve widget settings before any import.
+- This is source-level work only. It has not been imported into Blogger or tested against Blogger's live template compiler, Layout editor, comments, pagination, or mobile rendering.
 
 ## Validation
+Run:
+```bash
+python scripts/validate_blogger_theme.py
+```
+The validator checks XML well-formedness, required/preserved widget IDs, menu destinations, Blog1 settings, palette, privacy and safety tokens. Passing this validator is not proof of Blogger import compatibility.
 
-The PR adds `scripts/validate_blogger_theme.py` and a PR workflow step to check:
-- XML well-formedness with Python's standard-library XML parser.
-- Forbidden patterns: `eval(`, `location.href`, `deleted='true'`, and `auto-publish`.
-- Required existing widget IDs and uniqueness.
-- Six navigation labels and non-empty destinations.
-- Blog1 share buttons disabled.
-- Footer page links and approved palette tokens; verified category routes; personal diary isolation and legacy widget hiding.
-- homepage separation and public policy links.
+## Release gate
+Do not import or replace the live Blogger theme until the Owner has a current XML backup and explicitly approves the preview/import step. Do not publish or change DNS.
 
-## Not tested
 
-- Blogger Theme preview/import and Layout editor behavior.
-- The Contact page route currently returns 404. About, Privacy, and Disclaimer routes resolve but still show the previous TRTT News 24 BD content; the new English page source in PR #140 has not been installed live.
-- Mobile/desktop browser rendering and accessibility.
-- Final mobile/desktop rendering and accessibility after Blogger preview/import.
-- Live Blogger pages, existing post count, or production deployment.
-
-**Owner approval is required before importing or replacing any live Blogger theme.**
+## Verification record — 27 November 2026
+- The exact validator script from this branch was executed locally against the read-back XML source.
+- Result: PASS (exit code 0). XML well-formedness, all 20 unique widget IDs, required/preserved widget sets, menu values, Blog1 settings, palette tokens, legacy attribution, private contact patterns, and forbidden behavior checks passed.
+- This does not substitute for Blogger's own template compiler or live Layout/rendering checks; those remain NOT TESTED.
