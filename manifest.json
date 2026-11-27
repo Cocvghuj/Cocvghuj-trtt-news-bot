@@ -1,1 +1,10 @@
-{"name":"TRTT GLOBAL","short_name":"TRTT","start_url":"/Cocvghuj-trtt-news-bot/","display":"standalone","theme_color":"#0d001a"}
+{
+  "name": "TRTT VoyageHub — Travel Tools & Guides",
+  "short_name": "TRTT Voyage",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#11152D",
+  "scope": "/",
+  "background_color": "#FFFFFF",
+  "description": "TRTT Voyage travel tools, destination guides, and useful booking resources."
+}
