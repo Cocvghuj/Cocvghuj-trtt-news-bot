@@ -76,8 +76,8 @@ for color in ("#E98BAF", "#B77991", "#D6A542", "#11152D", "#FFFFFF", "#67E8F9", 
     if color.lower() not in raw.lower():
         fail(f"Approved TRTT palette token missing: {color}")
 
-if "trtt-loader.js" not in raw:
-    fail("Reviewed TRTT control loader reference is missing.")
+if "trtt-loader.js" in raw or "trtt-thinking-room-trigger" in raw:
+    fail("Thinking Room overlay must remain separate from the public homepage.")
 if 'var hiddenLabels = ["my dairy", "diary"]' not in raw:
     fail("Personal diary isolation filter is missing.")
 if "#PageList1,#Profile1{display:none!important}" not in raw:
