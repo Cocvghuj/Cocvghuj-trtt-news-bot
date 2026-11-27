@@ -63,7 +63,8 @@ expected = {
     "text-2": "Travel", "link-2": "/search/label/Travel",
     "text-3": "AI", "link-3": "/search/label/AI",
     "text-4": "Tools", "link-4": "https://cocvghuj-trtt-news-bot.vercel.app/super-app",
-    "text-5": "About", "link-5": "/p/about-us.html",
+    "text-5": "Amazon Picks", "link-5": "/p/amazon-picks.html",
+    "text-6": "About", "link-6": "/p/about-us.html",
 }
 for key, value in expected.items():
     if settings.get(key) != value:
