@@ -49,9 +49,17 @@ settings = {item.attrib.get("name"): (item.text or "").strip() for item in menu.
 for index, label in enumerate(("Home", "News", "Travel", "AI", "Tools", "About")):
     if settings.get(f"text-{index}") != label:
         fail(f"Menu item {index} should be {label!r}.")
-for key in ("link-0", "link-1", "link-2", "link-3", "link-4", "link-5"):
-    if not settings.get(key):
-        fail(f"Menu destination is empty: {key}")
+expected_destinations = {
+    "link-0": "/",
+    "link-1": "/search/label/TRTT%20News24BD",
+    "link-2": "/search?q=travel",
+    "link-3": "/search/label/AI",
+    "link-4": "https://cocvghuj-trtt-news-bot.vercel.app/super-app",
+    "link-5": "/p/about-us.html",
+}
+for key, expected in expected_destinations.items():
+    if settings.get(key) != expected:
+        fail(f"Unexpected or unverified menu destination for {key}: {settings.get(key)!r}")
 
 blog = root.find(f".//{B_NS}widget[@id='Blog1']/{B_NS}widget-settings")
 if blog is None:
@@ -60,7 +68,7 @@ blog_settings = {item.attrib.get("name"): (item.text or "").strip() for item in 
 if blog_settings.get("showShareButtons") != "false":
     fail("Blog1 share buttons must remain disabled.")
 
-for page_path in ("/p/about-us.html", "/p/contact-us.html", "/p/privacy-policy.html", "/p/disclaimer.html"):
+for page_path in ("/p/about-us.html", "/p/privacy-policy.html", "/p/disclaimer.html"):
     if page_path not in raw:
         fail(f"Footer page link missing: {page_path}")
 
@@ -70,5 +78,11 @@ for color in ("#E98BAF", "#B77991", "#D6A542", "#11152D", "#FFFFFF", "#67E8F9", 
 
 if "trtt-loader.js" not in raw:
     fail("Reviewed TRTT control loader reference is missing.")
+if 'var hiddenLabels = ["my dairy", "diary"]' not in raw:
+    fail("Personal diary isolation filter is missing.")
+if "#PageList1,#Profile1{display:none!important}" not in raw:
+    fail("Legacy PageList/Profile widgets must be hidden until their settings are reviewed.")
+if "<a href='/p/contact-us.html'>Contact</a>" in raw:
+    fail("Do not link the Contact page until the live Blogger page exists.")
 
 print(f"PASS: {THEME.name} is well-formed XML and passed static safety, widget, menu, footer, and palette checks.")
