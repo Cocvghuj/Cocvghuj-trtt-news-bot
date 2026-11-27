@@ -19,7 +19,7 @@
 - Removed the obfuscated `eval()` theme function block and the malformed legacy auto-link mutation script.
 - Removed the `deleted='true'` section attribute while keeping the hidden contact widget container hidden.
 - Removed the old `trttnews24bd.blogspot.com` navigation destination. The legacy Blogger PageList/Profile widgets are hidden; personal diary cards are filtered from public feeds and old TRTT News24BD label chips are hidden. Diary content remains available on its own label route. The old Telegram channel handle remains only in the actual Telegram URL because the public channel handle has not been changed.
-- Replaced the branch-specific raw JavaScript loader with the reviewed main-branch `trtt-loader.js` reference.
+- The legacy Thinking Room overlay loader is not included on the public homepage; the Thinking Room remains a separate module.
 - Removed the generic Lorem Ipsum footer caption.
 - No posts, Blogger settings, existing live theme, or production deployment were changed.
 
@@ -38,7 +38,7 @@ The PR adds `scripts/validate_blogger_theme.py` and a PR workflow step to check:
 - Six navigation labels and non-empty destinations.
 - Blog1 share buttons disabled.
 - Footer page links and approved palette tokens; verified category routes; personal diary isolation and legacy widget hiding.
-- Reviewed control-loader reference.
+- homepage separation and public policy links.
 
 ## Not tested
 
