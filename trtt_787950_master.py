@@ -134,6 +134,35 @@ def _affiliate_list() -> str:
         for label, url in items
     ) + "</ul>"
 
+AMAZON_ITEMS = (
+    ("Unknown books", "https://amzn.to/4f0psll"),
+    ("Hot Wheels Sprint Circuit", "https://amzn.to/3XPGTiC"),
+    ("Jellycat Bagel Gift", "https://amzn.to/4AOBrei"),
+    ("Christmas Puzzle 100 Pieces", "https://amzn.to/48LAF5K"),
+    ("Exploding Kittens Drawing Game", "https://amzn.to/4tmjVeR"),
+    ("Customers are the Answer to Everything", "https://amzn.to/4j6yfVj"),
+)
+
+def link_approved_amazon_mentions(content: str) -> str:
+    """Link exact mentions of approved products to their own Amazon URLs."""
+    parts = re.split(r'(<[^>]*>)', content)
+    inside_anchor = False
+    for index, part in enumerate(parts):
+        if part.startswith('<'):
+            if part.lower().startswith('</a'):
+                inside_anchor = False
+            elif part.lower().startswith('<a ' ) or part.lower().startswith('<a>'):
+                inside_anchor = True
+            continue
+        if inside_anchor:
+            continue
+        for label, url in AMAZON_ITEMS:
+            pattern = re.compile(re.escape(label), re.IGNORECASE)
+            part = pattern.sub(lambda match, target=url: f'<a href="{target}" target="_blank" rel="sponsored nofollow noopener">{match.group(0)}</a>', part)
+        parts[index] = part
+    return ''.join(parts)
+
+
 
 def build_content(route: dict[str, Any] | str, date_label: str | None = None) -> str:
     """Build a researched-style planning draft; queue prices are explicitly unverified leads."""
@@ -200,6 +229,7 @@ def build_content(route: dict[str, Any] | str, date_label: str | None = None) ->
 <p>The route record is a starting point for a human-reviewed travel guide, not proof that a seat or fare is currently available. Prices, flight times, baggage rules and ground connections are time-sensitive. The editor should confirm each item against the airline, airport and transport operator before approving the post. Keep affiliate disclosures clear wherever a tracked link appears, and make sure the reader can distinguish editorial guidance from a commercial link. The article should remain useful even if a displayed fare changes or a particular service is no longer offered.</p>
 
 </article>""")
+    content = link_approved_amazon_mentions(content)
     if _plain_word_count(content) < 800:
         raise AssertionError(f"Draft content is too short: {_plain_word_count(content)} words; minimum is 800.")
     required = [
@@ -209,7 +239,6 @@ def build_content(route: dict[str, Any] | str, date_label: str | None = None) ->
         "Ghost-SIM = eSIM",
         "787950 LOCKED",
         LIVE_APP,
-        "amzn.to/4shg6Hn?marker=787950",
         str(route["from"]),
         str(route["to"]),
     ]
@@ -343,7 +372,7 @@ def main() -> int:
         "EC 261/2004": "EC 261/2004" in content,
         "787950 LOCKED": MARKER in content,
         "Vercel Link": LIVE_APP in content,
-        "Affiliate": AFFILIATES["amazon"] in content,
+        "Amazon allowlist": all(url in content for _, url in AMAZON_ITEMS) and "https://amzn.to/4shg6Hn" not in content,
     }
     for label, passed in checks.items():
         print(f"{label}: {'YES' if passed else 'NO'}")
