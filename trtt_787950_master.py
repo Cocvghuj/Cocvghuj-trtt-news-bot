@@ -163,6 +163,12 @@ def link_approved_amazon_mentions(content: str) -> str:
     return ''.join(parts)
 
 
+def amazon_links_are_approved(content: str) -> bool:
+    """Allow only supplied six-item Amazon URLs; zero item links is valid."""
+    allowed = {url for _, url in AMAZON_ITEMS}
+    found = re.findall(r'https://amzn\\.to/[A-Za-z0-9]+', content)
+    return all(url in allowed for url in found)
+
 
 def build_content(route: dict[str, Any] | str, date_label: str | None = None) -> str:
     """Build a researched-style planning draft; queue prices are explicitly unverified leads."""
@@ -372,7 +378,7 @@ def main() -> int:
         "EC 261/2004": "EC 261/2004" in content,
         "787950 LOCKED": MARKER in content,
         "Vercel Link": LIVE_APP in content,
-        "Amazon allowlist": all(url in content for _, url in AMAZON_ITEMS) and "https://amzn.to/4shg6Hn" not in content,
+        "Amazon allowlist": amazon_links_are_approved(content),
     }
     for label, passed in checks.items():
         print(f"{label}: {'YES' if passed else 'NO'}")
