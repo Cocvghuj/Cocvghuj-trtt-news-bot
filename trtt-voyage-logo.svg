@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">TRTT Voyage</title>
+  <desc id="desc">TRTT Voyage diamond monogram in the official brand palette.</desc>
+  <rect width="256" height="256" rx="58" fill="#11152D"/>
+  <path d="M54 62h148v34h-56v100H110V96H54z" fill="#E98BAF"/>
+  <path d="M184 38l23 23-23 23-23-23z" fill="#D6A542"/>
+  <circle cx="196" cy="176" r="11" fill="#67E8F9"/>
+  <path d="M40 218h176" stroke="#B77991" stroke-width="5" stroke-linecap="round"/>
+</svg>

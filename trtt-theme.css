@@ -2,12 +2,15 @@
   --trtt-brand-pink: #E98BAF;
   --trtt-brand-piyaji: #B77991;
   --trtt-brand-kathali: #D6A542;
+  --trtt-royal-midnight: #11152D;
+  --trtt-diamond-cyan: #67E8F9;
+  --trtt-diamond-gold: #FFD700;
   --trtt-page-bg: #FFFFFF;
   --trtt-surface: #FFFFFF;
-  --trtt-text: #202238;
-  --trtt-muted: #686B7D;
-  --trtt-border: #F0E3E9;
-  --trtt-shadow: 0 10px 28px rgba(77, 43, 58, .08);
+  --trtt-text: #11152D;
+  --trtt-muted: #B77991;
+  --trtt-border: rgba(183,121,145,.28);
+  --trtt-shadow: 0 10px 28px rgba(17, 21, 45, .08);
 }
 
 html,
@@ -44,7 +47,7 @@ a:hover {
 
 .header-widget,
 header#header {
-  background: linear-gradient(125deg, #11152D 0%, #29233F 58%, #B77991 100%) !important;
+  background: linear-gradient(125deg, #11152D 0%, #11152D 58%, #B77991 100%) !important;
   border: 0 !important;
   border-bottom: 5px solid var(--trtt-brand-kathali) !important;
   border-radius: 0 0 20px 20px !important;
@@ -67,7 +70,7 @@ header h1.title {
 
 .header-widget .description,
 header .description {
-  color: #FFF2F6 !important;
+  color: #FFFFFF !important;
   font-size: 14px !important;
   margin-top: 9px !important;
 }
@@ -98,7 +101,7 @@ h1.post-title,
 }
 
 .post-body {
-  color: #202238 !important;
+  color: #11152D !important;
   font-size: 16.5px !important;
   line-height: 1.85 !important;
 }
@@ -111,7 +114,7 @@ h1.post-title,
 
 .widget h2,
 .widget-title {
-  color: #75465C !important;
+  color: #B77991 !important;
   font-weight: 800 !important;
 }
 

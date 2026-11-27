@@ -1,15 +1,17 @@
 {
-  "brand": "TRTT VOYAGE",
+  "brand": "TRTT Voyage",
   "theme": {
     "primary": "#E98BAF",
     "accent": "#D6A542",
     "background": "#FFFFFF",
     "surface": "#FFFFFF",
-    "text": "#202238",
-    "muted": "#686B7D",
+    "text": "#11152D",
+    "muted": "#B77991",
     "menuBackground": "#11152D",
-    "mobileBackground": "#B77991",
-    "menuText": "#FFFFFF"
+    "mobileBackground": "#E98BAF",
+    "menuText": "#FFFFFF",
+    "diamondCyan": "#67E8F9",
+    "diamondGold": "#FFD700"
   },
   "menu": [
     {
@@ -20,12 +22,12 @@
     {
       "id": "news",
       "label": "News",
-      "href": "/search/label/News"
+      "href": "/search/label/TRTT%20News24BD"
     },
     {
       "id": "travel",
       "label": "Travel",
-      "href": "/search/label/Travel"
+      "href": "/search?q=travel"
     },
     {
       "id": "ai",
@@ -35,7 +37,7 @@
     {
       "id": "tools",
       "label": "Tools",
-      "href": "https://cocvghuj-trtt-news-bot-git-main-trtt6.vercel.app/"
+      "href": "https://cocvghuj-trtt-news-bot.vercel.app/super-app"
     },
     {
       "id": "about",
