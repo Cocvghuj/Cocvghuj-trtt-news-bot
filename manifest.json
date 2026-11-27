@@ -6,5 +6,13 @@
   "theme_color": "#11152D",
   "scope": "/",
   "background_color": "#FFFFFF",
-  "description": "TRTT Voyage travel tools, destination guides, and useful booking resources."
+  "description": "TRTT Voyage travel tools, destination guides, and useful booking resources.",
+  "icons": [
+    {
+      "src": "/trtt-voyage-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
 }
