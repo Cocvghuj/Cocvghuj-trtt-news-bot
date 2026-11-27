@@ -21,7 +21,7 @@ const PUBLIC_TEXT_FILES = new Set([
   'robots.txt',
   'sitemap.txt'
 ]);
-const PRIVATE_FILES = new Set(['build.js', 'roksana-vault.js', 'trtt-auto-sync.js', 'site.css']);
+const PRIVATE_FILES = new Set(['build.js', 'roksana-vault.js', 'trtt-auto-sync.js', 'trtt-loader.js', 'trtt-original-logo.jpeg', 'site.css']);
 const PRIVATE_PATHS = new Set(['blog/index.html']);
 const IGNORED_DIRECTORIES = new Set([
   '.git', '.github', 'api', 'dist', 'node_modules',
@@ -65,7 +65,7 @@ fs.readdirSync(root).forEach(file => {
   copyRecursive(path.join(root, file), path.join(dist, file));
 });
 
-const requiredPublicAssets = ['trtt-theme.css', 'trtt-blog-menu.js', 'trtt-voyage-menu.js', 'blog-control.json', 'assets/css/trtt-voyage-site.css', 'blog/trtt-voyage-news-hub.html'];
+const requiredPublicAssets = ['trtt-theme.css', 'trtt-blog-menu.js', 'trtt-voyage-menu.js', 'blog-control.json', 'assets/css/trtt-voyage-site.css', 'blog/trtt-voyage-news-hub.html', 'trtt-voyage-logo.svg'];
 for (const asset of requiredPublicAssets) {
   if (!fs.existsSync(path.join(dist, asset))) {
     throw new Error('Build failed: required public Blogger asset is missing from dist: ' + asset);
@@ -89,6 +89,9 @@ if (!builtHtml.includes('trtt-voyage-menu.js')) throw new Error('Build failed: T
 if (builtHtml.includes('roksana-vault.js')) throw new Error('Build failed: legacy personal menu script must not be referenced by the public app.');
 if (fs.existsSync(path.join(dist, 'roksana-vault.js'))) throw new Error('Build failed: legacy menu script must not be copied into the public build.');
 if (fs.existsSync(path.join(dist, 'trtt-auto-sync.js'))) throw new Error('Build failed: retired auto-sync script must not be copied into the public build.');
+if (fs.existsSync(path.join(dist, 'trtt-loader.js'))) throw new Error('Build failed: legacy Thinking Room overlay loader must not be copied into the public bundle.');
+if (fs.existsSync(path.join(dist, 'trtt-original-logo.jpeg'))) throw new Error('Build failed: legacy logo must not be copied into the public bundle.');
+if (!fs.existsSync(path.join(dist, 'trtt-voyage-logo.svg'))) throw new Error('Build failed: TRTT Voyage brand mark is missing from dist.');
 if (fs.existsSync(path.join(dist, 'assets/css/site.css'))) throw new Error('Build failed: malformed legacy stylesheet must not be copied into the public build.');
 if (fs.existsSync(path.join(dist, 'blog/index.html'))) throw new Error('Build failed: legacy blog hub must not be copied into the public build.');
 if (!fs.existsSync(path.join(dist, 'blog/trtt-voyage-news-hub.html'))) throw new Error('Build failed: TRTT Voyage news hub is missing from dist.');
