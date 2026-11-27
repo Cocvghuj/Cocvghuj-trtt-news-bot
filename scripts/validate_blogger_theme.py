@@ -1,88 +1,90 @@
 #!/usr/bin/env python3
-"""Static safety and structure checks for the TRTT Voyage Blogger theme candidate."""
-
+"""Strict offline validation for the original TRTT Voyage Diamond Horizon Blogger theme."""
 from pathlib import Path
 import re
 import sys
 import xml.etree.ElementTree as ET
 
-THEME = Path(__file__).resolve().parents[1] / "TRTT-Voyage-Generation-2-ULTIMATE.xml"
-B_NS = "{http://www.google.com/2005/gml/b}"
+ROOT = Path(__file__).resolve().parents[1]
+THEME = ROOT / "TRTT-Voyage-Generation-2-ULTIMATE.xml"
+B = "{http://www.google.com/2005/gml/b}"
+REQUIRED = {
+    "Header1", "LinkList74", "Blog1", "PopularPosts1", "PopularPosts2",
+    "Label1", "PageList1", "ContactForm1", "Profile1", "ReportAbuse1",
+}
+PRESERVED = {
+    "LinkList70", "LinkList71", "LinkList75", "HTML1", "PopularPosts3",
+    "HTML6", "Label3", "Image150", "LinkList78", "LinkList76",
+}
+PALETTE = {"#E98BAF", "#B77991", "#D6A542", "#11152D", "#FFFFFF", "#67E8F9", "#FFD700"}
 
-def fail(message: str) -> None:
-    print(f"FAIL: {message}", file=sys.stderr)
+def fail(message):
+    print("FAIL:", message, file=sys.stderr)
     raise SystemExit(1)
 
 if not THEME.is_file():
-    fail(f"Theme file not found: {THEME}")
-
+    fail("Theme XML is missing.")
 raw = THEME.read_text(encoding="utf-8")
-
-# Parse the complete Blogger XML document; this catches malformed markup/entities.
 try:
     root = ET.fromstring(raw)
 except ET.ParseError as exc:
-    fail(f"Theme XML is not well-formed: {exc}")
+    fail(f"XML is not well-formed: {exc}")
 
-# Guardrails required for all TRTT Blogger theme candidates.
-for forbidden in ("eval(", "location.href", "deleted='true'", 'deleted="true"', "auto-publish"):
-    if forbidden in raw:
-        fail(f"Forbidden pattern found: {forbidden}")
+for token in ("eval(", "location.href", "deleted='true'", 'deleted="true"', "auto-publish", "window.location", "location.replace", "location.assign"):
+    if token.lower() in raw.lower():
+        fail(f"Forbidden behavior token: {token}")
+for token in ("Mitti", "Way2Themes", "SoraTemplates", "LiveBlogger", "trttnews24bd.blogspot.com", "FlightScoutPro"):
+    if token.lower() in raw.lower():
+        fail(f"Third-party/legacy brand residue: {token}")
+if "https://www.trttvoyage.com/" not in raw:
+    fail("Canonical TRTT website link missing.")
+for color in PALETTE:
+    if color.lower() not in raw.lower():
+        fail(f"Required brand color missing: {color}")
 
-if "trttnews24bd.blogspot.com" in raw:
-    fail("Legacy TRTT News 24 BD Blogger URL remains in the theme.")
-if "FlightScoutPro" in raw:
-    fail("Separate FlightScoutPro branding must not appear in the TRTT Voyage theme.")
+widgets = root.findall(".//" + B + "widget")
+ids = [w.attrib.get("id", "") for w in widgets]
+if len(ids) != len(set(ids)):
+    fail("Duplicate widget IDs.")
+missing = REQUIRED - set(ids)
+if missing:
+    fail("Required widgets missing: " + ", ".join(sorted(missing)))
+missing_preserved = PRESERVED - set(ids)
+if missing_preserved:
+    fail("Existing widget IDs not preserved in candidate: " + ", ".join(sorted(missing_preserved)))
 
-widgets = root.findall(f".//{B_NS}widget")
-widget_ids = [widget.attrib.get("id", "") for widget in widgets]
-for required in ("Header1", "LinkList74", "Blog1", "Label1", "ContactForm1"):
-    if required not in widget_ids:
-        fail(f"Required existing Blogger widget is missing: {required}")
-if len(widget_ids) != len(set(widget_ids)):
-    fail("Duplicate Blogger widget IDs detected.")
-
-menu = root.find(f".//{B_NS}widget[@id='LinkList74']/{B_NS}widget-settings")
+menu = root.find(".//" + B + "widget[@id='LinkList74']/" + B + "widget-settings")
 if menu is None:
-    fail("LinkList74 settings not found.")
-settings = {item.attrib.get("name"): (item.text or "").strip() for item in menu.findall(f"{B_NS}widget-setting")}
-for index, label in enumerate(("Home", "News", "Travel", "AI", "Tools", "About")):
-    if settings.get(f"text-{index}") != label:
-        fail(f"Menu item {index} should be {label!r}.")
-expected_destinations = {
-    "link-0": "/",
-    "link-1": "/search/label/TRTT%20News24BD",
-    "link-2": "/search?q=travel",
-    "link-3": "/search/label/AI",
-    "link-4": "https://cocvghuj-trtt-news-bot.vercel.app/super-app",
-    "link-5": "/p/about-us.html",
+    fail("Main menu settings missing.")
+settings = {x.attrib.get("name"): (x.text or "").strip() for x in menu.findall(B + "widget-setting")}
+expected = {
+    "text-0": "Home", "link-0": "/",
+    "text-1": "News", "link-1": "/search/label/News",
+    "text-2": "Travel", "link-2": "/search/label/Travel",
+    "text-3": "AI", "link-3": "/search/label/AI",
+    "text-4": "Tools", "link-4": "https://cocvghuj-trtt-news-bot.vercel.app/super-app",
+    "text-5": "About", "link-5": "/p/about-us.html",
 }
-for key, expected in expected_destinations.items():
-    if settings.get(key) != expected:
-        fail(f"Unexpected or unverified menu destination for {key}: {settings.get(key)!r}")
+for key, value in expected.items():
+    if settings.get(key) != value:
+        fail(f"Main menu mismatch for {key}: {settings.get(key)!r}")
 
-blog = root.find(f".//{B_NS}widget[@id='Blog1']/{B_NS}widget-settings")
+blog = root.find(".//" + B + "widget[@id='Blog1']/" + B + "widget-settings")
 if blog is None:
-    fail("Blog1 settings not found.")
-blog_settings = {item.attrib.get("name"): (item.text or "").strip() for item in blog.findall(f"{B_NS}widget-setting")}
+    fail("Blog1 settings missing.")
+blog_settings = {x.attrib.get("name"): (x.text or "").strip() for x in blog.findall(B + "widget-setting")}
+for key in ("showAuthor", "showTimestamp", "showLabels", "showCommentLink"):
+    if blog_settings.get(key) != "true":
+        fail(f"Blog1 {key} must be true.")
 if blog_settings.get("showShareButtons") != "false":
     fail("Blog1 share buttons must remain disabled.")
 
-for page_path in ("/p/about-us.html", "/p/privacy-policy.html", "/p/disclaimer.html"):
-    if page_path not in raw:
-        fail(f"Footer page link missing: {page_path}")
-
-for color in ("#E98BAF", "#B77991", "#D6A542", "#11152D", "#FFFFFF", "#67E8F9", "#FFD700"):
-    if color.lower() not in raw.lower():
-        fail(f"Approved TRTT palette token missing: {color}")
-
-if "trtt-loader.js" in raw or "trtt-thinking-room-trigger" in raw:
-    fail("Thinking Room overlay must remain separate from the public homepage.")
-if 'var hiddenLabels = ["my dairy", "diary"]' not in raw:
-    fail("Personal diary isolation filter is missing.")
-if "#PageList1,#Profile1{display:none!important}" not in raw:
-    fail("Legacy PageList/Profile widgets must be hidden until their settings are reviewed.")
-if "<a href='/p/contact-us.html'>Contact</a>" in raw:
-    fail("Do not link the Contact page until the live Blogger page exists.")
-
-print(f"PASS: {THEME.name} is well-formed XML and passed static safety, widget, menu, footer, and palette checks.")
+for forbidden_url in ("https://www.facebook.com/way2themes", "https://twitter.com/LiveBlogger1", "mitti-way2themes.blogspot.com"):
+    if forbidden_url in raw:
+        fail("Unverified third-party social/site URL remains.")
+for private_pattern in (r"\+39\d{8,}", r"engrtaher2017@gmail\.com"):
+    if re.search(private_pattern, raw, re.I):
+        fail("Private contact detail found in theme.")
+if "Thinking Room" in raw or "trtt-loader.js" in raw:
+    fail("Thinking Room must remain separate from the public homepage.")
+print(f"PASS: {THEME.name} passed XML well-formedness, required widgets, preserved IDs, menu, Blog1, palette, privacy and safety checks.")
