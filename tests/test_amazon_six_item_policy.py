@@ -1,6 +1,12 @@
 import unittest
 from pathlib import Path
 
+from trtt_787950_master import AMAZON_ITEMS, link_approved_amazon_mentions
+
+class AmazonSixItemPolicyTests(unittest.TestCase):
+    def test_blogger_menu_page_contains_exactly_six_owner_links(self):
+        page = Path('blogger-pages/amazon-picks.html').read_text(encoding='utf-8')
+        expected = {url for _, url in AMAZON_ITEMS}
 class AmazonSixItemPolicyTests(unittest.TestCase):
     def test_blogger_menu_page_contains_exactly_six_owner_links(self):
         page = Path('blogger-pages/amazon-picks.html').read_text(encoding='utf-8')
@@ -16,6 +22,26 @@ class AmazonSixItemPolicyTests(unittest.TestCase):
         self.assertEqual(page.count('rel="sponsored nofollow noopener"'), 6)
         self.assertEqual(page.count('target="_blank"'), 6)
 
+    def test_each_exact_product_mention_links_to_its_own_amazon_item(self):
+        for label, url in AMAZON_ITEMS:
+            with self.subTest(label=label):
+                linked = link_approved_amazon_mentions('<p>'+label+'</p>')
+                self.assertIn('href="'+url+'"', linked)
+                self.assertIn('target="_blank"', linked)
+                self.assertIn('rel="sponsored nofollow noopener"', linked)
+
+    def test_unapproved_products_are_not_automatically_linked(self):
+        content = link_approved_amazon_mentions('<p>Other Amazon product</p>')
+        self.assertNotIn('<a ', content)
+
+    def test_existing_anchor_is_not_nested_or_rewritten(self):
+        original = '<a href="https://example.com">Hot Wheels Sprint Circuit</a>'
+        self.assertEqual(link_approved_amazon_mentions(original), original)
+
+    def test_draft_engine_uses_hub_for_general_amazon_call_to_action(self):
+        source = Path('trtt_787950_master.py').read_text(encoding='utf-8')
+        self.assertIn('https://www.trttvoyage.com/p/amazon-picks.html', source)
+        self.assertNotIn('https://amzn.to/4shg6Hn', source)
     def test_draft_engine_uses_amazon_picks_hub_not_unapproved_product(self):
         source = Path('trtt_787950_master.py').read_text(encoding='utf-8')
         self.assertIn('https://www.trttvoyage.com/p/amazon-picks.html', source)

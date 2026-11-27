@@ -17,6 +17,7 @@ Only these six Owner-supplied items may be recommended as Amazon products. Do no
 ## Editorial rules
 
 - Use an item only when relevant; do not force unrelated product mentions into news.
+- When an article includes the exact approved product name, link that mention directly to that item's own supplied Amazon URL in a new tab. Never route an item-specific mention through the general six-item menu.
 - For a general Amazon call-to-action, link to `/p/amazon-picks.html`, which presents all six items.
 - Product links open in a new tab with `rel="sponsored nofollow noopener"` so the blog page remains available.
 - Clearly disclose affiliate relationships. Do not claim prices, stock, redirect destinations, product specifications or commission attribution unless verified.
