@@ -6346,7 +6346,7 @@ $("#main-wrapper").each(function() {
 <script src='https://cdn.jsdelivr.net/gh/Cocvghuj/Cocvghuj-trtt-news-bot@main/trtt-loader.js?v=106-universe-room-pinned-20261112'></script>
 <style type='text/css'><![CDATA[
 /* TRTT VOYAGE — DIAMOND HORIZON PALETTE */
-:root{--tv-ink:#11152D;--tv-paper:#FFFFFF;--tv-card:#FFFFFF;--tv-muted:#B77991;--tv-line:rgba(183,121,145,.34);--tv-red:#E98BAF;--tv-navy:#11152D;--tv-gold:#D6A542;--tv-cyan:#67E8F9}
+:root{--tv-ink:#11152D;--tv-paper:#FFFFFF;--tv-card:#FFFFFF;--tv-muted:#B77991;--tv-line:rgba(183,121,145,.34);--tv-red:#E98BAF;--tv-navy:#11152D;--tv-gold:#D6A542;--tv-diamond-gold:#FFD700;--tv-cyan:#67E8F9}
 body,#outer-wrapper,#content-wrapper,.content-wrapper{background:#FFFFFF!important;color:#11152D!important}
 #header-wrap{background:#11152D!important;color:#FFFFFF!important;border-bottom:3px solid #D6A542!important}
 #header h1,.header-widget h1,.header-widget .title,#header .description,.header-widget .description{color:#FFFFFF!important}
@@ -6354,7 +6354,7 @@ body,#outer-wrapper,#content-wrapper,.content-wrapper{background:#FFFFFF!importa
 #main-menu-nav>li>a{color:#FFFFFF!important;border-radius:8px!important;padding:11px 14px!important;font-weight:800!important}
 #main-menu-nav>li>a:hover,#main-menu-nav>li>a:focus{background:#E98BAF!important;color:#11152D!important}
 #trtt-future-ribbon{display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:20px!important;max-width:1220px!important;margin:10px auto 30px!important;padding:clamp(24px,4vw,42px)!important;background:#11152D!important;border:1px solid #D6A542!important;border-radius:16px!important;box-shadow:0 16px 40px rgba(17,21,45,.14)!important}
-#trtt-future-ribbon .tf-kicker{color:#D6A542!important;font-size:10px!important;font-weight:900!important;letter-spacing:.2em!important}
+#trtt-future-ribbon .tf-kicker{color:#D6A542!important;text-shadow:0 0 10px rgba(255,215,0,.18)!important;font-size:10px!important;font-weight:900!important;letter-spacing:.2em!important}
 #trtt-future-ribbon .tf-head{max-width:900px!important;margin:9px 0 0!important;color:#FFFFFF!important;font-family:Georgia,"Times New Roman",serif!important;font-size:clamp(30px,5vw,58px)!important;line-height:1.08!important;letter-spacing:-.04em!important}
 #trtt-future-ribbon .tf-date{color:#E98BAF!important;font-size:10px!important;font-weight:800!important;letter-spacing:.13em!important;white-space:nowrap!important}
 #main-wrapper .blog-posts .grid-posts>.index-post{background:#FFFFFF!important;border:1px solid rgba(183,121,145,.38)!important;border-top:3px solid #E98BAF!important;border-radius:12px!important;box-shadow:0 8px 24px rgba(17,21,45,.07)!important}
