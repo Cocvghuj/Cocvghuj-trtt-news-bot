@@ -29,3 +29,9 @@ The validator checks XML well-formedness, required/preserved widget IDs, menu de
 
 ## Release gate
 Do not import or replace the live Blogger theme until the Owner has a current XML backup and explicitly approves the preview/import step. Do not publish or change DNS.
+
+
+## Verification record — 27 November 2026
+- The exact validator script from this branch was executed locally against the read-back XML source.
+- Result: PASS (exit code 0). XML well-formedness, all 20 unique widget IDs, required/preserved widget sets, menu values, Blog1 settings, palette tokens, legacy attribution, private contact patterns, and forbidden behavior checks passed.
+- This does not substitute for Blogger's own template compiler or live Layout/rendering checks; those remain NOT TESTED.
