@@ -26,8 +26,8 @@
 ## Navigation destinations
 
 - Home and category paths are relative to the active Blogger host, so the menu follows whichever Blogger host is actually configured.
-- Tools points to the current Vercel project domain at `/super-app`. Vercel reports a READY production deployment, but the project-level live flag is false; public route resolution remains NOT VERIFIED.
-- The brand/header link points to `https://trttvoyage.com/`. The custom domain was not found as a domain in the connected Vercel team, and Blogger custom-domain status is NOT VERIFIED.
+- Tools points to the current Vercel project domain at `/super-app`. The route was checked and returned the TRTT VoyageHub Super App page. Vercel reports a READY production deployment while the project-level live flag is false; public route resolution is independently verified.
+- The brand/header link points to `https://trttvoyage.com/`. The domain resolves to `https://www.trttvoyage.com/` and serves the TRTT Voyage Blogger website. It is Blogger-managed, not a Vercel custom domain.
 
 ## Validation
 
@@ -43,9 +43,9 @@ The PR adds `scripts/validate_blogger_theme.py` and a PR workflow step to check:
 ## Not tested
 
 - Blogger Theme preview/import and Layout editor behavior.
-- Live Contact page route (currently 404), and the final live About/Privacy/Disclaimer content update.
+- The Contact page route currently returns 404. About, Privacy, and Disclaimer routes resolve but still show the previous TRTT News 24 BD content; the new English page source in PR #140 has not been installed live.
 - Mobile/desktop browser rendering and accessibility.
-- Public resolution of `trttvoyage.com` and the Vercel Tools route.
+- Final mobile/desktop rendering and accessibility after Blogger preview/import.
 - Live Blogger pages, existing post count, or production deployment.
 
 **Owner approval is required before importing or replacing any live Blogger theme.**
