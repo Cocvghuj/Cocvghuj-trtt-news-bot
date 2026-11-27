@@ -4678,9 +4678,9 @@ var monthFormat = ["January", "February", "March", "April", "May", "June", "July
               <b:widget-setting name='text-0'>Home</b:widget-setting>
               <b:widget-setting name='link-0'>/</b:widget-setting>
               <b:widget-setting name='text-1'>News</b:widget-setting>
-              <b:widget-setting name='link-1'>/search/label/News</b:widget-setting>
+              <b:widget-setting name='link-1'>/search/label/TRTT%20News24BD</b:widget-setting>
               <b:widget-setting name='text-2'>Travel</b:widget-setting>
-              <b:widget-setting name='link-2'>/search/label/Travel</b:widget-setting>
+              <b:widget-setting name='link-2'>/search?q=travel</b:widget-setting>
               <b:widget-setting name='text-3'>AI</b:widget-setting>
               <b:widget-setting name='link-3'>/search/label/AI</b:widget-setting>
               <b:widget-setting name='text-4'>Tools</b:widget-setting>
@@ -6362,6 +6362,7 @@ body,#outer-wrapper,#content-wrapper,.content-wrapper{background:#FFFFFF!importa
 #main-wrapper .blog-posts .grid-posts>.index-post .post-title a:hover{color:#B77991!important}
 #main-wrapper .blog-posts .grid-posts>.index-post .post-labels a{background:#E98BAF!important;color:#11152D!important}
 #main-wrapper .blog-posts .grid-posts>.index-post:hover{border-color:#D6A542!important;box-shadow:0 14px 34px rgba(17,21,45,.12)!important}
+#PageList1,#Profile1{display:none!important}
 #footer-wrapper{background:#11152D!important;color:#FFFFFF!important;border-top:3px solid #D6A542!important}
 #footer-wrapper,#footer-wrapper p,#footer-wrapper li,#footer-wrapper .title{color:#FFFFFF!important}
 #footer-wrapper a{color:#E98BAF!important}
@@ -6372,7 +6373,48 @@ body,#outer-wrapper,#content-wrapper,.content-wrapper{background:#FFFFFF!importa
 @media(max-width:700px){#trtt-future-ribbon{display:block!important;padding:24px 18px!important;margin:8px auto 22px!important}#trtt-future-ribbon .tf-head{font-size:clamp(28px,8vw,42px)!important}#trtt-future-ribbon .tf-date{display:block!important;margin-top:14px!important;white-space:normal!important}#main-menu-nav>li>a{padding:9px 10px!important}.trtt-voyage-footer-nav{gap:10px 16px;padding:20px 12px}}
 ]]></style>
 <nav class='trtt-voyage-footer-nav' aria-label='TRTT Voyage footer links'>
-<a href='https://trttvoyage.com/'>TRTT Voyage</a><a href='/p/about-us.html'>About</a><a href='/p/contact-us.html'>Contact</a><a href='/p/privacy-policy.html'>Privacy</a><a href='/p/disclaimer.html'>Disclaimer</a><a href='https://whatsapp.com/channel/0029Vb8co9VDeONEz0B5e51M' target='_blank' rel='noopener noreferrer'>WhatsApp</a><a href='https://t.me/trttnews24bd' target='_blank' rel='noopener noreferrer'>Telegram</a><a href='https://www.facebook.com/profile.php?id=61595319351601' target='_blank' rel='noopener noreferrer'>Facebook</a><a href='https://buymeacoffee.com/engrtaher20' target='_blank' rel='noopener noreferrer'>Support TRTT</a>
+<a href='https://trttvoyage.com/'>TRTT Voyage</a><a href='/p/about-us.html'>About</a><a href='/p/privacy-policy.html'>Privacy</a><a href='/p/disclaimer.html'>Disclaimer</a><a href='https://whatsapp.com/channel/0029Vb8co9VDeONEz0B5e51M' target='_blank' rel='noopener noreferrer'>WhatsApp</a><a href='https://t.me/trttnews24bd' target='_blank' rel='noopener noreferrer'>Telegram</a><a href='https://www.facebook.com/profile.php?id=61595319351601' target='_blank' rel='noopener noreferrer'>Facebook</a><a href='https://buymeacoffee.com/engrtaher20' target='_blank' rel='noopener noreferrer'>Support TRTT</a>
 </nav>
+<b:if cond='data:view.search.label != "My dairy"'>
+<b:if cond='data:view.search.label != "Diary"'>
+<script type='text/javascript'>
+//<![CDATA[
+(function () {
+  var hiddenLabels = ["my dairy", "diary"];
+  var legacyLabels = ["trtt news24bd", "trtt news 24 bd", "trttnews24bd", "trtt news"];
+  function cleanCards(scope) {
+    if (!scope || !scope.querySelectorAll) return;
+    var cards = [];
+    if (scope.matches && scope.matches(".blog-post.index-post")) cards.push(scope);
+    scope.querySelectorAll(".blog-post.index-post").forEach(function (card) { cards.push(card); });
+    cards.forEach(function (card) {
+      var tags = Array.prototype.slice.call(card.querySelectorAll(".post-tag"));
+      var labels = tags.map(function (tag) { return tag.textContent.trim().toLowerCase(); });
+      tags.forEach(function (tag) {
+        if (legacyLabels.indexOf(tag.textContent.trim().toLowerCase()) !== -1) tag.remove();
+      });
+      if (labels.some(function (label) { return hiddenLabels.indexOf(label) !== -1; })) {
+        card.hidden = true;
+      }
+    });
+  }
+  var blog = document.getElementById("Blog1");
+  if (!blog) return;
+  cleanCards(blog);
+  if (window.MutationObserver) {
+    var observer = new MutationObserver(function (records) {
+      records.forEach(function (record) {
+        record.addedNodes.forEach(function (node) {
+          if (node.nodeType === 1) cleanCards(node);
+        });
+      });
+    });
+    observer.observe(blog, { childList: true, subtree: true });
+  }
+})();
+ //]]>
+</script>
+</b:if>
+</b:if>
 </body>
 </html>
