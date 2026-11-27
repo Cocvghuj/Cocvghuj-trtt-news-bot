@@ -73,7 +73,8 @@ img{max-width:100%;height:auto}
             <b:widget-setting name='text-2'>Travel</b:widget-setting><b:widget-setting name='link-2'>/search/label/Travel</b:widget-setting>
             <b:widget-setting name='text-3'>AI</b:widget-setting><b:widget-setting name='link-3'>/search/label/AI</b:widget-setting>
             <b:widget-setting name='text-4'>Tools</b:widget-setting><b:widget-setting name='link-4'>https://cocvghuj-trtt-news-bot.vercel.app/super-app</b:widget-setting>
-            <b:widget-setting name='text-5'>About</b:widget-setting><b:widget-setting name='link-5'>/p/about-us.html</b:widget-setting>
+            <b:widget-setting name='text-5'>Amazon Picks</b:widget-setting><b:widget-setting name='link-5'>/p/amazon-picks.html</b:widget-setting>
+            <b:widget-setting name='text-6'>About</b:widget-setting><b:widget-setting name='link-6'>/p/about-us.html</b:widget-setting>
           </b:widget-settings>
           <b:includable id='main'><ul><b:loop values='data:links' var='link'><li><a expr:href='data:link.target'><data:link.name/></a></li></b:loop></ul></b:includable>
         </b:widget>

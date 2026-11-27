@@ -20,7 +20,6 @@ BATCH_SIZE = 1
 MARKER = "787950 LOCKED"
 LIVE_APP = "https://cocvghuj-trtt-news-bot.vercel.app"
 AFFILIATES = {
-    "amazon": "https://amzn.to/4shg6Hn?marker=787950",
     "aviasales": "https://aviasales.tpo.lv/Fb8U9yav?marker=787950",
     "klook": "https://klook.tpo.lv/TWKnemhz?marker=787950",
     "airalo": "https://airalo.tpo.lv/ZZoQC7Mz?marker=787950",
@@ -120,15 +119,18 @@ def _plain_word_count(content: str) -> int:
 
 
 def _affiliate_list() -> str:
+    """List non-Amazon travel partners plus the fixed six-item Amazon Picks page."""
     items = [
-        ("Amazon travel gear", AFFILIATES["amazon"]),
+        ("TRTT Voyage Amazon Picks — six approved items", "https://www.trttvoyage.com/p/amazon-picks.html"),
         ("Aviasales flight comparison", AFFILIATES["aviasales"]),
         ("Klook activities and experiences", AFFILIATES["klook"]),
         ("Airalo travel eSIM options", AFFILIATES["airalo"]),
         ("GetTransfer airport transfers", AFFILIATES["gettransfer"]),
     ]
     return "<ul>" + "".join(
-        f'<li><a href="{html.escape(url, quote=True)}" rel="sponsored nofollow noopener" target="_blank">{label}</a></li>'
+        (f'<li><a href="{html.escape(url, quote=True)}" rel="noopener">{label}</a></li>'
+         if "amazon-picks.html" in url else
+         f'<li><a href="{html.escape(url, quote=True)}" rel="sponsored nofollow noopener" target="_blank">{label}</a></li>')
         for label, url in items
     ) + "</ul>"
 
