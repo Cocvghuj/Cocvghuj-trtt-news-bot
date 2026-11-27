@@ -21,7 +21,8 @@ const PUBLIC_TEXT_FILES = new Set([
   'robots.txt',
   'sitemap.txt'
 ]);
-const PRIVATE_FILES = new Set(['build.js', 'roksana-vault.js']);
+const PRIVATE_FILES = new Set(['build.js', 'roksana-vault.js', 'trtt-auto-sync.js', 'site.css']);
+const PRIVATE_PATHS = new Set(['blog/index.html']);
 const IGNORED_DIRECTORIES = new Set([
   '.git', '.github', 'api', 'dist', 'node_modules',
   'tests', '__pycache__', '.venv', 'venv',
@@ -35,7 +36,8 @@ fs.mkdirSync(dist, { recursive: true });
 
 function isPublicAsset(filePath) {
   const filename = path.basename(filePath).toLowerCase();
-  if (PRIVATE_FILES.has(filename)) return false;
+  const relativePath = path.relative(root, filePath).split(path.sep).join('/').toLowerCase();
+  if (PRIVATE_FILES.has(filename) || PRIVATE_PATHS.has(relativePath)) return false;
   if (PUBLIC_JSON_FILES.has(filename) || PUBLIC_TEXT_FILES.has(filename)) return true;
   return PUBLIC_EXTENSIONS.has(path.extname(filename));
 }
@@ -63,7 +65,7 @@ fs.readdirSync(root).forEach(file => {
   copyRecursive(path.join(root, file), path.join(dist, file));
 });
 
-const requiredPublicAssets = ['trtt-theme.css', 'trtt-blog-menu.js', 'trtt-voyage-menu.js', 'blog-control.json'];
+const requiredPublicAssets = ['trtt-theme.css', 'trtt-blog-menu.js', 'trtt-voyage-menu.js', 'blog-control.json', 'assets/css/trtt-voyage-site.css', 'blog/trtt-voyage-news-hub.html'];
 for (const asset of requiredPublicAssets) {
   if (!fs.existsSync(path.join(dist, asset))) {
     throw new Error('Build failed: required public Blogger asset is missing from dist: ' + asset);
@@ -85,7 +87,12 @@ if (!builtHtml.includes('787950 LOCKED')) throw new Error('Build failed: marker 
 if (!builtHtml.includes('https://cocvghuj-trtt-news-bot.vercel.app')) throw new Error('Build failed: TRTT Live App link missing from dist/index.html.');
 if (!builtHtml.includes('trtt-voyage-menu.js')) throw new Error('Build failed: TRTT Voyage navigation menu source missing from dist/index.html.');
 if (builtHtml.includes('roksana-vault.js')) throw new Error('Build failed: legacy personal menu script must not be referenced by the public app.');
-if (fs.existsSync(path.join(dist, 'roksana-vault.js'))) throw new Error('Build failed: legacy personal menu script must not be copied into the public build.');
+if (fs.existsSync(path.join(dist, 'roksana-vault.js'))) throw new Error('Build failed: legacy menu script must not be copied into the public build.');
+if (fs.existsSync(path.join(dist, 'trtt-auto-sync.js'))) throw new Error('Build failed: retired auto-sync script must not be copied into the public build.');
+if (fs.existsSync(path.join(dist, 'assets/css/site.css'))) throw new Error('Build failed: malformed legacy stylesheet must not be copied into the public build.');
+if (fs.existsSync(path.join(dist, 'blog/index.html'))) throw new Error('Build failed: legacy blog hub must not be copied into the public build.');
+if (!fs.existsSync(path.join(dist, 'blog/trtt-voyage-news-hub.html'))) throw new Error('Build failed: TRTT Voyage news hub is missing from dist.');
+if (fs.existsSync(path.join(dist, 'blog.json'))) throw new Error('Build failed: legacy content snapshot must not be copied into the public build.');
 const builtManifest = JSON.parse(fs.readFileSync(path.join(dist, 'manifest.json'), 'utf8'));
 if (!builtManifest.name.includes('TRTT Voyage') || builtManifest.start_url !== '/' || builtManifest.theme_color !== '#11152D') throw new Error('Build failed: PWA manifest branding or start URL is incorrect.');
 if (!builtHtml.includes('https://trttvoyage.com/')) throw new Error('Build failed: official TRTT Voyage website link missing.');
