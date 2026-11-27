@@ -21,7 +21,7 @@ const PUBLIC_TEXT_FILES = new Set([
   'robots.txt',
   'sitemap.txt'
 ]);
-const PRIVATE_FILES = new Set(['build.js']);
+const PRIVATE_FILES = new Set(['build.js', 'roksana-vault.js']);
 const IGNORED_DIRECTORIES = new Set([
   '.git', '.github', 'api', 'dist', 'node_modules',
   'tests', '__pycache__', '.venv', 'venv',
@@ -63,7 +63,7 @@ fs.readdirSync(root).forEach(file => {
   copyRecursive(path.join(root, file), path.join(dist, file));
 });
 
-const requiredPublicAssets = ['trtt-theme.css', 'trtt-blog-menu.js', 'blog-control.json'];
+const requiredPublicAssets = ['trtt-theme.css', 'trtt-blog-menu.js', 'trtt-voyage-menu.js', 'blog-control.json'];
 for (const asset of requiredPublicAssets) {
   if (!fs.existsSync(path.join(dist, asset))) {
     throw new Error('Build failed: required public Blogger asset is missing from dist: ' + asset);
@@ -83,5 +83,14 @@ const builtHtml = fs.readFileSync(builtIndex, 'utf8');
 if (!builtHtml.includes('TRTT') || !builtHtml.includes('VOYAGEHUB')) throw new Error('Build failed: TRTT VOYAGEHUB branding missing from dist/index.html.');
 if (!builtHtml.includes('787950 LOCKED')) throw new Error('Build failed: marker 787950 LOCKED missing from dist/index.html.');
 if (!builtHtml.includes('https://cocvghuj-trtt-news-bot.vercel.app')) throw new Error('Build failed: TRTT Live App link missing from dist/index.html.');
-if (!builtHtml.includes('roksana-vault.js')) throw new Error('Build failed: 787950 bottom menu source missing from dist/index.html.');
+if (!builtHtml.includes('trtt-voyage-menu.js')) throw new Error('Build failed: TRTT Voyage navigation menu source missing from dist/index.html.');
+if (builtHtml.includes('roksana-vault.js')) throw new Error('Build failed: legacy personal menu script must not be referenced by the public app.');
+if (fs.existsSync(path.join(dist, 'roksana-vault.js'))) throw new Error('Build failed: legacy personal menu script must not be copied into the public build.');
+const builtManifest = JSON.parse(fs.readFileSync(path.join(dist, 'manifest.json'), 'utf8'));
+if (!builtManifest.name.includes('TRTT Voyage') || builtManifest.start_url !== '/' || builtManifest.theme_color !== '#11152D') throw new Error('Build failed: PWA manifest branding or start URL is incorrect.');
+if (!builtHtml.includes('https://trttvoyage.com/')) throw new Error('Build failed: official TRTT Voyage website link missing.');
+const builtSuperApp = fs.readFileSync(path.join(dist, 'super-app.html'), 'utf8');
+if (builtSuperApp.includes('trtt-auto-sync.js') || builtSuperApp.includes('Auto-Synced Articles')) throw new Error('Build failed: retired auto-sync feed is still referenced.');
+if (!builtSuperApp.includes('Some partner links may earn TRTT Voyage a commission')) throw new Error('Build failed: partner disclosure missing from Super App.');
+if (builtSuperApp.includes('Verified Travel Tools') || builtSuperApp.includes('claim up to €600')) throw new Error('Build failed: unsupported travel claims remain in Super App.');
 console.log('Build verified: index, Blogger CSS, menu loader, public config and marker are present in dist.');
