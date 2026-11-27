@@ -166,7 +166,7 @@ def link_approved_amazon_mentions(content: str) -> str:
 def amazon_links_are_approved(content: str) -> bool:
     """Allow only supplied six-item Amazon URLs; zero item links is valid."""
     allowed = {url for _, url in AMAZON_ITEMS}
-    found = re.findall(r'https://amzn\\.to/[A-Za-z0-9]+', content)
+    found = re.findall(r'https://amzn\.to/[A-Za-z0-9]+', content)
     return all(url in allowed for url in found)
 
 
