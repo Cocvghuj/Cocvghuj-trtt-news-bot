@@ -4,7 +4,7 @@
   var script = document.currentScript;
   var configUrl = script && script.src
     ? new URL("blog-control.json", script.src).href
-    : "https://cocvghuj-trtt-news-bot-git-main-trtt6.vercel.app/blog-control.json";
+    : "https://cocvghuj-trtt-news-bot.vercel.app/blog-control.json";
 
   function createMenuItem(item) {
     if (!item || typeof item.label !== "string" || !item.label.trim() ||
