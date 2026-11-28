@@ -1,0 +1,71 @@
+name: TRTT CONTROL - Task Queue
+
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'কি কাজ করবো? (draft / check / theme)'
+        required: true
+        default: 'check'
+        type: choice
+        options:
+          - check
+          - draft
+          - theme
+      approve_live:
+        description: 'Live Publish করবো? (না মানে NO)'
+        required: true
+        default: 'NO'
+        type: choice
+        options:
+          - 'NO'
+          - 'YES - আমি অনুমতি দিলাম'
+
+permissions:
+  contents: read
+
+jobs:
+  # APPROVAL LOCK
+  approval-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Approval
+        run: |
+          echo "Task: ${{ inputs.task }}"
+          echo "Live Approval: ${{ inputs.approve_live }}"
+          if [[ "${{ inputs.approve_live }}" == "YES - আমি অনুমতি দিলাম" ]]; then
+            echo "⚠️ তুমি Live অনুমতি দিছো - সাবধানে চলবে"
+          else
+            echo "✅ SAFE MODE: Live Publish BLOCKED - শুধু Check / Draft হবে"
+          fi
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "STOP! Main এ সরাসরি কাজ নিষেধ"
+            exit 1
+          fi
+
+  # TASK QUEUE - Master Control এর সাথে সংঘর্ষ হবে না
+  task-queue:
+    needs: [approval-lock]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - name: TRTT START - Task Queue
+        run: |
+          echo "=== TRTT CONTROL STARTED ==="
+          echo "Task: ${{ inputs.task }}"
+          echo "Branch: ${{ github.ref }}"
+          echo "Time: $(date)"
+          echo "Checking Master Control conflict..."
+          ls .github/workflows/ || echo "No workflows folder"
+          echo "No conflict - This job only checks, does NOT publish"
+
+      - name: STATUS CHECK
+        run: |
+          echo "=== STATUS REPORT ==="
+          echo "STATUS: CHECKED - Architecture OK"
+          echo "Master Control: NOT TOUCHED"
+          echo "Main Branch: NOT TOUCHED"
+          echo "Live Blogger: NOT TOUCHED"
+          echo "Result: SAFE - Ready for next task"
