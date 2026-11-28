@@ -14,7 +14,7 @@ const ROOT_FILES = [
   'index.html', 'about.html', 'app.html', 'contact.html', 'disclaimer.html',
   'privacy.html', 'terms.html', 'travel-guide.html', 'latest_travel_news.html',
   'flightscoutpro-itinerary.html', 'super-app.html', 'manifest.json', 'sw.js',
-  'trtt-hub.css', 'trtt-voyage-menu.js', 'trtt-voyage-logo.svg'
+  'trtt-hub.css', 'trtt-voyage-menu.js', 'trtt-voyage-logo.svg', 'affiliate-links.js', 'affiliate-services.json'
 ];
 const DIRECTORY_RULES = [
   ['assets/css', /^trtt-voyage-site\.css$/i],
@@ -52,11 +52,18 @@ function copyDirectory(relative, matcher) {
   walk(src, relative);
 }
 function rewriteHtml(text) {
-  text = text.replace(/\b(href|src|action|poster)=("|')\/(?!\/)/gi,
-    (_, attr, quote) => attr + '=' + quote + BASE_PATH);
-  text = text.replace(/https:\/\/cocvghuj-trtt-news-bot\.vercel\.app\//gi, BASE_URL);
-  text = text.replace(/https:\/\/cocvghuj\.github\.io\/Cocvghuj-trtt-news-bot\//gi, BASE_URL);
-  text = text.replace(/\/trtt-original-logo\.jpeg/gi, BASE_PATH + 'trtt-voyage-logo.svg');
+  text = text.replace(/\\/trtt-original-logo\\.jpeg/gi, BASE_PATH + 'trtt-voyage-logo.svg');
+  text = text.replace(/\\/blog\\/index\\.html/gi, BASE_PATH + 'blog/trtt-voyage-news-hub.html');
+  text = text.replace(/<script\\b[^>]*src=["']\\/trtt-auto-sync\\.js["'][^>]*>\\s*<\\/script>/gi, '');
+  text = text.replace(/https:\\/\\/cocvghuj-trtt-news-bot\\.vercel\\.app\\/super-app/gi, BASE_URL + 'super-app.html');
+  text = text.replace(/https:\\/\\/cocvghuj-trtt-news-bot\\.vercel\\.app\\//gi, BASE_URL);
+  text = text.replace(/https:\\/\\/cocvghuj\\.github\\.io\\/Cocvghuj-trtt-news-bot\\//gi, BASE_URL);
+  text = text.replace(/\\b(href|src|action|poster)=("|\\')\\/(?!\\/)/gi,
+    (match, attr, quote, offset, source) => {
+      const remainder = source.slice(offset + match.length);
+      if (remainder.startsWith(repository + '/')) return match;
+      return attr + '=' + quote + BASE_PATH;
+    });
   return text;
 }
 function rewriteCss(text) {
