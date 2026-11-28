@@ -38,12 +38,18 @@ function copyFile(relative) {
 function copyDirectory(relative, matcher) {
   const src = path.join(ROOT, relative);
   if (!fs.existsSync(src)) throw new Error('Required public directory is missing: ' + relative);
-  for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
-    if (!entry.isFile() || !matcher.test(entry.name)) continue;
-    const rel = relative + '/' + entry.name;
-    if (BLOCKED_OUTPUT.test(rel)) throw new Error('Blocked path entered public allowlist: ' + rel);
-    copyFile(rel);
+  function walk(current, prefix) {
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      const rel = prefix + '/' + entry.name;
+      if (BLOCKED_OUTPUT.test(rel)) continue;
+      if (entry.isDirectory()) {
+        walk(path.join(current, entry.name), rel);
+      } else if (entry.isFile() && matcher.test(entry.name)) {
+        copyFile(rel);
+      }
+    }
   }
+  walk(src, relative);
 }
 function rewriteHtml(text) {
   text = text.replace(/\b(href|src|action|poster)=("|')\/(?!\/)/gi,
