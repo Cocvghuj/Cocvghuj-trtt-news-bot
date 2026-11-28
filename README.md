@@ -2,10 +2,10 @@
 
 <div align="center">
 
-**[TRTT Voyage — From Vision to Global Brand!](https://trttvoyage.com)**  
+**[TRTT Voyage — From Vision to Global Brand!](https://www.trttvoyage.com)**  
 **Explore Beyond. Discover Everything.**
 
-[![Official Website](https://img.shields.io/badge/Official%20Website-TRTT%20Voyage-E98BAF?style=for-the-badge)](https://trttvoyage.com)
+[![Official Website](https://img.shields.io/badge/Official%20Website-TRTT%20Voyage-E98BAF?style=for-the-badge)](https://www.trttvoyage.com)
 [![GitHub](https://img.shields.io/badge/GitHub-Cocvghuj-11152D?style=for-the-badge&logo=github)](https://github.com/Cocvghuj)
 [![Organization](https://img.shields.io/badge/Organization-Trttvoyage-B77991?style=for-the-badge)](https://github.com/Trttvoyage)
 
@@ -28,7 +28,7 @@ Not every idea or prototype is a finished or publicly deployed product. Each fea
 
 ## Official TRTT Voyage links
 
-- [Official website](https://trttvoyage.com)
+- [Official website](https://www.trttvoyage.com)
 - [GitHub profile — Engr. Abu Taher](https://github.com/Cocvghuj)
 - [GitHub organization — Trttvoyage](https://github.com/Trttvoyage)
 - [WhatsApp Channel](https://whatsapp.com/channel/0029Vb8co9VDeONEz0B5e51M)
@@ -69,7 +69,7 @@ This repository contains multiple components. Read [AGENTS.md](./AGENTS.md) befo
 
 ## Vercel and deployment
 
-The official site `https://trttvoyage.com/` was checked on 27 November 2026 and resolves to `https://www.trttvoyage.com/`, serving the TRTT Voyage Blogger website. The main website domain is Blogger-managed; it is not expected to be attached to the Vercel team. The separate Vercel route `https://cocvghuj-trtt-news-bot.vercel.app/super-app` was also checked and returned the TRTT VoyageHub Super App page. Vercel reports the latest production deployment as READY while the project-level live flag is false; treat deployment metadata and public route resolution as separate signals.
+The official site `https://www.trttvoyage.com/` was checked on 27 November 2026 and resolves to `https://www.trttvoyage.com/`, serving the TRTT Voyage Blogger website. The main website domain is Blogger-managed; it is not expected to be attached to the Vercel team. The separate Vercel route `https://cocvghuj-trtt-news-bot.vercel.app/super-app` was also checked and returned the TRTT VoyageHub Super App page. Vercel reports the latest production deployment as READY while the project-level live flag is false; treat deployment metadata and public route resolution as separate signals.
 
 No deployment is performed by this documentation change. Production deployment, domain attachment, DNS, and security settings remain owner-approved operations.
 
@@ -106,5 +106,5 @@ Third-party projects and services retain their own ownership, licenses, trademar
 ---
 
 **Owner:** Engr. Abu Taher  
-**Brand:** [TRTT Voyage](https://trttvoyage.com)  
+**Brand:** [TRTT Voyage](https://www.trttvoyage.com)  
 **Project motto:** ONE TEAM. ONE VISION. ONE JOURNEY.
