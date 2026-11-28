@@ -52,13 +52,13 @@ function copyDirectory(relative, matcher) {
   walk(src, relative);
 }
 function rewriteHtml(text) {
-  text = text.replace(/\\/trtt-original-logo\\.jpeg/gi, BASE_PATH + 'trtt-voyage-logo.svg');
-  text = text.replace(/\\/blog\\/index\\.html/gi, BASE_PATH + 'blog/trtt-voyage-news-hub.html');
-  text = text.replace(/<script\\b[^>]*src=["']\\/trtt-auto-sync\\.js["'][^>]*>\\s*<\\/script>/gi, '');
-  text = text.replace(/https:\\/\\/cocvghuj-trtt-news-bot\\.vercel\\.app\\/super-app/gi, BASE_URL + 'super-app.html');
-  text = text.replace(/https:\\/\\/cocvghuj-trtt-news-bot\\.vercel\\.app\\//gi, BASE_URL);
-  text = text.replace(/https:\\/\\/cocvghuj\\.github\\.io\\/Cocvghuj-trtt-news-bot\\//gi, BASE_URL);
-  text = text.replace(/\\b(href|src|action|poster)=("|\\')\\/(?!\\/)/gi,
+  text = text.replace(/\/trtt-original-logo\.jpeg/gi, BASE_PATH + 'trtt-voyage-logo.svg');
+  text = text.replace(/\/blog\/index\.html/gi, BASE_PATH + 'blog/trtt-voyage-news-hub.html');
+  text = text.replace(/<script\b[^>]*src=["']\/trtt-auto-sync\.js["'][^>]*>\s*<\/script>/gi, '');
+  text = text.replace(/https:\/\/cocvghuj-trtt-news-bot\.vercel\.app\/super-app/gi, BASE_URL + 'super-app.html');
+  text = text.replace(/https:\/\/cocvghuj-trtt-news-bot\.vercel\.app\//gi, BASE_URL);
+  text = text.replace(/https:\/\/cocvghuj\.github\.io\/Cocvghuj-trtt-news-bot\//gi, BASE_URL);
+  text = text.replace(/\b(href|src|action|poster)=("|')\/(?!\/)/gi,
     (match, attr, quote, offset, source) => {
       const remainder = source.slice(offset + match.length);
       if (remainder.startsWith(repository + '/')) return match;
