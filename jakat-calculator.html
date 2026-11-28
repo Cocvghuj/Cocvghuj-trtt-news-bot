@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>যাকাত ক্যালকুলেটর - TRTT MAGIC</title>
+<style>
+body{background:#e8f5e9;font-family:sans-serif;padding:15px;text-align:center;color:#222}
+.box{background:#fff;border:3px solid #1b5e20;border-radius:18px;padding:18px;max-width:560px;margin:auto;box-shadow:0 4px 15px #0002}
+h1{color:#1b5e20;font-size:23px}
+input{width:92%;padding:12px;font-size:17px;border:2px solid #1b5e20;border-radius:10px;margin:6px 0}
+label{font-weight:bold;display:block;margin-top:10px;text-align:left}
+button{width:95%;padding:14px;background:#1b5e20;color:#fff;border:none;border-radius:10px;font-size:18px;font-weight:bold;margin:10px 0}
+.result{background:#e8f5e9;border-radius:12px;padding:14px;margin-top:12px;text-align:left;font-size:17px;line-height:1.9}
+.big{font-size:32px;font-weight:bold;color:#1b5e20;text-align:center}
+small{color:#666}
+.nisab{background:#fffde7;padding:10px;border-radius:10px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="box">
+<h1>🕌 যাকাত ক্যালকুলেটর 🇧🇩</h1>
+<p>TRTT MAGIC - DIAMOND KING | আল্লাহর জন্য</p>
+
+<div class="nisab">
+<b>নিসাব ২০২৬ (আনুমানিক):</b><br>
+🥇 সোনা: ৭.৫ ভরি (৮৭.৪৮ গ্রাম) | 🥈 রূপা: ৫২.৫ ভরি (৬১২.৩৬ গ্রাম)<br>
+💰 টাকা: রূপার দামে ~ ৮০,০০০ টাকা হইলেই যাকাত ফরজ। ১ বছর থাকতে হবে।
+</div>
+
+<label>হাতে নগদ টাকা + ব্যাংকে টাকা (টাকায়):</label>
+<input type="number" id="cash" placeholder="যেমন: 200000" value="200000">
+<label>সোনা আছে কত ভরি?</label>
+<input type="number" id="gold" placeholder="যেমন: 2" value="0">
+<label>রূপা আছে কত ভরি?</label>
+<input type="number" id="silver" placeholder="যেমন: 5" value="0">
+<label>ব্যবসার মাল / পাওনা টাকা (টাকায়):</label>
+<input type="number" id="business" placeholder="যেমন: 50000" value="0">
+<label>ঋণ / দেনা আছে কত টাকা? (বাদ যাবে)</label>
+<input type="number" id="loan" placeholder="যেমন: 20000" value="0">
+<label>১ ভরি সোনার দাম কত? (টাকায়)</label>
+<input type="number" id="goldPrice" placeholder="যেমন: 145000" value="145000">
+<label>১ ভরি রূপার দাম কত? (টাকায়)</label>
+<input type="number" id="silverPrice" placeholder="যেমন: 1800" value="1800">
+
+<button onclick="calc()">🕌 আমার যাকাত কত?</button>
+
+<div class="result" id="res">
+👆 টাকা লিখে হিসাব করো বাটনে চাপ দাও।<br>
+যাকাত = মোট সম্পদ এর ২.৫% (৪০ ভাগের ১ ভাগ)
+</div>
+
+<p><small>💡 <b>কাদের দিবেন?</b> গরিব, মিসকিন, ঋণগ্রস্ত, এতিম, মাদ্রাসার ছাত্র, অসহায় প্রতিবেশী।<br>⚠️ এইটা আনুমানিক হিসাব। সঠিক মাসআলার জন্য আলেমের কাছে জিজ্ঞেস করুন।</small></p>
+</div>
+
+<script>
+function calc(){
+ let cash=parseFloat(document.getElementById('cash').value)||0;
+ let gold=parseFloat(document.getElementById('gold').value)||0;
+ let silver=parseFloat(document.getElementById('silver').value)||0;
+ let business=parseFloat(document.getElementById('business').value)||0;
+ let loan=parseFloat(document.getElementById('loan').value)||0;
+ let goldPrice=parseFloat(document.getElementById('goldPrice').value)||145000;
+ let silverPrice=parseFloat(document.getElementById('silverPrice').value)||1800;
+ let goldValue=gold*goldPrice;
+ let silverValue=silver*silverPrice;
+ let total=cash+goldValue+silverValue+business-loan;
+ let nisab=52.5*silverPrice; // রূপা দিয়ে নিসাব
+ let zakat=total*0.025;
+ let monthly=zakat/12;
+ let html="";
+ html+=`<b>📊 তোমার হিসাব:</b><br>
+ 💵 নগদ + ব্যাংক: ${cash.toLocaleString('bn-BD')} টাকা<br>
+ 🥇 সোনা ${gold} ভরি = ${goldValue.toLocaleString('bn-BD')} টাকা<br>
+ 🥈 রূপা ${silver} ভরি = ${silverValue.toLocaleString('bn-BD')} টাকা<br>
+ 🏪 ব্যবসা / পাওনা: ${business.toLocaleString('bn-BD')} টাকা<br>
+ ➖ ঋণ বাদ: -${loan.toLocaleString('bn-BD')} টাকা<br>
+ <b>মোট সম্পদ:</b> ${total.toLocaleString('bn-BD')} টাকা<br>
+ <b>নিসাব (রূপার দামে):</b> ${nisab.toLocaleString('bn-BD')} টাকা<br><br>`;
+ if(total < nisab){
+   html+=`<div class="big" style="color:#d50000">যাকাত ফরজ না</div><b>আলহামদুলিল্লাহ, তোমার সম্পদ নিসাবের নিচে। তোমার উপর যাকাত ফরজ না। তুমি চাইলে সদকা দিতে পারো। আল্লাহ তোমার রিজিকে বরকত দিন।</b>`;
+ } else {
+   html+=`<div class="big">${zakat.toLocaleString('bn-BD')} টাকা</div>
+   <b>✅ তোমার উপর যাকাত ফরজ।</b><br>
+   🕌 <b>যাকাত দিতে হবে:</b> ${zakat.toLocaleString('bn-BD')} টাকা (২.৫%)<br>
+   📅 <b>মাসে ভাগ করলে:</b> ${monthly.toFixed(0)} টাকা করে ১২ মাসে দিতে পারো<br>
+   🍚 <b>চালের হিসাবে:</b> ${(zakat/75).toFixed(0)} কেজি চালের দাম<br><br>
+   <b>💡 আজকের ১টা কাজ:</b> আজকে ১ জন গরিব মানুষকে ১ বেলা খাওয়াও। যাকাত দেওয়ার শুরু ওইখান থেকে।`;
+ }
+ document.getElementById('res').innerHTML=html;
+}
+</script>
+</body>
+</html>
